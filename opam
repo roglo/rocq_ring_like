@@ -1,27 +1,22 @@
-​​opam-version: "2.0"
-maintainer: "roglo"
-authors: "roglo"
-license: "MIT"
-homepage: "https://github.com/roglo/rocq_ring_like"
-bug-reports: "https://github.com/roglo/rocq_ring_like/issues"
-dev-repo: "git+https://github.com/roglo/rocq_ring_like.git"
-
-synopsis: "General algebraic structures (Ring Like) for Rocq"
-description: """
-This library defines a flexible algebraic structure covering
-semirings, rings, fields, and related variants, with a wide collection
-of associated theorems, and basic syntax for sums and products.
-"""
+opam-version: "2.0"
+name: "rocq_ring_like"
+version: "dev"
 
 depends: [
-  "ocaml" {>= "4.08.0"}
-  "rocq"  {>= "9.0.0"}
+  "rocq" {>= "9.0.0"}
 ]
+
+synopsis: "Ring-like algebraic structures for Rocq"
+description: """
+Provides definitions and basic properties for structures similar to rings, semi-rings and fields, with additional properties (commutativity, completeness, etc).
+"""
 
 build: [
-  ["make"]
+  ["%{make}%"]
 ]
-
 install: [
-  ["make" "install"]
+  ["%{make}%" "install"]
+]
+remove: [
+  ["%{make}%" "uninstall"]
 ]
