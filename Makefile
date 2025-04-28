@@ -14,6 +14,15 @@ depend:
 	rocq dep $(FILESFORDEP) | sed -e " s|$$HOME[^ ]*||" | \
 	LC_ALL=C sort |	sed -e 's/  *$$//' > .depend
 
+install:
+	@echo "Installing Rocq Ring Like..."
+	@mkdir -p $(OPAM_SWITCH_PREFIX)/lib/coq/user-contrib
+	@cp -r . $(OPAM_SWITCH_PREFIX)/lib/coq/user-contrib/rocq_ring_like
+
+uninstall:
+	@echo "Uninstalling Rocq Ring Like..."
+	@rm -rf $(OPAM_SWITCH_PREFIX)/lib/coq/user-contrib/rocq_ring_like
+
 .SUFFIXES: .v .vo
 
 %.vo: %.v
