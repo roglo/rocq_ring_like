@@ -15,13 +15,13 @@ depend:
 	LC_ALL=C sort |	sed -e 's/  *$$//' > .depend
 
 install:
-	@echo "Installing Rocq Ring Like..."
+	@echo "Installing RingLike..."
 	@mkdir -p $(OPAM_SWITCH_PREFIX)/lib/coq/user-contrib
-	@cp -r . $(OPAM_SWITCH_PREFIX)/lib/coq/user-contrib/rocq-ring-like
+	@cp -r . $(OPAM_SWITCH_PREFIX)/lib/coq/user-contrib/RingLike
 
 uninstall:
-	@echo "Uninstalling Rocq Ring Like..."
-	@rm -rf $(OPAM_SWITCH_PREFIX)/lib/coq/user-contrib/rocq-ring-like
+	@echo "Uninstalling RingLike..."
+	@rm -rf $(OPAM_SWITCH_PREFIX)/lib/coq/user-contrib/RingLike
 
 .SUFFIXES: .v .vo
 
