@@ -13,7 +13,7 @@ depends: [
 ]
 synopsis: "Library for algebraic structures such as semirings, rings, and fields"
 description: """
-rocq_ring_like provides a Coq library, based on Rocq 9.0.0, for the
+rocq-ring-like provides a Coq library, based on Rocq 9.0.0, for the
 formalization of common properties shared by algebraic structures like
 semirings, rings, and fields.
 """
