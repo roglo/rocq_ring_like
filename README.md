@@ -13,7 +13,7 @@ It also provides many theorems on these structures, and basic syntax
 for sums, products, maximum.
 
 This project is developed with [Rocq](https://github.com/rocq-prover/rocq)
-version 9.0.0 or later.q
+version 9.0.0 or later.
 
 ## Installation
 
