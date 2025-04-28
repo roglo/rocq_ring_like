@@ -17,11 +17,11 @@ depend:
 install:
 	@echo "Installing Rocq Ring Like..."
 	@mkdir -p $(OPAM_SWITCH_PREFIX)/lib/coq/user-contrib
-	@cp -r . $(OPAM_SWITCH_PREFIX)/lib/coq/user-contrib/rocq_ring_like
+	@cp -r . $(OPAM_SWITCH_PREFIX)/lib/coq/user-contrib/rocq-ring-like
 
 uninstall:
 	@echo "Uninstalling Rocq Ring Like..."
-	@rm -rf $(OPAM_SWITCH_PREFIX)/lib/coq/user-contrib/rocq_ring_like
+	@rm -rf $(OPAM_SWITCH_PREFIX)/lib/coq/user-contrib/rocq-ring-like
 
 .SUFFIXES: .v .vo
 
