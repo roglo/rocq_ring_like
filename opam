@@ -1,7 +1,17 @@
 opam-version: "2.0"
+name: "rocq-ring-like"
+version: "1.0.0"
+description: "A common structure for semi-rings, rings, and fields."
 maintainer: "daniel.roglo@free.fr"
 authors: "Daniel de Rauglaudre"
 license: "MIT"
+depends: ["rocq"]
+synopsis: "Library providing structures for rings and fields"
+description: """
+rocq-ring-like provides a Coq library, based on Rocq 9.0.0, for the
+formalization of common properties shared by algebraic structures like
+semirings, rings, and fields.
+"""
 build: [
   ["make"]
 ]
@@ -11,9 +21,3 @@ install: [
 depends: [
   "rocq" {= "9.0.0"}
 ]
-synopsis: "Library for algebraic structures such as semirings, rings, and fields"
-description: """
-rocq-ring-like provides a Coq library, based on Rocq 9.0.0, for the
-formalization of common properties shared by algebraic structures like
-semirings, rings, and fields.
-"""
