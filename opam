@@ -4,6 +4,8 @@ version: "1.0.0"
 maintainer: "daniel.roglo@free.fr"
 authors: "Daniel de Rauglaudre"
 license: "MIT"
+homepage: "https://github.com/roglo/rocq_ring_like"
+bug-reports: "https://github.com/roglo/rocq_ring_like/issues"
 synopsis: "Library providing structures for rings and fields"
 description: """
 rocq-ring-like provides a Rocq library, based on Rocq 9.0.0, for the
@@ -13,6 +15,4 @@ semirings, rings, and fields.
 build: [make]
 install: [make "install"]
 remove: [make "uninstall"]
-depends: [
-  "coq" {= "9.0.0"}
-]
+depends: [ "coq" {= "9.0.0"} ]
