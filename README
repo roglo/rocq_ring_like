@@ -1,0 +1,4 @@
+For a local installation, after having cloned
+https://github.com/roglo/rocq_ring_like, do:
+
+opam pin add rocq-ring-like . --dev
