@@ -28,6 +28,6 @@ uninstall:
 %.vo: %.v
 	$(ROCQ) $(ROCQ_OPT) -R . RingLike $<
 
-.PHONY: all clean depend
+.PHONY: all clean depend install uninstall
 
 include .depend
