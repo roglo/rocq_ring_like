@@ -20,5 +20,5 @@ version 9.0.0 or later.
 To install this project via `opam`, use:
 
 ```bash
-opam pin add RingLike https://github.com/roglo/rocq_ring_like.git
-opam install RingLike
+opam pin add rocq-ring-like https://github.com/roglo/rocq_ring_like.git
+opam install rocq-ring-like
