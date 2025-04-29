@@ -12,7 +12,10 @@ rocq-ring-like provides a Rocq library, based on Rocq 9.0.0, for the
 formalization of common properties shared by algebraic structures like
 semirings, rings, and fields.
 """
-build: [make]
+build: [
+  ["./configure"]
+  [make "-kj%{jobs}%"]
+]
 install: [make "install"]
 remove: [make "uninstall"]
 depends: [ "coq" {= "9.0.0"} ]
