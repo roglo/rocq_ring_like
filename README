@@ -1,4 +1,6 @@
+For developpers of Ring Like library.
+
 For a local installation, after having cloned
-https://github.com/roglo/rocq_ring_like, do:
+roglo/rocq_ring_like on github, do:
 
 opam pin add rocq-ring-like . --dev
