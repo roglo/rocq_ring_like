@@ -17,3 +17,4 @@ RingLike_mul.vo RingLike_mul.glob RingLike_mul.v.beautified RingLike_mul.require
 RingLike_mul_with_order.vo RingLike_mul_with_order.glob RingLike_mul_with_order.v.beautified RingLike_mul_with_order.required_vo: RingLike_mul_with_order.v RingLike_add.vo RingLike_add_with_order.vo RingLike_mul.vo RingLike_order.vo RingLike_structures.vo
 RingLike_order.vo RingLike_order.glob RingLike_order.v.beautified RingLike_order.required_vo: RingLike_order.v RingLike_structures.vo
 RingLike_structures.vo RingLike_structures.glob RingLike_structures.v.beautified RingLike_structures.required_vo: RingLike_structures.v
+ZRingLike.vo ZRingLike.glob ZRingLike.v.beautified ZRingLike.required_vo: ZRingLike.v RingLike.vo
