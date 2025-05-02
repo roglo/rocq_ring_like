@@ -11,6 +11,7 @@ Class ring_like_op T :=
     rngl_opt_eq_dec : option (∀ a b : T, {a = b} + {a ≠ b});
     rngl_opt_leb : option (T → T → bool) }.
 
+Arguments rngl_opt_one T {ring_like_op}.
 Arguments rngl_opt_opp_or_subt T {ring_like_op}.
 Arguments rngl_opt_inv_or_quot T {ring_like_op}.
 Arguments rngl_opt_is_zero_divisor T {ring_like_op}.
@@ -25,13 +26,13 @@ Definition bool_of_option {T} (x : option T) :=
   end.
 
 Definition rngl_one {T} {ro : ring_like_op T} :=
-  match rngl_opt_one with
+  match rngl_opt_one T with
   | Some a => a
   | None => rngl_zero
   end.
 
 Definition rngl_has_1 T {ro : ring_like_op T} :=
-  bool_of_option rngl_opt_one.
+  bool_of_option (rngl_opt_one T).
 
 Definition rngl_has_opp_or_subt T {R : ring_like_op T} :=
   bool_of_option (rngl_opt_opp_or_subt T).
