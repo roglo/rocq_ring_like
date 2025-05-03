@@ -18,3 +18,4 @@ To install this project via `opam`, use:
 
 ```bash
 opam pin add rocq-ring-like https://github.com/roglo/rocq_ring_like.git
+```
