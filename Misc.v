@@ -1218,6 +1218,19 @@ intros * Hab.
 now subst lb; rewrite List.rev_involutive.
 Qed.
 
+Theorem List_nth_app_repeat_r :
+  ∀ A (d : A) i n la,
+  List.nth i (la ++ List.repeat d n) d = List.nth i la d.
+Proof.
+intros.
+destruct (lt_dec i (length la)) as [Hila| Hila]. {
+  now apply List.app_nth1.
+}
+apply Nat.nlt_ge in Hila.
+rewrite List.app_nth2; [ | easy ].
+now rewrite List.nth_repeat, List.nth_overflow.
+Qed.
+
 Theorem min_add_sub_max : ∀ a b, min (a + (b - a)) (b + (a - b)) = max a b.
 Proof.
 intros.
