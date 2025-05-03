@@ -1204,6 +1204,13 @@ destruct l as [| a]; [ easy | cbn in Hl ].
 now apply List.app_eq_nil in Hl.
 Qed.
 
+Theorem List_last_rev : ∀ A (l : list A) d,
+  List.last (List.rev l) d = List.hd d l.
+Proof.
+intros.
+destruct l as [| a]; [ easy | apply List.last_last ].
+Qed.
+
 Theorem min_add_sub_max : ∀ a b, min (a + (b - a)) (b + (a - b)) = max a b.
 Proof.
 intros.
