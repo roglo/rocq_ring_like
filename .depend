@@ -3,6 +3,7 @@ IterAdd.vo IterAdd.glob IterAdd.v.beautified IterAdd.required_vo: IterAdd.v Misc
 IterAnd.vo IterAnd.glob IterAnd.v.beautified IterAnd.required_vo: IterAnd.v Misc.vo
 IterMax.vo IterMax.glob IterMax.v.beautified IterMax.required_vo: IterMax.v Misc.vo RingLike.vo
 IterMul.vo IterMul.glob IterMul.v.beautified IterMul.required_vo: IterMul.v IterAdd.vo Misc.vo PermutationFun.vo RingLike.vo
+LapRingLike.vo LapRingLike.glob LapRingLike.v.beautified LapRingLike.required_vo: LapRingLike.v IterAdd.vo Misc.vo RingLike.vo
 Misc.vo Misc.glob Misc.v.beautified Misc.required_vo: Misc.v
 NatRingLike.vo NatRingLike.glob NatRingLike.v.beautified NatRingLike.required_vo: NatRingLike.v RingLike.vo
 PermutationFun.vo PermutationFun.glob PermutationFun.v.beautified PermutationFun.required_vo: PermutationFun.v Misc.vo
