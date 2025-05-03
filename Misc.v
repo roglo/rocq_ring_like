@@ -1211,6 +1211,13 @@ intros.
 destruct l as [| a]; [ easy | apply List.last_last ].
 Qed.
 
+Theorem List_rev_symm :
+  ∀ A (la lb : list A), List.rev la = lb → la = List.rev lb.
+Proof.
+intros * Hab.
+now subst lb; rewrite List.rev_involutive.
+Qed.
+
 Theorem min_add_sub_max : ∀ a b, min (a + (b - a)) (b + (a - b)) = max a b.
 Proof.
 intros.
