@@ -23,11 +23,15 @@ uninstall:
 	@echo "Uninstalling RingLike..."
 	@rm -rf $(OPAM_SWITCH_PREFIX)/lib/coq/user-contrib/RingLike
 
+local_opam_pin_add:
+	opam pin add rocq-ring-like . -n -y
+	opam reinstall rocq-ring-like -y
+
 .SUFFIXES: .v .vo
 
 %.vo: %.v
 	$(ROCQ) $(ROCQ_OPT) -R . RingLike $<
 
-.PHONY: all clean depend install uninstall
+.PHONY: all clean depend install uninstall local_opam_pin_add
 
 include .depend
