@@ -15,20 +15,28 @@ Section a.
 
 Context {T : Type}.
 Context {ro : ring_like_op T}.
-Context {rp : ring_like_prop T}.
 
 (* distances *)
 
-Record is_dist {A} (dist : A → A → T) :=
-  { dist_symmetry : ∀ a b, dist a b = dist b a;
-    dist_separation : ∀ a b, dist a b = 0%L ↔ a = b;
-    dist_triangular : ∀ a b c, (dist a c ≤ dist a b + dist b c)%L }.
+Record is_dist {A} (da : A → A → T) :=
+  { dist_symmetry : ∀ a b, da a b = da b a;
+    dist_separation : ∀ a b, da a b = 0%L ↔ a = b;
+    dist_triangular : ∀ a b c, (da a c ≤ da a b + da b c)%L }.
 
 Class distance A :=
   { d_dist : A → A → T;
     d_prop : is_dist d_dist }.
 
-Arguments d_dist {A distance} a b.
+End a.
+
+Arguments d_dist {T ro A distance} a b.
+Arguments dist_separation {T ro A da} dist a b : rename.
+
+Section a.
+
+Context {T : Type}.
+Context {ro : ring_like_op T}.
+Context {rp : ring_like_prop T}.
 
 Definition rngl_dist a b := rngl_abs (a - b)%L.
 
@@ -66,27 +74,27 @@ Definition rngl_distance Hop Hor :=
 
 (* limits *)
 
-Definition is_limit_when_seq_tends_to_inf {A} (dist : distance A) u L :=
-  ∀ ε, (0 < ε)%L → ∃ N, ∀ n, N ≤ n → (d_dist (u n) L < ε)%L.
+Definition is_limit_when_seq_tends_to_inf {A} (da : A → A → T) u L :=
+  ∀ ε, (0 < ε)%L → ∃ N, ∀ n, N ≤ n → (da (u n) L < ε)%L.
 
 Definition is_limit_when_tending_to_neighbourhood (is_left : bool) {A B}
   (lt : A → A → Prop)
-  (da : distance A) (db : distance B) (f : A → B) (x₀ : A) (L : B) :=
+  (da : A → A → T) (db : B → B → T) (f : A → B) (x₀ : A) (L : B) :=
   (∀ ε : T, 0 < ε →
    ∃ η : T, (0 < η)%L ∧ ∀ x : A,
    (if is_left then lt x x₀ else lt x₀ x)
-   → d_dist x x₀ < η
-   → d_dist (f x) L < ε)%L.
+   → da x x₀ < η
+   → db (f x) L < ε)%L.
 
 (* Cauchy sequences and completeness *)
 
-Definition is_Cauchy_sequence {A} (dist : distance A) (u : nat → A) :=
+Definition is_Cauchy_sequence {A} (da : A → A → T) (u : nat → A) :=
   ∀ ε : T, (0 < ε)%L →
-  ∃ N : nat, ∀ p q : nat, N ≤ p → N ≤ q → (d_dist (u p) (u q) < ε)%L.
+  ∃ N : nat, ∀ p q : nat, N ≤ p → N ≤ q → (da (u p) (u q) < ε)%L.
 
-Definition is_complete A (dist : distance A) :=
-  ∀ u, is_Cauchy_sequence dist u
-  → ∃ c, is_limit_when_seq_tends_to_inf dist u c.
+Definition is_complete A (da : A → A → T) :=
+  ∀ u, is_Cauchy_sequence da u
+  → ∃ c, is_limit_when_seq_tends_to_inf da u c.
 
 (* continuity *)
 
@@ -105,23 +113,23 @@ Definition is_continuous {A B} lt da db (f : A → B) :=
 (* derivability *)
 
 Definition left_or_right_derivative_at (is_left : bool) {A} lt
-    (da : distance A) (db : distance T) f a a' :=
+    (da : A → A → T) (db : T → T → T) f a a' :=
   let σ := (if is_left then 1 else -1)%L in
-  let g x := (σ * (f a - f x) / d_dist x a)%L in
+  let g x := (σ * (f a - f x) / da x a)%L in
   is_limit_when_tending_to_neighbourhood is_left lt da db g a a'.
 
 Definition left_derivative_at {A} := @left_or_right_derivative_at true A.
 Definition right_derivative_at {A} := @left_or_right_derivative_at false A.
 
 Definition is_derivative_at {A} lt
-  (da : distance A) (db : distance T) f f' a :=
+  (da : A → A → T) (db : T → T → T) f f' a :=
   let le x y := lt x y ∨ x = y in
   left_continuous_at le da db f a ∧
   right_continuous_at le da db f a ∧
   left_derivative_at lt da db f a (f' a) ∧
   right_derivative_at lt da db f a (f' a).
 
-Definition is_derivative {A} lt (da : distance A) (db : distance T) f f' :=
+Definition is_derivative {A} lt (da : A → A → T) (db : T → T → T) f f' :=
   ∀ a, is_derivative_at lt da db f f' a.
 
 (* properties of distances and limits *)
@@ -134,7 +142,8 @@ destruct Hid as (Hdsym, Hdsep, Hdtri).
 apply (proj2 (Hdsep a a) eq_refl).
 Qed.
 
-Theorem dist_diag : ∀ {A} (dist : distance A) a, d_dist a a = 0%L.
+Theorem dist_diag : ∀ {A} {da : A → A → T} (dist : is_dist da) a,
+  da a a = 0%L.
 Proof.
 intros.
 destruct dist.
@@ -146,9 +155,9 @@ Theorem dist_nonneg :
   rngl_has_opp T = true →
   rngl_has_inv T = true →
   rngl_is_ordered T = true →
-  ∀ {A} (dist : distance A) a b, (0 ≤ d_dist a b)%L.
+  ∀ {A} {da : A → A → T} (dist : is_dist da) a b, (0 ≤ da a b)%L.
 Proof.
-intros Hon Hop Hiv Hor *.
+intros Hon Hop Hiv Hor * dist *.
 specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
 specialize (rngl_int_dom_or_inv_1_quo Hiv Hon) as Hii.
 destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
@@ -156,7 +165,7 @@ destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
   rewrite H1.
   apply (rngl_le_refl Hor).
 }
-destruct dist as (dist, (Hdsym, Hdsep, Hdtri)).
+destruct dist as (Hdsym, Hdsep, Hdtri).
 specialize (proj2 (Hdsep a a) eq_refl) as H1.
 specialize (Hdtri a b a) as H2.
 rewrite H1, (Hdsym b a) in H2.
@@ -171,26 +180,26 @@ Theorem rngl_limit_interv :
   rngl_has_opp T = true →
   rngl_has_inv T = true →
   rngl_is_ordered T = true →
-  ∀ (dist : distance T),
-  (∀ x y z, (x ≤ y ≤ z → d_dist x y ≤ d_dist x z)%L)
-  → (∀ x y z, (x ≤ y ≤ z → d_dist y z ≤ d_dist x z)%L)
+  ∀ {dt : T → T → T} (dist : is_dist dt),
+  (∀ x y z, (x ≤ y ≤ z → dt x y ≤ dt x z)%L)
+  → (∀ x y z, (x ≤ y ≤ z → dt y z ≤ dt x z)%L)
   → ∀ u a b c,
   (∀ i, (a ≤ u i ≤ b)%L)
-  → is_limit_when_seq_tends_to_inf dist u c
+  → is_limit_when_seq_tends_to_inf dt u c
   → (a ≤ c ≤ b)%L.
 Proof.
 intros Hon Hop Hiv Hor.
-intros * mono_1 mono_2 * Hi Hlim.
+intros * dist mono_1 mono_2 * Hi Hlim.
 progress unfold is_limit_when_seq_tends_to_inf in Hlim.
 split. {
   apply (rngl_nlt_ge_iff Hor).
   intros Hca.
-  specialize (Hlim (d_dist a c))%L.
-  assert (H : (0 < d_dist a c)%L). {
+  specialize (Hlim (dt a c))%L.
+  assert (H : (0 < dt a c)%L). {
     apply (rngl_lt_iff Hor).
-    split; [ apply (dist_nonneg Hon Hop Hiv Hor) | ].
+    split; [ apply (dist_nonneg Hon Hop Hiv Hor dist) | ].
     intros H; symmetry in H.
-    apply -> (dist_separation _ d_prop) in H.
+    apply -> (dist_separation dist) in H.
     subst c.
     now apply (rngl_lt_irrefl Hor) in Hca.
   }
@@ -200,19 +209,19 @@ split. {
   specialize (Hi N) as H.
   apply rngl_nle_gt in HN.
   apply HN; clear HN.
-  do 2 rewrite (dist_symmetry _ d_prop _ c).
+  do 2 rewrite (dist_symmetry _ dist _ c).
   apply mono_1.
   split; [ | easy ].
   now apply (rngl_lt_le_incl Hor).
 } {
   apply (rngl_nlt_ge_iff Hor).
   intros Hbc.
-  specialize (Hlim (d_dist b c))%L.
-  assert (H : (0 < d_dist b c)%L). {
+  specialize (Hlim (dt b c))%L.
+  assert (H : (0 < dt b c)%L). {
     apply (rngl_lt_iff Hor).
-    split; [ apply (dist_nonneg Hon Hop Hiv Hor) | ].
+    split; [ apply (dist_nonneg Hon Hop Hiv Hor dist) | ].
     intros H; symmetry in H.
-    apply -> (dist_separation _ d_prop) in H.
+    apply -> (dist_separation dist) in H.
     subst c.
     now apply (rngl_lt_irrefl Hor) in Hbc.
   }
@@ -233,23 +242,23 @@ Theorem limit_unique :
   rngl_has_opp T = true →
   rngl_has_inv T = true →
   rngl_is_ordered T = true →
-  ∀ A (dist : distance A) u lim1 lim2,
-  is_limit_when_seq_tends_to_inf dist u lim1
-  → is_limit_when_seq_tends_to_inf dist u lim2
+  ∀ {A} {da : A → A → T} (dist : is_dist da) u lim1 lim2,
+  is_limit_when_seq_tends_to_inf da u lim1
+  → is_limit_when_seq_tends_to_inf da u lim2
   → lim1 = lim2.
 Proof.
-intros Hon Hop Hiv Hor * Hu1 Hu2.
+intros Hon Hop Hiv Hor * dist * Hu1 Hu2.
 specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
 specialize (rngl_int_dom_or_inv_1_quo Hiv Hon) as Hii.
 specialize (rngl_has_inv_and_1_has_inv_and_1_or_quot Hon Hiv) as Hi1.
 destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
   specialize (rngl_characteristic_1 Hon Hos Hc1) as H1.
-  destruct dist as (d, (Hdsym, Hdsep, Hdtri)).
+  destruct dist as (Hdsym, Hdsep, Hdtri).
   assert (H : ∀ a b : A, a = b) by now intros; apply Hdsep, H1.
   apply H.
 }
 specialize (dist_nonneg Hon Hop Hiv Hor dist) as Hdpos.
-assert (Hu : is_limit_when_seq_tends_to_inf dist (λ _, lim1) lim2). {
+assert (Hu : is_limit_when_seq_tends_to_inf da (λ _, lim1) lim2). {
   intros ε Hε.
   assert (Hε2 : (0 < ε / 2)%L). {
     apply (rngl_mul_lt_mono_pos_r Hop Hor Hii) with (a := 2%L). {
@@ -265,7 +274,7 @@ assert (Hu : is_limit_when_seq_tends_to_inf dist (λ _, lim1) lim2). {
   destruct Hu2 as (N2, Hu2).
   exists (max N1 N2).
   intros n HN.
-  destruct dist as (dist, (Hdsym, Hdsep, Hdtri)).
+  destruct dist as (Hdsym, Hdsep, Hdtri).
   eapply (rngl_le_lt_trans Hor); [ apply (Hdtri _ (u n)) | ].
   rewrite Hdsym.
   replace ε with (ε / 2 + ε / 2)%L. 2: {
@@ -289,14 +298,14 @@ assert (Hu : is_limit_when_seq_tends_to_inf dist (λ _, lim1) lim2). {
     apply Nat.le_max_r.
   }
 }
-assert (H : ∀ ε : T, (0 < ε)%L → (d_dist lim1 lim2 < ε)%L). {
+assert (H : ∀ ε : T, (0 < ε)%L → (da lim1 lim2 < ε)%L). {
   intros ε Hε.
   specialize (Hu ε Hε).
   destruct Hu as (N, HN).
   now apply (HN N).
 }
 clear Hu; rename H into Hu.
-destruct dist as (dist, (Hdsym, Hdsep, Hdtri)).
+destruct dist as (Hdsym, Hdsep, Hdtri).
 apply Hdsep.
 apply (rngl_abs_le_ε Hon Hop Hiv Hor).
 intros ε Hε.
@@ -312,14 +321,14 @@ Theorem limit_add :
   rngl_has_opp T = true →
   rngl_has_inv T = true →
   rngl_is_ordered T = true →
-  ∀ dist,
-  (∀ a b c d, (d_dist (a + b) (c + d) ≤ d_dist a c + d_dist b d)%L)
+  ∀ {dt : T → T → T} (dist : is_dist dt),
+  (∀ a b c d, (dt (a + b) (c + d) ≤ dt a c + dt b d)%L)
   → ∀ u v limu limv,
-  is_limit_when_seq_tends_to_inf dist u limu
-  → is_limit_when_seq_tends_to_inf dist v limv
-  → is_limit_when_seq_tends_to_inf dist (λ n, (u n + v n))%L (limu + limv)%L.
+  is_limit_when_seq_tends_to_inf dt u limu
+  → is_limit_when_seq_tends_to_inf dt v limv
+  → is_limit_when_seq_tends_to_inf dt (λ n, (u n + v n))%L (limu + limv)%L.
 Proof.
-intros Hon Hop Hiv Hor * Hd * Hu Hv ε Hε.
+intros Hon Hop Hiv Hor * dist * Hd * Hu Hv ε Hε.
 specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
 specialize (rngl_int_dom_or_inv_1_quo Hiv Hon) as Hii.
 destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {

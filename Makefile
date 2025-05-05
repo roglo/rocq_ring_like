@@ -25,7 +25,7 @@ uninstall:
 
 local_opam_pin_add:
 	opam pin add rocq-ring-like . -n -y
-	opam reinstall rocq-ring-like -y
+	opam reinstall rocq-ring-like -y -w
 
 .SUFFIXES: .v .vo
 
