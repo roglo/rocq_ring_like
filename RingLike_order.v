@@ -880,12 +880,11 @@ intros Hed *.
 now apply (rngl_compare_eq_iff Hed).
 Qed.
 
-Notation "x ?= y" := (rngl_compare x y) : ring_like_scope.
-
 End a.
 
-Arguments rngl_eq_dec {T ro rp} Heo (a b)%_L.
+Notation "x ?= y" := (rngl_compare x y) : ring_like_scope.
 
+Arguments rngl_eq_dec {T ro rp} Heo (a b)%_L.
 Arguments rngl_le_dec {T ro rp} Hor (a b)%_L.
 Arguments rngl_le_trans {T ro rp} Hor (a b c)%_L.
 Arguments rngl_le_lt_trans {T ro rp} Hor (a b c)%_L.
