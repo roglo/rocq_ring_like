@@ -1,5 +1,5 @@
 From Stdlib Require Import Utf8 Arith.
-Require Import RingLike_structures.
+Require Import Structures.
 
 Section a.
 

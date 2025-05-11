@@ -6,7 +6,7 @@ Set Nested Proofs Allowed.
 
 From Stdlib Require Import Utf8 Arith.
 
-Require Import RingLike.
+Require Import Core.
 Require Import RealLike.
 
 Section a.

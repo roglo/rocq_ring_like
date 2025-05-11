@@ -1,13 +1,13 @@
 Set Nested Proofs Allowed.
 From Stdlib Require Import Utf8 Arith.
 
-Require Import RingLike_structures.
-Require Import RingLike_order.
-Require Import RingLike_add.
-Require Import RingLike_mul.
-Require Import RingLike_div.
-Require Import RingLike_add_with_order.
-Require Import RingLike_mul_with_order.
+Require Import Structures.
+Require Import Order.
+Require Import Add.
+Require Import Mul.
+Require Import Div.
+Require Import Add_with_order.
+Require Import Mul_with_order.
 
 Section a.
 

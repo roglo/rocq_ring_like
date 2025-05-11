@@ -1,22 +1,22 @@
-DerivMul.vo DerivMul.glob DerivMul.v.beautified DerivMul.required_vo: DerivMul.v RealLike.vo RingLike.vo
-IterAdd.vo IterAdd.glob IterAdd.v.beautified IterAdd.required_vo: IterAdd.v Misc.vo PermutationFun.vo RingLike.vo
+Add.vo Add.glob Add.v.beautified Add.required_vo: Add.v Structures.vo
+Add_with_order.vo Add_with_order.glob Add_with_order.v.beautified Add_with_order.required_vo: Add_with_order.v Add.vo Order.vo Structures.vo
+Core.vo Core.glob Core.v.beautified Core.required_vo: Core.v Add.vo Add_with_order.vo Distances.vo Div.vo Div_with_order.vo Mul.vo Mul_with_order.vo Order.vo Structures.vo
+DerivMul.vo DerivMul.glob DerivMul.v.beautified DerivMul.required_vo: DerivMul.v Core.vo RealLike.vo
+Distances.vo Distances.glob Distances.v.beautified Distances.required_vo: Distances.v Add.vo Add_with_order.vo Div.vo Div_with_order.vo Mul.vo Mul_with_order.vo Order.vo Structures.vo
+Div.vo Div.glob Div.v.beautified Div.required_vo: Div.v Add.vo Mul.vo Structures.vo
+Div_with_order.vo Div_with_order.glob Div_with_order.v.beautified Div_with_order.required_vo: Div_with_order.v Add.vo Add_with_order.vo Div.vo Mul.vo Mul_with_order.vo Order.vo Structures.vo
+IterAdd.vo IterAdd.glob IterAdd.v.beautified IterAdd.required_vo: IterAdd.v Core.vo Misc.vo PermutationFun.vo
 IterAnd.vo IterAnd.glob IterAnd.v.beautified IterAnd.required_vo: IterAnd.v Misc.vo
-IterMax.vo IterMax.glob IterMax.v.beautified IterMax.required_vo: IterMax.v Misc.vo RingLike.vo
-IterMul.vo IterMul.glob IterMul.v.beautified IterMul.required_vo: IterMul.v IterAdd.vo Misc.vo PermutationFun.vo RingLike.vo
-LapRingLike.vo LapRingLike.glob LapRingLike.v.beautified LapRingLike.required_vo: LapRingLike.v IterAdd.vo Misc.vo RingLike.vo
+IterMax.vo IterMax.glob IterMax.v.beautified IterMax.required_vo: IterMax.v Core.vo Misc.vo
+IterMul.vo IterMul.glob IterMul.v.beautified IterMul.required_vo: IterMul.v Core.vo IterAdd.vo Misc.vo PermutationFun.vo
+LapRingLike.vo LapRingLike.glob LapRingLike.v.beautified LapRingLike.required_vo: LapRingLike.v Core.vo IterAdd.vo Misc.vo
 Misc.vo Misc.glob Misc.v.beautified Misc.required_vo: Misc.v
-NatRingLike.vo NatRingLike.glob NatRingLike.v.beautified NatRingLike.required_vo: NatRingLike.v RingLike.vo
+Mul.vo Mul.glob Mul.v.beautified Mul.required_vo: Mul.v Add.vo Structures.vo
+Mul_with_order.vo Mul_with_order.glob Mul_with_order.v.beautified Mul_with_order.required_vo: Mul_with_order.v Add.vo Add_with_order.vo Mul.vo Order.vo Structures.vo
+NatRingLike.vo NatRingLike.glob NatRingLike.v.beautified NatRingLike.required_vo: NatRingLike.v Core.vo
+Order.vo Order.glob Order.v.beautified Order.required_vo: Order.v Structures.vo
 PermutationFun.vo PermutationFun.glob PermutationFun.v.beautified PermutationFun.required_vo: PermutationFun.v Misc.vo
-PolynomialRingLike.vo PolynomialRingLike.glob PolynomialRingLike.v.beautified PolynomialRingLike.required_vo: PolynomialRingLike.v IterAdd.vo LapRingLike.vo Misc.vo RingLike.vo
-RealLike.vo RealLike.glob RealLike.v.beautified RealLike.required_vo: RealLike.v RingLike.vo
-RingLike.vo RingLike.glob RingLike.v.beautified RingLike.required_vo: RingLike.v RingLike_add.vo RingLike_add_with_order.vo RingLike_distances.vo RingLike_div.vo RingLike_div_with_order.vo RingLike_mul.vo RingLike_mul_with_order.vo RingLike_order.vo RingLike_structures.vo
-RingLike_add.vo RingLike_add.glob RingLike_add.v.beautified RingLike_add.required_vo: RingLike_add.v RingLike_structures.vo
-RingLike_add_with_order.vo RingLike_add_with_order.glob RingLike_add_with_order.v.beautified RingLike_add_with_order.required_vo: RingLike_add_with_order.v RingLike_add.vo RingLike_order.vo RingLike_structures.vo
-RingLike_distances.vo RingLike_distances.glob RingLike_distances.v.beautified RingLike_distances.required_vo: RingLike_distances.v RingLike_add.vo RingLike_add_with_order.vo RingLike_div.vo RingLike_div_with_order.vo RingLike_mul.vo RingLike_mul_with_order.vo RingLike_order.vo RingLike_structures.vo
-RingLike_div.vo RingLike_div.glob RingLike_div.v.beautified RingLike_div.required_vo: RingLike_div.v RingLike_add.vo RingLike_mul.vo RingLike_structures.vo
-RingLike_div_with_order.vo RingLike_div_with_order.glob RingLike_div_with_order.v.beautified RingLike_div_with_order.required_vo: RingLike_div_with_order.v RingLike_add.vo RingLike_add_with_order.vo RingLike_div.vo RingLike_mul.vo RingLike_mul_with_order.vo RingLike_order.vo RingLike_structures.vo
-RingLike_mul.vo RingLike_mul.glob RingLike_mul.v.beautified RingLike_mul.required_vo: RingLike_mul.v RingLike_add.vo RingLike_structures.vo
-RingLike_mul_with_order.vo RingLike_mul_with_order.glob RingLike_mul_with_order.v.beautified RingLike_mul_with_order.required_vo: RingLike_mul_with_order.v RingLike_add.vo RingLike_add_with_order.vo RingLike_mul.vo RingLike_order.vo RingLike_structures.vo
-RingLike_order.vo RingLike_order.glob RingLike_order.v.beautified RingLike_order.required_vo: RingLike_order.v RingLike_structures.vo
-RingLike_structures.vo RingLike_structures.glob RingLike_structures.v.beautified RingLike_structures.required_vo: RingLike_structures.v
-ZRingLike.vo ZRingLike.glob ZRingLike.v.beautified ZRingLike.required_vo: ZRingLike.v RingLike.vo
+PolynomialRingLike.vo PolynomialRingLike.glob PolynomialRingLike.v.beautified PolynomialRingLike.required_vo: PolynomialRingLike.v Core.vo IterAdd.vo LapRingLike.vo Misc.vo
+RealLike.vo RealLike.glob RealLike.v.beautified RealLike.required_vo: RealLike.v Core.vo
+Structures.vo Structures.glob Structures.v.beautified Structures.required_vo: Structures.v
+ZRingLike.vo ZRingLike.glob ZRingLike.v.beautified ZRingLike.required_vo: ZRingLike.v Core.vo

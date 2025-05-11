@@ -1,7 +1,7 @@
 From Stdlib Require Import Utf8 Arith.
-Require Import RingLike_structures.
-Require Import RingLike_add.
-Require Import RingLike_mul.
+Require Import Structures.
+Require Import Add.
+Require Import Mul.
 
 Section a.
 

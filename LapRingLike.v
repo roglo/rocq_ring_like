@@ -13,7 +13,7 @@ From Stdlib Require Import Utf8 Arith.
 Import List.ListNotations Init.Nat.
 Open Scope list.
 
-Require Import RingLike.
+Require Import Core.
 Require Import IterAdd.
 Require Import Misc.
 

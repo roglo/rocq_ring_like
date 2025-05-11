@@ -2,7 +2,7 @@
 
 From Stdlib Require Import Utf8 Arith.
 
-Require Import RingLike.
+Require Import Core.
 Require Import Misc.
 Import List.ListNotations.
 Open Scope list.

@@ -1,7 +1,7 @@
 Set Nested Proofs Allowed.
 From Stdlib Require Import Utf8.
 
-Require Import RingLike.
+Require Import Core.
 
 Class real_like_prop T {ro : ring_like_op T} {rp : ring_like_prop T} :=
   { rl_nth_root : nat → T → T;

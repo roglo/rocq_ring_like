@@ -4,8 +4,8 @@
 
 Set Nested Proofs Allowed.
 From Stdlib Require Import Utf8 Arith.
-Require Import RingLike_structures.
-Require Import RingLike_add.
+Require Import Structures.
+Require Import Add.
 
 Section a.
 
