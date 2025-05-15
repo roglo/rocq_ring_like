@@ -27,6 +27,9 @@ local_opam_pin_add:
 	opam pin add rocq-ring-like . -n -y
 	opam reinstall rocq-ring-like -y -w
 
+doc:
+	rocq doc -html -utf8 -d html/ -R . RingLike -toc *.v
+
 .SUFFIXES: .v .vo
 
 %.vo: %.v
