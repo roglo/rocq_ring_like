@@ -28,13 +28,14 @@ local_opam_pin_add:
 	opam reinstall rocq-ring-like -y -w
 
 doc:
-	rocq doc -html -utf8 -d html/ -R . RingLike -toc *.v
+	mkdir -p html
+	rocq doc -html -utf8 -d html/ --no-index -g -toc *.v
 
 .SUFFIXES: .v .vo
 
 %.vo: %.v
 	$(ROCQ) $(ROCQ_OPT) -R . RingLike $<
 
-.PHONY: all clean depend install uninstall local_opam_pin_add
+.PHONY: all clean depend doc install uninstall local_opam_pin_add
 
 include .depend
