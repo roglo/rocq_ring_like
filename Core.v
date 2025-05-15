@@ -1,46 +1,59 @@
-(* Ring-like *)
-(* Algebraic structures with two operations *)
-(* Allows to define all kinds of semirings, rings, fields *)
-(* Allows to define semirings, rings, fields, commutative or not,
-   with two classes:
-     ring_like_op, holding the operations, and
-     ring_like_prop, holding their properties.
-   In class ring_like_prop, we can set,
-     to make a semiring:
-        rngl_opt_opp_or_subt = Some (inr subt) where subt is a subtraction
-        rngl_opt_opp_or_subt = None otherwise
-        rngl_opt_inv_or_quot = Some (inr quot) where quot is a quotient
-        rngl_opt_inv_or_quot = None otherwise
-     to make a ring:
-        rngl_opt_opp_or_subt = Some (inl opp), where opp is the opposite
-        rngl_opt_inv_or_quot = Some (inr quot) where quot is a quotient
-        rngl_opt_inv_or_quot = None otherwise
-     to make a field:
-        rngl_opt_opp_or_subt = Some (inl opp), where opp is the opposite
-        rngl_opt_inv_or_quot = Some (inl inv), where inv is the inverse
-   Multiplication can be commutative or not by setting rngl_mul_is_comm
-   to true or false.
-   There are many other properties that are implemented here or could be
-   implemented :
-     - archimedean or not
-     - with decidable equality or not
-     - with commutative multiplication or not
-     - with some characteristic
-     - finite or infinite
-     - ordered or not
-     - valuated or not
-     - principal or not
-     - factorial or not
-     - euclidean or not
-     - algebraically closed or not
-     - complete or not
-     - with associative addition or multiplication or not
-     - with commutative addition or not
-     - with 0 or without, right or left
-     - with 1 or without, right or left
-     - with specific subtraction (subt) or not
-     - with specific division or not
-     and so on. *)
+(** * Ring-like structures: overview
+
+This library provides a common interface for algebraic structures that
+resemble rings, but may differ by the presence or absence of operations
+like subtraction or division.
+
+Each ring-like structure is defined by:
+
+- a type [T],
+- a collection of operations (addition, multiplication, zero, one, etc.),
+- and two optional fields:
+<<
+      rngl_opt_opp_or_subt : option (sum (T → T) (T → T → T))
+      rngl_opt_inv_or_quot : option (sum (T → T) (T → T → T))
+>>
+
+These fields describe whether the structure provides:
+
+- no operation        (None)
+- a unary operation   (Some (inl f))  e.g. negation or inverse
+- a binary operation  (Some (inr f))  e.g. subtraction or division
+
+Examples:
+
+- Natural numbers ℕ:
+<<
+      rngl_opt_opp_or_subt = Some (inr Nat.sub)
+      rngl_opt_inv_or_quot = Some (inr Nat.div)
+>>
+
+- Integers ℤ:
+<<
+      rngl_opt_opp_or_subt = Some (inl Z.opp)
+      rngl_opt_inv_or_quot = Some (inr Z.quot)
+>>
+
+- Rationals ℚ:
+<<
+      rngl_opt_opp_or_subt = Some (inl Qopp)
+      rngl_opt_inv_or_quot = Some (inl Qinv)
+>>
+
+This representation allows uniform reasoning over semirings, rings, and fields.
+
+For convenience, we define:
+<<
+      rngl_has_opp := rngl_opt_opp_or_subt = Some (inl _)
+      rngl_has_inv := rngl_opt_inv_or_quot = Some (inl _)
+>>
+
+Which means:
+
+- Semirings: rngl_has_opp = false, rngl_has_inv = false
+- Rings:     rngl_has_opp = true,  rngl_has_inv = false
+- Fields:    rngl_has_opp = true,  rngl_has_inv = true
+*)
 
 Require Export Structures.
 Require Export Order.
