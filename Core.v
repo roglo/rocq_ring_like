@@ -139,10 +139,34 @@ and we have:
 >>
 and the syntax [1%L] for [rngl_one].
 
-## Example
+## and so on...
 
-This is a simple code expressing how to use this library. It defines
-a theorem telling that the square of [-1] is [1]. Explanations follow.
+Numerous other definitions, notations and theorems are given in the
+sources. Look at their documentation for further information.
+
+There are actually three structures. The first one is named [ring_like_op]
+holding the main definitions of functions. The second one is named
+[ring_like_ord] for structures having an order relation. The third
+one is named [ring_like_prop] holding the axioms required for the
+given ring-like, sometimes conditionned by booleans.
+
+For example, this third structure holds a boolean named [rngl_mul_is_comm]
+<<
+    rngl_mul_is_comm : bool;
+>>
+specifying that the multiplication is commutative or not. Further, another
+field, named [rngl_opt_mul_comm] defines this property which is applied
+only if [rngl_mul_is_comm] is [true]:
+<<
+    rngl_opt_mul_comm :
+      if rngl_mul_is_comm then ∀ a b, (a * b = b * a)%L else not_applicable;
+>>
+
+## Simple example
+
+This is a elementary code of few lines expressing how to use this library.
+It defines a theorem telling that the square of [-1] is [1]. Explanations
+follow.
 <<
     From Stdlib Require Import Utf8.
     Require Import RingLike.Core.
