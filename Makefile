@@ -29,7 +29,10 @@ local_opam_pin_add:
 
 doc:
 	mkdir -p html
-	rocq doc -html -utf8 -d html/ --no-index --short -g -toc *.v
+	rocq doc -html -utf8 -d html/ -R . RingLike -s -g -toc *.v
+
+aaa:
+	rocq doc -html -utf8 -d html/ --no-index -s -g -toc *.v
 
 .SUFFIXES: .v .vo
 
