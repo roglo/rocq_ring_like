@@ -125,6 +125,8 @@ And the syntaxes:
 - [(a-b)%L] for [rngl_sub a b]
 - [(a/b)%L] for [rngl_div a b]
 
+## Identity Elements
+
 The identity element of addition is [rngl_zero] and can be written [0%L].
 
 The identity element of multiplication is optional. It is named
