@@ -36,7 +36,7 @@ following property:
 >>
 and the partially defined division:
 <<
-      ∀ a b, a * b / b = a
+      ∀ a b, b ≠ 0 → a * b / b = a
 >>
 
 For example, in mathematics, the set of naturals ℕ has a subtraction
@@ -48,15 +48,16 @@ If we compute [5-3] in ℕ, we get [2]. On the other hand,
 [3-5] has no value. In the Rocq type "nat", the value of this
 expression is also [2], but [3-5] is computable and returns
 [0]. As a ring-like, this expression is equal to [2+3-3]
-and, by the above property, can be reduced to [2]. But [3-5] is not
-reducable, its value is undefined.
+and, by the first above property, can be reduced to [2]. But [3-5]
+is not reducable, its value is undefined.
 
 The same way, [12/3] is [4] in the set ℕ and also in the Rocq
 type "nat". As a ring-like, it is equal to [4*3/3] and its
 value is therefore [4] too, by the second above property. However,
-the expression [7/3] has no value in ℕ. In the type "nat", it is
-the quotient of the euclidean division, i.e. [2]. But as a
-ring-like, this expression is not reducable, its value is undefined.
+the expression [7/3] has no value in ℕ, since [7] is not divisible
+by [3]. In the type "nat", it is the quotient of the euclidean division,
+i.e. [2]. But as a ring-like, this expression is not reducable, its value
+is undefined.
 
 ## Operations in ring-like Structures
 
@@ -64,8 +65,8 @@ The addition is named [rngl_add] and the multiplication [rngl_mul].
 The opposite and the inverse have three possible states:
 
 - either as a fully defined unary function (e.g. -3, 1/7)
-- undefined but with a partially defined binary function (e.g 5-3, 12/3)
-- undefined
+- or undefined but with a partially defined binary function (e.g 5-3, 12/3)
+- or undefined
 
 This is represented by [rngl_opt_opp_or_subt] and [rngl_opt_inv_or_quot].
 For a type [T], both are of type [option (sum (T → T) (T → T → T))]:
