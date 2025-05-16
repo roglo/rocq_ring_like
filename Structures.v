@@ -1,3 +1,18 @@
+(** * RingLike.Structures
+
+Definitions of structures of the ring-like library.
+
+See the module [RingLike.Core] for the general description
+of the ring-like library.
+
+In general, it is not necessary to import this module. The normal
+usage is to do:
+<<
+    Require Import RingLike.Core.
+>>
+which imports the present module and some other ones.
+ *)
+
 From Stdlib Require Import Utf8 Arith.
 
 Class ring_like_op T :=

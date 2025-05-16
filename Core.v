@@ -249,14 +249,6 @@ we get
 
 The same way, in Rocq library, this is proven for the type [nat] by
 induction, which is not available in all semirings.
-
-...
-
-(documentation, work in progress)
-
-...
-
-
 *)
 
 Require Export Structures.
