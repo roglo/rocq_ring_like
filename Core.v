@@ -1,49 +1,84 @@
-(** * Core
+(** * RingLike.Core
 
-This file provides the main interface of the RingLike library. It gathers
-all the relevant modules, so users only need to:
-<<
-    Require Import RingLike.Core.
->>
-
-## Supported structures
-
-This library is designed a general support for semirings, rings, fields,
-i.e. algebraic structures holding addition, multiplication and, possible
-negation and inverse, such as:
+This library is designed to support semirings, rings, fields, and, in
+general, algebraic structures containing addition and multiplication and,
+optionally, opposite and inverse. For example, it can represent:
 
 - ℕ, ℤ, ℚ, ℝ, ℂ
 - ℤ/nℤ
 - polynomials
-- matrices
+- square matrices
 - ideals
 
-## Partial operations
+Such a general structure is here called a "ring-like".
 
-Even when a structure lacks full inverses, it can still provide "partial
-operations" that behave like subtraction or division in restricted settings.
+## Subtraction and Division
 
-- A semiring like ℕ has no negation, but it may provide a subtraction function
-  `sub` such that:
+In mathematics, subtraction is usually defined as the addition of the
+opposite:
+<<
+      a - b ::= a + (- b)
+>>
+and the division as the multiplication of the inverse:
+<<
+      a / b ::= a * (1 / b)
+>>
+
+However, some sets can have a subtraction and/or an inverse as partially
+defined functions. For example, ℕ, the set of naturals has no opposite,
+but has a subtraction. It doesn't has an inverse, but has an euclidean
+division.
+
+The library RingLike can represent these functions when they exist.
+The partially defined subtraction must have the main following property:
 <<
       ∀ a b, a + b - b = a
 >>
-
-That is, subtraction "undoes" addition **on the right**. But outside this
-context, the value of `a - b` is not defined by the interface, and no
-properties can be derived.
-
-- Similarly, a ring like ℤ may not have multiplicative inverses, but may
-  define a division function `quot` such that:
+and the partially defined division:
 <<
       ∀ a b, a * b / b = a
 >>
 
-Again, this only captures cancellation on the right, and says nothing about
-the actual value of `a / b`.
+For example, in mathematics, the set of naturals ℕ has a subtraction
+and a euclidean division. In Rocq library, the type "nat", representing
+this set, provides a subtraction Nat.sub and a division Nat.div having
+both the above properties.
 
-These operations are **not** inverses, and do **not** imply any order or
-totality.
+If we compute <<5-3>> in ℕ, we get <<2>>. On the other hand,
+<<3-5>> has no value. In the Rocq type "nat", its value is also
+<<2>>, but <<3-5>> is computable and returns <<0>>. As a ring-like,
+the expression <<5-3>> is equal to <<2+3-3>> and, by the
+above property, can be reduced to <<2>>. But <<3-5>> is not
+reducable, its value is undefined.
+
+The same way, <<12 / 3>> is <<4>> in the set ℕ and also in the Rocq
+type "nat". As a ring-like, it is equal to <<4 * 3 / 3>> and its
+value is therefore <<4>> too, by the second above property. However,
+the expression <<7 / 3>> has no value in ℕ. In the type "nat", it is
+the quotient of the euclidean division, i.e. <<2>>. But as a
+ring-like, this expression is not reducable, its value is undefined.
+
+## Operations in ring-like Structures
+
+The addition is named <<rngl_add>> and the multiplication <<rngl_mul>>.
+The opposite and the inverse have three possible states:
+
+- either as a fully defined unary function (e.g. -3, 1/7)
+- undefined but with a partially defined binary function (e.g 5-3, 12/3)
+- undefined
+
+This is represented by <<rngl_opt_opp_or_subt>> and <<rngl_opt_inv_or_quot>>.
+
+There is a syntax, named <<%L>>:
+
+- we can write <<rngl_add a b>> as <<(a+b)%L>>
+- we can write <<rngl_mul a b>> as <<(a*b)%L>>
+
+...
+
+(documentation work in progress)
+
+...
 
 ## How structures are defined
 
@@ -73,6 +108,14 @@ We define two booleans:
 
 - rngl_has_opp ≡ rngl_opt_opp_or_subt = Some (inl _)
 - rngl_has_inv ≡ rngl_opt_inv_or_quot = Some (inl _)
+
+## Usage
+
+This file provides the main interface of the RingLike library. It gathers
+all the relevant modules, so users only need to:
+<<
+    Require Import RingLike.Core.
+>>
 *)
 
 Require Export Structures.
