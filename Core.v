@@ -12,7 +12,7 @@ optionally, opposite and inverse. For example, it can represent:
 
 Such a general structure is here called a "ring-like".
 
-## Subtraction and Division
+## SUBTRACTION AND DIVISION
 
 In mathematics, subtraction is usually defined as the addition of the
 opposite:
@@ -59,7 +59,7 @@ by [3]. In the type "nat", it is the quotient of the euclidean division,
 i.e. [2]. But as a ring-like, this expression is not reducable, its value
 is undefined.
 
-## Operations in ring-like Structures
+## OPERATIONS IN RING-LIKE STRUCTURES
 
 The addition is named [rngl_add] and the multiplication [rngl_mul].
 The opposite and the inverse have three possible states:
@@ -125,7 +125,7 @@ And the syntaxes:
 - [(a-b)%L] for [rngl_sub a b]
 - [(a/b)%L] for [rngl_div a b]
 
-## Identity Elements
+## IDENTITY ELEMENTS
 
 The identity element of addition is [rngl_zero] and can be written [0%L].
 
@@ -139,7 +139,7 @@ and we have:
 >>
 and the syntax [1%L] for [rngl_one].
 
-## and so on...
+## AND SO ON...
 
 Numerous other definitions, notations and theorems are given in the
 sources. Look at their documentation for further information.
@@ -162,7 +162,7 @@ only if [rngl_mul_is_comm] is [true]:
       if rngl_mul_is_comm then ∀ a b, (a * b = b * a)%L else not_applicable;
 >>
 
-## Simple example
+## SIMPLE EXAMPLE
 
 This is a elementary code of few lines expressing how to use this library.
 It defines a theorem telling that the square of [-1] is [1]. Explanations
