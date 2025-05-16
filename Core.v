@@ -44,35 +44,97 @@ and a euclidean division. In Rocq library, the type "nat", representing
 this set, provides a subtraction Nat.sub and a division Nat.div having
 both the above properties.
 
-If we compute <<5-3>> in ℕ, we get <<2>>. On the other hand,
-<<3-5>> has no value. In the Rocq type "nat", the value of this
-expression is also <<2>>, but <<3-5>> is computable and returns
-<<0>>. As a ring-like, this expression is equal to <<2+3-3>>
-and, by the above property, can be reduced to <<2>>. But <<3-5>> is not
+If we compute [5-3] in ℕ, we get [2]. On the other hand,
+[3-5] has no value. In the Rocq type "nat", the value of this
+expression is also [2], but [3-5] is computable and returns
+[0]. As a ring-like, this expression is equal to [2+3-3]
+and, by the above property, can be reduced to [2]. But [3-5] is not
 reducable, its value is undefined.
 
-The same way, <<12/3>> is <<4>> in the set ℕ and also in the Rocq
-type "nat". As a ring-like, it is equal to <<4*3/3>> and its
-value is therefore <<4>> too, by the second above property. However,
-the expression <<7/3>> has no value in ℕ. In the type "nat", it is
-the quotient of the euclidean division, i.e. <<2>>. But as a
+The same way, [12/3] is [4] in the set ℕ and also in the Rocq
+type "nat". As a ring-like, it is equal to [4*3/3] and its
+value is therefore [4] too, by the second above property. However,
+the expression [7/3] has no value in ℕ. In the type "nat", it is
+the quotient of the euclidean division, i.e. [2]. But as a
 ring-like, this expression is not reducable, its value is undefined.
 
 ## Operations in ring-like Structures
 
-The addition is named <<rngl_add>> and the multiplication <<rngl_mul>>.
+The addition is named [rngl_add] and the multiplication [rngl_mul].
 The opposite and the inverse have three possible states:
 
 - either as a fully defined unary function (e.g. -3, 1/7)
 - undefined but with a partially defined binary function (e.g 5-3, 12/3)
 - undefined
 
-This is represented by <<rngl_opt_opp_or_subt>> and <<rngl_opt_inv_or_quot>>.
+This is represented by [rngl_opt_opp_or_subt] and [rngl_opt_inv_or_quot].
+For a type [T], both are of type [option (sum (T → T) (T → T → T))]:
 
-There is a syntax, named <<%L>>:
+- for a set holding an opposite [opp], we have
+<<
+    rngl_opt_opp_or_subt := Some (inl opp)
+>>
+- for a set holding a partial subtraction [subt], we have
+<<
+    rngl_opt_opp_or_subt := Some (inr subt)
+>>
+- for a set holding neither opposite, not subtraction, we have
+<<
+    rngl_opt_opp_or_subt := None
+>>
 
-- we can write <<rngl_add a b>> as <<(a+b)%L>>
-- we can write <<rngl_mul a b>> as <<(a*b)%L>>
+Same for [rngl_opt_inv_or_quot] for inverse and partial division.
+
+There is a syntax, named [%L]:
+
+- we can write [(a+b)%L] instead of [rngl_add a b],
+- we can write [(a*b)%L] instead of [rngl_mul a b].
+
+No need to repeat the [%L] for each sub-expression. We can write
+[(a+b*c)%L] with one only [%L].
+
+We also have:
+<<
+  rngl_opp a :=
+    | opp a         if rngl_opt_opp_or_subt = Some (inl opp)
+    | 0             otherwise
+>>
+<<
+  rngl_inv a :=
+    | inv a         if rngl_opt_inv_or_quot = Some (inl inv)
+    | 0             otherwise
+>>
+<<
+  rngl_sub a b :=
+    | a + opp b     if rngl_opt_opp_or_subt = Some (inl opp)
+    | subt a b      if rngl_opt_opp_or_subt = Some (inr subt)
+    | 0             otherwise
+>>
+<<
+  rngl_div a b :=
+    | a * inv b     if rngl_opt_inv_or_quot = Some (inl inv)
+    | quot a b      if rngl_opt_inv_or_quot = Some (inr quot)
+    | 0             otherwise
+>>
+
+And the syntaxes:
+
+- [(-a)%L] for [rngl_opp a]
+- [(a⁻¹)%L] for [rngl_inv a]
+- [(a-b)%L] for [rngl_sub a b]
+- [(a/b)%L] for [rngl_div a b]
+
+The identity element of addition is [rngl_zero] and can be written [0%L].
+
+The identity element of multiplication is optional. It is named
+[rngl_opt_one]. In can be absent in some structures, e.g. ideals,
+and we have:
+<<
+  rngl_one :=
+    | one     if rngl_opt_one = Some one
+    | 0       if rngl_opt_one = None
+>>
+and the syntax [1%L] for [rngl_one].
 
 ...
 
