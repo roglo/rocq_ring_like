@@ -31,14 +31,14 @@ doc:
 	mkdir -p html
 	rocq doc -html -utf8 -d html/ -R . RingLike -s -g -toc *.v
 
-glop:
-	find html -name '*.html' -exec sed -i 's/\[<span class="id" title="var">RingLike\.Core<\/span>\]/<a class="idref" href="RingLike.Core.html">RingLike.Core<\/a>/g' {} +
+doc_links:
+	find html -name '*.html' -exec sed -i 's/\[<span class="id" title="var">RingLike\.\([a-zA-Z_]*\)<\/span>\]/<a class="idref" href="RingLike.\1.html">RingLike.\1<\/a>/g' {} +
 
 .SUFFIXES: .v .vo
 
 %.vo: %.v
 	$(ROCQ) $(ROCQ_OPT) -R . RingLike $<
 
-.PHONY: all clean depend doc install uninstall local_opam_pin_add
+.PHONY: all clean depend doc doc_links install uninstall local_opam_pin_add
 
 include .depend
