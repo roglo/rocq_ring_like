@@ -25,9 +25,8 @@ and the division as the multiplication of the inverse:
 >>
 
 However, some sets can have a subtraction and/or an inverse as partially
-defined functions. For example, ℕ, the set of naturals has no opposite,
-but has a subtraction. It doesn't has an inverse, but has an euclidean
-division.
+defined functions. For example, ℕ, the set of naturals has its own
+subtraction and its own division (quotient of euclidean division).
 
 The library RingLike can represent these functions when they exist.
 The partially defined subtraction must have the main following property:
