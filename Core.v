@@ -139,48 +139,46 @@ and we have:
 >>
 and the syntax [1%L] for [rngl_one].
 
+## Example
+
+This is a simple code expressing how to use this library. It defines
+a theorem telling that the square of [-1] is [1]. Explanations follow.
+<<
+    From Stdlib Require Import Utf8.
+    Require Import RingLike.Core.
+
+    Theorem rngl_squ_opp_1 :
+      ∀ T (ro : ring_like_op T) (rp : ring_like_prop T),
+      rngl_has_1 T = true →
+      rngl_has_opp T = true →
+      (-1 * -1)%L = 1%L.
+    Proof.
+    intros T ro rp Hon Hop.
+    rewrite (rngl_mul_opp_opp Hop).
+    apply (rngl_mul_1_l Hon).
+    Qed.
+>>
+
+The first line tells that we use utf-8, allowing to write "∀" instead
+of "forall", and "→" instead of "->". Using utf-8 is not required to use
+RingLike, but the code of this library uses it everywhere.
+
+The second says that we use RingLike. The module [RingLike.Core] includes
+ all its main definitions and theorems.
+
+This theorem applies to any type [T] where [1] is defined
+([rngl_has_1 = true]) and the opposite exists ([rngl_has_opp T = true]).
+This second condition shows that it cannot be applied for example to
+the ℕ algebra, since ℕ as no opposite. But it can be used for the algebras
+of ℤ, ℝ, polynomials, square matrices, and so on.
+
 ...
 
 (documentation, work in progress)
 
 ...
 
-## How structures are defined
 
-A structure is "ring-like" if it supports operations such as addition and
-multiplication, possibly with an additive inverse or a multiplicative
-inverse. Instead of using fixed categories like "ring" or "field", we use
-a flexible encoding with two optional fields:
-<<
-    rngl_opt_opp_or_subt : option (sum (T → T) (T → T → T))
-    rngl_opt_inv_or_quot : option (sum (T → T) (T → T → T))
->>
-
-These allow three cases for each:
-
-- None: neither an inverse nor a subtraction/division exists.
-- Some (inl f): a genuine inverse function exists (e.g., -x or 1/x).
-- Some (inr f): an isolated operation exists (e.g., x - y without -x).
-
-## Standard algebraic cases
-
-- A semiring (ℕ): no inverse (opp/inv), but possibly subtraction/division
-  operations.
-- A ring (ℤ): has additive inverse, but not necessarily multiplicative.
-- A field (ℚ, ℝ, ℂ): both additive and multiplicative inverses exist.
-
-We define two booleans:
-
-- rngl_has_opp ≡ rngl_opt_opp_or_subt = Some (inl _)
-- rngl_has_inv ≡ rngl_opt_inv_or_quot = Some (inl _)
-
-## Usage
-
-This file provides the main interface of the RingLike library. It gathers
-all the relevant modules, so users only need to:
-<<
-    Require Import RingLike.Core.
->>
 *)
 
 Require Export Structures.
