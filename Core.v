@@ -29,7 +29,8 @@ defined functions. For example, ℕ, the set of naturals has its own
 subtraction and its own division (quotient of euclidean division).
 
 The library RingLike can represent these functions when they exist.
-The partially defined subtraction must have the main following property:
+It requires that the partially defined subtraction must have the main
+following property:
 <<
       ∀ a b, a + b - b = a
 >>
@@ -44,16 +45,16 @@ this set, provides a subtraction Nat.sub and a division Nat.div having
 both the above properties.
 
 If we compute <<5-3>> in ℕ, we get <<2>>. On the other hand,
-<<3-5>> has no value. In the Rocq type "nat", its value is also
-<<2>>, but <<3-5>> is computable and returns <<0>>. As a ring-like,
-the expression <<5-3>> is equal to <<2+3-3>> and, by the
-above property, can be reduced to <<2>>. But <<3-5>> is not
+<<3-5>> has no value. In the Rocq type "nat", the value of this
+expression is also <<2>>, but <<3-5>> is computable and returns
+<<0>>. As a ring-like, this expression is equal to <<2+3-3>>
+and, by the above property, can be reduced to <<2>>. But <<3-5>> is not
 reducable, its value is undefined.
 
-The same way, <<12 / 3>> is <<4>> in the set ℕ and also in the Rocq
-type "nat". As a ring-like, it is equal to <<4 * 3 / 3>> and its
+The same way, <<12/3>> is <<4>> in the set ℕ and also in the Rocq
+type "nat". As a ring-like, it is equal to <<4*3/3>> and its
 value is therefore <<4>> too, by the second above property. However,
-the expression <<7 / 3>> has no value in ℕ. In the type "nat", it is
+the expression <<7/3>> has no value in ℕ. In the type "nat", it is
 the quotient of the euclidean division, i.e. <<2>>. But as a
 ring-like, this expression is not reducable, its value is undefined.
 
@@ -75,7 +76,7 @@ There is a syntax, named <<%L>>:
 
 ...
 
-(documentation work in progress)
+(documentation, work in progress)
 
 ...
 
