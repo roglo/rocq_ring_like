@@ -31,6 +31,9 @@ doc:
 	mkdir -p html
 	rocq doc -html -utf8 -d html/ -R . RingLike -s -g -toc *.v
 
+glop:
+	find html -name '*.html' -exec sed -i 's/\[<span class="id" title="var">RingLike\.Core<\/span>\]/<a class="idref" href="RingLike.Core.html">RingLike.Core<\/a>/g' {} +
+
 .SUFFIXES: .v .vo
 
 %.vo: %.v
