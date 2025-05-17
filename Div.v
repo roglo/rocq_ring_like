@@ -1,3 +1,33 @@
+(** * RingLike.Div
+
+Theorems about division in ring-like structures.
+
+Division can be either multiplication by the inverse ([ab⁻¹]) or
+partial division (with the property [ab/b=a]). See module
+[[RingLike.Core]] explaining that.
+
+Some of the theorems below require one or several properties:
+- [rngl_has_inv T = true] : that inversion ([x⁻¹]) exists,
+- [rngl_mul_is_comm T = true] : that the multiplication is commutative,
+- [rngl_has_1 T = true] : that [1] exists,
+- [rngl_characteristic T = 0] : that the characteristics is [0],
+- [rngl_characteristic T ≠ 1] : that the characteristics [≠ 1],
+- [rngl_has_opp_or_subt T = true] : that opposite or partial subtraction
+  exists,
+- [rngl_has_inv_and_1_or_quot T = true] : that inversion or partial
+  division exists.
+
+See the module [[RingLike.Core]] for the general description
+of the ring-like library.
+
+In general, it is not necessary to import this module. The normal
+usage is to do:
+<<
+    Require Import RingLike.Core.
+>>
+which imports the present module and some other ones.
+ *)
+
 From Stdlib Require Import Utf8 Arith.
 Require Import Structures.
 Require Import Add.
