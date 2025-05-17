@@ -1,0 +1,437 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link href="coqdoc.css" rel="stylesheet" type="text/css" />
+<title>RingLike.Core</title>
+</head>
+
+<body>
+
+<div id="page">
+
+<div id="header">
+</div>
+
+<div id="main">
+
+<div class="code">
+</div>
+
+<div class="doc">
+<a id="lab3"></a><h1 class="section">RingLike.Core</h1>
+
+
+<div class="paragraph"> </div>
+
+This library is designed to support semirings, rings, fields, and, in
+general, algebraic structures containing addition and multiplication and,
+optionally, opposite and inverse. For example, it can represent:
+
+<div class="paragraph"> </div>
+
+<ul class="doclist">
+<li> ℕ, ℤ, ℚ, ℝ, ℂ
+
+</li>
+<li> ℤ/nℤ
+
+</li>
+<li> polynomials
+
+</li>
+<li> square matrices
+
+</li>
+<li> ideals
+
+</li>
+</ul>
+
+<div class="paragraph"> </div>
+
+Such a general structure is here called a "ring-like".
+
+<div class="paragraph"> </div>
+
+# SUBTRACTION AND DIVISION
+
+<div class="paragraph"> </div>
+
+In mathematics, subtraction is usually defined as the addition of the
+opposite:
+<pre>
+      a - b ::= a + (- b)
+</pre>
+and the division as the multiplication of the inverse:
+<pre>
+      a / b ::= a * (1 / b)
+</pre>
+
+<div class="paragraph"> </div>
+
+However, some sets can have a subtraction and/or an inverse as partially
+defined functions. For example, ℕ, the set of naturals has its own
+subtraction and its own division (quotient of euclidean division).
+
+<div class="paragraph"> </div>
+
+The library RingLike can represent these functions when they exist.
+It requires that the partially defined subtraction must have the main
+following property:
+<pre>
+      ∀ a b, a + b - b = a
+</pre>
+and the partially defined division:
+<pre>
+      ∀ a b, b ≠ 0 → a * b / b = a
+</pre>
+
+<div class="paragraph"> </div>
+
+For example, in mathematics, the set of naturals ℕ has a subtraction
+and a euclidean division. In Rocq library, the type "nat", representing
+this set, provides a subtraction Nat.sub and a division Nat.div having
+both the above properties.
+
+<div class="paragraph"> </div>
+
+If we compute <span class="inlinecode">5-3</span> in ℕ, we get <span class="inlinecode">2</span>. On the other hand,
+<span class="inlinecode">3-5</span> has no value. In the Rocq type "nat", the value of this
+expression is also <span class="inlinecode">2</span>, but <span class="inlinecode">3-5</span> is computable and returns
+<span class="inlinecode">0</span>. As a ring-like, this expression is equal to <span class="inlinecode">2+3-3</span>
+and, by the first above property, can be reduced to <span class="inlinecode">2</span>. But <span class="inlinecode">3-5</span>
+is not reducable, its value is undefined.
+
+<div class="paragraph"> </div>
+
+The same way, <span class="inlinecode">12/3</span> is <span class="inlinecode">4</span> in the set ℕ and also in the Rocq
+type "nat". As a ring-like, it is equal to <span class="inlinecode">4*3/3</span> and its
+value is therefore <span class="inlinecode">4</span> too, by the second above property. However,
+the expression <span class="inlinecode">7/3</span> has no value in ℕ, since <span class="inlinecode">7</span> is not divisible
+by <span class="inlinecode">3</span>. In the type "nat", it is the quotient of the euclidean division,
+i.e. <span class="inlinecode">2</span>. But as a ring-like, this expression is not reducable, its value
+is undefined.
+
+<div class="paragraph"> </div>
+
+# OPERATIONS IN RING-LIKE STRUCTURES
+
+<div class="paragraph"> </div>
+
+The addition is named <span class="inlinecode"><span class="id" title="var">rngl_add</span></span> and the multiplication <span class="inlinecode"><span class="id" title="var">rngl_mul</span></span>.
+The opposite and the inverse have three possible states:
+
+<div class="paragraph"> </div>
+
+<ul class="doclist">
+<li> either as a fully defined unary function (e.g. -3, 1/7)
+
+</li>
+<li> or undefined but with a partially defined binary function (e.g 5-3, 12/3)
+
+</li>
+<li> or undefined
+
+</li>
+</ul>
+
+<div class="paragraph"> </div>
+
+This is represented by <span class="inlinecode"><span class="id" title="var">rngl_opt_opp_or_subt</span></span> and <span class="inlinecode"><span class="id" title="var">rngl_opt_inv_or_quot</span></span>.
+For a type <span class="inlinecode"><span class="id" title="var">T</span></span>, both are of type <span class="inlinecode"><span class="id" title="var">option</span></span> <span class="inlinecode">(<span class="id" title="var">sum</span></span> <span class="inlinecode">(<span class="id" title="var">T</span></span> <span class="inlinecode">→</span> <span class="inlinecode"><span class="id" title="var">T</span>)</span> <span class="inlinecode">(<span class="id" title="var">T</span></span> <span class="inlinecode">→</span> <span class="inlinecode"><span class="id" title="var">T</span></span> <span class="inlinecode">→</span> <span class="inlinecode"><span class="id" title="var">T</span>))</span>:
+
+<div class="paragraph"> </div>
+
+<ul class="doclist">
+<li> for a set holding an opposite <span class="inlinecode"><span class="id" title="var">opp</span></span>, we have
+<pre>
+    rngl_opt_opp_or_subt := Some (inl opp)
+</pre>
+
+</li>
+<li> for a set holding a partial subtraction <span class="inlinecode"><span class="id" title="var">subt</span></span>, we have
+<pre>
+    rngl_opt_opp_or_subt := Some (inr subt)
+</pre>
+
+</li>
+<li> for a set holding neither opposite, not subtraction, we have
+<pre>
+    rngl_opt_opp_or_subt := None
+</pre>
+
+</li>
+</ul>
+
+<div class="paragraph"> </div>
+
+Same for <span class="inlinecode"><span class="id" title="var">rngl_opt_inv_or_quot</span></span> for inverse and partial division.
+
+<div class="paragraph"> </div>
+
+There is a syntax, named <span class="inlinecode">%<span class="id" title="var">L</span></span>:
+
+<div class="paragraph"> </div>
+
+<ul class="doclist">
+<li> we can write <span class="inlinecode">(<span class="id" title="var">a</span>+<span class="id" title="var">b</span>)%<span class="id" title="var">L</span></span> instead of <span class="inlinecode"><span class="id" title="var">rngl_add</span></span> <span class="inlinecode"><span class="id" title="var">a</span></span> <span class="inlinecode"><span class="id" title="var">b</span></span>,
+
+</li>
+<li> we can write <span class="inlinecode">(<span class="id" title="var">a</span>×<span class="id" title="var">b</span>)%<span class="id" title="var">L</span></span> instead of <span class="inlinecode"><span class="id" title="var">rngl_mul</span></span> <span class="inlinecode"><span class="id" title="var">a</span></span> <span class="inlinecode"><span class="id" title="var">b</span></span>.
+
+</li>
+</ul>
+
+<div class="paragraph"> </div>
+
+No need to repeat the <span class="inlinecode">%<span class="id" title="var">L</span></span> for each sub-expression. We can write
+<span class="inlinecode">(<span class="id" title="var">a</span>+<span class="id" title="var">b</span>×<span class="id" title="var">c</span>)%<span class="id" title="var">L</span></span> with one only <span class="inlinecode">%<span class="id" title="var">L</span></span>.
+
+<div class="paragraph"> </div>
+
+We also have:
+<pre>
+  rngl_opp a :=
+    | opp a         if rngl_opt_opp_or_subt = Some (inl opp)
+    | 0             otherwise
+</pre>
+<pre>
+  rngl_inv a :=
+    | inv a         if rngl_opt_inv_or_quot = Some (inl inv)
+    | 0             otherwise
+</pre>
+<pre>
+  rngl_sub a b :=
+    | a + opp b     if rngl_opt_opp_or_subt = Some (inl opp)
+    | subt a b      if rngl_opt_opp_or_subt = Some (inr subt)
+    | 0             otherwise
+</pre>
+<pre>
+  rngl_div a b :=
+    | a * inv b     if rngl_opt_inv_or_quot = Some (inl inv)
+    | quot a b      if rngl_opt_inv_or_quot = Some (inr quot)
+    | 0             otherwise
+</pre>
+
+<div class="paragraph"> </div>
+
+And the syntaxes:
+
+<div class="paragraph"> </div>
+
+<ul class="doclist">
+<li> <span class="inlinecode">(-<span class="id" title="var">a</span>)%<span class="id" title="var">L</span></span> for <span class="inlinecode"><span class="id" title="var">rngl_opp</span></span> <span class="inlinecode"><span class="id" title="var">a</span></span>
+
+</li>
+<li> <span class="inlinecode">(<span class="id" title="var">a⁻¹</span>)%<span class="id" title="var">L</span></span> for <span class="inlinecode"><span class="id" title="var">rngl_inv</span></span> <span class="inlinecode"><span class="id" title="var">a</span></span>
+
+</li>
+<li> <span class="inlinecode">(<span class="id" title="var">a</span>-<span class="id" title="var">b</span>)%<span class="id" title="var">L</span></span> for <span class="inlinecode"><span class="id" title="var">rngl_sub</span></span> <span class="inlinecode"><span class="id" title="var">a</span></span> <span class="inlinecode"><span class="id" title="var">b</span></span>
+
+</li>
+<li> <span class="inlinecode">(<span class="id" title="var">a</span>/<span class="id" title="var">b</span>)%<span class="id" title="var">L</span></span> for <span class="inlinecode"><span class="id" title="var">rngl_div</span></span> <span class="inlinecode"><span class="id" title="var">a</span></span> <span class="inlinecode"><span class="id" title="var">b</span></span>
+
+</li>
+</ul>
+
+<div class="paragraph"> </div>
+
+# IDENTITY ELEMENTS
+
+<div class="paragraph"> </div>
+
+The identity element of addition is <span class="inlinecode"><span class="id" title="var">rngl_zero</span></span> and can be written <span class="inlinecode">0%<span class="id" title="var">L</span></span>.
+
+<div class="paragraph"> </div>
+
+The identity element of multiplication is optional. It is named
+<span class="inlinecode"><span class="id" title="var">rngl_opt_one</span></span>. In can be absent in some structures, e.g. ideals,
+and we have:
+<pre>
+  rngl_one :=
+    | one     if rngl_opt_one = Some one
+    | 0       if rngl_opt_one = None
+</pre>
+and the syntax <span class="inlinecode">1%<span class="id" title="var">L</span></span> for <span class="inlinecode"><span class="id" title="var">rngl_one</span></span>.
+
+<div class="paragraph"> </div>
+
+# AND SO ON...
+
+<div class="paragraph"> </div>
+
+Numerous other definitions, notations and theorems are given in the
+sources. Look at their documentation for further information.
+
+<div class="paragraph"> </div>
+
+There are actually three structures. The first one is named <span class="inlinecode"><span class="id" title="var">ring_like_op</span></span>
+holding the main definitions of functions. The second one is named
+<span class="inlinecode"><span class="id" title="var">ring_like_ord</span></span> for structures having an order relation. The third
+one is named <span class="inlinecode"><span class="id" title="var">ring_like_prop</span></span> holding the axioms required for the
+given ring-like, sometimes conditionned by booleans.
+
+<div class="paragraph"> </div>
+
+For example, this third structure holds a boolean named <span class="inlinecode"><span class="id" title="var">rngl_mul_is_comm</span></span>
+<pre>
+    rngl_mul_is_comm : bool;
+</pre>
+specifying that the multiplication is commutative or not. Further, another
+field, named <span class="inlinecode"><span class="id" title="var">rngl_opt_mul_comm</span></span> defines this property which is applied
+only if <span class="inlinecode"><span class="id" title="var">rngl_mul_is_comm</span></span> is <span class="inlinecode"><span class="id" title="var">true</span></span>:
+<pre>
+    rngl_opt_mul_comm :
+      if rngl_mul_is_comm then ∀ a b, (a * b = b * a)%L else not_applicable;
+</pre>
+
+<div class="paragraph"> </div>
+
+# SIMPLE EXAMPLE
+
+<div class="paragraph"> </div>
+
+This is a elementary code of few lines expressing how to use this library.
+It defines a theorem telling that the square of <span class="inlinecode">-1</span> is <span class="inlinecode">1</span>. Explanations
+follow.
+<pre>
+    From Stdlib Require Import Utf8.
+    Require Import RingLike.Core.
+
+    Theorem rngl_squ_opp_1 :
+      ∀ T (ro : ring_like_op T) (rp : ring_like_prop T),
+      rngl_has_1 T = true →
+      rngl_has_opp T = true →
+      (-1 * -1)%L = 1%L.
+    Proof.
+    intros T ro rp Hon Hop.
+    rewrite (rngl_mul_opp_opp Hop).
+    apply (rngl_mul_1_l Hon).
+    Qed.
+</pre>
+
+<div class="paragraph"> </div>
+
+The first line tells that we use utf-8, allowing to write "∀" instead
+of "forall", and "→" instead of "-&gt;". Using utf-8 is not required to use
+RingLike, but the code of this library uses it everywhere.
+
+<div class="paragraph"> </div>
+
+The second says that we use RingLike. The module <span class="inlinecode"><span class="id" title="var">RingLike.Core</span></span> includes
+ all its main definitions and theorems.
+
+<div class="paragraph"> </div>
+
+This theorem applies to any type <span class="inlinecode"><span class="id" title="var">T</span></span> where <span class="inlinecode">1</span> is defined
+(<span class="inlinecode"><span class="id" title="var">rngl_has_1</span></span> <span class="inlinecode">=</span> <span class="inlinecode"><span class="id" title="var">true</span></span>) and the opposite exists (<span class="inlinecode"><span class="id" title="var">rngl_has_opp</span></span> <span class="inlinecode"><span class="id" title="var">T</span></span> <span class="inlinecode">=</span> <span class="inlinecode"><span class="id" title="var">true</span></span>).
+This second condition shows that it cannot be applied for example to
+the ℕ algebra, since ℕ as no opposite. But it can be used for the algebras
+of ℤ, ℝ, polynomials, square matrices, and so on.
+
+<div class="paragraph"> </div>
+
+# MATHEMATICAL PROPERTIES OF SUBTRACTION
+
+<div class="paragraph"> </div>
+
+1/ Absorbing element.
+
+<div class="paragraph"> </div>
+
+In standard mathematics, <span class="inlinecode">0</span> is an absorbing element for multiplication
+(i.e., <span class="inlinecode">∀</span> <span class="inlinecode"><span class="id" title="var">a</span>,</span> <span class="inlinecode"><span class="id" title="var">a</span> × 0 = 0</span>). This property can be proved in rings and fields,
+but not in general semirings, where it must be given as an additional axiom.
+
+<div class="paragraph"> </div>
+
+However, when a semiring has a subtraction with the property we said above:
+<pre>
+      ∀ a b, a + b - b = a      (1)
+</pre>
+it is possible to prove it. In that case, the absorbing property need not
+be an axiom, it becomes a theorem.
+
+<div class="paragraph"> </div>
+
+First, we consider the following corollary of (1):
+<pre>
+      ∀ a, a - a = 0            (2)
+</pre>
+
+<div class="paragraph"> </div>
+
+The proof is then the following:
+<pre>
+    a*0 = a*0 + a*0 - a*0   by reverse applying (1)
+        = a*(0+0) - a*0     by reverse distributivity
+        = a*0 - a*0         by property of 0
+        = 0                 by applying (2)
+</pre>
+
+<div class="paragraph"> </div>
+
+In Rocq library, this is proven for the type <span class="inlinecode"><span class="id" title="var">nat</span></span> by induction. But a
+general semiring is not necessarily defined by induction.
+
+<div class="paragraph"> </div>
+
+2/ Simplification of addition.
+
+<div class="paragraph"> </div>
+
+A second property that can be proven, when the subtraction exists, is the
+simplification of addition:
+<pre>
+    ∀ a b c, a + c = b + c → a = b
+</pre>
+
+<div class="paragraph"> </div>
+
+In semirings, that cannot be proved because we need to add <span class="inlinecode">-<span class="id" title="var">c</span></span> in the
+initial expression, but semirings don't have opposite.
+
+<div class="paragraph"> </div>
+
+But if the semiring has a subtraction, it can be proven. Knowing that
+<code> a + c = b + c </code> and starting from:
+<pre>
+    b + c - c = b
+</pre>
+we get
+<pre>
+    a + c - c = b
+    → a = b
+</pre>
+
+<div class="paragraph"> </div>
+
+The same way, in Rocq library, this is proven for the type <span class="inlinecode"><span class="id" title="var">nat</span></span> by
+induction, but it is not available in all semirings.
+
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Export</span> <a class="idref" href="RingLike.Structures.html#"><span class="id" title="library">Structures</span></a>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Export</span> <a class="idref" href="RingLike.Order.html#"><span class="id" title="library">Order</span></a>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Export</span> <a class="idref" href="RingLike.Add.html#"><span class="id" title="library">Add</span></a>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Export</span> <a class="idref" href="RingLike.Mul.html#"><span class="id" title="library">Mul</span></a>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Export</span> <a class="idref" href="RingLike.Div.html#"><span class="id" title="library">Div</span></a>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Export</span> <a class="idref" href="RingLike.Add_with_order.html#"><span class="id" title="library">Add_with_order</span></a>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Export</span> <a class="idref" href="RingLike.Mul_with_order.html#"><span class="id" title="library">Mul_with_order</span></a>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Export</span> <a class="idref" href="RingLike.Div_with_order.html#"><span class="id" title="library">Div_with_order</span></a>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Export</span> <a class="idref" href="RingLike.Distances.html#"><span class="id" title="library">Distances</span></a>.<br/>
+</div>
+</div>
+
+<div id="footer">
+<hr/><a href="index.html">Index</a><hr/>This page has been generated by <a href="http://coq.inria.fr/">coqdoc</a>
+</div>
+
+</div>
+
+</body>
+</html>
