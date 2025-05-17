@@ -1,3 +1,22 @@
+(** * RingLike.Add
+
+Theorems about addition in ring-like structures.
+
+Some of them are about subtraction, either the one defined by the
+adding or the opposite ([rngl_has_opp T = true]), or by the partial
+subtraction, or by one of them ([rngl_has_opp_or_subt T = true]).
+
+See the module [[RingLike.Core]] for the general description
+of the ring-like library.
+
+In general, it is not necessary to import this module. The normal
+usage is to do:
+<<
+    Require Import RingLike.Core.
+>>
+which imports the present module and some other ones.
+ *)
+
 From Stdlib Require Import Utf8 Arith.
 Require Import Structures.
 

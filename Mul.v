@@ -1,6 +1,25 @@
-(* RingLike_mul.v
-   This file deals with multiplication properties in ring-like structures.
-   It defines theorems that do not require an order relation. *)
+(** * RingLike.Mul
+
+Theorems about multiplication in ring-like structures.
+
+Some of them require one or several properties:
+- [rngl_mul_is_comm T = true] : that the multiplication is commutative,
+- [rngl_has_opp T = true] : that there is an opposite
+- [rngl_has_subt T = true] : that there is a partial subtraction,
+- [rngl_has_opp_or_subt T = true] : that there is an opposite or
+  a partial subtraction,
+- [rngl_has_1 T = true] : that [1] exists,
+
+See the module [[RingLike.Core]] for the general description
+of the ring-like library.
+
+In general, it is not necessary to import this module. The normal
+usage is to do:
+<<
+    Require Import RingLike.Core.
+>>
+which imports the present module and some other ones.
+ *)
 
 Set Nested Proofs Allowed.
 From Stdlib Require Import Utf8 Arith.
@@ -67,7 +86,6 @@ intros Hsu.
 generalize Hsu; intros Hop.
 apply rngl_has_subt_has_no_opp in Hop.
 intros rngl_mul_sub_distr_l a.
-(**)
 specialize rngl_add_0_l as H1.
 specialize rngl_opt_add_sub as H2.
 specialize (rngl_mul_sub_distr_l) as H3.
@@ -782,7 +800,26 @@ Qed.
 
 End a.
 
-(* to be able to use tactic "ring" *)
+(** * For the Rocq tactic "ring"
+
+The Rocq tactics "ring" and "ring_simplify" help to directly simplify
+some kinds of expressions in the "ring" world. It can be applied to
+ring-like structures, providing the following code is added:
+<<
+  Require Import Ring.
+  Add Ring rngl_ring : rngl_ring_theory.
+>>
+
+A typical example:
+<<
+  Example a2_b2 : ∀ a b, ((a + b) * (a - b) = a * a - b * b)%L.
+  Proof.
+  intros.
+  ring_simplify. (* just to see what happens *)
+  easy.
+  Qed.
+>>
+*)
 
 From Stdlib Require Import Ring_theory.
 
@@ -807,20 +844,10 @@ Definition rngl_ring_theory
      Rsub_def x y := eq_sym (rngl_add_opp_r Hop x y);
      Ropp_def := rngl_add_opp_diag_r Hop |}.
 
-(* code to be added to be able to use the Coq tactic "ring"
+(** * Commutative field
 
-Require Import Ring.
-Add Ring rngl_ring : rngl_ring_theory.
-
-(* example *)
-
-Example a2_b2 : ∀ a b, ((a + b) * (a - b) = a * a - b * b)%L.
-Proof.
-intros.
-ring_simplify. (* just to see what happens *)
-easy.
-Qed.
-*)
+Define the typical properties of what is a commutative field
+in mathematics. *)
 
 Record charac_0_field :=
   { cf_has_1 : rngl_has_1 T = true;

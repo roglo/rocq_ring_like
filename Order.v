@@ -1,3 +1,25 @@
+(** * RingLike.Order
+
+Theorems about order relation of the ring-like library.
+
+Generally applied in ordered ring-like structures which can be
+recognizable by
+<<
+  rngl_is_ordered T = true
+>>
+but sometimes work even without this hypothesis.
+
+See the module [[RingLike.Core]] for the general description
+of the ring-like library.
+
+In general, it is not necessary to import this module. The normal
+usage is to do:
+<<
+    Require Import RingLike.Core.
+>>
+which imports the present module and some other ones.
+ *)
+
 From Stdlib Require Import Utf8 Arith.
 Require Import Structures.
 
