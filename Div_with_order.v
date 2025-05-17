@@ -1,3 +1,26 @@
+(** * RingLike.Div_with_order
+
+Theorems about inverse and division, in the case when order
+relation exists.
+
+Division can be either:
+- multiplication by the inverse ([ab⁻¹]) or
+- partial division (with the property [ab/b=a]).
+
+A ring-like has an order when the variable [rngl_is_ordered]
+is [true].
+
+See the module [[RingLike.Core]] for the general description
+of the ring-like library.
+
+In general, it is not necessary to import the present module. The
+normal usage is to do:
+<<
+    Require Import RingLike.Core.
+>>
+which imports the present module and some other ones.
+ *)
+
 Set Nested Proofs Allowed.
 From Stdlib Require Import Utf8 Arith.
 

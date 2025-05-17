@@ -2,9 +2,11 @@
 
 Theorems about division in ring-like structures.
 
-Division can be either multiplication by the inverse ([ab⁻¹]) or
-partial division (with the property [ab/b=a]). See module
-[[RingLike.Core]] explaining that.
+Division can be either:
+- multiplication by the inverse ([ab⁻¹]) or
+- partial division (with the property [ab/b=a]).
+
+See module [[RingLike.Core]] explaining that.
 
 Some of the theorems below require one or several properties:
 - [rngl_has_inv T = true] : that inversion ([x⁻¹]) exists,
@@ -20,7 +22,7 @@ Some of the theorems below require one or several properties:
 See the module [[RingLike.Core]] for the general description
 of the ring-like library.
 
-In general, it is not necessary to import this module. The normal
+In general, it is not necessary to import the present module. The normal
 usage is to do:
 <<
     Require Import RingLike.Core.

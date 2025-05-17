@@ -1,4 +1,18 @@
-(* distances and limits *)
+(** * RingLike.Distances
+
+Definitions and theorems about distances and limits. Also
+include the notions of continuity and derivability.
+
+See the module [[RingLike.Core]] for the general description
+of the ring-like library.
+
+In general, it is not necessary to import the present module. The
+normal usage is to do:
+<<
+    Require Import RingLike.Core.
+>>
+which imports the present module and some other ones.
+ *)
 
 From Stdlib Require Import Utf8 Arith.
 
@@ -16,7 +30,7 @@ Section a.
 Context {T : Type}.
 Context {ro : ring_like_op T}.
 
-(* distances *)
+(** ** Properties of distances *)
 
 Record is_dist {A} (da : A → A → T) :=
   { dist_symmetry : ∀ a b, da a b = da b a;
@@ -72,7 +86,7 @@ Qed.
 Definition rngl_distance Hop Hor :=
   {| d_dist := rngl_dist; d_prop := rngl_dist_is_dist Hop Hor |}.
 
-(* limits *)
+(** ** Limits *)
 
 Definition is_limit_when_seq_tends_to_inf {A} (da : A → A → T) u L :=
   ∀ ε, (0 < ε)%L → ∃ N, ∀ n, N ≤ n → (da (u n) L < ε)%L.
@@ -86,7 +100,7 @@ Definition is_limit_when_tending_to_neighbourhood (is_left : bool) {A B}
    → da x x₀ < η
    → db (f x) L < ε)%L.
 
-(* Cauchy sequences and completeness *)
+(** ** Cauchy sequences and completeness *)
 
 Definition is_Cauchy_sequence {A} (da : A → A → T) (u : nat → A) :=
   ∀ ε : T, (0 < ε)%L →
@@ -96,7 +110,7 @@ Definition is_complete A (da : A → A → T) :=
   ∀ u, is_Cauchy_sequence da u
   → ∃ c, is_limit_when_seq_tends_to_inf da u c.
 
-(* continuity *)
+(** ** Continuity *)
 
 Definition left_or_right_continuous_at (is_left : bool) {A B} le
     da db (f : A → B) a :=
@@ -110,7 +124,7 @@ Definition right_continuous_at {A B} :=
 Definition is_continuous {A B} lt da db (f : A → B) :=
   ∀ a, left_continuous_at lt da db f a ∧ right_continuous_at lt da db f a.
 
-(* derivability *)
+(** ** Derivability *)
 
 Definition left_or_right_derivative_at (is_left : bool) {A} lt
     (da : A → A → T) (db : T → T → T) f a a' :=
@@ -132,7 +146,7 @@ Definition is_derivative_at {A} lt
 Definition is_derivative {A} lt (da : A → A → T) (db : T → T → T) f f' :=
   ∀ a, is_derivative_at lt da db f f' a.
 
-(* properties of distances and limits *)
+(** ** Properties of distances and limits *)
 
 Theorem dist_refl :
   ∀ A (dist : A → A → T) (Hid : is_dist dist) a, dist a a = 0%L.

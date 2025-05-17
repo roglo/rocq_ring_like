@@ -123,7 +123,6 @@ intros Hsu.
 generalize Hsu; intros Hop.
 apply rngl_has_subt_has_no_opp in Hop.
 intros.
-(**)
 specialize rngl_add_0_l as H1.
 specialize rngl_opt_add_sub as H2.
 specialize rngl_mul_add_distr_l as H3.
@@ -152,7 +151,6 @@ easy.
    Otherwise, false. Example: (ℕ, +=lcm, *=* ),
    because ∀ a, lcm a a = a *)
 Qed.
-(**)
 
 Theorem rngl_mul_0_l :
   rngl_has_opp_or_subt T = true →
@@ -800,7 +798,7 @@ Qed.
 
 End a.
 
-(** * For the Rocq tactic "ring"
+(** ** For the Rocq tactic "ring"
 
 The Rocq tactics "ring" and "ring_simplify" help to directly simplify
 some kinds of expressions in the "ring" world. It can be applied to
@@ -844,10 +842,10 @@ Definition rngl_ring_theory
      Rsub_def x y := eq_sym (rngl_add_opp_r Hop x y);
      Ropp_def := rngl_add_opp_diag_r Hop |}.
 
-(** * Commutative field
+(** ** Commutative field
 
-Define the typical properties of what is a commutative field
-in mathematics. *)
+Define the typical properties of what a commutative field
+in mathematics is. *)
 
 Record charac_0_field :=
   { cf_has_1 : rngl_has_1 T = true;

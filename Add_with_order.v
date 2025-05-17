@@ -1,3 +1,21 @@
+(** * RingLike.Add_with_order
+
+Theorems about addition, when order relation exists.
+
+A ring-like has an order when the variable [rngl_is_ordered]
+is [true].
+
+See the module [[RingLike.Core]] for the general description
+of the ring-like library.
+
+In general, it is not necessary to import the present module. The
+normal usage is to do:
+<<
+    Require Import RingLike.Core.
+>>
+which imports the present module and some other ones.
+ *)
+
 From Stdlib Require Import Utf8 Arith.
 Require Import Structures.
 Require Import Order.

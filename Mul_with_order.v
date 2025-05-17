@@ -1,7 +1,20 @@
-(* RingLike_mul_with_order.v
-   This file deals with multiplication properties in ring-like structures
-   that have an order relation. The theorems here assume that this order
-   relation is defined. *)
+(** * RingLike.Mul_with_order
+
+Theorems about multiplication, when order relation exists.
+
+A ring-like has an order when the variable [rngl_is_ordered]
+is [true].
+
+See the module [[RingLike.Core]] for the general description
+of the ring-like library.
+
+In general, it is not necessary to import the present module. The
+normal usage is to do:
+<<
+    Require Import RingLike.Core.
+>>
+which imports the present module and some other ones.
+ *)
 
 Set Nested Proofs Allowed.
 

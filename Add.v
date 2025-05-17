@@ -1,16 +1,16 @@
 (** * RingLike.Add
 
-Theorems about addition in ring-like structures.
+Theorems about addition and opposite in ring-like structures.
 
-Some of them are about subtraction, either the one defined by the
-adding or the opposite ([rngl_has_opp T = true]), or by the partial
-subtraction, or by one of them ([rngl_has_opp_or_subt T = true]).
+There is also a notion of subtraction, which can be either:
+- addition of the opposite ([a+(-b)]) or
+- partial subtraction (with the property [a+b-b=a]).
 
 See the module [[RingLike.Core]] for the general description
 of the ring-like library.
 
-In general, it is not necessary to import this module. The normal
-usage is to do:
+In general, it is not necessary to import the present module. The
+normal usage is to do:
 <<
     Require Import RingLike.Core.
 >>

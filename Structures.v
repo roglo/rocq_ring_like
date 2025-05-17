@@ -2,10 +2,16 @@
 
 Definitions of structures of the ring-like library.
 
-See the module [[RingLike.Core]] for the general description
-of the ring-like library.
+There are three structures:
+- ring_like_op : holds constants and functions
+- ring_like_ord : holds properties of ordered rings-likes
+- ring_like_prop : holds properties of rings-likes
 
-In general, it is not necessary to import this module. The normal
+See the module [[RingLike.Core]] for the general description
+of the ring-like library and some informations about these
+structures.
+
+In general, it is not necessary to import the present module. The normal
 usage is to do:
 <<
     Require Import RingLike.Core.
