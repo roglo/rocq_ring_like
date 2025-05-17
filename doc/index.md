@@ -1,11 +1,14 @@
-# RingLike: A Library for Ring-Like Algebraic Structures
+---
+title: "Rocq Ring-Like: A Library for Ring-Like Algebraic Structures"
+css: style.css
+---
 
 Welcome to the **RingLike** library documentation!
 
 This library provides a flexible and modular framework to work with
-algebraic structures such as semirings, rings, and fields (corps), as
-well as their generalizations on various types like integers,
-polynomials, matrices, and more.
+algebraic structures such as semirings, rings, and fields, as well as
+their generalizations on various types like integers, polynomials,
+matrices, and more.
 
 ## Quick start
 

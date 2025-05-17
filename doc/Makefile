@@ -1,2 +1,2 @@
 all:
-	pandoc index.md -o ../../gh-pages/index.html
+	pandoc index.md -s -c style.css -o ../../gh-pages/index.html
