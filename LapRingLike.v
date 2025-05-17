@@ -1,11 +1,21 @@
-(* LapRingLike.v *)
+(** * LapRingLike.v
 
-(* (lap : list as polynomial) *)
-(* e.g. polynomial ax²+bx+c is implemented by the list [c;b;a] *)
+This module defines a ring-like algebra over polynomials represented by
+lists ("lap" stands for _list as polynomial_). For example, the polynomial
+[ax² + bx + c] is represented as the list [[c; b; a]].
 
-(* the fact that the coefficient of the highest degree is not zero is
-   not tested. It is going to be tested in the implementation of
-   polynomials themselves *)
+This module does not check whether the leading coefficient is non-zero.
+That is enforced in the actual polynomial implementation
+[[RingLike.PolynomialRingLike]].
+
+See the module [[RingLike.Core]] for the general description
+of the ring-like library.
+
+Usage:
+<<
+    Require Import RingLike.LapPolyn.
+>>
+*)
 
 Set Nested Proofs Allowed.
 

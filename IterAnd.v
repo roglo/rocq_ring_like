@@ -1,4 +1,27 @@
-(* iterators of "and" on bool *)
+(** * IterAnd.v
+
+Iterators of "and" on bool.
+
+See the module [[RingLike.Core]] for the general description
+of the ring-like library.
+
+This module defines two iterators syntaxes:
+
+- over lists:
+<<
+    ⋀ (i ∈ l), f i
+>>
+- over sequences of natural numbers:
+<<
+    ⋀ (i = b, e), f i
+>>
+These notations are introduced to improve code readability.
+
+Usage:
+<<
+    Require Import RingLike.IterAnd.
+>>
+*)
 
 Set Nested Proofs Allowed.
 

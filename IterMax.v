@@ -1,4 +1,30 @@
-(* maximum of a list or of a sequence *)
+(** * IterMax.v
+
+Maximum of ring-like values.
+
+See the module [[RingLike.Core]] for the general description
+of the ring-like library.
+
+This module defines two syntaxes:
+
+- over lists:
+<<
+    Max (i ∈ l), f i
+>>
+- over sequences of natural numbers:
+<<
+    Max (i = b, e), f i
+>>
+These notations are introduced to improve code readability.
+
+The maximum operates on ordered ring-like objects. When the
+list or the sequence is empty, it returns [0].
+
+Usage:
+<<
+    Require Import RingLike.IterMax.
+>>
+*)
 
 From Stdlib Require Import Utf8 Arith.
 
