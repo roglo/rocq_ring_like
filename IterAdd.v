@@ -1,4 +1,24 @@
-(* summations on a ring-like (semiring, ring, field) *)
+(** * IterAdd.v
+
+Summations on a ring-like.
+
+See the module [[RingLike.Core]] for the general description
+of the ring-like library.
+
+The present module defines two syntaxes:
+
+- one on lists:
+<<
+    ∑ (i ∈ l), f i
+>>
+- one on natural integers sequences:
+<<
+    ∑ (i = b, e), f i
+>>
+in order to make the code more readable. The summation applies
+to ring-like objects. Therefore it is the same if it is on ℕ
+or in square matrices, for example.
+*)
 
 Set Nested Proofs Allowed.
 
