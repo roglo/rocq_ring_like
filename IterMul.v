@@ -1,4 +1,26 @@
- (* products on a ring-like (semiring, ring, field) *)
+(** * IterMul.v
+
+Products on a ring-like.
+
+See the module [[RingLike.Core]] for the general description
+of the ring-like library.
+
+This module defines two product syntaxes:
+
+- over lists:
+<<
+    ∏ (i ∈ l), f i
+>>
+- over sequences of natural numbers:
+<<
+    ∏ (i = b, e), f i
+>>
+These notations are introduced to improve code readability.
+
+The product operates on ring-like objects, so it applies equally
+whether the elements are numbers, polynomials, square matrices,
+or other such structures.
+*)
 
 Set Nested Proofs Allowed.
 

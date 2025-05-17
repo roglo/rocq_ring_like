@@ -5,19 +5,21 @@ Summations on a ring-like.
 See the module [[RingLike.Core]] for the general description
 of the ring-like library.
 
-The present module defines two syntaxes:
+This module defines two summation syntaxes:
 
-- one on lists:
+- over lists:
 <<
     ∑ (i ∈ l), f i
 >>
-- one on natural integers sequences:
+- over sequences of natural numbers:
 <<
     ∑ (i = b, e), f i
 >>
-in order to make the code more readable. The summation applies
-to ring-like objects. Therefore it is the same if it is on ℕ
-or in square matrices, for example.
+These notations are introduced to improve code readability.
+
+The summation operates on ring-like objects, so it applies equally
+whether the elements are numbers, polynomials, square matrices,
+or other such structures.
 *)
 
 Set Nested Proofs Allowed.
