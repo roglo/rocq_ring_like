@@ -250,7 +250,7 @@ we get
 >>
 
 The same way, in Rocq library, this is proven for the type [nat] by
-induction, which is not available in all semirings.
+induction, but it is not available in all semirings.
 *)
 
 Require Export Structures.
