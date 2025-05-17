@@ -196,25 +196,25 @@ This second condition shows that it cannot be applied for example to
 the ℕ algebra, since ℕ as no opposite. But it can be used for the algebras
 of ℤ, ℝ, polynomials, square matrices, and so on.
 
-## SPECIFIC PROPERTIES OF SUBTRACTION
+## MATHEMATICAL PROPERTIES OF SUBTRACTION
 
-In usual mathematics, [0] is an absorbing element for the multiplication
-([∀ a, a*0=0]), but this property can be proven only on rings and fields.
-On semirings, it cannot be proven and it is given as an extra axiom.
+In standard mathematics, [0] is an absorbing element for multiplication
+(i.e., [∀ a, a × 0 = 0]). This property can be proved in rings and fields,
+but not in general semirings, where it must be given as an additional axiom.
 
 However, when a semiring has a subtraction with the property we said above:
 <<
       ∀ a b, a + b - b = a      (1)
 >>
 it is possible to prove it. In that case, the absorbing property need not
-to be an axiom, it becomes a theorem.
+be an axiom, it becomes a theorem.
 
 First, we consider the following corollary of (1):
 <<
       ∀ a, a - a = 0            (2)
 >>
 
-The proof is the following:
+The proof is then the following:
 <<
     a*0 = a*0 + a*0 - a*0   by reverse applying (1)
         = a*(0+0) - a*0     by reverse distributivity
@@ -225,8 +225,8 @@ The proof is the following:
 In Rocq library, this is proven for the type [nat] by induction. But a
 general semiring is not necessarily defined by induction.
 
-A second property that can be proven when the subtraction exists is the
-cancellation of addition:
+A second property that can be proven, when the subtraction exists, is the
+simplification of addition:
 <<
     ∀ a b c, a + b = a + c → b = c
 >>
