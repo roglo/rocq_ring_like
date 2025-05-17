@@ -20,6 +20,11 @@ These notations are introduced to improve code readability.
 The product operates on ring-like objects, so it applies equally
 whether the elements are numbers, polynomials, square matrices,
 or other such structures.
+
+Usage:
+<<
+    Require Import RingLike.IterMul.
+>>
 *)
 
 Set Nested Proofs Allowed.

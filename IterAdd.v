@@ -20,6 +20,11 @@ These notations are introduced to improve code readability.
 The summation operates on ring-like objects, so it applies equally
 whether the elements are numbers, polynomials, square matrices,
 or other such structures.
+
+Usage:
+<<
+    Require Import RingLike.IterAdd.
+>>
 *)
 
 Set Nested Proofs Allowed.
