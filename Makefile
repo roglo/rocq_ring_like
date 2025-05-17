@@ -28,7 +28,7 @@ local_opam_pin_add:
 	opam reinstall rocq-ring-like -y -w
 
 doc:
-	rocq doc -html -utf8 -d ../gh-pages/ -R . RingLike -s -g -toc *.v
+	rocq doc -html -utf8 --no-index -d ../gh-pages/ -R . RingLike -s -g -toc *.v
 
 doc_links:
 	find ../gh-pages/. -name '*.html' -exec sed -i 's/\[<span class="id" title="var">RingLike\.\([a-zA-Z_]*\)<\/span>\]/<a class="idref" href="RingLike.\1.html">RingLike.\1<\/a>/g' {} +
