@@ -198,6 +198,8 @@ of ℤ, ℝ, polynomials, square matrices, and so on.
 
 ## MATHEMATICAL PROPERTIES OF SUBTRACTION
 
+1/ Absorbing element.
+
 In standard mathematics, [0] is an absorbing element for multiplication
 (i.e., [∀ a, a × 0 = 0]). This property can be proved in rings and fields,
 but not in general semirings, where it must be given as an additional axiom.
@@ -225,26 +227,26 @@ The proof is then the following:
 In Rocq library, this is proven for the type [nat] by induction. But a
 general semiring is not necessarily defined by induction.
 
+2/ Simplification of addition.
+
 A second property that can be proven, when the subtraction exists, is the
 simplification of addition:
 <<
-    ∀ a b c, a + b = a + c → b = c
+    ∀ a b c, a + c = b + c → a = b
 >>
 
-In semirings, that cannot be proven because we need to add [-a] in the
+In semirings, that cannot be proved because we need to add [-c] in the
 initial expression, but semirings don't have opposite.
 
-But if the semiring has a subtraction, it can be proven. Starting
-from:
+But if the semiring has a subtraction, it can be proven. Knowing that
+<< a + c = b + c >> and starting from:
 <<
-    c + a - a = c
+    b + c - c = b
 >>
 we get
 <<
-    a + c - a = c
-    → a + b - a = c
-    → b + a - a = c
-    → b = c
+    a + c - c = b
+    → a = b
 >>
 
 The same way, in Rocq library, this is proven for the type [nat] by
