@@ -1,6 +1,14 @@
-(* derivability of a product of a function from A to T
-   where A is any type with a distance and relation orders lt and le
-   and T is a ring-like, generally ℝ *)
+(** * RingLike.DerivMul
+
+Derivability of a product and of an inverse of a function from [A]
+to [T] where
+- [A] is any type with a distance and relation orders [lt] and [le], and
+- [T] is a ring-like, generally ℝ.
+
+The derivative of [f.g] is well-known as being [f.g'+f'.g].
+
+The derivative of [f⁻¹] is well-knwon as being [-f'/f²].
+*)
 
 Set Nested Proofs Allowed.
 
