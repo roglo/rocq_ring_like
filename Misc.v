@@ -22,7 +22,8 @@ Notation "x ≠? y" := (negb (Nat.eqb x y)) (at level 70) : nat_scope.
 Definition comp {A B C} (f : B → C) (g : A → B) x := f (g x).
 
 (** ** flia
-"fast" lia, to improve compilation speed *)
+"fast" lia, to improve compilation speed
+*)
 Tactic Notation "flia" hyp_list(Hs) := clear - Hs; lia.
 
 Notation "x ≤ y ≤ z" := (x <= y ∧ y <= z)%nat (at level 70, y at next level) :
