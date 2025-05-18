@@ -26,6 +26,8 @@ Definition comp {A B C} (f : B → C) (g : A → B) x := f (g x).
 *)
 Tactic Notation "flia" hyp_list(Hs) := clear - Hs; lia.
 
+(* end flia *)
+
 Notation "x ≤ y ≤ z" := (x <= y ∧ y <= z)%nat (at level 70, y at next level) :
                           nat_scope.
 Notation "x < y ≤ z" := (x < y ∧ y <= z)%nat (at level 70, y at next level) :
