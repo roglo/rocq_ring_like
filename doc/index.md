@@ -52,6 +52,10 @@ foundation.
 - [Structures](RingLike.Structures.html)
 - [ZRingLike](RingLike.ZRingLike.html)
 
+## Table of Contents
+
+- [toc](toc.html)
+
 ---
 
 *This documentation is generated automatically. For the latest source
