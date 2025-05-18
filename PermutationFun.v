@@ -1,4 +1,13 @@
-(* Testing if a list is a permutation of another one *)
+(** * PermutationFun
+
+This module defines a boolean notion of list permutation, assuming a
+decidable equality on elements. Unlike the standard [Permutation] from
+the Rocq standard library (which is a [Prop]), this version returns a
+[bool] and is suitable for computation and reflection.
+
+It is mainly used to prove that iterated sums or products over a list
+are invariant under permutations of the list, under appropriate algebraic
+conditions (e.g., associativity and commutativity). *)
 
 Set Nested Proofs Allowed.
 
