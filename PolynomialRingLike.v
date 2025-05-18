@@ -7,10 +7,9 @@ Set Nested Proofs Allowed.
 From Stdlib Require Import Utf8 Arith.
 Import List.ListNotations Init.Nat.
 
-Require Import Core.
+Require Import Core Misc Utils.
 Require Import IterAdd.
 Require Import LapRingLike.
-Require Import Misc.
 
 Section a.
 
