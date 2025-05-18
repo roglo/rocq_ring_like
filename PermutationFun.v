@@ -7,7 +7,8 @@ the Rocq standard library (which is a [Prop]), this version returns a
 
 It is mainly used to prove that iterated sums or products over a list
 are invariant under permutations of the list, under appropriate algebraic
-conditions (e.g., associativity and commutativity). *)
+conditions (e.g., associativity and commutativity).
+*)
 
 Set Nested Proofs Allowed.
 
