@@ -21,12 +21,8 @@ Notation "x ≠? y" := (negb (Nat.eqb x y)) (at level 70) : nat_scope.
 
 Definition comp {A B C} (f : B → C) (g : A → B) x := f (g x).
 
-(** ** flia
-"fast" lia, to improve compilation speed
-*)
+(* "fast" lia, to improve compilation speed *)
 Tactic Notation "flia" hyp_list(Hs) := clear - Hs; lia.
-
-(* end flia *)
 
 Notation "x ≤ y ≤ z" := (x <= y ∧ y <= z)%nat (at level 70, y at next level) :
                           nat_scope.
@@ -131,7 +127,7 @@ rewrite Nat.add_comm in Hab; cbn in Hab.
 now rewrite Nat.sub_add.
 Qed.
 
-(** ** Iterators for aggregation operations
+(* Iterators for aggregation operations
 
     The functions [iter_list] and [iter_seq] define generic iteration
     schemes over lists and integer intervals, respectively. They are
@@ -716,10 +712,7 @@ rewrite iter_list_cons; cycle 1. {
 now cbn; f_equal.
 Qed.
 
-(** ** cart_prod
-
-Cartesian product of several lists
-*)
+(* cart_prod : Cartesian product of several lists *)
 
 Fixpoint cart_prod {A} (ll : list (list A)) :=
   match ll with
@@ -857,7 +850,7 @@ split. {
 }
 Qed.
 
-(** ** extract
+(* extract
 
 Like "find" but returning all details:
 - what is before
@@ -1030,7 +1023,7 @@ split. {
 }
 Qed.
 
-(** ** List_rank
+(* List_rank
 
 Rank of the first element satisfying a predicate
 Like "find" but returning the rank, not the element itself *)
@@ -1280,10 +1273,7 @@ destruct (le_dec a b) as [Hab| Hab]. {
 }
 Qed.
 
-(** ** List_map2
-
-Map with two lists
-*)
+(* List_map2 : Map with two lists *)
 
 Fixpoint List_map2 {A B C} (f : A → B → C) la lb :=
   match la with
@@ -1639,7 +1629,7 @@ Proof. easy. Qed.
 Theorem Nat_succ_sub_succ_r : ∀ a b, b < a → a - b = S (a - S b).
 Proof. intros * Hba; flia Hba. Qed.
 
-(** ** binomial *)
+(* binomial *)
 
 Fixpoint binomial n k :=
   match k with
