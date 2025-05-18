@@ -17,12 +17,20 @@
 <div id="main">
 
 <div class="code">
+
+<br/>
 <span class="id" title="keyword">From</span> <span class="id" title="var">Stdlib</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="library">Utf8</span>.<br/>
 <span class="id" title="keyword">From</span> <span class="id" title="var">Stdlib</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="library">ZArith</span>.<br/>
+
+<br/>
 <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <a class="idref" href="RingLike.Core.html#"><span class="id" title="library">Core</span></a>.<br/>
+
+<br/>
 <span class="id" title="keyword">Notation</span> <a id="4ba61b06dfba8efe2fde3e31f9b023d3" class="idref" href="#4ba61b06dfba8efe2fde3e31f9b023d3"><span class="id" title="notation">&quot;</span></a>x ≤ y" := (<span class="id" title="var">x</span> <span class="id" title="notation">≤</span> <span class="id" title="var">y</span>)%<span class="id" title="var">Z</span> (<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 70, <span class="id" title="var">y</span> <span class="id" title="tactic">at</span> <span class="id" title="var">next</span> <span class="id" title="keyword">level</span>) : <span class="id" title="var">Z_scope</span>.<br/>
 <span class="id" title="keyword">Notation</span> <a id="df96b57a2152b53fc36b07a065b7c5d2" class="idref" href="#df96b57a2152b53fc36b07a065b7c5d2"><span class="id" title="notation">&quot;</span></a>x ≤ y ≤ z" := (<span class="id" title="var">x</span> <span class="id" title="notation">≤</span> <span class="id" title="var">y</span> <span class="id" title="notation">∧</span> <span class="id" title="var">y</span> <span class="id" title="notation">≤</span> <span class="id" title="var">z</span>)%<span class="id" title="var">Z</span> (<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 70, <span class="id" title="var">y</span> <span class="id" title="tactic">at</span> <span class="id" title="var">next</span> <span class="id" title="keyword">level</span>) :<br/>
 &nbsp;&nbsp;<span class="id" title="var">Z_scope</span>.<br/>
+
+<br/>
 <span class="id" title="keyword">Instance</span> <a id="Z_ring_like_op" class="idref" href="#Z_ring_like_op"><span class="id" title="instance">Z_ring_like_op</span></a> : <a class="idref" href="RingLike.Structures.html#ring_like_op"><span class="id" title="class">ring_like_op</span></a> <a class="idref" href="http://coq.inria.fr/doc/V9.0.0/stdlib//Corelib.Numbers.BinNums.html#Z"><span class="id" title="inductive">Z</span></a> :=<br/>
 &nbsp;&nbsp;{| <a class="idref" href="RingLike.Structures.html#rngl_zero"><span class="id" title="method">rngl_zero</span></a> := 0%<span class="id" title="var">Z</span>;<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="RingLike.Structures.html#rngl_add"><span class="id" title="method">rngl_add</span></a> := <span class="id" title="definition">Z.add</span>;<br/>
