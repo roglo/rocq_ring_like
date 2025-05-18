@@ -16,7 +16,7 @@ Mul_with_order.vo Mul_with_order.glob Mul_with_order.v.beautified Mul_with_order
 Nat_algebra.vo Nat_algebra.glob Nat_algebra.v.beautified Nat_algebra.required_vo: Nat_algebra.v Core.vo
 Order.vo Order.glob Order.v.beautified Order.required_vo: Order.v Structures.vo
 PermutationFun.vo PermutationFun.glob PermutationFun.v.beautified PermutationFun.required_vo: PermutationFun.v Misc.vo Utils.vo
-PolynomialRingLike.vo PolynomialRingLike.glob PolynomialRingLike.v.beautified PolynomialRingLike.required_vo: PolynomialRingLike.v Core.vo IterAdd.vo Lap_algebra.vo Misc.vo Utils.vo
+Polynomial_algebra.vo Polynomial_algebra.glob Polynomial_algebra.v.beautified Polynomial_algebra.required_vo: Polynomial_algebra.v Core.vo IterAdd.vo Lap_algebra.vo Misc.vo Utils.vo
 RealLike.vo RealLike.glob RealLike.v.beautified RealLike.required_vo: RealLike.v Core.vo
 Structures.vo Structures.glob Structures.v.beautified Structures.required_vo: Structures.v
 Utils.vo Utils.glob Utils.v.beautified Utils.required_vo: Utils.v Misc.vo

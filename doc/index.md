@@ -47,7 +47,7 @@ foundation.
 - [Nat_algebra](RingLike.Nat_algebra.html)
 - [Order](RingLike.Order.html)
 - [PermutationFun](RingLike.PermutationFun.html)
-- [PolynomialRingLike](RingLike.PolynomialRingLike.html)
+- [Polynomial_algebra](RingLike.Polynomial_algebra.html)
 - [RealLike](RingLike.RealLike.html)
 - [Structures](RingLike.Structures.html)
 - [Utils](RingLike.Utils.html)

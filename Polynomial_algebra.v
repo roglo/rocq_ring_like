@@ -1,6 +1,21 @@
-(* PolynomialRingLike.v *)
+(** * Polynomial_algebra
 
-(* polynomials on a RingLike *)
+This module defines a ring-like algebra over polynomials represented by
+lists whose leading coefficient is non-zero. For example, the polynomial
+[ax² + bx + c] is represented as the list [[c; b; a]] together with the
+proof that [a≠0].
+
+This module uses a version with lists [[RingLike.Lap_algebra]]
+where the leading coefficient is not constrained.
+
+See the module [[RingLike.Core]] for the general description
+of the ring-like library.
+
+Usage:
+<<
+    Require Import RingLike.Polynomial_algebra.
+>>
+*)
 
 Set Nested Proofs Allowed.
 

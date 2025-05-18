@@ -6,14 +6,14 @@ lists ("lap" stands for _list as polynomial_). For example, the polynomial
 
 This module does not check whether the leading coefficient is non-zero.
 That is enforced in the actual polynomial implementation
-[[RingLike.PolynomialRingLike]].
+[[RingLike.Polynomial_algebra]].
 
 See the module [[RingLike.Core]] for the general description
 of the ring-like library.
 
 Usage:
 <<
-    Require Import RingLike.LapPolyn.
+    Require Import RingLike.Lap_algebra.
 >>
 *)
 
