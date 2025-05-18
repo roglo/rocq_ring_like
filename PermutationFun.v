@@ -4,11 +4,10 @@ Set Nested Proofs Allowed.
 
 From Stdlib Require Import Utf8 Arith.
 From Stdlib Require FinFun.
-
 Import Init.Nat.
 Import List.ListNotations.
 
-Require Import Misc.
+Require Import Misc Utils.
 
 Definition reflexive {A} (rel : A → A → bool) :=
   ∀ a, rel a a = true.

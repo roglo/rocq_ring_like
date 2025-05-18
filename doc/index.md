@@ -50,6 +50,7 @@ foundation.
 - [PolynomialRingLike](RingLike.PolynomialRingLike.html)
 - [RealLike](RingLike.RealLike.html)
 - [Structures](RingLike.Structures.html)
+- [Utils](RingLike.Utils.html)
 - [ZRingLike](RingLike.ZRingLike.html)
 
 ## Table of Contents

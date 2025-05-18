@@ -32,8 +32,7 @@ Set Nested Proofs Allowed.
 From Stdlib Require Import Utf8 Arith.
 Import List.ListNotations.
 
-Require Import Core.
-Require Import Misc.
+Require Import Core Misc Utils.
 Require Import PermutationFun.
 
 Notation "'∏' ( i = b , e ) , g" :=

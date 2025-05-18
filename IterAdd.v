@@ -31,12 +31,11 @@ Set Nested Proofs Allowed.
 
 From Stdlib Require Import Utf8 Arith.
 Import ListDef.
-
-Require Import Core.
-Require Import Misc.
-Require Import PermutationFun.
 Import List.ListNotations.
 Open Scope list.
+
+Require Import Core Misc Utils.
+Require Import PermutationFun.
 
 Notation "'∑' ( i = b , e ) , g" :=
   (iter_seq b e (λ c i, (c + g)%L) 0%L)
