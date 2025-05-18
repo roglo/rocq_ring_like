@@ -54,18 +54,7 @@ standard library.
 <span class="id" title="keyword">Definition</span> <a id="comp" class="idref" href="#comp"><span class="id" title="definition">comp</span></a> {<a id="A:1" class="idref" href="#A:1"><span class="id" title="binder">A</span></a> <a id="B:2" class="idref" href="#B:2"><span class="id" title="binder">B</span></a> <a id="C:3" class="idref" href="#C:3"><span class="id" title="binder">C</span></a>} (<a id="f:4" class="idref" href="#f:4"><span class="id" title="binder">f</span></a> : <a class="idref" href="RingLike.Misc.html#B:2"><span class="id" title="variable">B</span></a> <span class="id" title="notation">→</span> <a class="idref" href="RingLike.Misc.html#C:3"><span class="id" title="variable">C</span></a>) (<a id="g:5" class="idref" href="#g:5"><span class="id" title="binder">g</span></a> : <a class="idref" href="RingLike.Misc.html#A:1"><span class="id" title="variable">A</span></a> <span class="id" title="notation">→</span> <a class="idref" href="RingLike.Misc.html#B:2"><span class="id" title="variable">B</span></a>) <a id="x:6" class="idref" href="#x:6"><span class="id" title="binder">x</span></a> := <a class="idref" href="RingLike.Misc.html#f:4"><span class="id" title="variable">f</span></a> (<a class="idref" href="RingLike.Misc.html#g:5"><span class="id" title="variable">g</span></a> <a class="idref" href="RingLike.Misc.html#x:6"><span class="id" title="variable">x</span></a>).<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-<a id="lab20"></a><h2 class="section">flia</h2>
-
-"fast" lia, to improve compilation speed
-
-</div>
-<div class="code">
 <span class="id" title="keyword">Tactic Notation</span> "flia" <span class="id" title="var">hyp_list</span>(<span class="id" title="var">Hs</span>) := <span class="id" title="tactic">clear</span> - <span class="id" title="var">Hs</span>; <span class="id" title="var">lia</span>.<br/>
-
-<br/>
 
 <br/>
 <span class="id" title="keyword">Notation</span> <a id="8d10b702166265b8fd094255e9415fd2" class="idref" href="#8d10b702166265b8fd094255e9415fd2"><span class="id" title="notation">&quot;</span></a>x ≤ y ≤ z" := (<span class="id" title="var">x</span> <a class="idref" href="http://coq.inria.fr/doc/V9.0.0/stdlib//Corelib.Init.Peano.html#cb53cf0ee22c036a03b4a9281c68b5a3"><span class="id" title="notation">≤</span></a> <span class="id" title="var">y</span> <span class="id" title="notation">∧</span> <span class="id" title="var">y</span> <a class="idref" href="http://coq.inria.fr/doc/V9.0.0/stdlib//Corelib.Init.Peano.html#cb53cf0ee22c036a03b4a9281c68b5a3"><span class="id" title="notation">≤</span></a> <span class="id" title="var">z</span>)%<span class="id" title="var">nat</span> (<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 70, <span class="id" title="var">y</span> <span class="id" title="tactic">at</span> <span class="id" title="var">next</span> <span class="id" title="keyword">level</span>) :<br/>
@@ -131,7 +120,7 @@ standard library.
 </div>
 
 <div class="doc">
-<a id="lab21"></a><h2 class="section">Iterators for aggregation operations</h2>
+<a id="lab20"></a><h2 class="section">Iterators for aggregation operations</h2>
 
 
 <div class="paragraph"> </div>
@@ -435,7 +424,7 @@ standard library.
 </div>
 
 <div class="doc">
-<a id="lab22"></a><h2 class="section">cart_prod</h2>
+<a id="lab21"></a><h2 class="section">cart_prod</h2>
 
 
 <div class="paragraph"> </div>
@@ -479,7 +468,7 @@ Cartesian product of several lists
 </div>
 
 <div class="doc">
-<a id="lab23"></a><h2 class="section">extract</h2>
+<a id="lab22"></a><h2 class="section">extract</h2>
 
 
 <div class="paragraph"> </div>
@@ -539,7 +528,7 @@ Like "find" but returning all details:
   </div>
 
 <div class="doc">
-<a id="lab24"></a><h2 class="section">List_rank</h2>
+<a id="lab23"></a><h2 class="section">List_rank</h2>
 
 
 <div class="paragraph"> </div>
@@ -638,7 +627,7 @@ Like "find" but returning the rank, not the element itself
 </div>
 
 <div class="doc">
-<a id="lab25"></a><h2 class="section">List_map2</h2>
+<a id="lab24"></a><h2 class="section">List_map2</h2>
 
 
 <div class="paragraph"> </div>
@@ -795,7 +784,7 @@ Map with two lists
 </div>
 
 <div class="doc">
-<a id="lab26"></a><h2 class="section">binomial</h2>
+<a id="lab25"></a><h2 class="section">binomial</h2>
 
 </div>
 <div class="code">
