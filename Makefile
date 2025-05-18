@@ -29,7 +29,6 @@ local_opam_pin_add:
 
 doc:
 	rocq doc -html -utf8 --no-index -d ../gh-pages/ -R . RingLike -s -g -toc *.v
-	make doc_links
 
 doc_links:
 	find ../gh-pages/. -name '*.html' -exec sed -i 's/\[<span class="id" title="var">RingLike\.\([a-zA-Z_]*\)<\/span>\]/<a class="idref" href="RingLike.\1.html">RingLike.\1<\/a>/g' {} +

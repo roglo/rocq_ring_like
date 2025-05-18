@@ -1,4 +1,4 @@
-(** * Nat_algebra
+(** * RingLike.Nat_algebra
 
     This module provides an instantiation of the [ring_like] structure
     over the natural numbers ([nat]).
