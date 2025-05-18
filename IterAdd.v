@@ -1,4 +1,4 @@
-(** * IterAdd.v
+(** * IterAdd
 
 Summations on a ring-like.
 

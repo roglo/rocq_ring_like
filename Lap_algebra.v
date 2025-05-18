@@ -1,4 +1,4 @@
-(** * LapRingLike.v
+(** * Lap_algebra
 
 This module defines a ring-like algebra over polynomials represented by
 lists ("lap" stands for _list as polynomial_). For example, the polynomial

@@ -1,4 +1,4 @@
-(** * IterAnd.v
+(** * IterAnd
 
 Iterators of "and" on bool.
 

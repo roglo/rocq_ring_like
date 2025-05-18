@@ -1,4 +1,4 @@
-(** * Utils.v
+(** * Utils
 
     This module gathers auxiliary definitions and constructions of general
     utility across the RingLike development. It is meant to centralize

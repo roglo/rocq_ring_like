@@ -1,4 +1,4 @@
-(** * Misc.v
+(** * Misc
 
 Various definitions, theorems, and notations used in the RingLike
 library, some of which may eventually be incorporated into the Rocq

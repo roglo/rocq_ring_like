@@ -1,4 +1,4 @@
-(** * IterMul.v
+(** * IterMul
 
 Products on a ring-like.
 
