@@ -1,5 +1,9 @@
-(* Misc.v *)
-(* Theorems of general usage, which could be (or not) in Coq library *)
+(** * Misc.v
+
+Various definitions, theorems, and notations used in the RingLike
+library, some of which may eventually be incorporated into the Rocq
+standard library.
+*)
 
 From Stdlib Require Import Utf8 Arith Psatz.
 Import List.ListNotations.
@@ -17,7 +21,8 @@ Notation "x ≠? y" := (negb (Nat.eqb x y)) (at level 70) : nat_scope.
 
 Definition comp {A B C} (f : B → C) (g : A → B) x := f (g x).
 
-(* "fast" lia, to improve compilation speed *)
+(** ** flia
+"fast" lia, to improve compilation speed *)
 Tactic Notation "flia" hyp_list(Hs) := clear - Hs; lia.
 
 Notation "x ≤ y ≤ z" := (x <= y ∧ y <= z)%nat (at level 70, y at next level) :
@@ -123,15 +128,33 @@ rewrite Nat.add_comm in Hab; cbn in Hab.
 now rewrite Nat.sub_add.
 Qed.
 
-(* iterations in a list
-   in order to later define syntaxes : Max, Σ, Π, ...
-   e.g. "Σ (i ∈ l), f i", "Π (i ∈ l), f i", ... *)
+(** ** Iterators for aggregation operations
+
+    The functions [iter_list] and [iter_seq] define generic iteration
+    schemes over lists and integer intervals, respectively. They are
+    designed to support readable notations such as:
+
+    - [∑ (i ∈ l), f i] : list-based summation
+    - [∑ (i = b, e), f i] : summation over integer ranges
+
+    These iterators also apply to other aggregation operations:
+    products (∏), maxima (Max), conjunctions (⋀).
+
+    The Rocq system renders [iter_list] and [iter_seq] symbolically
+    (∑, ∏, Max, ⋀) according to their use context.
+
+    There are also various theorems for manipulating these
+    iterators.
+
+    These definitions and theorems are used in the following modules:
+
+    - [[RingLike.IterAdd]]
+    - [[RingLike.IterMul]]
+    - [[RingLike.IterMax]]
+    - [[RingLike.IterAnd]]
+*)
 
 Definition iter_list {A B} (l : list B) f (d : A) := List.fold_left f l d.
-
-(* iterations in indexed sequences
-   in order to later define syntaxes : Max, Σ, Π, ...
-   e.g. "Σ (i = b, e), f i", "Π (i = b, e), f i" *)
 
 Definition iter_seq {T} b e f (d : T) := iter_list (List.seq b (S e - b)) f d.
 
@@ -690,7 +713,10 @@ rewrite iter_list_cons; cycle 1. {
 now cbn; f_equal.
 Qed.
 
-(* cart_prod: cartesian product of several lists *)
+(** ** cart_prod
+
+Cartesian product of several lists
+*)
 
 Fixpoint cart_prod {A} (ll : list (list A)) :=
   match ll with
@@ -828,12 +854,12 @@ split. {
 }
 Qed.
 
-(* end cart_prod *)
+(** ** extract
 
-(* extract: like "find" but returning all details:
-   - what is before
-   - the value found
-   - what is after *)
+Like "find" but returning all details:
+- what is before
+- the value found
+- what is after *)
 
 Fixpoint extract {A} (f : A → bool) l :=
   match l with
@@ -1001,8 +1027,10 @@ split. {
 }
 Qed.
 
-(* rank: rank of the first element satisfying a predicate *)
-(* like "find" but returning the rank, not the element itself *)
+(** ** List_rank
+
+Rank of the first element satisfying a predicate
+Like "find" but returning the rank, not the element itself *)
 
 Fixpoint List_rank_loop i [A] (f : A → bool) (l : list A) : nat :=
   match l with
@@ -1249,7 +1277,10 @@ destruct (le_dec a b) as [Hab| Hab]. {
 }
 Qed.
 
-(* List_map2: map with two lists *)
+(** ** List_map2
+
+Map with two lists
+*)
 
 Fixpoint List_map2 {A B C} (f : A → B → C) la lb :=
   match la with
@@ -1605,8 +1636,7 @@ Proof. easy. Qed.
 Theorem Nat_succ_sub_succ_r : ∀ a b, b < a → a - b = S (a - S b).
 Proof. intros * Hba; flia Hba. Qed.
 
-(* binomial *)
-(* code borrowed from my work "coq_euler_prod_form" *)
+(** ** binomial *)
 
 Fixpoint binomial n k :=
   match k with
