@@ -1,4 +1,20 @@
-(* ℕ is a ring-like without opposite, i.e. a semiring *)
+(** * Nat_algebra
+
+    This module provides an instantiation of the [ring_like] structure
+    over the natural numbers ([nat]).
+
+    It defines:
+    - [nat_ring_like_op]: the standard operations on [nat] (+, ×, 0, 1);
+    - [nat_ring_like_ord]: the order relation and its properties;
+    - [nat_ring_like_prop]: the algebraic axioms satisfied by [nat].
+
+    This serves as a concrete test case to validate the consistency
+    and generality of the abstract [ring_like] theory.
+
+    Note: Although [nat] does not form a ring in the strict sense
+    (it lacks additive inverses), it satisfies the axioms of a semiring,
+    making it a useful minimal example of a [ring_like] structure.
+*)
 
 Set Nested Proofs Allowed.
 From Stdlib Require Import Utf8 Arith.

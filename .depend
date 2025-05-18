@@ -13,7 +13,7 @@ LapRingLike.vo LapRingLike.glob LapRingLike.v.beautified LapRingLike.required_vo
 Misc.vo Misc.glob Misc.v.beautified Misc.required_vo: Misc.v
 Mul.vo Mul.glob Mul.v.beautified Mul.required_vo: Mul.v Add.vo Structures.vo
 Mul_with_order.vo Mul_with_order.glob Mul_with_order.v.beautified Mul_with_order.required_vo: Mul_with_order.v Add.vo Add_with_order.vo Mul.vo Order.vo Structures.vo
-NatRingLike.vo NatRingLike.glob NatRingLike.v.beautified NatRingLike.required_vo: NatRingLike.v Core.vo
+Nat_algebra.vo Nat_algebra.glob Nat_algebra.v.beautified Nat_algebra.required_vo: Nat_algebra.v Core.vo
 Order.vo Order.glob Order.v.beautified Order.required_vo: Order.v Structures.vo
 PermutationFun.vo PermutationFun.glob PermutationFun.v.beautified PermutationFun.required_vo: PermutationFun.v Misc.vo Utils.vo
 PolynomialRingLike.vo PolynomialRingLike.glob PolynomialRingLike.v.beautified PolynomialRingLike.required_vo: PolynomialRingLike.v Core.vo IterAdd.vo LapRingLike.vo Misc.vo Utils.vo

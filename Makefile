@@ -1,4 +1,4 @@
-TARGET=Core.vo RealLike.vo IterMul.vo IterAnd.vo IterMax.vo DerivMul.vo NatRingLike.vo ZRingLike.vo LapRingLike.vo PolynomialRingLike.vo
+TARGET=Core.vo RealLike.vo IterMul.vo IterAnd.vo IterMax.vo DerivMul.vo Nat_algebra.vo ZRingLike.vo LapRingLike.vo PolynomialRingLike.vo
 FILESFORDEP=`LC_ALL=C ls *.v`
 ROCQ=rocq compile
 ROCQ_OPT=

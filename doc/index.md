@@ -44,7 +44,7 @@ foundation.
 - [Misc](RingLike.Misc.html)
 - [Mul](RingLike.Mul.html)
 - [Mul_with_order](RingLike.Mul_with_order.html)
-- [NatRingLike](RingLike.NatRingLike.html)
+- [Nat_algebra](RingLike.Nat_algebra.html)
 - [Order](RingLike.Order.html)
 - [PermutationFun](RingLike.PermutationFun.html)
 - [PolynomialRingLike](RingLike.PolynomialRingLike.html)
