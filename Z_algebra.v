@@ -1,4 +1,16 @@
-(* ℤ is a ring-like, i.e. a ring *)
+(** * Z_algebra
+
+    This module ([RingLike.Z_algebra]) provides an instantiation of
+    the [ring_like] structure over the integers ([Z]).
+
+    It defines:
+    - [Z_ring_like_op]: the standard operations on [Z] (+, ×, 0, 1);
+    - [Z_ring_like_ord]: the order relation and its properties;
+    - [Z_ring_like_prop]: the algebraic axioms satisfied by [nat].
+
+    This serves as a concrete test case to validate the consistency
+    and generality of the abstract [ring_like] theory.
+*)
 
 Set Nested Proofs Allowed.
 From Stdlib Require Import Utf8.
