@@ -10,28 +10,28 @@ Require Import Misc.
 
 (** ** Iterators for aggregation operations
 
-The functions [iter_list] and [iter_seq] define generic iteration
-schemes over lists and integer intervals, respectively. They are
-designed to support readable notations such as:
+    The functions [iter_list] and [iter_seq] define generic iteration
+    schemes over lists and integer intervals, respectively. They are
+    designed to support readable notations such as:
 
-- [∑ (i ∈ l), f i] : list-based summation
-- [∑ (i = b, e), f i] : summation over integer ranges
+    - [∑ (i ∈ l), f i] : list-based summation
+    - [∑ (i = b, e), f i] : summation over integer ranges
 
-These iterators also apply to other aggregation operations:
-products (∏), maxima (Max), conjunctions (⋀).
+    These iterators also apply to other aggregation operations:
+    products (∏), maxima (Max), conjunctions (⋀).
 
-The Rocq system renders [iter_list] and [iter_seq] symbolically
-(∑, ∏, Max, ⋀) according to their use context.
+    The Rocq system renders [iter_list] and [iter_seq] symbolically
+    (∑, ∏, Max, ⋀) according to their use context.
 
-There are also various theorems for manipulating these
-iterators.
+    There are also various theorems for manipulating these
+    iterators.
 
-These definitions and theorems are used in the following modules:
+    These definitions and theorems are used in the following modules:
 
-- [[RingLike.IterAdd]]
-- [[RingLike.IterMul]]
-- [[RingLike.IterMax]]
-- [[RingLike.IterAnd]]
+    - [[RingLike.IterAdd]]
+    - [[RingLike.IterMul]]
+    - [[RingLike.IterMax]]
+    - [[RingLike.IterAnd]]
 *)
 
 Definition iter_list {A B} (l : list B) f (d : A) := List.fold_left f l d.
@@ -549,20 +549,39 @@ rewrite iter_list_cons; cycle 1. {
 now cbn; f_equal.
 Qed.
 
-(** ** card_prod
+(** ** List_cart_prod
 
-Cartesian product of several lists
+    Generalization of the standard [List.list_prod] to an arbitrary
+    number of lists (not just two). It computes the Cartesian product
+    of a list of lists.
+
+    For example:
+<<
+      List.list_prod [1; 2] [3; 4; 5] =
+        [(1,3); (1,4); (1,5); (2,3); (2,4); (2,5)]
+
+      List_cart_prod [[1; 2]; [3; 4; 5]] =
+        [[1;3]; [1;4]; [1;5]; [2;3]; [2;4]; [2;5]]
+>>
+
+    Instead of producing pairs [(a, b)], this function produces lists
+    [a; b]. The number of input lists can be zero, one, two, or more.
+
+    - [List_cart_prod []] returns [[]]
+    - [List_cart_prod [[1; 2]; [3; 4]]] returns all pairs as 2-lists
+    - [List_cart_prod [[a1; a2]; [b1]; [c1; c2]]] returns 4 3-lists:
+      [a1; b1; c1], [a1; b1; c2], [a2; b1; c1], [a2; b1; c2]
 *)
 
-Fixpoint cart_prod {A} (ll : list (list A)) :=
+Fixpoint List_cart_prod {A} (ll : list (list A)) :=
   match ll with
   | [] => [[]]
-  | l :: ll' => List.flat_map (λ a, List.map (cons a) (cart_prod ll')) l
+  | l :: ll' => List.flat_map (λ a, List.map (cons a) (List_cart_prod ll')) l
   end.
 
-Theorem cart_prod_length : ∀ A (ll : list (list A)),
+Theorem List_cart_prod_length : ∀ A (ll : list (list A)),
   ll ≠ []
-  → length (cart_prod ll) = iter_list ll (fun c l => c * length l) 1.
+  → length (List_cart_prod ll) = iter_list ll (fun c l => c * length l) 1.
 Proof.
 intros * Hll.
 revert Hll.
@@ -599,8 +618,8 @@ rewrite iter_list_cons; cycle 1.
 now cbn; rewrite IHl1.
 Qed.
 
-Theorem in_cart_prod_length : ∀ A (ll : list (list A)) l,
-  l ∈ cart_prod ll → length l = length ll.
+Theorem in_List_cart_prod_length : ∀ A (ll : list (list A)) l,
+  l ∈ List_cart_prod ll → length l = length ll.
 Proof.
 intros * Hl.
 revert l Hl.
@@ -617,9 +636,9 @@ subst l; cbn; f_equal.
 now apply IHll.
 Qed.
 
-Theorem nth_in_cart_prod : ∀ A (d : A) ll l i,
+Theorem nth_in_List_cart_prod : ∀ A (d : A) ll l i,
   i < length ll
-  → l ∈ cart_prod ll
+  → l ∈ List_cart_prod ll
   → List.nth i l d ∈ List.nth i ll [].
 Proof.
 intros * Hi Hll.
@@ -648,18 +667,18 @@ rewrite List_nth_succ_cons.
 now apply IHll.
 Qed.
 
-Theorem in_cart_prod_iff : ∀ {A} (d : A) ll la,
-  la ∈ cart_prod ll
+Theorem in_List_cart_prod_iff : ∀ {A} (d : A) ll la,
+  la ∈ List_cart_prod ll
   ↔ length la = length ll ∧
     ∀ i, i < length la → List.nth i la d ∈ List.nth i ll [].
 Proof.
 intros.
 split. {
   intros Hla.
-  split; [ now apply in_cart_prod_length in Hla | ].
+  split; [ now apply in_List_cart_prod_length in Hla | ].
   intros i Hi.
-  apply nth_in_cart_prod; [ | easy ].
-  apply in_cart_prod_length in Hla.
+  apply nth_in_List_cart_prod; [ | easy ].
+  apply in_List_cart_prod_length in Hla.
   congruence.
 } {
   intros (Hla & Hnth).
