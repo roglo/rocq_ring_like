@@ -1,6 +1,8 @@
 (** * Utils.v
 
-Miscellaneaous useful structures
+    This module gathers auxiliary definitions and constructions of general
+    utility across the RingLike development. It is meant to centralize
+    reusable elements shared by multiple modules.
 *)
 
 From Stdlib Require Import Utf8 Arith (*Psatz*).
