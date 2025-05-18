@@ -709,10 +709,10 @@ Qed.
 
 (** ** List_extract
 
-Like "List.find" but returning all details:
-- what is before
-- the value found
-- what is after *)
+An enhanced version of [List.find] that returns an optional triple:
+- the list segment before the match
+- the matching element
+- the segment after the match *)
 
 Fixpoint List_extract {A} (f : A → bool) l :=
   match l with
