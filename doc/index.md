@@ -40,18 +40,21 @@ foundation.
 - [IterAnd](RingLike.IterAnd.html)
 - [IterMax](RingLike.IterMax.html)
 - [IterMul](RingLike.IterMul.html)
-- [Lap_algebra](RingLike.Lap_algebra.html)
 - [Misc](RingLike.Misc.html)
 - [Mul](RingLike.Mul.html)
 - [Mul_with_order](RingLike.Mul_with_order.html)
-- [Nat_algebra](RingLike.Nat_algebra.html)
 - [Order](RingLike.Order.html)
 - [PermutationFun](RingLike.PermutationFun.html)
-- [Polynomial_algebra](RingLike.Polynomial_algebra.html)
 - [RealLike](RingLike.RealLike.html)
 - [Structures](RingLike.Structures.html)
 - [Utils](RingLike.Utils.html)
+
+Algebras
+
+- [Nat_algebra](RingLike.Nat_algebra.html)
 - [Z_algebra](RingLike.Z_algebra.html)
+- [Lap_algebra](RingLike.Lap_algebra.html)
+- [Polynomial_algebra](RingLike.Polynomial_algebra.html)
 
 ## Table of Contents
 
