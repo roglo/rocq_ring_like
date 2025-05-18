@@ -40,7 +40,7 @@ foundation.
 - [IterAnd](RingLike.IterAnd.html)
 - [IterMax](RingLike.IterMax.html)
 - [IterMul](RingLike.IterMul.html)
-- [LapRingLike](RingLike.LapRingLike.html)
+- [Lap_algebra](RingLike.Lap_algebra.html)
 - [Misc](RingLike.Misc.html)
 - [Mul](RingLike.Mul.html)
 - [Mul_with_order](RingLike.Mul_with_order.html)

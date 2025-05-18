@@ -9,7 +9,7 @@ Import List.ListNotations Init.Nat.
 
 Require Import Core Misc Utils.
 Require Import IterAdd.
-Require Import LapRingLike.
+Require Import Lap_algebra.
 
 Section a.
 
