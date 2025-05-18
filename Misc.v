@@ -850,27 +850,27 @@ split. {
 }
 Qed.
 
-(* extract
+(* List_extract
 
 Like "find" but returning all details:
 - what is before
 - the value found
 - what is after *)
 
-Fixpoint extract {A} (f : A → bool) l :=
+Fixpoint List_extract {A} (f : A → bool) l :=
   match l with
   | [] => None
   | a :: la =>
       if f a then Some ([], a, la)
       else
-        match extract f la with
+        match List_extract f la with
         | None => None
         | Some (bef, b, aft) => Some (a :: bef, b, aft)
         end
   end.
 
-Theorem extract_Some_iff : ∀ A (f : A → _) l a bef aft,
-  extract f l = Some (bef, a, aft)
+Theorem List_extract_Some_iff : ∀ A (f : A → _) l a bef aft,
+  List_extract f l = Some (bef, a, aft)
   ↔ (∀ x, x ∈ bef → f x = false) ∧ f a = true ∧ l = bef ++ a :: aft.
 Proof.
 intros.
@@ -883,7 +883,7 @@ split. {
   destruct fb. {
     now injection He; clear He; intros; subst bef b aft.
   }
-  remember (extract f l) as lal eqn:Hlal; symmetry in Hlal.
+  remember (List_extract f l) as lal eqn:Hlal; symmetry in Hlal.
   destruct lal as [((bef', x), aft') | ]; [ | easy ].
   injection He; clear He; intros; subst bef x aft'.
   rename bef' into bef.
@@ -908,8 +908,8 @@ split. {
 }
 Qed.
 
-Theorem extract_None_iff : ∀ {A} (f : A → _) l,
-  extract f l = None ↔ ∀ a, a ∈ l → f a = false.
+Theorem List_extract_None_iff : ∀ {A} (f : A → _) l,
+  List_extract f l = None ↔ ∀ a, a ∈ l → f a = false.
 Proof.
 intros.
 split. {
@@ -921,7 +921,7 @@ split. {
   destruct fb; [ easy | ].
   destruct Ha as [Ha| Ha]; [ now subst b | ].
   apply IHl; [ | easy ].
-  now destruct (extract f l) as [((bef, x), aft)| ].
+  now destruct (List_extract f l) as [((bef, x), aft)| ].
 } {
   intros Hf.
   induction l as [| a]; [ easy | cbn ].

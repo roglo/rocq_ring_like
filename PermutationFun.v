@@ -17,7 +17,7 @@ Fixpoint is_permutation {A} (eqb : A → A → bool) (la lb : list A) :=
   match la with
   | [] => match lb with [] => true | _ => false end
   | a :: la' =>
-      match extract (eqb a) lb with
+      match List_extract (eqb a) lb with
       | None => false
       | Some (bef, _, aft) => is_permutation eqb la' (bef ++ aft)
       end
@@ -28,14 +28,14 @@ Definition permutation {A} (eqb : A → _) la lb :=
 
 Theorem permutation_cons_l_iff : ∀ A (eqb : A → _) a la lb,
   permutation eqb (a :: la) lb
-  ↔ match extract (eqb a) lb with
+  ↔ match List_extract (eqb a) lb with
      | Some (bef, _, aft) => permutation eqb la (bef ++ aft)
      | None => False
      end.
 Proof.
 intros.
 unfold permutation; cbn.
-remember (extract (eqb a) lb) as lxl eqn:Hlxl.
+remember (List_extract (eqb a) lb) as lxl eqn:Hlxl.
 now destruct lxl as [((bef, x), aft)| ].
 Qed.
 
@@ -65,10 +65,10 @@ revert lb lc ld a Hp Hala Halc.
 induction la as [| b]; intros. {
   clear Hala; cbn in Hp |-*.
   apply permutation_cons_l_iff in Hp.
-  remember (extract (eqb a) (lc ++ a :: ld)) as lxl eqn:Hlxl.
+  remember (List_extract (eqb a) (lc ++ a :: ld)) as lxl eqn:Hlxl.
   symmetry in Hlxl.
   destruct lxl as [((bef, x), aft)| ]; [ | easy ].
-  apply extract_Some_iff in Hlxl.
+  apply List_extract_Some_iff in Hlxl.
   destruct Hlxl as (Hbef & H & Hlb).
   apply Heqb in H; subst x.
   apply List.app_eq_app in Hlb.
@@ -96,10 +96,10 @@ induction la as [| b]; intros. {
 }
 cbn in Hp |-*.
 apply permutation_cons_l_iff in Hp.
-remember (extract (eqb b) (lc ++ a :: ld)) as lxl eqn:Hlxl.
+remember (List_extract (eqb b) (lc ++ a :: ld)) as lxl eqn:Hlxl.
 symmetry in Hlxl.
 destruct lxl as [((bef, x), aft)| ]; [ | easy ].
-apply extract_Some_iff in Hlxl.
+apply List_extract_Some_iff in Hlxl.
 destruct Hlxl as (Hbef & H & Hlb).
 apply Heqb in H; subst x.
 apply List.app_eq_app in Hlb.
@@ -113,10 +113,10 @@ destruct Hlb as [(H1, H2)| (H1, H2)]. {
   injection H2; clear H2; intros H2 H; subst c aft.
   rewrite <- List.app_assoc.
   apply permutation_cons_l_iff.
-  remember (extract (eqb b) (bef ++ (b :: l) ++ ld)) as lxl eqn:Hlxl.
+  remember (List_extract (eqb b) (bef ++ (b :: l) ++ ld)) as lxl eqn:Hlxl.
   symmetry in Hlxl.
   destruct lxl as [((bef', x), aft')| ]. 2: {
-    specialize (proj1 (extract_None_iff _ _) Hlxl) as H1.
+    specialize (proj1 (List_extract_None_iff _ _) Hlxl) as H1.
     specialize (H1 b).
     assert (H : b ∈ bef ++ (b :: l) ++ ld). {
       now apply List.in_or_app; right; left.
@@ -124,7 +124,7 @@ destruct Hlb as [(H1, H2)| (H1, H2)]. {
     specialize (H1 H); clear H.
     now rewrite (equality_refl Heqb) in H1.
   }
-  apply extract_Some_iff in Hlxl.
+  apply List_extract_Some_iff in Hlxl.
   destruct Hlxl as (Hbef' & H & Hlb).
   apply Heqb in H; subst x.
   apply List.app_eq_app in Hlb.
@@ -178,10 +178,10 @@ destruct Hlb as [(H1, H2)| (H1, H2)]. {
 }
 subst bef.
 apply permutation_cons_l_iff.
-remember (extract (eqb b) (lc ++ ld)) as lxl eqn:Hlxl.
+remember (List_extract (eqb b) (lc ++ ld)) as lxl eqn:Hlxl.
 symmetry in Hlxl.
 destruct lxl as [((bef, x), aft')| ]. 2: {
-  specialize (proj1 (extract_None_iff _ _) Hlxl) as H1.
+  specialize (proj1 (List_extract_None_iff _ _) Hlxl) as H1.
   specialize (H1 b).
   assert (H : b ∈ lc ++ ld). {
     apply List.in_or_app; right.
@@ -193,7 +193,7 @@ destruct lxl as [((bef, x), aft')| ]. 2: {
   specialize (H1 H); clear H.
   now rewrite (equality_refl Heqb) in H1.
 }
-apply extract_Some_iff in Hlxl.
+apply List_extract_Some_iff in Hlxl.
 destruct Hlxl as (Hbef' & H & Hlb).
 apply Heqb in H; subst x.
 apply List.app_eq_app in Hlb.
@@ -306,9 +306,9 @@ intros * Heqb * Hpab a.
 revert a lb Hpab.
 induction la as [| b]; intros; [ now destruct lb | ].
 apply permutation_cons_l_iff in Hpab.
-remember (extract (eqb b) lb) as lxl eqn:Hlxl; symmetry in Hlxl.
+remember (List_extract (eqb b) lb) as lxl eqn:Hlxl; symmetry in Hlxl.
 destruct lxl as [((bef, x), aft)| ]; [ | easy ].
-apply extract_Some_iff in Hlxl.
+apply List_extract_Some_iff in Hlxl.
 destruct Hlxl as (Hbef & H & Hlb).
 apply Heqb in H; subst x lb.
 split. {
@@ -341,15 +341,15 @@ intros * Heqb * Hpab.
 revert la Hpab.
 induction lb as [| b]; intros; [ now destruct la | cbn ].
 apply permutation_cons_l_iff.
-remember (extract (eqb b) la) as lxl eqn:Hlxl; symmetry in Hlxl.
+remember (List_extract (eqb b) la) as lxl eqn:Hlxl; symmetry in Hlxl.
 destruct lxl as [((bef, x), aft)| ]. 2: {
-  specialize (proj1 (extract_None_iff _ _) Hlxl) as H1; clear Hlxl.
+  specialize (proj1 (List_extract_None_iff _ _) Hlxl) as H1; clear Hlxl.
   specialize (permutation_in_iff Heqb Hpab) as H2.
   specialize (proj2 (H2 b) (or_introl eq_refl)) as H3.
   specialize (H1 _ H3).
   now rewrite (equality_refl Heqb) in H1.
 }
-apply extract_Some_iff in Hlxl.
+apply List_extract_Some_iff in Hlxl.
 destruct Hlxl as (H1 & H2 & H3).
 apply Heqb in H2; subst x.
 subst la.
@@ -380,14 +380,14 @@ induction la as [| a]; intros; cbn. {
 }
 cbn in Hpab.
 apply permutation_cons_l_iff.
-remember (extract (eqb a) lc) as lxl eqn:Hlxl; symmetry in Hlxl.
+remember (List_extract (eqb a) lc) as lxl eqn:Hlxl; symmetry in Hlxl.
 destruct lxl as [((bef, x), aft)| ]. 2: {
-  specialize (proj1 (extract_None_iff _ _) Hlxl) as H1.
+  specialize (proj1 (List_extract_None_iff _ _) Hlxl) as H1.
   clear Hlxl.
   apply permutation_cons_l_iff in Hpab.
-  remember (extract (eqb a) lb) as lxl eqn:Hlxl; symmetry in Hlxl.
+  remember (List_extract (eqb a) lb) as lxl eqn:Hlxl; symmetry in Hlxl.
   destruct lxl as [((bef, x), aft) | ]; [ | easy ].
-  apply extract_Some_iff in Hlxl.
+  apply List_extract_Some_iff in Hlxl.
   destruct Hlxl as (Hbef & H & Hlb).
   apply Heqb in H; subst x.
   apply (permutation_sym Heqb) in Hpbc.
@@ -398,13 +398,13 @@ destruct lxl as [((bef, x), aft)| ]. 2: {
   specialize (H1 _ H3).
   now rewrite (equality_refl Heqb) in H1.
 }
-apply extract_Some_iff in Hlxl.
+apply List_extract_Some_iff in Hlxl.
 destruct Hlxl as (Hbef & H & Hlb).
 apply Heqb in H; subst x.
 apply permutation_cons_l_iff in Hpab.
-remember (extract (eqb a) lb) as lxl eqn:Hlxl; symmetry in Hlxl.
+remember (List_extract (eqb a) lb) as lxl eqn:Hlxl; symmetry in Hlxl.
 destruct lxl as [((bef', x), aft')| ]; [ | easy ].
-apply extract_Some_iff in Hlxl.
+apply List_extract_Some_iff in Hlxl.
 destruct Hlxl as (Hbef' & H & Hlb').
 apply Heqb in H; subst x.
 subst lb lc.
@@ -461,14 +461,14 @@ Theorem permutation_add_inv : ∀ {A} {eqb : A → _} (Heqb : equality eqb),
 Proof.
 intros * Heqb * Hab * Hc Hd.
 apply permutation_cons_l_iff in Hc, Hd.
-remember (extract (eqb a) la) as lxl eqn:Hlxl; symmetry in Hlxl.
+remember (List_extract (eqb a) la) as lxl eqn:Hlxl; symmetry in Hlxl.
 destruct lxl as [((befa, x), afta)| ]; [ | easy ].
-apply extract_Some_iff in Hlxl.
+apply List_extract_Some_iff in Hlxl.
 destruct Hlxl as (H1 & H & H3).
 apply Heqb in H; subst x la.
-remember (extract (eqb a) lb) as lxl eqn:Hlxl; symmetry in Hlxl.
+remember (List_extract (eqb a) lb) as lxl eqn:Hlxl; symmetry in Hlxl.
 destruct lxl as [((befb, x), aftb)| ]; [ | easy ].
-apply extract_Some_iff in Hlxl.
+apply List_extract_Some_iff in Hlxl.
 destruct Hlxl as (H2 & H & H4).
 apply Heqb in H; subst x lb.
 move H2 before H1.
@@ -498,15 +498,15 @@ induction l as [| a]; intros. {
 }
 rewrite <- List.app_comm_cons; cbn in Hll' |-*.
 apply permutation_cons_l_iff in Hll'.
-remember (extract (eqb a) l') as lxl eqn:Hlxl; symmetry in Hlxl.
+remember (List_extract (eqb a) l') as lxl eqn:Hlxl; symmetry in Hlxl.
 destruct lxl as [((bef', x), aft')| ]; [ | easy ].
-apply extract_Some_iff in Hlxl.
+apply List_extract_Some_iff in Hlxl.
 destruct Hlxl as (Hbef & H & Hlb).
 apply Heqb in H; subst x.
 apply permutation_cons_l_iff.
-remember (extract (eqb a) (l' ++ tl)) as lxl eqn:Hlxl; symmetry in Hlxl.
+remember (List_extract (eqb a) (l' ++ tl)) as lxl eqn:Hlxl; symmetry in Hlxl.
 destruct lxl as [((bef, x), aft)| ]. 2: {
-  specialize (proj1 (extract_None_iff _ _) Hlxl) as H1; clear Hlxl.
+  specialize (proj1 (List_extract_None_iff _ _) Hlxl) as H1; clear Hlxl.
   specialize (H1 a).
   assert (H : a ∈ l' ++ tl). {
     subst l'.
@@ -516,7 +516,7 @@ destruct lxl as [((bef, x), aft)| ]. 2: {
   specialize (H1 H).
   now rewrite (equality_refl Heqb) in H1.
 }
-apply extract_Some_iff in Hlxl.
+apply List_extract_Some_iff in Hlxl.
 destruct Hlxl as (Hbef' & H & Hlb').
 apply Heqb in H; subst x.
 subst l'.
@@ -613,16 +613,16 @@ destruct l as [| a]. {
 }
 cbn in Hlen; apply Nat.succ_inj in Hlen; cbn.
 apply permutation_cons_l_iff.
-remember (extract (eqb a) (l' ++ a :: l)) as lxl eqn:Hlxl.
+remember (List_extract (eqb a) (l' ++ a :: l)) as lxl eqn:Hlxl.
 symmetry in Hlxl.
 destruct lxl as [((bef, x), aft)| ].  2: {
-  specialize (proj1 (extract_None_iff _ _) Hlxl) as H1.
+  specialize (proj1 (List_extract_None_iff _ _) Hlxl) as H1.
   specialize (H1 a).
   assert (H : a ∈ l' ++ a :: l) by now apply List.in_or_app; right; left.
   specialize (H1 H); clear H.
   now rewrite equality_refl in H1.
 }
-apply extract_Some_iff in Hlxl.
+apply List_extract_Some_iff in Hlxl.
 destruct Hlxl as (Hbef & H & Hlb).
 apply Heqb in H; subst x.
 eapply (permutation_trans Heqb). {
@@ -688,17 +688,17 @@ Theorem permutation_cons_app : ∀ {A} {eqb : A → _},
 Proof.
 intros * Heqb * H12; cbn.
 apply permutation_cons_l_iff.
-remember (extract (eqb a) (l1 ++ a :: l2)) as lxl eqn:Hlxl.
+remember (List_extract (eqb a) (l1 ++ a :: l2)) as lxl eqn:Hlxl.
 symmetry in Hlxl.
 destruct lxl as [((bef, x), aft)| ]. 2: {
-  specialize (proj1 (extract_None_iff _ _) Hlxl) as H1.
+  specialize (proj1 (List_extract_None_iff _ _) Hlxl) as H1.
   clear Hlxl.
   specialize (H1 a).
   rewrite (equality_refl Heqb) in H1.
   apply Bool.diff_true_false, H1.
   now apply List.in_or_app; right; left.
 }
-apply extract_Some_iff in Hlxl.
+apply List_extract_Some_iff in Hlxl.
 destruct Hlxl as (Hbef & H & Hlb).
 apply Heqb in H; subst x.
 apply List.app_eq_app in Hlb.
@@ -792,9 +792,9 @@ induction la as [| a]; intros. {
   now apply permutation_nil_l in Hpab; subst lb.
 }
 cbn in Hpab.
-remember (extract (eqb a) lb) as lxl eqn:Hlxl; symmetry in Hlxl.
+remember (List_extract (eqb a) lb) as lxl eqn:Hlxl; symmetry in Hlxl.
 destruct lxl as [((bef, x), aft)| ]; [ | easy ].
-apply extract_Some_iff in Hlxl.
+apply List_extract_Some_iff in Hlxl.
 destruct Hlxl as (Hbef & H & Hlb); subst lb.
 rewrite List.length_app; cbn.
 rewrite Nat.add_succ_r, <- List.length_app; f_equal.
@@ -868,9 +868,9 @@ Theorem permutation_length_1_inv_l :
 Proof.
 intros * Heqb * Ha.
 apply permutation_cons_l_iff in Ha.
-remember (extract (eqb a) l) as ll eqn:Hll; symmetry in Hll.
+remember (List_extract (eqb a) l) as ll eqn:Hll; symmetry in Hll.
 destruct ll as [((bef, x), aft)| ]; [ | easy ].
-apply extract_Some_iff in Hll.
+apply List_extract_Some_iff in Hll.
 destruct Hll as (H1 & H & H2).
 apply permutation_nil_l in Ha.
 apply List.app_eq_nil in Ha.
@@ -903,15 +903,15 @@ induction Hna as [| a la Ha Hna ]; intros. {
   now specialize (proj2 (Hiab b) (or_introl eq_refl)).
 }
 apply permutation_cons_l_iff.
-remember (extract (eqb a) lb) as lxl eqn:Hlxl; symmetry in Hlxl.
+remember (List_extract (eqb a) lb) as lxl eqn:Hlxl; symmetry in Hlxl.
 destruct lxl as [((bef, x), aft)| ]. 2: {
-  specialize (proj1 (extract_None_iff _ _) Hlxl) as H1.
+  specialize (proj1 (List_extract_None_iff _ _) Hlxl) as H1.
   clear Hlxl.
   specialize (proj1 (Hiab a) (or_introl eq_refl)) as H2.
   specialize (H1 _ H2).
   now rewrite (equality_refl Heqb) in H1.
 }
-apply extract_Some_iff in Hlxl.
+apply List_extract_Some_iff in Hlxl.
 destruct Hlxl as (Hbef & H & Hlb).
 apply Heqb in H; subst x lb.
 apply IHHna. {
@@ -966,9 +966,9 @@ induction la as [| a]; intros; cbn. {
   now apply permutation_nil_l in Hpab; subst lb.
 }
 apply permutation_cons_l_iff in Hpab.
-remember (extract (eqb a) lb) as lxl eqn:Hlxl; symmetry in Hlxl.
+remember (List_extract (eqb a) lb) as lxl eqn:Hlxl; symmetry in Hlxl.
 destruct lxl as [((bef, x), aft)| ]; [ | easy ].
-apply extract_Some_iff in Hlxl.
+apply List_extract_Some_iff in Hlxl.
 destruct Hlxl as (Hbef & H & Hlb).
 apply Heqb in H; subst x lb.
 generalize Hpab; intros H.
@@ -1007,9 +1007,9 @@ induction la as [| a]; intros; cbn. {
   now apply permutation_nil_l in Hpab; subst lb.
 }
 apply permutation_cons_l_iff in Hpab.
-remember (extract (eqba a) lb) as lxl eqn:Hlxl; symmetry in Hlxl.
+remember (List_extract (eqba a) lb) as lxl eqn:Hlxl; symmetry in Hlxl.
 destruct lxl as [((bef, x), aft)| ]; [ | easy ].
-apply extract_Some_iff in Hlxl.
+apply List_extract_Some_iff in Hlxl.
 destruct Hlxl as (Hbef & H & Hlb).
 apply Heqba in H; subst x lb.
 rewrite List.map_app; cbn.
@@ -1022,7 +1022,7 @@ Qed.
 
 Theorem List_rank_loop_extract : ∀ A (la : list A) f i,
   List_rank_loop i f la =
-  match extract f la with
+  match List_extract f la with
   | Some (bef, _, _) => i + List.length bef
   | None => i + List.length la
   end.
@@ -1034,13 +1034,13 @@ induction la as [| a]; cbn; intros. {
 }
 destruct (f a); [ now rewrite Nat.add_0_r | ].
 rewrite IHla.
-remember (extract f la) as lxl eqn:Hlxl; symmetry in Hlxl.
+remember (List_extract f la) as lxl eqn:Hlxl; symmetry in Hlxl.
 now destruct lxl as [((bef, x), aft)| ]; cbn; rewrite Nat.add_succ_r.
 Qed.
 
 Theorem List_rank_extract : ∀ A (la : list A) f,
   List_rank f la =
-  match extract f la with
+  match List_extract f la with
   | Some (bef, _, _) => List.length bef
   | None => List.length la
   end.
@@ -1056,14 +1056,14 @@ Theorem List_rank_not_found : ∀ n l i,
 Proof.
 intros n f i Hp Hi Hx.
 rewrite List_rank_extract in Hx.
-remember (extract (Nat.eqb i) f) as lxl eqn:Hlxl; symmetry in Hlxl.
+remember (List_extract (Nat.eqb i) f) as lxl eqn:Hlxl; symmetry in Hlxl.
 destruct lxl as [((bef, x), aft)| ]. {
-  apply extract_Some_iff in Hlxl.
+  apply List_extract_Some_iff in Hlxl.
   destruct Hlxl as (Hbef & H & Haft); subst f.
   rewrite List.length_app in Hx; cbn in Hx; flia Hx.
 }
 clear Hx.
-specialize (proj1 (extract_None_iff _ _) Hlxl) as H1.
+specialize (proj1 (List_extract_None_iff _ _) Hlxl) as H1.
 specialize (H1 i).
 assert (H : i ∈ f). {
   apply (permutation_in_iff Nat.eqb_eq Hp).
@@ -1085,7 +1085,7 @@ Fixpoint permutation_assoc_loop {A} eqb (la : list A) lbo :=
   match la with
   | [] => []
   | a :: la' =>
-      match extract (λ bo, option_eqb eqb bo (Some a)) lbo with
+      match List_extract (λ bo, option_eqb eqb bo (Some a)) lbo with
       | Some (befo, _, afto) =>
           List.length befo ::
             permutation_assoc_loop eqb la' (befo ++ None :: afto)
@@ -1146,9 +1146,9 @@ intros * Heqb * Hpab.
 revert lbo Hpab.
 induction la as [| a]; intros; [ easy | ].
 cbn - [ option_eqb ].
-remember (extract _ _) as lxl eqn:Hlxl; symmetry in Hlxl.
+remember (List_extract _ _) as lxl eqn:Hlxl; symmetry in Hlxl.
 destruct lxl as [((bef, x), aft)| ]. 2: {
-  specialize (proj1 (extract_None_iff _ _) Hlxl) as H1.
+  specialize (proj1 (List_extract_None_iff _ _) Hlxl) as H1.
   cbn - [ option_eqb ] in H1.
   specialize (H1 (Some a)).
   assert (H : Some a ∈ lbo). {
@@ -1168,7 +1168,7 @@ destruct lxl as [((bef, x), aft)| ]. 2: {
 }
 cbn; f_equal.
 apply IHla.
-apply extract_Some_iff in Hlxl.
+apply List_extract_Some_iff in Hlxl.
 destruct Hlxl as (Hbef & Hxa & Hlbo).
 cbn in Hxa.
 destruct x as [b| ]; [ | easy ].
@@ -1200,14 +1200,14 @@ intros * Heqb * Hpab Hla.
 revert lbo i Hpab Hla.
 induction la as [| a]; intros; [ easy | ].
 cbn - [ option_eqb ].
-remember (extract _ _) as lxl eqn:Hlxl; symmetry in Hlxl.
+remember (List_extract _ _) as lxl eqn:Hlxl; symmetry in Hlxl.
 destruct lxl as [((bef, x), aft)| ]. 2: {
   rewrite List_nth_nil.
   destruct lbo; [ | now cbn ].
   cbn in Hpab.
   now apply permutation_nil_r in Hpab.
 }
-apply extract_Some_iff in Hlxl.
+apply List_extract_Some_iff in Hlxl.
 destruct Hlxl as (Hbef & H & Hlb).
 cbn in H.
 destruct x as [b| ]; [ | easy ].
@@ -1241,13 +1241,13 @@ intros * Heqb *.
 revert lbo lco.
 induction la as [| a]; intros; [ easy | ].
 cbn - [ option_eqb "<?" ].
-remember (extract _ _) as lxl eqn:Hlxl; symmetry in Hlxl.
+remember (List_extract _ _) as lxl eqn:Hlxl; symmetry in Hlxl.
 destruct lxl as [((bef, x), aft)| ]. 2: {
-  specialize (proj1 (extract_None_iff _ _) Hlxl) as H1.
+  specialize (proj1 (List_extract_None_iff _ _) Hlxl) as H1.
   clear Hlxl; cbn - [ option_eqb ] in H1.
-  remember (extract _ _) as lxl eqn:Hlxl; symmetry in Hlxl.
+  remember (List_extract _ _) as lxl eqn:Hlxl; symmetry in Hlxl.
   destruct lxl as [((bef, x), aft)| ]; [ | easy ].
-  apply extract_Some_iff in Hlxl.
+  apply List_extract_Some_iff in Hlxl.
   destruct Hlxl as (Hbef & H & Hlbc).
   cbn in H.
   destruct x as [x| ]; [ | easy ].
@@ -1266,14 +1266,14 @@ destruct lxl as [((bef, x), aft)| ]. 2: {
   cbn in H1.
   now rewrite (equality_refl Heqb) in H1.
 }
-apply extract_Some_iff in Hlxl.
+apply List_extract_Some_iff in Hlxl.
 destruct Hlxl as (Hbef & H & Hlbc).
 cbn in H.
 destruct x as [x| ]; [ | easy ].
 apply Heqb in H; subst x.
-remember (extract _ _) as lxl eqn:Hlxl; symmetry in Hlxl.
+remember (List_extract _ _) as lxl eqn:Hlxl; symmetry in Hlxl.
 destruct lxl as [((bef', x), aft')| ]. 2: {
-  specialize (proj1 (extract_None_iff _ _) Hlxl) as H1.
+  specialize (proj1 (List_extract_None_iff _ _) Hlxl) as H1.
   clear Hlxl; cbn - [ option_eqb ] in H1.
   specialize (H1 (Some a)).
   assert (H : Some a ∈ lbo ++ lco). {
@@ -1290,7 +1290,7 @@ destruct lxl as [((bef', x), aft')| ]. 2: {
   now rewrite (equality_refl Heqb) in H1.
 }
 cbn - [ "<?" ].
-apply extract_Some_iff in Hlxl.
+apply List_extract_Some_iff in Hlxl.
 destruct Hlxl as (Hbef' & H & Hlbc').
 cbn in H.
 destruct x as [x| ]; [ | easy ].
@@ -1515,9 +1515,9 @@ subst j.
 revert d lbo i Hpab Hi.
 induction la as [| a]; intros; [ easy | ].
 cbn - [ option_eqb ].
-remember (extract _ _) as lxl eqn:Hlxl; symmetry in Hlxl.
+remember (List_extract _ _) as lxl eqn:Hlxl; symmetry in Hlxl.
 destruct lxl as [((bef, x), aft)| ]. 2: {
-  specialize (proj1 (extract_None_iff _ _) Hlxl (Some a)) as H1.
+  specialize (proj1 (List_extract_None_iff _ _) Hlxl (Some a)) as H1.
   cbn - [ option_eqb List.In ] in H1.
   specialize (permutation_in_iff Heqb) as H2.
   specialize (proj1 (H2 _ _ Hpab _) (or_introl eq_refl)) as H3.
@@ -1535,7 +1535,7 @@ destruct lxl as [((bef, x), aft)| ]. 2: {
   cbn in H1.
   now rewrite (equality_refl Heqb) in H1.
 }
-apply extract_Some_iff in Hlxl.
+apply List_extract_Some_iff in Hlxl.
 destruct Hlxl as (Hbef & H & Hlb).
 cbn in H.
 destruct x as [x| ]; [ | easy ].
@@ -1627,11 +1627,11 @@ intros * Heqb * Hpab.
 revert lb Hpab.
 induction la as [| a]; intros; [ easy | ].
 cbn - [ option_eqb List.seq ].
-remember (extract (λ bo, option_eqb eqb bo (Some a)) (List.map Some lb))
+remember (List_extract (λ bo, option_eqb eqb bo (Some a)) (List.map Some lb))
   as lxl.
 rename Heqlxl into Hlxl; symmetry in Hlxl.
 destruct lxl as [((bef, x), aft)| ]. 2: {
-  specialize (proj1 (extract_None_iff _ _) Hlxl) as H1.
+  specialize (proj1 (List_extract_None_iff _ _) Hlxl) as H1.
   cbn - [ option_eqb ] in H1.
   specialize (H1 (Some a)).
   assert (H : Some a ∈ List.map Some lb). {
@@ -1643,7 +1643,7 @@ destruct lxl as [((bef, x), aft)| ]. 2: {
   cbn in H1.
   now rewrite (equality_refl Heqb) in H1.
 }
-apply extract_Some_iff in Hlxl.
+apply List_extract_Some_iff in Hlxl.
 destruct Hlxl as (Hbef & H & Hlb).
 cbn in H.
 destruct x as [x| ]; [ | easy ].
@@ -1767,17 +1767,17 @@ unfold permutation_assoc.
 revert lb Hpab.
 induction la as [| a]; intros; [ easy | ].
 apply permutation_cons_l_iff in Hpab.
-remember (extract _ _) as lxl eqn:Hlxl.
+remember (List_extract _ _) as lxl eqn:Hlxl.
 destruct lxl as [((bef, x), aft)| ]; [ | easy ].
 symmetry in Hlxl.
-apply extract_Some_iff in Hlxl.
+apply List_extract_Some_iff in Hlxl.
 destruct Hlxl as (Hbef & H & Haft).
 apply Heqb in H; subst x lb.
 cbn - [ option_eqb ].
-remember (extract _ _) as lxl eqn:Hlxl.
+remember (List_extract _ _) as lxl eqn:Hlxl.
 symmetry in Hlxl.
 destruct lxl as [((bef', x), aft')| ]. 2: {
-  specialize (proj1 (extract_None_iff _ _) Hlxl) as H1.
+  specialize (proj1 (List_extract_None_iff _ _) Hlxl) as H1.
   cbn - [ option_eqb ] in H1.
   specialize (H1 (Some a)).
   assert (H : Some a ∈ List.map Some (bef ++ a :: aft)). {
@@ -1788,7 +1788,7 @@ destruct lxl as [((bef', x), aft')| ]. 2: {
   cbn in H1.
   now rewrite (equality_refl Heqb) in H1.
 }
-apply extract_Some_iff in Hlxl.
+apply List_extract_Some_iff in Hlxl.
 destruct Hlxl as (Hbef' & H & Hlb); cbn in H.
 destruct x as [x| ]; [ | easy ].
 apply Heqb in H; subst x.
@@ -1923,10 +1923,10 @@ split. {
     intros i j Hi Hj Hij.
     unfold permutation_fun in Hij.
     do 2 rewrite List_rank_extract in Hij.
-    remember (extract (Nat.eqb i) _) as lxl eqn:Hlxl; symmetry in Hlxl.
+    remember (List_extract (Nat.eqb i) _) as lxl eqn:Hlxl; symmetry in Hlxl.
     rewrite (permutation_assoc_length Heqb Hpab) in Hij.
     destruct lxl as [((bef, x), aft)| ]. 2: {
-      specialize (proj1 (extract_None_iff _ _) Hlxl) as H1.
+      specialize (proj1 (List_extract_None_iff _ _) Hlxl) as H1.
       specialize (permutation_permutation_assoc Heqb Hpab) as H2.
       specialize (permutation_in_iff Nat.eqb_eq H2) as H3.
       specialize (proj2 (H3 i)) as H4.
@@ -1936,7 +1936,7 @@ split. {
       specialize (H1 _ H4).
       now apply Nat.eqb_neq in H1.
     }
-    apply extract_Some_iff in Hlxl.
+    apply List_extract_Some_iff in Hlxl.
     destruct Hlxl as (Hbef & H & Hp).
     apply Nat.eqb_eq in H; subst x.
     rewrite if_eqb_eq_dec in Hij.
@@ -1945,9 +1945,9 @@ split. {
       rewrite (permutation_assoc_length Heqb Hpab), List.length_app in Hp.
       cbn in Hp; flia Hp Hba.
     }
-    remember (extract (Nat.eqb j) _) as lxl eqn:Hlxl; symmetry in Hlxl.
+    remember (List_extract (Nat.eqb j) _) as lxl eqn:Hlxl; symmetry in Hlxl.
     destruct lxl as [((bef', x), aft')| ]. 2: {
-      specialize (proj1 (extract_None_iff _ _) Hlxl) as H1.
+      specialize (proj1 (List_extract_None_iff _ _) Hlxl) as H1.
       specialize (permutation_permutation_assoc Heqb Hpab) as H2.
       specialize (permutation_in_iff Nat.eqb_eq H2) as H3.
       specialize (proj2 (H3 j)) as H4.
@@ -1957,7 +1957,7 @@ split. {
       specialize (H1 _ H4).
       now apply Nat.eqb_neq in H1.
     }
-    apply extract_Some_iff in Hlxl.
+    apply List_extract_Some_iff in Hlxl.
     destruct Hlxl as (Hbef' & H & Hp').
     apply Nat.eqb_eq in H; subst x.
     rewrite if_eqb_eq_dec in Hij.
@@ -2180,7 +2180,7 @@ Fixpoint transp_loop {A} (eqb : A → A → bool) i la lb :=
   match lb with
   | [] => []
   | b :: lb' =>
-      match extract (eqb b) la with
+      match List_extract (eqb b) la with
       | Some ([], _, la2) => transp_loop eqb (S i) la2 lb'
       | Some (a :: la1, _, la2) =>
           (i, S (i + List.length la1)) ::
@@ -2222,9 +2222,9 @@ Proof.
 intros * Heqb *.
 revert i la.
 induction lb as [| b]; intros; [ easy | cbn ].
-remember (extract (eqb b) la) as lxl eqn:Hlxl; symmetry in Hlxl.
+remember (List_extract (eqb b) la) as lxl eqn:Hlxl; symmetry in Hlxl.
 destruct lxl as [((bef, x), aft)| ]; [ | easy ].
-apply extract_Some_iff in Hlxl.
+apply List_extract_Some_iff in Hlxl.
 destruct Hlxl as (Hbef & Hx & Hla).
 apply Heqb in Hx; subst x.
 subst la.
@@ -2312,9 +2312,9 @@ intros * Heqb * Hlab * Htab.
 revert k la Hlab Htab.
 induction lb as [| b]; intros; [ easy | ].
 cbn in Htab.
-remember (extract (eqb b) la) as lxl eqn:Hlxl; symmetry in Hlxl.
+remember (List_extract (eqb b) la) as lxl eqn:Hlxl; symmetry in Hlxl.
 destruct lxl as [((bef, x), aft)| ]; [ | easy ].
-apply extract_Some_iff in Hlxl.
+apply List_extract_Some_iff in Hlxl.
 destruct Hlxl as (Hbef & Hx & Hla); subst la.
 apply Heqb in Hx; subst x.
 rewrite List.length_app in Hlab; cbn in Hlab.
@@ -2364,16 +2364,16 @@ revert la Hpab.
 induction lb as [| b]; intros; cbn. {
   now apply permutation_nil_r in Hpab.
 }
-remember (extract (eqb b) la) as lxl eqn:Hlxl; symmetry in Hlxl.
+remember (List_extract (eqb b) la) as lxl eqn:Hlxl; symmetry in Hlxl.
 destruct lxl as [((bef, x), aft)| ]. 2: {
-  specialize (proj1 (extract_None_iff _ _) Hlxl) as H1.
+  specialize (proj1 (List_extract_None_iff _ _) Hlxl) as H1.
   specialize (H1 b).
   specialize (permutation_in_iff Heqb Hpab) as H2.
   specialize (proj2 (H2 b) (or_introl eq_refl)) as H.
   specialize (H1 H); clear H.
   now rewrite (equality_refl Heqb) in H1.
 }
-apply extract_Some_iff in Hlxl.
+apply List_extract_Some_iff in Hlxl.
 destruct Hlxl as (Hbef & Hx & Hla).
 apply Heqb in Hx; subst x.
 subst la.
@@ -2591,9 +2591,9 @@ destruct n. {
 revert n l2 Hl H1 H2.
 induction l1 as [| a]; intros; [ easy | ].
 apply permutation_cons_l_iff in Hl.
-remember (extract (eqb a) l2) as lxl eqn:Hlxl; symmetry in Hlxl.
+remember (List_extract (eqb a) l2) as lxl eqn:Hlxl; symmetry in Hlxl.
 destruct lxl as [((bef, x), aft)| ]; [ | easy ].
-apply extract_Some_iff in Hlxl.
+apply List_extract_Some_iff in Hlxl.
 destruct Hlxl as (Hbef & H & Hl2).
 apply Heqb in H; subst x.
 subst l2.
@@ -2712,9 +2712,9 @@ apply Nat.nle_gt in Hlan.
 revert n lb Hpn1 Hpn2 Hpab Hlan.
 induction la as [| ma]; intros; [ easy | ].
 apply permutation_cons_l_iff in Hpab.
-remember (extract _ _) as lxl eqn:Hlxl; symmetry in Hlxl.
+remember (List_extract _ _) as lxl eqn:Hlxl; symmetry in Hlxl.
 destruct lxl as [((bef, x), aft)| ]; [ | easy ].
-apply extract_Some_iff in Hlxl.
+apply List_extract_Some_iff in Hlxl.
 destruct Hlxl as (Hbef & Hax & Haft).
 apply Heqb in Hax; subst x lb.
 destruct n; [ easy | ].
@@ -2805,9 +2805,9 @@ induction la as [| a]; intros. {
 }
 cbn in Habcd.
 apply permutation_cons_l_iff in Hac.
-remember (extract _ _) as lxl eqn:Hlxl; symmetry in Hlxl.
+remember (List_extract _ _) as lxl eqn:Hlxl; symmetry in Hlxl.
 destruct lxl as [((bef, x), aft)| ]; [ | easy ].
-apply extract_Some_iff in Hlxl.
+apply List_extract_Some_iff in Hlxl.
 destruct Hlxl as (Hbef & Hax & Haft); subst lc.
 apply Heqb in Hax; subst x.
 rewrite <- List.app_assoc in Habcd; cbn in Habcd.
@@ -2837,9 +2837,9 @@ induction la as [| a]; intros; cbn. {
   now apply permutation_nil_l in Hab; subst lb.
 }
 apply permutation_cons_l_iff in Hab.
-remember (extract _ _) as lxl eqn:Hlxl; symmetry in Hlxl.
+remember (List_extract _ _) as lxl eqn:Hlxl; symmetry in Hlxl.
 destruct lxl as [((bef, x), aft)| ]; [ | easy ].
-apply extract_Some_iff in Hlxl.
+apply List_extract_Some_iff in Hlxl.
 destruct Hlxl as (Hbef & H & Haft).
 apply Heqb in H; subst x lb.
 rewrite List.filter_app; cbn.
