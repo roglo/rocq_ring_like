@@ -51,7 +51,7 @@ foundation.
 - [RealLike](RingLike.RealLike.html)
 - [Structures](RingLike.Structures.html)
 - [Utils](RingLike.Utils.html)
-- [ZRingLike](RingLike.ZRingLike.html)
+- [Z_algebra](RingLike.Z_algebra.html)
 
 ## Table of Contents
 

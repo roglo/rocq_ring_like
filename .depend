@@ -20,4 +20,4 @@ PolynomialRingLike.vo PolynomialRingLike.glob PolynomialRingLike.v.beautified Po
 RealLike.vo RealLike.glob RealLike.v.beautified RealLike.required_vo: RealLike.v Core.vo
 Structures.vo Structures.glob Structures.v.beautified Structures.required_vo: Structures.v
 Utils.vo Utils.glob Utils.v.beautified Utils.required_vo: Utils.v Misc.vo
-ZRingLike.vo ZRingLike.glob ZRingLike.v.beautified ZRingLike.required_vo: ZRingLike.v Core.vo
+Z_algebra.vo Z_algebra.glob Z_algebra.v.beautified Z_algebra.required_vo: Z_algebra.v Core.vo
