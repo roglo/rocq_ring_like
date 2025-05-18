@@ -1,4 +1,4 @@
-(** * RingLike.Add_with_order
+(** * Add_with_order
 
 Theorems about addition, when order relation exists.
 

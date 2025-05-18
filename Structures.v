@@ -1,4 +1,4 @@
-(** * RingLike.Structures
+(** * Structures
 
 Definitions of structures of the ring-like library.
 

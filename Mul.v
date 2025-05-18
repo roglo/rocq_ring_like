@@ -1,4 +1,4 @@
-(** * RingLike.Mul
+(** * Mul
 
 Theorems about multiplication in ring-like structures.
 

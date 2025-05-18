@@ -1,4 +1,4 @@
-(** * RingLike.Div_with_order
+(** * Div_with_order
 
 Theorems about inverse and division, in the case when order
 relation exists.

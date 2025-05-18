@@ -1,4 +1,4 @@
-(** * RingLike.DerivMul
+(** * DerivMul
 
 Derivability of a product and of an inverse of a function from [A]
 to [T] where

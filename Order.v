@@ -1,4 +1,4 @@
-(** * RingLike.Order
+(** * Order
 
 Theorems about order relation of the ring-like library.
 

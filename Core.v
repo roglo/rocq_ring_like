@@ -1,4 +1,4 @@
-(** * RingLike.Core
+(** * Core
 
 This library is designed to support semirings, rings, fields, and, in
 general, algebraic structures containing addition and multiplication and,

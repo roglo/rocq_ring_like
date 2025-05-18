@@ -1,4 +1,4 @@
-(** * RingLike.Distances
+(** * Distances
 
 Definitions and theorems about distances and limits. Also
 include the notions of continuity and derivability.

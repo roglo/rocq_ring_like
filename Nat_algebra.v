@@ -1,7 +1,7 @@
-(** * RingLike.Nat_algebra
+(** * Nat_algebra
 
-    This module provides an instantiation of the [ring_like] structure
-    over the natural numbers ([nat]).
+    This module ([RingLike.Nat_algebra]) provides an instantiation of
+    the [ring_like] structure over the natural numbers ([nat]).
 
     It defines:
     - [nat_ring_like_op]: the standard operations on [nat] (+, ×, 0, 1);

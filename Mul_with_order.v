@@ -1,4 +1,4 @@
-(** * RingLike.Mul_with_order
+(** * Mul_with_order
 
 Theorems about multiplication, when order relation exists.
 

@@ -1,4 +1,4 @@
-(** * RingLike.Div
+(** * Div
 
 Theorems about division in ring-like structures.
 

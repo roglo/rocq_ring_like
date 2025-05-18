@@ -1,4 +1,4 @@
-(** * RingLike.Add
+(** * Add
 
 Theorems about addition and opposite in ring-like structures.
 
