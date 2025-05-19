@@ -1,3 +1,8 @@
+(** * RealLike
+
+Specific properties of real numbers: existence of nth roots.
+*)
+
 Set Nested Proofs Allowed.
 From Stdlib Require Import Utf8.
 

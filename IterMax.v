@@ -1,4 +1,4 @@
-(** * IterMax.v
+(** * IterMax
 
 Maximum of ring-like values.
 
