@@ -18,6 +18,7 @@ which imports the present module and some other ones.
  *)
 
 From Stdlib Require Import Utf8 Arith.
+From Stdlib Require Import Morphisms.
 Require Import Structures.
 
 Section a.
@@ -26,9 +27,24 @@ Context {T : Type}.
 Context {ro : ring_like_op T}.
 Context {rp : ring_like_prop T}.
 
+Global Instance rngl_add_morph  :
+  Proper (rngl_eq ==> rngl_eq ==> rngl_eq) rngl_add.
+Proof.
+intros a b Hab c d Hcd.
+progress unfold rngl_eq in Hab, Hcd.
+progress unfold rngl_eq.
+remember (rngl_opt_equiv T) as oe eqn:Hoe.
+symmetry in Hoe.
+destruct oe; [ | now subst ].
+Print rngl_opt_equiv.
+(* bref, c'est la merde *)
+...
+
 Theorem rngl_add_0_r : ∀ a, (a + 0 = a)%L.
 Proof.
 intros a; simpl.
+Check rngl_add_comm.
+...
 rewrite rngl_add_comm.
 apply rngl_add_0_l.
 Qed.
