@@ -26,6 +26,7 @@ Class ring_like_op T :=
     rngl_add : T → T → T;
     rngl_mul : T → T → T;
     rngl_opt_one : option T;
+    rngl_opt_equiv : option (T → T → Prop);
     rngl_opt_opp_or_subt : option (sum (T → T) (T → T → T));
     rngl_opt_inv_or_quot : option (sum (T → T) (T → T → T));
     rngl_opt_is_zero_divisor : option (T → Prop);
@@ -33,6 +34,7 @@ Class ring_like_op T :=
     rngl_opt_leb : option (T → T → bool) }.
 
 Arguments rngl_opt_one T {ring_like_op}.
+Arguments rngl_opt_equiv T {ring_like_op}.
 Arguments rngl_opt_opp_or_subt T {ring_like_op}.
 Arguments rngl_opt_inv_or_quot T {ring_like_op}.
 Arguments rngl_opt_is_zero_divisor T {ring_like_op}.
@@ -54,6 +56,9 @@ Definition rngl_one {T} {ro : ring_like_op T} :=
 
 Definition rngl_has_1 T {ro : ring_like_op T} :=
   bool_of_option (rngl_opt_one T).
+
+Definition rngl_has_eq T {ro : ring_like_op T} :=
+  negb (bool_of_option (rngl_opt_equiv T)).
 
 Definition rngl_has_opp_or_subt T {R : ring_like_op T} :=
   bool_of_option (rngl_opt_opp_or_subt T).
@@ -108,6 +113,12 @@ Definition rngl_is_zero_divisor {T} {ro : ring_like_op T} a :=
   match rngl_opt_is_zero_divisor T with
   | Some f => f a
   | None => False
+  end.
+
+Definition rngl_eq T {ro : ring_like_op T} a b :=
+  match rngl_opt_equiv T with
+  | Some eqv => eqv a b
+  | None => a = b
   end.
 
 Definition rngl_opp {T} {ro : ring_like_op T} a :=
@@ -194,6 +205,7 @@ Definition rngl_ltb {T} {ro : ring_like_op T} a b :=
   | None => false
   end.
 
+Arguments rngl_eq {T ro} (a b)%_L.
 Arguments rngl_add {T ro} (a b)%_L : rename.
 Arguments rngl_sub {T ro} (a b)%_L.
 Arguments rngl_mul {T ro} (a b)%_L : rename.
@@ -216,6 +228,8 @@ Notation "1" := rngl_one : ring_like_scope.
 Notation "2" := (rngl_add 1 1) : ring_like_scope.
 Notation "3" := (rngl_add 2 1) : ring_like_scope.
 Notation "4" := (rngl_add 3 1) : ring_like_scope.
+Notation "a = b" := (rngl_eq a b) : ring_like_scope.
+Notation "a ≠ b" := (¬ rngl_eq a b) : ring_like_scope.
 Notation "a + b" := (rngl_add a b) : ring_like_scope.
 Notation "a - b" := (rngl_sub a b) : ring_like_scope.
 Notation "a * b" := (rngl_mul a b) : ring_like_scope.
@@ -272,11 +286,11 @@ Class ring_like_prop T {ro : ring_like_op T} :=
     rngl_characteristic : nat;
     rngl_add_comm : ∀ a b : T, (a + b = b + a)%L;
     rngl_add_assoc : ∀ a b c : T, (a + (b + c) = (a + b) + c)%L;
-    rngl_add_0_l : ∀ a : T, (0 + a)%L = a;
+    rngl_add_0_l : ∀ a : T, (0 + a = a)%L;
     rngl_mul_assoc : ∀ a b c : T, (a * (b * c) = (a * b) * c)%L;
     (* when has 1 *)
     rngl_opt_mul_1_l :
-      if rngl_has_1 T then ∀ a : T, (rngl_one * a)%L = a else not_applicable;
+      if rngl_has_1 T then ∀ a : T, (rngl_one * a = a)%L else not_applicable;
     rngl_mul_add_distr_l : ∀ a b c : T, (a * (b + c) = a * b + a * c)%L;
     (* when multiplication is commutative *)
     rngl_opt_mul_comm :
@@ -294,7 +308,7 @@ Class ring_like_prop T {ro : ring_like_op T} :=
       if rngl_has_opp T then ∀ a : T, (- a + a = 0)%L else not_applicable;
     (* when has subtraction (subt) *)
     rngl_opt_add_sub :
-      if rngl_has_subt T then ∀ a b, (a + b - b)%L = a
+      if rngl_has_subt T then ∀ a b, (a + b - b = a)%L
       else not_applicable;
     rngl_opt_sub_add_distr :
       if rngl_has_subt T then ∀ a b c, (a - (b + c) = a - b - c)%L
@@ -305,19 +319,19 @@ Class ring_like_prop T {ro : ring_like_op T} :=
     (* when has inverse *)
     rngl_opt_mul_inv_diag_l :
       if (rngl_has_inv T && rngl_has_1 T)%bool then
-        ∀ a : T, a ≠ 0%L → (a⁻¹ * a = 1)%L
+        ∀ a : T, (a ≠ 0)%L → (a⁻¹ * a = 1)%L
       else not_applicable;
     rngl_opt_mul_inv_diag_r :
       if (rngl_has_inv T && rngl_has_1 T && negb rngl_mul_is_comm)%bool then
-        ∀ a : T, a ≠ 0%L → (a / a = 1)%L
+        ∀ a : T, (a ≠ 0)%L → (a / a = 1)%L
       else not_applicable;
     (* when has division (quot) *)
     rngl_opt_mul_div :
-      if rngl_has_quot T then ∀ a b, b ≠ 0%L → (a * b / b)%L = a
+      if rngl_has_quot T then ∀ a b, (b ≠ 0)%L → (a * b / b = a)%L
       else not_applicable;
     rngl_opt_mul_quot_r :
       if (rngl_has_quot T && negb rngl_mul_is_comm)%bool then
-        ∀ a b, b ≠ 0%L → (b * a / b)%L = a
+        ∀ a b, (b ≠ 0)%L → (b * a / b = a)%L
       else not_applicable;
     (* zero divisors *)
     rngl_opt_integral :
@@ -613,7 +627,7 @@ Qed.
 
 Theorem rngl_eqb_sym :
   rngl_has_eq_dec T = true →
-  ∀ a b, ((a =? b) = (b =? a))%L.
+  ∀ a b, (a =? b)%L = (b =? a)%L.
 Proof.
 intros Hed *.
 remember (a =? b)%L as ab eqn:Hab.
