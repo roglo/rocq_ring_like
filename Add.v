@@ -119,91 +119,23 @@ Qed.
 
 Theorem rngl_subt_diag :
   rngl_has_opp_or_subt T = true →
-  ∀ a, rngl_subt a a = 0%L.
+  ∀ a, (rngl_subt a a = 0)%L.
 Proof.
 intros Hos *.
 specialize (rngl_sub_diag Hos a) as H1.
 unfold rngl_sub in H1.
 remember (rngl_has_opp T) as op eqn:Hop; symmetry in Hop.
-destruct op. {
-  unfold rngl_subt.
-  unfold rngl_has_opp in Hop.
-  destruct rngl_opt_opp_or_subt; [ | easy ].
-  now destruct s.
-}
 remember (rngl_has_subt T) as su eqn:Hsu; symmetry in Hsu.
-destruct su; [ easy | ].
-apply rngl_has_opp_or_subt_iff in Hos.
-destruct Hos; congruence.
-...
-intros Hos *.
-progress unfold rngl_subt.
-...
-progress unfold rngl_has_opp_or_subt in Hos.
-remember (rngl_has_opp T) as op eqn:Hop.
-symmetry in Hop.
 progress unfold rngl_has_opp in Hop.
-destruct (rngl_opt_opp_or_subt T) as [oos| ]. {
-  destruct oos as [| oos]; [ easy | ].
-  subst op.
-(* oh et puis zut *)
-...
-  progress unfold rngl_sub.
-  rewrite Hop.
-  rewrite rngl_add_comm.
-  now apply rngl_add_opp_diag_l.
-}
-remember (rngl_has_subt T) as mo eqn:Hmo.
-symmetry in Hmo.
-destruct mo. {
-  specialize rngl_opt_add_sub as H1.
-  rewrite Hmo in H1.
-  specialize (H1 0%L a).
-  rewrite rngl_add_0_l in H1.
-  rewrite H1.
-  apply rngl_eq_refl.
-}
-apply rngl_has_opp_or_subt_iff in Hos.
-destruct Hos; congruence.
-...
-specialize (rngl_sub_diag Hos a) as H1.
-progress unfold rngl_sub in H1.
-progress unfold rngl_has_opp in H1.
-progress unfold rngl_has_subt in H1.
-progress unfold rngl_subt in H1.
-progress unfold rngl_has_opp_or_subt in Hos.
-progress unfold rngl_subt.
-remember (rngl_opt_opp_or_subt T) as oos eqn:Hoos.
-symmetry in Hoos.
-destruct oos as [oos| ]; [ | easy ].
-destruct oos as [| subt]; [ easy | ].
-...
-intros Hos *.
-unfold rngl_sub in H1.
-remember (rngl_has_opp T) as op eqn:Hop; symmetry in Hop.
-progress unfold rngl_eq in H1.
+progress unfold rngl_has_subt in Hsu.
 destruct op. {
   unfold rngl_subt.
-  unfold rngl_has_opp in Hop.
   destruct rngl_opt_opp_or_subt; [ | easy ].
-  now destruct s.
+  destruct s; [ apply rngl_eq_refl | easy ].
 }
-remember (rngl_has_subt T) as su eqn:Hsu; symmetry in Hsu.
-progress unfold rngl_subt.
+destruct su; [ easy | ].
 progress unfold rngl_has_opp_or_subt in Hos.
-progress unfold rngl_has_subt in Hsu.
-progress unfold rngl_subt in H1.
-remember (rngl_opt_opp_or_subt T) as oos eqn:Hoos.
-symmetry in Hoos.
-destruct oos as [os| ]; [ | easy ].
-destruct os as [| subt]; [ easy | ].
-subst su.
-destruct (rngl_opt_equiv T); [ | easy ].
-...
-destruct su. {
-...
-apply rngl_has_opp_or_subt_iff in Hos.
-destruct Hos; congruence.
+destruct (rngl_opt_opp_or_subt T); [ now destruct s | easy ].
 Qed.
 
 Theorem rngl_sub_add :
@@ -213,6 +145,7 @@ Proof.
 intros Hop *.
 unfold rngl_sub; rewrite Hop.
 rewrite <- rngl_add_assoc.
+...
 rewrite (rngl_add_opp_diag_l Hop).
 apply rngl_add_0_r.
 Qed.
