@@ -28,21 +28,6 @@ Context {T : Type}.
 Context {ro : ring_like_op T}.
 Context {rp : ring_like_prop T}.
 
-(*
-Global Instance rngl_add_morph  :
-  Proper (rngl_eq ==> rngl_eq ==> rngl_eq) rngl_add.
-Proof.
-intros a b Hab c d Hcd.
-progress unfold rngl_eq in Hab, Hcd.
-progress unfold rngl_eq.
-remember (rngl_opt_equiv T) as oe eqn:Hoe.
-symmetry in Hoe.
-destruct oe; [ | now subst ].
-Print rngl_opt_equiv.
-(* bref, c'est la merde *)
-...
-*)
-
 Theorem rngl_add_0_r : ∀ a, (a + 0)%L = a.
 Proof.
 intros a; simpl.
@@ -153,6 +138,22 @@ cbn in H.
 now apply H.
 Qed.
 
+Global Instance rngl_sub_morph :
+  Proper (rngl_eq ==> rngl_eq ==> rngl_eq) rngl_sub.
+Proof.
+intros a b Hab c d Hcd.
+move c before b; move d before c.
+specialize rngl_opt_sub_morph as H.
+progress unfold rngl_eq in Hab.
+progress unfold rngl_eq in Hcd.
+progress unfold rngl_has_eq in H.
+progress unfold rngl_eq in H.
+progress unfold rngl_eq.
+destruct (rngl_opt_equiv T) as [eqv| ]; [ | congruence ].
+cbn in H.
+now apply H.
+Qed.
+
 Theorem rngl_sub_add :
   rngl_has_opp T = true →
   ∀ a b, (a - b + b = a)%L.
@@ -204,42 +205,21 @@ split; intros Habc. 2: {
 rewrite <- (rngl_add_sub Hos b a).
 rewrite <- (rngl_add_sub Hos c a).
 do 2 rewrite (rngl_add_comm _ a).
-...
-rewrite Habc.
-...
-rewrite <- H2.
-specialize rngl_add_morph as H1.
-specialize (H1 _ _ Habc).
-progress unfold "==>" in H1.
-specialize (H1 _ _ (rngl_eq_refl (-a)))%L.
-
-...
-Check rngl_add_sub.
-...
-  specialize rngl_add_morph as H1.
-  specialize (H1 _ _ Hbc)%L.
-  specialize (H1 b c)%L.
-...
-intros Hos *.
-split; intros Habc; [ | now subst b ].
-specialize (rngl_add_sub Hos c a) as H1.
-rewrite rngl_add_comm, <- Habc in H1.
-rewrite rngl_add_comm in H1.
-now rewrite (rngl_add_sub Hos) in H1.
+now rewrite Habc.
 Qed.
 
 Theorem rngl_add_move_l :
   rngl_has_opp T = true →
-  ∀ a b c, (a + b)%L = c ↔ b = (c - a)%L.
+  ∀ a b c, (a + b = c)%L ↔ (b = c - a)%L.
 Proof.
 intros Hop *.
 specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
 split; intros Hb. {
-  subst c; symmetry.
+  rewrite <- Hb; symmetry.
   rewrite rngl_add_comm.
   apply (rngl_add_sub Hos).
 } {
-  subst b.
+  rewrite Hb.
   rewrite rngl_add_comm.
   apply (rngl_sub_add Hop).
 }
@@ -247,7 +227,7 @@ Qed.
 
 Theorem rngl_add_move_r :
   rngl_has_opp T = true →
-  ∀ a b c, (a + b)%L = c ↔ a = (c - b)%L.
+  ∀ a b c, (a + b = c)%L ↔ (a = c - b)%L.
 Proof.
 intros Hop *.
 rewrite rngl_add_comm.
@@ -256,39 +236,39 @@ Qed.
 
 Theorem rngl_sub_move_l :
   rngl_has_opp T = true →
-  ∀ a b c, (a - b)%L = c ↔ b = (a - c)%L.
+  ∀ a b c, (a - b = c)%L ↔ (b = a - c)%L.
 Proof.
 intros Hop *.
 specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
 split; intros Hb. {
+  rewrite <- Hb.
   apply (rngl_add_move_l Hop).
-  subst c.
   apply (rngl_sub_add Hop).
 } {
   apply (rngl_add_move_l Hop) in Hb.
-  subst a.
+  rewrite <- Hb.
   apply (rngl_add_sub Hos).
 }
 Qed.
 
 Theorem rngl_sub_move_r :
   rngl_has_opp T = true →
-  ∀ a b c, (a - b)%L = c ↔ a = (c + b)%L.
+  ∀ a b c, (a - b = c)%L ↔ (a = c + b)%L.
 Proof.
 intros Hop *.
 specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
 split; intros Ha. {
-  subst c; symmetry.
+  rewrite <- Ha; symmetry.
   apply (rngl_sub_add Hop).
 } {
-  subst a.
+  rewrite Ha.
   apply (rngl_add_sub Hos).
 }
 Qed.
 
 Theorem rngl_add_sub_eq_l :
   rngl_has_opp_or_subt T = true →
-  ∀ a b c, (a + b = c → c - a = b)%L.
+  ∀ a b c, (a + b = c)%L → (c - a = b)%L.
 Proof.
 intros Hom * Hab.
 rewrite <- Hab.
@@ -298,7 +278,7 @@ Qed.
 
 Theorem rngl_add_sub_eq_r :
   rngl_has_opp_or_subt T = true →
-   ∀ a b c, (a + b = c → c - b = a)%L.
+   ∀ a b c, (a + b = c)%L → (c - b = a)%L.
 Proof.
 intros Hom * Hab.
 apply rngl_add_sub_eq_l; [ easy | ].
@@ -316,9 +296,9 @@ Theorem rngl_add_cancel_r :
   rngl_has_opp_or_subt T = true →
   ∀ a b c, (a + c = b + c)%L → (a = b)%L.
 Proof.
-intros Hom * Habc.
-apply rngl_sub_compat_l with (c := c) in Habc.
-now do 2 rewrite rngl_add_sub in Habc.
+intros Hos * Habc.
+apply (rngl_add_sub_eq_r Hos) in Habc.
+now rewrite (rngl_add_sub Hos) in Habc.
 Qed.
 
 Theorem rngl_add_move_0_r :
@@ -327,6 +307,7 @@ Theorem rngl_add_move_0_r :
 Proof.
 intros Hro *.
 split; intros H. {
+...
   apply rngl_sub_compat_l with (c := b) in H.
   rewrite rngl_add_sub in H; [ | now apply rngl_has_opp_or_subt_iff; left ].
   unfold rngl_sub in H.
