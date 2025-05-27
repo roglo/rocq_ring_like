@@ -305,17 +305,19 @@ Theorem rngl_add_move_0_r :
   rngl_has_opp T = true →
   ∀ a b, (a + b = 0)%L ↔ (a = - b)%L.
 Proof.
-intros Hro *.
+intros Hop.
+specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
+intros.
 split; intros H. {
-...
-  apply rngl_sub_compat_l with (c := b) in H.
-  rewrite rngl_add_sub in H; [ | now apply rngl_has_opp_or_subt_iff; left ].
-  unfold rngl_sub in H.
-  rewrite Hro in H.
-  now rewrite rngl_add_0_l in H.
+  rewrite rngl_add_comm in H.
+  apply (rngl_add_sub_eq_l Hos) in H.
+  rewrite <- H.
+  progress unfold rngl_sub.
+  rewrite Hop.
+  now rewrite rngl_add_0_l.
 } {
   rewrite H.
-  now rewrite rngl_add_opp_diag_l.
+  apply (rngl_add_opp_diag_l Hop).
 }
 Qed.
 
@@ -328,35 +330,34 @@ Qed.
 
 Theorem rngl_sub_move_0_r :
   rngl_has_opp T = true →
-  ∀ a b : T, (a - b)%L = 0%L ↔ a = b.
+  ∀ a b : T, (a - b = 0)%L ↔ (a = b)%L.
 Proof.
-intros Hop *.
+intros Hop.
+specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
+intros.
 split. {
   intros Hab.
   apply (rngl_add_compat_r _ _ b) in Hab.
-  unfold rngl_sub in Hab.
-  rewrite Hop in Hab.
-  rewrite <- rngl_add_assoc in Hab.
-  rewrite rngl_add_opp_diag_l in Hab; [ | easy ].
-  now rewrite rngl_add_0_r, rngl_add_0_l in Hab.
+  rewrite (rngl_sub_add Hop) in Hab.
+  now rewrite rngl_add_0_l in Hab.
 } {
   intros Hab.
   rewrite Hab.
-  apply rngl_sub_diag.
-  now apply rngl_has_opp_or_subt_iff; left.
+  apply (rngl_sub_diag Hos).
 }
 Qed.
 
 Theorem rngl_opp_0 : rngl_has_opp T = true → (- 0 = 0)%L.
 Proof.
-intros Hro.
+intros Hop.
+specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
 transitivity (0 + - 0)%L. {
   symmetry.
-  apply rngl_add_0_l.
+  rewrite rngl_add_0_l.
+  apply rngl_eq_refl.
 }
 rewrite rngl_add_opp_r; [ | easy ].
-apply rngl_sub_diag.
-now apply rngl_has_opp_or_subt_iff; left.
+apply (rngl_sub_diag Hos).
 Qed.
 
 Theorem rngl_subt_0_r :
@@ -383,21 +384,23 @@ Proof.
 intros Hop *.
 progress unfold rngl_sub.
 rewrite Hop.
-apply rngl_add_0_l.
+rewrite rngl_add_0_l.
+apply rngl_eq_refl.
 Qed.
 
 Theorem rngl_sub_0_r :
   rngl_has_opp_or_subt T = true →
   ∀ a, (a - 0 = a)%L.
 Proof.
-intros Hom *.
+intros Hos *.
 remember (rngl_has_opp T) as op eqn:Hop.
 symmetry in Hop.
 destruct op. {
   unfold rngl_sub.
   rewrite Hop.
   rewrite rngl_opp_0; [ | easy ].
-  apply rngl_add_0_r.
+  rewrite rngl_add_0_r.
+  apply rngl_eq_refl.
 }
 remember (rngl_has_subt T) as mo eqn:Hmo.
 symmetry in Hmo.
@@ -405,10 +408,12 @@ destruct mo. {
   specialize rngl_opt_add_sub as H1.
   rewrite Hmo in H1.
   specialize (H1 a 0%L) as H2.
-  now rewrite rngl_add_0_r in H2.
+  rewrite rngl_add_0_r in H2.
+  rewrite H2.
+  apply rngl_eq_refl.
 }
-apply rngl_has_opp_or_subt_iff in Hom.
-destruct Hom; congruence.
+apply rngl_has_opp_or_subt_iff in Hos.
+destruct Hos; congruence.
 Qed.
 
 Theorem rngl_opp_add_distr :
@@ -441,27 +446,27 @@ rewrite rngl_add_comm.
 apply (rngl_opp_add_distr Hop).
 Qed.
 
-Theorem rngl_add_add_swap : ∀ n m p, (n + m + p = n + p + m)%L.
+Theorem rngl_add_add_swap : ∀ n m p, (n + m + p)%L = (n + p + m)%L.
 Proof.
 intros n m p; simpl.
 do 2 rewrite <- rngl_add_assoc.
-assert (m + p = p + m)%L as H by apply rngl_add_comm.
-rewrite H; reflexivity.
+progress f_equal.
+apply rngl_add_comm.
 Qed.
 
 Theorem rngl_add_add_add_swap :
-  ∀ a b c d, ((a + b) + (c + d) = (a + c) + (b + d))%L.
+  ∀ a b c d, ((a + b) + (c + d))%L = ((a + c) + (b + d))%L.
 Proof.
 intros.
 do 2 rewrite <- rngl_add_assoc.
-f_equal.
+progress f_equal.
 rewrite rngl_add_comm, rngl_add_assoc.
 apply rngl_add_add_swap.
 Qed.
 
 Theorem rngl_sub_sub_swap :
   rngl_has_opp T = true →
-  ∀ a b c, (a - b - c = a - c - b)%L.
+  ∀ a b c, (a - b - c)%L = (a - c - b)%L.
 Proof.
 intros Hop *.
 progress unfold rngl_sub.
@@ -483,6 +488,7 @@ Proof.
 intros Hop *.
 progress unfold rngl_sub.
 rewrite Hop.
+...
 apply rngl_add_assoc.
 Qed.
 
