@@ -17,6 +17,7 @@ normal usage is to do:
 which imports the present module and some other ones.
  *)
 
+Set Nested Proofs Allowed.
 From Stdlib Require Import Utf8 Arith.
 From Stdlib Require Import Morphisms.
 Require Import Structures.
@@ -138,6 +139,18 @@ progress unfold rngl_has_opp_or_subt in Hos.
 destruct (rngl_opt_opp_or_subt T); [ now destruct s | easy ].
 Qed.
 
+Global Instance rngl_add_morph  :
+  Proper (rngl_eq ==> rngl_eq ==> rngl_eq) rngl_add.
+Admitted.
+
+Global Instance rngl_opp_morph  :
+  Proper (rngl_eq ==> rngl_eq) rngl_opp.
+Admitted.
+
+Global Instance rngl_add_opp_l_morph  :
+  Proper (rngl_eq ==> rngl_eq) (λ x, (- x + x)%L).
+Admitted.
+
 Theorem rngl_sub_add :
   rngl_has_opp T = true →
   ∀ a b, (a - b + b = a)%L.
@@ -145,6 +158,30 @@ Proof.
 intros Hop *.
 unfold rngl_sub; rewrite Hop.
 rewrite <- rngl_add_assoc.
+specialize (rngl_add_opp_diag_l Hop b) as H.
+rewrite <- (rngl_add_0_r a)%L at 2.
+(* bon, chais pas comment faut faire *)
+apply rngl_add_morph; [ | apply H ].
+apply rngl_eq_refl.
+...
+specialize rngl_opp_morph as H2.
+progress unfold Proper in H2.
+progress unfold "==>" in H2.
+specialize rngl_add_opp_l_morph as H3.
+progress unfold Proper in H3.
+progress unfold "==>" in H3.
+...
+apply (rngl_add_morph a a (rngl_eq_refl _) (- b + b) 0 H)%L.
+...
+specialize (H2 (- b + b) 0 H)%L as H3.
+...
+Search (- _ + _ = _)%L.
+remember Relation_Definitions.relation as x eqn:Hx.
+progress unfold Relation_Definitions.relation in Hx.
+..
+rewrite H.
+...
+rewrite H.
 ...
 rewrite (rngl_add_opp_diag_l Hop).
 apply rngl_add_0_r.
