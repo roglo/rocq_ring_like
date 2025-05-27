@@ -122,7 +122,23 @@ Theorem rngl_subt_diag :
   ∀ a, rngl_subt a a = 0%L.
 Proof.
 intros Hos *.
+specialize (rngl_sub_diag Hos a) as H1.
+unfold rngl_sub in H1.
+remember (rngl_has_opp T) as op eqn:Hop; symmetry in Hop.
+destruct op. {
+  unfold rngl_subt.
+  unfold rngl_has_opp in Hop.
+  destruct rngl_opt_opp_or_subt; [ | easy ].
+  now destruct s.
+}
+remember (rngl_has_subt T) as su eqn:Hsu; symmetry in Hsu.
+destruct su; [ easy | ].
+apply rngl_has_opp_or_subt_iff in Hos.
+destruct Hos; congruence.
+...
+intros Hos *.
 progress unfold rngl_subt.
+...
 progress unfold rngl_has_opp_or_subt in Hos.
 remember (rngl_has_opp T) as op eqn:Hop.
 symmetry in Hop.
