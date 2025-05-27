@@ -82,13 +82,11 @@ Qed.
 Theorem rngl_eq_refl : ∀ a, (a = a)%L.
 Proof.
 intros.
-specialize rngl_opt_eq_refl as H.
+specialize rngl_opt_equivalence as H.
 progress unfold rngl_has_eq in H.
 progress unfold rngl_eq in H.
 progress unfold rngl_eq.
-destruct (rngl_opt_equiv T); [ | easy ].
-cbn in H.
-apply H.
+destruct (rngl_opt_equiv T); [ apply H | easy ].
 Qed.
 
 Theorem rngl_sub_diag :
@@ -141,15 +139,14 @@ Qed.
 
 Global Instance rngl_add_morph  :
   Proper (rngl_eq ==> rngl_eq ==> rngl_eq) rngl_add.
-Admitted.
-
-Global Instance rngl_opp_morph  :
-  Proper (rngl_eq ==> rngl_eq) rngl_opp.
-Admitted.
-
-Global Instance rngl_add_opp_l_morph  :
-  Proper (rngl_eq ==> rngl_eq) (λ x, (- x + x)%L).
-Admitted.
+Proof.
+intros a b Hab c d Hcd.
+move c before b; move d before c.
+progress unfold rngl_eq in Hab.
+progress unfold rngl_eq in Hcd.
+progress unfold rngl_eq.
+destruct (rngl_opt_equiv T); [ | congruence ].
+...
 
 Theorem rngl_sub_add :
   rngl_has_opp T = true →
@@ -159,6 +156,9 @@ intros Hop *.
 unfold rngl_sub; rewrite Hop.
 rewrite <- rngl_add_assoc.
 specialize (rngl_add_opp_diag_l Hop b) as H.
+rewrite H.
+rewrite rngl_add_0_r.
+...
 rewrite <- (rngl_add_0_r a)%L at 2.
 (* bon, chais pas comment faut faire *)
 apply rngl_add_morph; [ | apply H ].

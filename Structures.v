@@ -20,6 +20,7 @@ which imports the present module and some other ones.
  *)
 
 From Stdlib Require Import Utf8 Arith.
+From Stdlib Require Import Morphisms.
 
 Class ring_like_op T :=
   { rngl_zero : T;
@@ -284,8 +285,8 @@ Class ring_like_prop T {ro : ring_like_op T} :=
     rngl_is_archimedean : bool;
     rngl_is_alg_closed : bool;
     rngl_characteristic : nat;
-    rngl_opt_eq_refl :
-      if rngl_has_eq T then not_applicable else ∀ a, (a = a)%L;
+    rngl_opt_equivalence :
+      if rngl_has_eq T then not_applicable else Equivalence rngl_eq;
     rngl_add_comm : ∀ a b : T, (a + b)%L = (b + a)%L;
     rngl_add_assoc : ∀ a b c : T, (a + (b + c))%L = ((a + b) + c)%L;
     rngl_add_0_l : ∀ a : T, (0 + a)%L = a;
@@ -646,6 +647,16 @@ destruct ab. {
   apply (rngl_eqb_eq Hed) in Hba.
   now symmetry in Hba.
 }
+Qed.
+
+Global Instance rngl_eq_equiv : Equivalence rngl_eq.
+Proof.
+specialize (rngl_opt_equivalence) as H1.
+progress unfold rngl_has_eq in H1.
+progress unfold rngl_eq in H1.
+progress unfold rngl_eq.
+destruct (rngl_opt_equiv T); [ easy | ].
+apply eq_equivalence.
 Qed.
 
 End a.
