@@ -488,8 +488,8 @@ Proof.
 intros Hop *.
 progress unfold rngl_sub.
 rewrite Hop.
-...
-apply rngl_add_assoc.
+rewrite rngl_add_assoc.
+apply rngl_eq_refl.
 Qed.
 
 Theorem rngl_add_sub_swap :
@@ -499,7 +499,8 @@ Proof.
 intros Hop *.
 progress unfold rngl_sub.
 rewrite Hop.
-apply rngl_add_add_swap.
+rewrite rngl_add_add_swap.
+apply rngl_eq_refl.
 Qed.
 
 Theorem rngl_add_sub_simpl_l :
@@ -536,14 +537,15 @@ Qed.
 
 Theorem rngl_opp_involutive :
   rngl_has_opp T = true →
-  ∀ x, (- - x)%L = x.
+  ∀ x, (- - x = x)%L.
 Proof.
-intros Hro *.
+intros Hop.
+specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
+intros.
 symmetry.
-apply (rngl_add_move_0_r Hro).
-rewrite (rngl_add_opp_r Hro).
-apply rngl_sub_diag.
-now apply rngl_has_opp_or_subt_iff; left.
+apply (rngl_add_move_0_r Hop).
+rewrite (rngl_add_opp_r Hop).
+apply (rngl_sub_diag Hos).
 Qed.
 
 Theorem rngl_sub_opp_r :
@@ -554,7 +556,8 @@ intros Hop *.
 progress unfold rngl_sub.
 rewrite Hop.
 f_equal.
-apply (rngl_opp_involutive Hop).
+rewrite (rngl_opp_involutive Hop).
+apply rngl_eq_refl.
 Qed.
 
 Theorem rngl_opp_inj :
@@ -562,6 +565,7 @@ Theorem rngl_opp_inj :
   ∀ a b, (- a = - b)%L → a = b.
 Proof.
 intros Hro * H.
+...
 rewrite <- (rngl_opp_involutive Hro a).
 rewrite H.
 now apply rngl_opp_involutive.
