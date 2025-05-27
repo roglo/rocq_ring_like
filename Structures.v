@@ -284,21 +284,24 @@ Class ring_like_prop T {ro : ring_like_op T} :=
     rngl_is_archimedean : bool;
     rngl_is_alg_closed : bool;
     rngl_characteristic : nat;
-    rngl_add_comm : ∀ a b : T, (a + b = b + a)%L;
-    rngl_add_assoc : ∀ a b c : T, (a + (b + c) = (a + b) + c)%L;
-    rngl_add_0_l : ∀ a : T, (0 + a = a)%L;
-    rngl_mul_assoc : ∀ a b c : T, (a * (b * c) = (a * b) * c)%L;
+    rngl_opt_eq_refl :
+      if rngl_has_eq T then not_applicable else ∀ a, (a = a)%L;
+    rngl_add_comm : ∀ a b : T, (a + b)%L = (b + a)%L;
+    rngl_add_assoc : ∀ a b c : T, (a + (b + c))%L = ((a + b) + c)%L;
+    rngl_add_0_l : ∀ a : T, (0 + a)%L = a;
+    rngl_mul_assoc : ∀ a b c : T, (a * (b * c))%L = ((a * b) * c)%L;
     (* when has 1 *)
     rngl_opt_mul_1_l :
-      if rngl_has_1 T then ∀ a : T, (rngl_one * a = a)%L else not_applicable;
+      if rngl_has_1 T then ∀ a : T, (rngl_one * a)%L = a else not_applicable;
     rngl_mul_add_distr_l : ∀ a b c : T, (a * (b + c) = a * b + a * c)%L;
     (* when multiplication is commutative *)
     rngl_opt_mul_comm :
-      if rngl_mul_is_comm then ∀ a b, (a * b = b * a)%L else not_applicable;
+      if rngl_mul_is_comm then ∀ a b, (a * b)%L = (b * a)%L
+      else not_applicable;
     (* when multiplication is not commutative *)
     rngl_opt_mul_1_r :
       if rngl_mul_is_comm then not_applicable
-      else if rngl_has_1 T then ∀ a, (a * 1 = a)%L
+      else if rngl_has_1 T then ∀ a, (a * 1)%L = a
       else not_applicable;
     rngl_opt_mul_add_distr_r :
       if rngl_mul_is_comm then not_applicable else
@@ -308,14 +311,13 @@ Class ring_like_prop T {ro : ring_like_op T} :=
       if rngl_has_opp T then ∀ a : T, (- a + a = 0)%L else not_applicable;
     (* when has subtraction (subt) *)
     rngl_opt_add_sub :
-      if rngl_has_subt T then ∀ a b, (a + b - b = a)%L
+      if rngl_has_subt T then ∀ a b, (a + b - b)%L = a
       else not_applicable;
     rngl_opt_sub_add_distr :
-      if rngl_has_subt T then ∀ a b c, (a - (b + c) = a - b - c)%L
+      if rngl_has_subt T then ∀ a b c, (a - (b + c))%L = (a - b - c)%L
       else not_applicable;
     rngl_opt_sub_0_l :
-      if rngl_has_subt T then ∀ a, (0 - a = 0)%L
-      else not_applicable;
+      if rngl_has_subt T then ∀ a, (0 - a)%L = 0%L else not_applicable;
     (* when has inverse *)
     rngl_opt_mul_inv_diag_l :
       if (rngl_has_inv T && rngl_has_1 T)%bool then
@@ -327,11 +329,11 @@ Class ring_like_prop T {ro : ring_like_op T} :=
       else not_applicable;
     (* when has division (quot) *)
     rngl_opt_mul_div :
-      if rngl_has_quot T then ∀ a b, (b ≠ 0)%L → (a * b / b = a)%L
+      if rngl_has_quot T then ∀ a b, b ≠ 0%L → (a * b / b)%L = a
       else not_applicable;
     rngl_opt_mul_quot_r :
       if (rngl_has_quot T && negb rngl_mul_is_comm)%bool then
-        ∀ a b, (b ≠ 0)%L → (b * a / b = a)%L
+        ∀ a b, b ≠ 0%L → (b * a / b)%L = a
       else not_applicable;
     (* zero divisors *)
     rngl_opt_integral :
