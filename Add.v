@@ -142,11 +142,16 @@ Global Instance rngl_add_morph  :
 Proof.
 intros a b Hab c d Hcd.
 move c before b; move d before c.
+specialize rngl_opt_add_morph as H.
 progress unfold rngl_eq in Hab.
 progress unfold rngl_eq in Hcd.
+progress unfold rngl_has_eq in H.
+progress unfold rngl_eq in H.
 progress unfold rngl_eq.
-destruct (rngl_opt_equiv T); [ | congruence ].
-...
+destruct (rngl_opt_equiv T) as [eqv| ]; [ | congruence ].
+cbn in H.
+now apply H.
+Qed.
 
 Theorem rngl_sub_add :
   rngl_has_opp T = true →
@@ -158,33 +163,7 @@ rewrite <- rngl_add_assoc.
 specialize (rngl_add_opp_diag_l Hop b) as H.
 rewrite H.
 rewrite rngl_add_0_r.
-...
-rewrite <- (rngl_add_0_r a)%L at 2.
-(* bon, chais pas comment faut faire *)
-apply rngl_add_morph; [ | apply H ].
 apply rngl_eq_refl.
-...
-specialize rngl_opp_morph as H2.
-progress unfold Proper in H2.
-progress unfold "==>" in H2.
-specialize rngl_add_opp_l_morph as H3.
-progress unfold Proper in H3.
-progress unfold "==>" in H3.
-...
-apply (rngl_add_morph a a (rngl_eq_refl _) (- b + b) 0 H)%L.
-...
-specialize (H2 (- b + b) 0 H)%L as H3.
-...
-Search (- _ + _ = _)%L.
-remember Relation_Definitions.relation as x eqn:Hx.
-progress unfold Relation_Definitions.relation in Hx.
-..
-rewrite H.
-...
-rewrite H.
-...
-rewrite (rngl_add_opp_diag_l Hop).
-apply rngl_add_0_r.
 Qed.
 
 Theorem rngl_add_sub :
@@ -206,7 +185,8 @@ symmetry in Hmo.
 destruct mo. {
   specialize rngl_opt_add_sub as H1.
   rewrite Hmo in H1.
-  apply H1.
+  rewrite H1.
+  apply rngl_eq_refl.
 }
 apply rngl_has_opp_or_subt_iff in Hom.
 destruct Hom; congruence.
@@ -216,6 +196,30 @@ Theorem rngl_add_cancel_l :
   rngl_has_opp_or_subt T = true →
   ∀ a b c, (a + b = a + c)%L ↔ (b = c)%L.
 Proof.
+intros Hos *.
+split; intros Habc. 2: {
+  rewrite Habc.
+  apply rngl_eq_refl.
+}
+rewrite <- (rngl_add_sub Hos b a).
+rewrite <- (rngl_add_sub Hos c a).
+do 2 rewrite (rngl_add_comm _ a).
+...
+rewrite Habc.
+...
+rewrite <- H2.
+specialize rngl_add_morph as H1.
+specialize (H1 _ _ Habc).
+progress unfold "==>" in H1.
+specialize (H1 _ _ (rngl_eq_refl (-a)))%L.
+
+...
+Check rngl_add_sub.
+...
+  specialize rngl_add_morph as H1.
+  specialize (H1 _ _ Hbc)%L.
+  specialize (H1 b c)%L.
+...
 intros Hos *.
 split; intros Habc; [ | now subst b ].
 specialize (rngl_add_sub Hos c a) as H1.

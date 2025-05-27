@@ -139,7 +139,7 @@ Qed.
 Theorem rngl_le_iff_leb_eq :
   ∀ a b c d,
   (a ≤ b ↔ c ≤ d)%L
-  → ((a ≤? b) = (c ≤? d))%L.
+  → (a ≤? b)%L = (c ≤? d)%L.
 Proof.
 intros * Habcd.
 remember (a ≤? b)%L as ab eqn:Hab.

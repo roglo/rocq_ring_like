@@ -287,6 +287,9 @@ Class ring_like_prop T {ro : ring_like_op T} :=
     rngl_characteristic : nat;
     rngl_opt_equivalence :
       if rngl_has_eq T then not_applicable else Equivalence rngl_eq;
+    rngl_opt_add_morph :
+      if rngl_has_eq T then not_applicable
+      else Proper (rngl_eq ==> rngl_eq ==> rngl_eq) rngl_add;
     rngl_add_comm : ∀ a b : T, (a + b)%L = (b + a)%L;
     rngl_add_assoc : ∀ a b c : T, (a + (b + c))%L = ((a + b) + c)%L;
     rngl_add_0_l : ∀ a : T, (0 + a)%L = a;
