@@ -136,7 +136,7 @@ Qed.
 Theorem rngl_opp_le_compat :
   rngl_has_opp T = true →
   rngl_is_ordered T = true →
-  ∀ x y, (x ≤ y ↔ - y ≤ - x)%L.
+  ∀ a b, (a ≤ b ↔ - b ≤ - a)%L.
 Proof.
 intros * Hop Hor *.
 split; intros Hxy. {
@@ -149,7 +149,7 @@ split; intros Hxy. {
   progress unfold rngl_sub.
   rewrite Hop.
   rewrite rngl_add_comm.
-  rewrite <- (rngl_opp_involutive Hop y).
+  rewrite <- (rngl_opp_involutive Hop b).
   rewrite (rngl_add_opp_r Hop).
   now apply (rngl_le_0_sub Hop Hor).
 }
@@ -158,7 +158,7 @@ Qed.
 Theorem rngl_opp_lt_compat :
   rngl_has_opp T = true →
   rngl_is_ordered T = true →
-  ∀ x y, (x < y ↔ - y < - x)%L.
+  ∀ a b, (a < b ↔ - b < - a)%L.
 Proof.
 intros * Hop Hor *.
 split; intros Hxy. {
