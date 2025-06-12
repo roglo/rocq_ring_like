@@ -620,7 +620,7 @@ rewrite iter_list_cons; cycle 1.
 now cbn; rewrite IHl1.
 Qed.
 
-Theorem in_List_cart_prod_length : ∀ A (ll : list (list A)) l,
+Theorem List_in_cart_prod_length : ∀ A (ll : list (list A)) l,
   l ∈ List_cart_prod ll → length l = length ll.
 Proof.
 intros * Hl.
@@ -638,7 +638,7 @@ subst l; cbn; f_equal.
 now apply IHll.
 Qed.
 
-Theorem nth_in_List_cart_prod : ∀ A (d : A) ll l i,
+Theorem List_in_nth_cart_prod : ∀ A (d : A) ll l i,
   i < length ll
   → l ∈ List_cart_prod ll
   → List.nth i l d ∈ List.nth i ll [].
@@ -669,7 +669,7 @@ rewrite List_nth_succ_cons.
 now apply IHll.
 Qed.
 
-Theorem in_List_cart_prod_iff : ∀ {A} (d : A) ll la,
+Theorem List_in_cart_prod_iff : ∀ {A} (d : A) ll la,
   la ∈ List_cart_prod ll
   ↔ length la = length ll ∧
     ∀ i, i < length la → List.nth i la d ∈ List.nth i ll [].
@@ -677,10 +677,10 @@ Proof.
 intros.
 split. {
   intros Hla.
-  split; [ now apply in_List_cart_prod_length in Hla | ].
+  split; [ now apply List_in_cart_prod_length in Hla | ].
   intros i Hi.
-  apply nth_in_List_cart_prod; [ | easy ].
-  apply in_List_cart_prod_length in Hla.
+  apply List_in_nth_cart_prod; [ | easy ].
+  apply List_in_cart_prod_length in Hla.
   congruence.
 } {
   intros (Hla & Hnth).
