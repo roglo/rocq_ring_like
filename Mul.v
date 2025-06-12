@@ -804,7 +804,7 @@ The Rocq tactics "ring" and "ring_simplify" help to directly simplify
 some kinds of expressions in the "ring" world. It can be applied to
 ring-like structures, providing the following code is added:
 <<
-  Require Import Ring.
+  From Stdlib Require Import Ring.
   Add Ring rngl_ring : rngl_ring_theory.
 >>
 
