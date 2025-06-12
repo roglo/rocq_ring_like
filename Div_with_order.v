@@ -38,7 +38,7 @@ Context {T : Type}.
 Context {ro : ring_like_op T}.
 Context {rp : ring_like_prop T}.
 
-Theorem rngl_0_lt_inv_compat :
+Theorem rngl_inv_pos :
   rngl_has_1 T = true →
   rngl_has_opp T = true →
   rngl_has_inv T = true →
@@ -73,7 +73,7 @@ specialize (rngl_characteristic_1 Hon Hos H6) as H4.
 exfalso; apply Haz, H4.
 Qed.
 
-Theorem rngl_inv_lt_0_compat :
+Theorem rngl_inv_neg :
   rngl_has_1 T = true →
   rngl_has_opp T = true →
   rngl_has_inv T = true →
@@ -82,7 +82,7 @@ Theorem rngl_inv_lt_0_compat :
 Proof.
 intros * Hon Hop Hiv Hor.
 intros * Hza.
-specialize (rngl_0_lt_inv_compat Hon Hop Hiv Hor) as H2.
+specialize (rngl_inv_pos Hon Hop Hiv Hor) as H2.
 specialize (H2 (- a))%L.
 apply (rngl_opp_lt_compat Hop Hor).
 rewrite (rngl_opp_0 Hop).
@@ -109,7 +109,7 @@ specialize (H1 H); clear H.
 assert (H : (0 ≤ b⁻¹ ≤ b⁻¹)%L). {
   split; [ | apply (rngl_le_refl Hor) ].
   apply (rngl_lt_le_incl Hor).
-  apply (rngl_0_lt_inv_compat Hon Hop Hiv Hor).
+  apply (rngl_inv_pos Hon Hop Hiv Hor).
   apply (rngl_lt_iff Hor).
   split; [ | congruence ].
   now apply (rngl_le_trans Hor _ a).
@@ -240,7 +240,7 @@ destruct xz. {
         apply (rngl_opp_le_compat Hop Hor) in Hy.
         rewrite (rngl_opp_0 Hop) in Hy.
         apply (rngl_lt_le_incl Hor).
-        apply (rngl_0_lt_inv_compat Hon Hop Hiv Hor).
+        apply (rngl_inv_pos Hon Hop Hiv Hor).
         apply (rngl_lt_iff Hor).
         split; [ easy | ].
         intros H.
@@ -298,7 +298,7 @@ destruct xz. {
       rewrite Hiv.
       apply (rngl_mul_nonpos_nonneg Hop Hor _ _ Hx).
       apply (rngl_lt_le_incl Hor).
-      now apply (rngl_0_lt_inv_compat Hon Hop Hiv Hor).
+      now apply (rngl_inv_pos Hon Hop Hiv Hor).
     }
   }
 }
@@ -320,7 +320,7 @@ destruct yz. {
     apply (rngl_lt_le_incl Hor) in Hx.
     apply (rngl_mul_nonneg_nonpos Hop Hor _ _ Hx).
     apply (rngl_lt_le_incl Hor).
-    apply (rngl_inv_lt_0_compat Hon Hop Hiv Hor).
+    apply (rngl_inv_neg Hon Hop Hiv Hor).
     apply (rngl_lt_iff Hor).
     split; [ easy | congruence ].
   }
@@ -336,7 +336,7 @@ assert (Hzy : (0 < y)%L). {
   apply (rngl_lt_iff Hor).
   split; [ easy | congruence ].
 }
-specialize (rngl_0_lt_inv_compat Hon Hop Hiv Hor _ Hzy) as Hy'.
+specialize (rngl_inv_pos Hon Hop Hiv Hor _ Hzy) as Hy'.
 apply (rngl_lt_le_incl Hor) in Hy'.
 generalize Hx; intros Hx'.
 apply (rngl_lt_le_incl Hor) in Hx'.
@@ -451,7 +451,7 @@ split; intros Hbc. {
   progress unfold rngl_div at 1 2.
   rewrite Hiv.
   apply (rngl_mul_lt_mono_pos_r Hop Hor Hii); [ | easy ].
-  now apply (rngl_0_lt_inv_compat Hon Hop Hiv Hor).
+  now apply (rngl_inv_pos Hon Hop Hiv Hor).
 } {
   apply (rngl_mul_lt_mono_pos_r Hop Hor Hii a) in Hbc; [ | easy ].
   rewrite (rngl_div_mul Hon Hiv) in Hbc. 2: {
@@ -607,7 +607,7 @@ intros * Hcz.
 progress unfold rngl_div.
 rewrite Hiv.
 apply (rngl_mul_le_mono_pos_r Hop Hor Hii).
-now apply (rngl_0_lt_inv_compat Hon Hop Hiv Hor).
+now apply (rngl_inv_pos Hon Hop Hiv Hor).
 Qed.
 
 Theorem rngl_lt_neq :
@@ -700,7 +700,7 @@ specialize (rngl_int_dom_or_inv_1_quo Hiv Hon) as Hii.
 progress unfold rngl_div.
 rewrite Hiv.
 apply (rngl_mul_pos_pos Hos Hor Hii); [ easy | ].
-now apply (rngl_0_lt_inv_compat Hon Hop Hiv Hor).
+now apply (rngl_inv_pos Hon Hop Hiv Hor).
 Qed.
 
 Theorem rngl_le_div_l :
@@ -863,7 +863,7 @@ destruct (rngl_lt_dec Hor a 0%L) as [H12| H12]. {
       rewrite <- (rngl_opp_0 Hop).
       now apply -> (rngl_opp_lt_compat Hop Hor).
     }
-    apply (rngl_0_lt_inv_compat Hon Hop Hiv Hor).
+    apply (rngl_inv_pos Hon Hop Hiv Hor).
     apply (rngl_0_lt_2 Hon Hos Hc1 Hor).
   }
   specialize (H1 H); clear H.
@@ -891,7 +891,7 @@ destruct (rngl_lt_dec Hor 0%L a) as [H21| H21]. {
     progress unfold rngl_div.
     rewrite Hiv.
     apply (rngl_mul_pos_pos Hos Hor Hii); [ easy | ].
-    apply (rngl_0_lt_inv_compat Hon Hop Hiv Hor).
+    apply (rngl_inv_pos Hon Hop Hiv Hor).
     apply (rngl_0_lt_2 Hon Hos Hc1 Hor).
   }
   specialize (H1 H); clear H.

@@ -352,7 +352,7 @@ destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
 }
 assert (Hε2 : (0 < ε / 2)%L). {
   apply (rngl_mul_lt_mono_pos_r Hop Hor Hii 2⁻¹%L) in Hε. 2: {
-    apply (rngl_0_lt_inv_compat Hon Hop Hiv Hor).
+    apply (rngl_inv_pos Hon Hop Hiv Hor).
     apply (rngl_0_lt_2 Hon Hos Hc1 Hor).
   }
   rewrite (rngl_mul_0_l Hos) in Hε.

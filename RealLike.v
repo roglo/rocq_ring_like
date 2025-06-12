@@ -92,7 +92,7 @@ progress unfold rngl_div.
 rewrite Hiv.
 rewrite rl_sqrt_mul; [ | easy | ]. 2: {
   apply (rngl_lt_le_incl Hor).
-  now apply (rngl_0_lt_inv_compat Hon Hop Hiv Hor).
+  now apply (rngl_inv_pos Hon Hop Hiv Hor).
 }
 f_equal.
 now apply rl_nth_root_inv.
