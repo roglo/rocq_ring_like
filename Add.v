@@ -155,6 +155,15 @@ rewrite rngl_add_comm in H1.
 now rewrite (rngl_add_sub Hos) in H1.
 Qed.
 
+Theorem rngl_add_cancel_r :
+  rngl_has_opp_or_subt T = true →
+  ∀ a b c, (a + c = b + c)%L ↔ (a = b)%L.
+Proof.
+intros Hos *.
+do 2 rewrite (rngl_add_comm _ c).
+apply (rngl_add_cancel_l Hos).
+Qed.
+
 Theorem rngl_add_move_l :
   rngl_has_opp T = true →
   ∀ a b c, (a + b)%L = c ↔ b = (c - a)%L.
@@ -237,15 +246,6 @@ Theorem rngl_sub_compat_l : ∀ a b c,
 Proof.
 intros a b c Hab.
 now rewrite Hab.
-Qed.
-
-Theorem rngl_add_cancel_r :
-  rngl_has_opp_or_subt T = true →
-  ∀ a b c, (a + c = b + c)%L → (a = b)%L.
-Proof.
-intros Hom * Habc.
-apply rngl_sub_compat_l with (c := c) in Habc.
-now do 2 rewrite rngl_add_sub in Habc.
 Qed.
 
 Theorem rngl_add_move_0_r :
