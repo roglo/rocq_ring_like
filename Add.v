@@ -138,6 +138,40 @@ cbn in H.
 now apply H.
 Qed.
 
+Global Instance rngl_opp_morph :
+  Proper (rngl_eq ==> rngl_eq) rngl_opp.
+Proof.
+intros a b Hab.
+specialize rngl_opt_opp_morph as H.
+progress unfold rngl_eq in Hab.
+progress unfold rngl_has_eq in H.
+progress unfold rngl_eq in H.
+progress unfold rngl_eq.
+destruct (rngl_opt_equiv T) as [eqv| ]; [ | congruence ].
+cbn in H.
+now apply H.
+Qed.
+
+Global Instance rngl_sub_morph :
+  Proper (rngl_eq ==> rngl_eq ==> rngl_eq) rngl_sub.
+Proof.
+intros a b Hab c d Hcd.
+move c before b; move d before c.
+progress unfold rngl_sub.
+remember (rngl_has_opp T) as op eqn:Hop.
+symmetry in Hop.
+destruct op; [ now rewrite Hab, Hcd | ].
+remember (rngl_has_subt T) as su eqn:Hsu.
+symmetry in Hsu.
+destruct su; [ | easy ].
+progress unfold rngl_eq in Hab.
+progress unfold rngl_eq in Hcd.
+progress unfold rngl_eq.
+destruct (rngl_opt_equiv T) as [eqv| ]; [ | congruence ].
+...
+Qed.
+
+...
 Global Instance rngl_sub_morph :
   Proper (rngl_eq ==> rngl_eq ==> rngl_eq) rngl_sub.
 Proof.
@@ -153,20 +187,7 @@ destruct (rngl_opt_equiv T) as [eqv| ]; [ | congruence ].
 cbn in H.
 now apply H.
 Qed.
-
-Global Instance rngl_opp_morph :
-  Proper (rngl_eq ==> rngl_eq) rngl_opp.
-Proof.
-intros a b Hab.
-specialize rngl_opt_opp_morph as H.
-progress unfold rngl_eq in Hab.
-progress unfold rngl_has_eq in H.
-progress unfold rngl_eq in H.
-progress unfold rngl_eq.
-destruct (rngl_opt_equiv T) as [eqv| ]; [ | congruence ].
-cbn in H.
-now apply H.
-Qed.
+*)
 
 Theorem rngl_sub_add :
   rngl_has_opp T = true →
@@ -219,6 +240,7 @@ split; intros Habc. 2: {
 rewrite <- (rngl_add_sub Hos b a).
 rewrite <- (rngl_add_sub Hos c a).
 do 2 rewrite (rngl_add_comm _ a).
+...
 now rewrite Habc.
 Qed.
 
