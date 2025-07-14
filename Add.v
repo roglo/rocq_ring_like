@@ -432,24 +432,11 @@ Qed.
 
 Theorem rngl_opp_add_distr :
   rngl_has_opp T = true →
-  ∀ a b, (- (a + b))%L = (- b - a)%L.
+  ∀ a b, (- (a + b) = - b - a)%L.
 Proof.
 intros Hop *.
 specialize (proj2 rngl_has_opp_or_subt_iff) as Hop'.
 rewrite Hop in Hop'.
-(**)
-progress unfold rngl_sub.
-progress unfold rngl_opp.
-progress unfold rngl_has_opp_or_subt in Hop'.
-progress unfold rngl_has_subt in Hop'.
-progress unfold rngl_has_opp in Hop.
-progress unfold rngl_has_opp.
-remember (rngl_opt_opp_or_subt T) as os eqn:Hos.
-symmetry in Hos.
-destruct os as [os| ]. {
-  destruct os as [opp| ]; [ | easy ].
-Search rngl_opt_opp_or_subt.
-...
 apply rngl_add_cancel_l with (a := (a + b)%L); [ now apply Hop'; left | ].
 rewrite (rngl_add_opp_r Hop).
 rewrite rngl_sub_diag; [ | now apply Hop'; left ].
