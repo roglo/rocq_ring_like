@@ -154,6 +154,20 @@ cbn in H.
 now apply H.
 Qed.
 
+Global Instance rngl_opp_morph :
+  Proper (rngl_eq ==> rngl_eq) rngl_opp.
+Proof.
+intros a b Hab.
+specialize rngl_opt_opp_morph as H.
+progress unfold rngl_eq in Hab.
+progress unfold rngl_has_eq in H.
+progress unfold rngl_eq in H.
+progress unfold rngl_eq.
+destruct (rngl_opt_equiv T) as [eqv| ]; [ | congruence ].
+cbn in H.
+now apply H.
+Qed.
+
 Theorem rngl_sub_add :
   rngl_has_opp T = true →
   ∀ a b, (a - b + b = a)%L.
@@ -418,11 +432,24 @@ Qed.
 
 Theorem rngl_opp_add_distr :
   rngl_has_opp T = true →
-  ∀ a b, (- (a + b) = - b - a)%L.
+  ∀ a b, (- (a + b))%L = (- b - a)%L.
 Proof.
 intros Hop *.
 specialize (proj2 rngl_has_opp_or_subt_iff) as Hop'.
 rewrite Hop in Hop'.
+(**)
+progress unfold rngl_sub.
+progress unfold rngl_opp.
+progress unfold rngl_has_opp_or_subt in Hop'.
+progress unfold rngl_has_subt in Hop'.
+progress unfold rngl_has_opp in Hop.
+progress unfold rngl_has_opp.
+remember (rngl_opt_opp_or_subt T) as os eqn:Hos.
+symmetry in Hos.
+destruct os as [os| ]. {
+  destruct os as [opp| ]; [ | easy ].
+Search rngl_opt_opp_or_subt.
+...
 apply rngl_add_cancel_l with (a := (a + b)%L); [ now apply Hop'; left | ].
 rewrite (rngl_add_opp_r Hop).
 rewrite rngl_sub_diag; [ | now apply Hop'; left ].
@@ -562,10 +589,9 @@ Qed.
 
 Theorem rngl_opp_inj :
   rngl_has_opp T = true →
-  ∀ a b, (- a = - b)%L → a = b.
+  ∀ a b, (- a = - b)%L → (a = b)%L.
 Proof.
 intros Hro * H.
-...
 rewrite <- (rngl_opp_involutive Hro a).
 rewrite H.
 now apply rngl_opp_involutive.
@@ -573,12 +599,12 @@ Qed.
 
 Theorem rngl_sub_cancel_l :
   rngl_has_opp T = true →
-  ∀ a b c, (a - b)%L = (a - c)%L ↔ b = c.
+  ∀ a b c, (a - b = a - c)%L ↔ (b = c)%L.
 Proof.
 intros Hop.
 specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
 intros.
-split; intros H1; [ | now subst b ].
+split; intros H1; [ | now rewrite H1 ].
 do 2 rewrite <- (rngl_add_opp_r Hop) in H1.
 apply (rngl_add_cancel_l Hos) in H1.
 now apply (rngl_opp_inj Hop) in H1.
@@ -604,6 +630,7 @@ remember (rngl_has_opp T) as op eqn:Hop.
 symmetry in Hop.
 destruct op. {
   unfold rngl_sub.
+...
   rewrite rngl_opp_add_distr; [ | easy ].
   unfold rngl_sub; rewrite Hop.
   rewrite rngl_add_assoc.
