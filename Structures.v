@@ -291,14 +291,12 @@ Class ring_like_prop T {ro : ring_like_op T} :=
     rngl_opt_add_morph :
       if rngl_has_eq T then not_applicable
       else Proper (rngl_eq ==> rngl_eq ==> rngl_eq) rngl_add;
-(*
-    rngl_opt_sub_morph :
-      if rngl_has_eq T then not_applicable
-      else Proper (rngl_eq ==> rngl_eq ==> rngl_eq) rngl_sub;
-*)
     rngl_opt_opp_morph :
       if rngl_has_eq T then not_applicable
       else Proper (rngl_eq ==> rngl_eq) rngl_opp;
+    rngl_opt_subt_morph :
+      if rngl_has_eq T then not_applicable
+      else Proper (rngl_eq ==> rngl_eq ==> rngl_eq) rngl_subt;
 (**)
     rngl_add_comm : ∀ a b : T, (a + b)%L = (b + a)%L;
     rngl_add_assoc : ∀ a b c : T, (a + (b + c))%L = ((a + b) + c)%L;

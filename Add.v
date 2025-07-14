@@ -157,6 +157,7 @@ Global Instance rngl_sub_morph :
 Proof.
 intros a b Hab c d Hcd.
 move c before b; move d before c.
+specialize rngl_opt_subt_morph as H.
 progress unfold rngl_sub.
 remember (rngl_has_opp T) as op eqn:Hop.
 symmetry in Hop.
@@ -167,27 +168,11 @@ destruct su; [ | easy ].
 progress unfold rngl_eq in Hab.
 progress unfold rngl_eq in Hcd.
 progress unfold rngl_eq.
-destruct (rngl_opt_equiv T) as [eqv| ]; [ | congruence ].
-...
-Qed.
-
-...
-Global Instance rngl_sub_morph :
-  Proper (rngl_eq ==> rngl_eq ==> rngl_eq) rngl_sub.
-Proof.
-intros a b Hab c d Hcd.
-move c before b; move d before c.
-specialize rngl_opt_sub_morph as H.
-progress unfold rngl_eq in Hab.
-progress unfold rngl_eq in Hcd.
 progress unfold rngl_has_eq in H.
 progress unfold rngl_eq in H.
-progress unfold rngl_eq.
 destruct (rngl_opt_equiv T) as [eqv| ]; [ | congruence ].
-cbn in H.
 now apply H.
 Qed.
-*)
 
 Theorem rngl_sub_add :
   rngl_has_opp T = true →
@@ -240,7 +225,6 @@ split; intros Habc. 2: {
 rewrite <- (rngl_add_sub Hos b a).
 rewrite <- (rngl_add_sub Hos c a).
 do 2 rewrite (rngl_add_comm _ a).
-...
 now rewrite Habc.
 Qed.
 
@@ -626,6 +610,7 @@ Proof.
 intros Hro *.
 unfold rngl_sub at 1.
 rewrite Hro.
+...
 rewrite rngl_opp_add_distr; [ | easy ].
 now rewrite rngl_opp_involutive.
 Qed.
@@ -639,17 +624,46 @@ remember (rngl_has_opp T) as op eqn:Hop.
 symmetry in Hop.
 destruct op. {
   unfold rngl_sub.
-...
+  rewrite Hop.
   rewrite rngl_opp_add_distr; [ | easy ].
   unfold rngl_sub; rewrite Hop.
   rewrite rngl_add_assoc.
-  apply rngl_add_add_swap.
+  now rewrite rngl_add_add_swap.
 }
 remember (rngl_has_subt T) as mo eqn:Hmo.
 symmetry in Hmo.
 destruct mo. {
   specialize rngl_opt_sub_add_distr as H1.
-  now rewrite Hmo in H1.
+  rewrite Hmo in H1.
+  now rewrite H1.
+}
+apply rngl_has_opp_or_subt_iff in Hos.
+now destruct Hos; congruence.
+Qed.
+
+...
+
+Theorem rngl_sub_add_distr :
+  rngl_has_opp_or_subt T = true →
+  ∀ a b c, (a - (b + c) = a - b - c)%L.
+Proof.
+intros Hos *.
+remember (rngl_has_opp T) as op eqn:Hop.
+symmetry in Hop.
+destruct op. {
+  unfold rngl_sub.
+  rewrite Hop.
+  rewrite rngl_opp_add_distr; [ | easy ].
+  unfold rngl_sub; rewrite Hop.
+  rewrite rngl_add_assoc.
+  now rewrite rngl_add_add_swap.
+}
+remember (rngl_has_subt T) as mo eqn:Hmo.
+symmetry in Hmo.
+destruct mo. {
+  specialize rngl_opt_sub_add_distr as H1.
+  rewrite Hmo in H1.
+  now rewrite H1.
 }
 apply rngl_has_opp_or_subt_iff in Hos.
 now destruct Hos; congruence.
