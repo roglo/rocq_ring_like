@@ -610,38 +610,9 @@ Proof.
 intros Hro *.
 unfold rngl_sub at 1.
 rewrite Hro.
-...
 rewrite rngl_opp_add_distr; [ | easy ].
 now rewrite rngl_opp_involutive.
 Qed.
-
-Theorem rngl_sub_add_distr :
-  rngl_has_opp_or_subt T = true →
-  ∀ a b c, (a - (b + c) = a - b - c)%L.
-Proof.
-intros Hos *.
-remember (rngl_has_opp T) as op eqn:Hop.
-symmetry in Hop.
-destruct op. {
-  unfold rngl_sub.
-  rewrite Hop.
-  rewrite rngl_opp_add_distr; [ | easy ].
-  unfold rngl_sub; rewrite Hop.
-  rewrite rngl_add_assoc.
-  now rewrite rngl_add_add_swap.
-}
-remember (rngl_has_subt T) as mo eqn:Hmo.
-symmetry in Hmo.
-destruct mo. {
-  specialize rngl_opt_sub_add_distr as H1.
-  rewrite Hmo in H1.
-  now rewrite H1.
-}
-apply rngl_has_opp_or_subt_iff in Hos.
-now destruct Hos; congruence.
-Qed.
-
-...
 
 Theorem rngl_sub_add_distr :
   rngl_has_opp_or_subt T = true →
@@ -680,7 +651,7 @@ rewrite (rngl_opp_add_distr Hop).
 rewrite (rngl_opp_involutive Hop).
 unfold rngl_sub; rewrite Hop.
 rewrite rngl_add_assoc.
-apply rngl_add_add_swap.
+now rewrite rngl_add_add_swap.
 Qed.
 
 Theorem rngl_mul_nat_add_r : ∀ a m n,
@@ -713,6 +684,7 @@ replace m with (n + (m - n)) at 2. 2: {
 rewrite rngl_of_nat_add.
 symmetry.
 rewrite rngl_add_comm.
+...
 apply (rngl_add_sub Hos).
 Qed.
 
