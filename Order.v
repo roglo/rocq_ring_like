@@ -171,9 +171,6 @@ rewrite Hor in rr.
 move rr after rp.
 specialize rngl_ord_not_le as H1.
 specialize (rngl_le_antisymm Hor) as H2.
-...
-About rngl_le_antisymm.
-...
 progress unfold rngl_le in H1.
 progress unfold rngl_le in H2.
 destruct rngl_opt_leb as [rngl_leb| ]; [ | easy ].
@@ -182,43 +179,7 @@ split. {
   specialize (H1 b a) as H3.
   rewrite Hab in H3.
   assert (H : false ≠ true) by easy.
-  specialize (H3 H); clear H.
-  split; [ easy | ].
-  destruct H3 as (H3, _).
-  congruence.
-} {
-  intros (H3, H4).
-  remember (rngl_leb b a) as x eqn:Hx; symmetry in Hx.
-  destruct x; [ | easy ].
-  now specialize (H2 _ _ H3 Hx).
-}
-Qed.
-
-...
-
-Theorem rngl_lt_iff :
-  rngl_is_ordered T = true → ∀ a b, (a < b ↔ a ≤ b ∧ a ≠ b)%L.
-Proof.
-intros * Hor a b.
-Locate "≠".
-progress unfold rngl_lt.
-progress unfold rngl_le.
-specialize rngl_opt_ord as rr.
-rewrite Hor in rr.
-move rr after rp.
-specialize rngl_ord_not_le as H1.
-specialize (rngl_le_antisymm Hor) as H2.
-progress unfold rngl_le in H1.
-progress unfold rngl_le in H2.
-destruct rngl_opt_leb as [rngl_leb| ]; [ | easy ].
-split. {
-  intros Hab.
-  specialize (H1 b a) as H3.
-  rewrite Hab in H3.
-  assert (H : false ≠ true) by easy.
-  specialize (H3 H); clear H.
-  split; [ easy | ].
-  destruct H3; congruence.
+  now specialize (H3 H).
 } {
   intros (H3, H4).
   remember (rngl_leb b a) as x eqn:Hx; symmetry in Hx.
@@ -247,6 +208,7 @@ split. {
   intros H.
   remember (rngl_leb b a) as ba eqn:Hba; symmetry in Hba.
   destruct ba; [ | now left ].
+...
   now specialize (H2 _ _ H Hba); right.
 } {
   intros H.
