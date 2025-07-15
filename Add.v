@@ -801,14 +801,14 @@ Qed.
 Theorem eq_rngl_of_nat_0 :
   rngl_has_1 T = true →
   rngl_characteristic T = 0 →
-  ∀ i, rngl_of_nat i = 0%L → i = 0.
+  ∀ i, (rngl_of_nat i = 0)%L → i = 0.
 Proof.
 intros Hon Hch * Hi.
 destruct i; [ easy | exfalso ].
-cbn in Hi.
 specialize (rngl_characteristic_0 Hon Hch) as H1.
-...
-now specialize (H1 i) as H.
+specialize (H1 i).
+rewrite Hi in H1.
+now apply H1.
 Qed.
 
 Theorem rngl_of_nat_inj :
@@ -823,15 +823,18 @@ intros Hon Hom Hch * Hij.
 revert i Hij.
 induction j; intros. {
   cbn in Hij.
-  now apply eq_rngl_of_nat_0 in Hij.
+  assert (H : (rngl_of_nat i = 0)%L) by now rewrite Hij.
+  now apply eq_rngl_of_nat_0 in H.
 }
 destruct i. {
   exfalso.
   symmetry in Hij.
-  now apply eq_rngl_of_nat_0 in Hij.
+  assert (H : (rngl_of_nat (S j) = rngl_of_nat 0)%L) by now rewrite Hij.
+  now apply eq_rngl_of_nat_0 in H.
 }
 f_equal.
-cbn in Hij.
+do 2 rewrite rngl_of_nat_succ in Hij.
+...
 apply rngl_add_cancel_l in Hij; [ | easy ].
 now apply IHj.
 Qed.
