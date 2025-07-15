@@ -673,7 +673,7 @@ Qed.
 
 Theorem rngl_of_nat_sub :
   rngl_has_opp_or_subt T = true →
-  ∀ m n, n ≤ m → rngl_of_nat (m - n) = (rngl_of_nat m - rngl_of_nat n)%L.
+  ∀ m n, n ≤ m → (rngl_of_nat (m - n) = rngl_of_nat m - rngl_of_nat n)%L.
 Proof.
 intros Hos * Hnm.
 replace m with (n + (m - n)) at 2. 2: {
@@ -684,7 +684,6 @@ replace m with (n + (m - n)) at 2. 2: {
 rewrite rngl_of_nat_add.
 symmetry.
 rewrite rngl_add_comm.
-...
 apply (rngl_add_sub Hos).
 Qed.
 
@@ -708,18 +707,17 @@ Theorem rngl_of_nat_succ :
 Proof. easy. Qed.
 
 Theorem rngl_abs_0 :
-  rngl_has_opp T = true →
-  ∣ 0 ∣ = 0%L.
+  rngl_has_opp T = true → (∣ 0 ∣ = 0)%L.
 Proof.
 intros Hop.
 progress unfold rngl_abs.
-rewrite (rngl_opp_0 Hop).
-now destruct (0 ≤? 0)%L.
+destruct (0 ≤? 0)%L; [ | easy ].
+apply (rngl_opp_0 Hop).
 Qed.
 
 Theorem eq_rngl_abs_0 :
   rngl_has_opp T = true →
-  ∀ a, rngl_abs a = 0%L → a = 0%L.
+  ∀ a, (rngl_abs a = 0)%L → (a = 0)%L.
 Proof.
 intros Hop * Ha.
 progress unfold rngl_abs in Ha.
@@ -730,7 +728,7 @@ Qed.
 
 Theorem rngl_add_opp_diag_r :
   rngl_has_opp T = true →
-  ∀ x : T, (x + - x)%L = 0%L.
+  ∀ x : T, (x + - x = 0)%L.
 Proof.
 intros Hop *.
 rewrite (rngl_add_opp_r Hop).
@@ -750,7 +748,7 @@ Proof. easy. Qed.
 Theorem rngl_characteristic_0 :
   rngl_has_1 T = true →
   rngl_characteristic T = 0 →
-  ∀ i : nat, rngl_of_nat (S i) ≠ 0%L.
+  ∀ i : nat, (rngl_of_nat (S i) ≠ 0)%L.
 Proof.
 intros Hon Hcz.
 specialize (rngl_opt_characteristic_prop) as H1.
@@ -760,8 +758,8 @@ Qed.
 Theorem rngl_characteristic_non_0 :
   rngl_has_1 T = true →
   rngl_characteristic T ≠ 0 →
-  (∀ i : nat, 0 < i < rngl_characteristic T → rngl_of_nat i ≠ 0%L) ∧
-  rngl_of_nat (rngl_characteristic T) = 0%L.
+  (∀ i : nat, 0 < i < rngl_characteristic T → (rngl_of_nat i ≠ 0)%L) ∧
+  (rngl_of_nat (rngl_characteristic T) = 0)%L.
 Proof.
 intros Hon Hcz.
 specialize (rngl_opt_characteristic_prop) as H1.
@@ -809,6 +807,7 @@ intros Hon Hch * Hi.
 destruct i; [ easy | exfalso ].
 cbn in Hi.
 specialize (rngl_characteristic_0 Hon Hch) as H1.
+...
 now specialize (H1 i) as H.
 Qed.
 
