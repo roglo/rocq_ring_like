@@ -20,7 +20,7 @@ usage is to do:
 which imports the present module and some other ones.
  *)
 
-From Stdlib Require Import Utf8 Arith.
+From Stdlib Require Import Utf8 Arith Morphisms.
 Require Import Structures.
 
 Section a.
@@ -188,33 +188,54 @@ split. {
 }
 Qed.
 
+Global Instance rngl_le_morph  :
+  Proper (rngl_eq ==> rngl_eq ==> iff) rngl_le.
+Proof.
+intros a b Hab c d Hcd.
+specialize rngl_opt_le_morph as H.
+progress unfold rngl_has_eq in H.
+remember (rngl_opt_equiv T) as eqv eqn:Heqv.
+symmetry in Heqv.
+destruct eqv as [eqv| ]. {
+  cbn in H.
+  progress unfold Proper in H.
+  progress unfold "==>" in H.
+  now apply H.
+}
+progress unfold rngl_eq in Hab, Hcd.
+rewrite Heqv in Hab, Hcd.
+now subst.
+Qed.
+
+(*
+Global Add Parametric Relation : _ rngl_le
+  reflexivity proved by (rngl_le_refl Hor)
+as rngl_le_rel.
+*)
+
 Theorem rngl_lt_eq_cases :
-  rngl_is_ordered T = true → ∀ a b : T, (a ≤ b)%L ↔ (a < b)%L ∨ a = b.
+  rngl_is_ordered T = true → ∀ a b : T, (a ≤ b)%L ↔ (a < b)%L ∨ (a = b)%L.
 Proof.
 intros Hor *.
-progress unfold rngl_lt.
-progress unfold rngl_le.
-specialize rngl_opt_ord as rr.
-rewrite Hor in rr.
-move rr after rp.
-specialize rngl_ord_not_le as H1.
-specialize (rngl_le_antisymm Hor) as H2.
-specialize (rngl_le_refl Hor) as H3.
-progress unfold rngl_le in H1.
-progress unfold rngl_le in H2.
-progress unfold rngl_le in H3.
-destruct rngl_opt_leb as [rngl_leb| ]; [ | easy ].
-split. {
-  intros H.
+split; intros Hab. {
+  progress unfold rngl_lt.
+  progress unfold rngl_le in Hab.
+  specialize rngl_opt_ord as rr.
+  rewrite Hor in rr.
+  move rr after rp.
+  specialize rngl_ord_not_le as H1.
+  specialize (rngl_le_antisymm Hor) as H2.
+  specialize (rngl_le_refl Hor) as H3.
+  progress unfold rngl_le in H1.
+  progress unfold rngl_le in H2.
+  progress unfold rngl_le in H3.
+  destruct rngl_opt_leb as [rngl_leb| ]; [ | easy ].
   remember (rngl_leb b a) as ba eqn:Hba; symmetry in Hba.
   destruct ba; [ | now left ].
-...
-  now specialize (H2 _ _ H Hba); right.
-} {
-  intros H.
-  destruct H as [H4| H4]; [ now apply H1; rewrite H4 | ].
-  subst b; apply H3.
+  now specialize (H2 _ _ Hab Hba); right.
 }
+destruct Hab as [Hab| Hab]; [ | rewrite Hab; apply (rngl_le_refl Hor) ].
+now apply (rngl_lt_iff Hor).
 Qed.
 
 Theorem rngl_lt_dec :
@@ -237,7 +258,7 @@ destruct (H1 b a) as [H2| H2]; [ right | left ]. {
   apply (rngl_lt_iff Hor).
   split; [ easy | ].
   destruct H2 as (H2, _).
-  now apply not_eq_sym.
+  now apply rngl_neq_symm.
 }
 Qed.
 
@@ -271,6 +292,7 @@ specialize rngl_opt_ord as rr.
 rewrite Hor in rr.
 move rr after rp.
 specialize rngl_ord_not_le as H.
+...
 apply H.
 Qed.
 

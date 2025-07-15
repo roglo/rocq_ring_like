@@ -58,25 +58,6 @@ split. {
 }
 Qed.
 
-Global Instance rngl_le_morph  :
-  Proper (rngl_eq ==> rngl_eq ==> iff) rngl_le.
-Proof.
-intros a b Hab c d Hcd.
-specialize rngl_opt_le_morph as H.
-progress unfold rngl_has_eq in H.
-remember (rngl_opt_equiv T) as eqv eqn:Heqv.
-symmetry in Heqv.
-destruct eqv as [eqv| ]. {
-  cbn in H.
-  progress unfold Proper in H.
-  progress unfold "==>" in H.
-  now apply H.
-}
-progress unfold rngl_eq in Hab, Hcd.
-rewrite Heqv in Hab, Hcd.
-now subst.
-Qed.
-
 Theorem rngl_le_0_sub :
   rngl_has_opp T = true →
   rngl_is_ordered T = true →
