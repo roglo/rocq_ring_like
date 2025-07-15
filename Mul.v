@@ -34,7 +34,7 @@ Context {rp : ring_like_prop T}.
 
 Theorem rngl_mul_comm :
   rngl_mul_is_comm T = true →
-  ∀ a b, (a * b = b * a)%L.
+  ∀ a b, (a * b)%L = (b * a)%L.
 Proof.
 intros H1 *.
 specialize rngl_opt_mul_comm as H.
@@ -110,6 +110,7 @@ rewrite <- (H1 (a * b))%L in H at 1.
 (* a.0 = 0 + a.b - a.b *)
 rewrite H2 in H.
 (* a.0 = 0 *)
+...
 easy.
 Qed.
 

@@ -271,7 +271,7 @@ Inductive not_applicable := NA.
 Class ring_like_ord T {ro : ring_like_op T} :=
   { rngl_ord_le_dec : ∀ a b : T, ({a ≤ b} + {¬ a ≤ b})%L;
     rngl_ord_le_refl : ∀ a, (a ≤ a)%L;
-    rngl_ord_le_antisymm : ∀ a b, (a ≤ b → b ≤ a → a = b)%L;
+    rngl_ord_le_antisymm : ∀ a b, (a ≤ b)%L → (b ≤ a)%L → (a = b)%L;
     rngl_ord_le_trans : ∀ a b c, (a ≤ b → b ≤ c → a ≤ c)%L;
     rngl_ord_add_le_compat : ∀ a b c d, (a ≤ b → c ≤ d → a + c ≤ b + d)%L;
     rngl_ord_mul_le_compat_nonneg :

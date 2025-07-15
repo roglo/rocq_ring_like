@@ -134,6 +134,8 @@ Proof.
 intros * Hop Hor *.
 specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
 split; intros Hab. {
+About rngl_lt_iff.
+...
   apply (rngl_lt_iff Hor) in Hab.
   apply (rngl_lt_iff Hor).
   destruct Hab as (Hab, Habz).
