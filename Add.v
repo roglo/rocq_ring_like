@@ -811,6 +811,9 @@ rewrite Hi in H1.
 now apply H1.
 Qed.
 
+Theorem eq_rngl_eq : ∀ a b, a = b → (a = b)%L.
+Proof. now intros; subst. Qed.
+
 Theorem rngl_of_nat_inj :
   rngl_has_1 T = true →
   rngl_has_opp_or_subt T = true →
@@ -820,21 +823,19 @@ Theorem rngl_of_nat_inj :
   → i = j.
 Proof.
 intros Hon Hom Hch * Hij.
+apply eq_rngl_eq in Hij.
 revert i Hij.
 induction j; intros. {
   cbn in Hij.
-  assert (H : (rngl_of_nat i = 0)%L) by now rewrite Hij.
-  now apply eq_rngl_of_nat_0 in H.
+  now apply eq_rngl_of_nat_0 in Hij.
 }
 destruct i. {
   exfalso.
   symmetry in Hij.
-  assert (H : (rngl_of_nat (S j) = rngl_of_nat 0)%L) by now rewrite Hij.
-  now apply eq_rngl_of_nat_0 in H.
+  now apply eq_rngl_of_nat_0 in Hij.
 }
 f_equal.
 do 2 rewrite rngl_of_nat_succ in Hij.
-...
 apply rngl_add_cancel_l in Hij; [ | easy ].
 now apply IHj.
 Qed.

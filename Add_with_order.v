@@ -16,7 +16,8 @@ normal usage is to do:
 which imports the present module and some other ones.
  *)
 
-From Stdlib Require Import Utf8 Arith.
+Set Nested Proofs Allowed.
+From Stdlib Require Import Utf8 Arith Morphisms.
 Require Import Structures.
 Require Import Order.
 Require Import Add.
@@ -57,6 +58,25 @@ split. {
 }
 Qed.
 
+Global Instance rngl_le_morph  :
+  Proper (rngl_eq ==> rngl_eq ==> iff) rngl_le.
+Proof.
+intros a b Hab c d Hcd.
+specialize rngl_opt_le_morph as H.
+progress unfold rngl_has_eq in H.
+remember (rngl_opt_equiv T) as eqv eqn:Heqv.
+symmetry in Heqv.
+destruct eqv as [eqv| ]. {
+  cbn in H.
+  progress unfold Proper in H.
+  progress unfold "==>" in H.
+  now apply H.
+}
+progress unfold rngl_eq in Hab, Hcd.
+rewrite Heqv in Hab, Hcd.
+now subst.
+Qed.
+
 Theorem rngl_le_0_sub :
   rngl_has_opp T = true →
   rngl_is_ordered T = true →
@@ -67,9 +87,8 @@ specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
 specialize (rngl_add_le_compat Hor) as H1.
 split; intros Hab. {
   specialize (H1 0%L (b - a)%L a a Hab (rngl_le_refl Hor _)).
-  rewrite <- (rngl_sub_sub_distr Hop) in H1.
-  rewrite (rngl_sub_diag Hos) in H1.
-  now rewrite rngl_add_0_l, (rngl_sub_0_r Hos) in H1.
+  rewrite rngl_add_0_l in H1.
+  now rewrite (rngl_sub_add Hop) in H1.
 } {
   specialize (H1 a b (- a)%L (- a)%L Hab (rngl_le_refl Hor _)).
   do 2 rewrite (rngl_add_opp_r Hop) in H1.
@@ -99,7 +118,7 @@ Qed.
 Theorem rngl_leb_sub_0 :
   rngl_has_opp T = true →
   rngl_is_ordered T = true →
-  ∀ a b, ((a - b ≤? 0) = (a ≤? b))%L.
+  ∀ a b, (a - b ≤? 0)%L = (a ≤? b)%L.
 Proof.
 intros Hop Hor.
 intros.
@@ -120,6 +139,7 @@ split; intros Hab. {
   destruct Hab as (Hab, Habz).
   split; [ now apply (rngl_le_0_sub Hop Hor) | ].
   intros H; subst b.
+...
   now rewrite (rngl_sub_diag Hos) in Habz.
 } {
   apply (rngl_lt_iff Hor) in Hab.
