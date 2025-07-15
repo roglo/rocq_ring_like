@@ -208,9 +208,25 @@ now subst.
 Qed.
 
 (*
+Section a.
+
+Context {Hor : rngl_is_ordered T = true}.
+
 Global Add Parametric Relation : _ rngl_le
   reflexivity proved by (rngl_le_refl Hor)
 as rngl_le_rel.
+
+End a.
+
+Section a.
+
+Context {rr : ring_like_ord T}.
+
+Global Add Parametric Relation : _ rngl_le
+  reflexivity proved by rngl_ord_le_refl
+as rngl_le_rel.
+
+End a.
 *)
 
 Theorem rngl_lt_eq_cases :
