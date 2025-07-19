@@ -577,15 +577,11 @@ remember (b ≤? a)%L as ba eqn:Hba.
 symmetry in Hab, Hba.
 split; intros H1. {
   destruct ab; [ now apply rngl_leb_le in Hab | ].
-  destruct ba; [ subst b; apply (rngl_le_refl Hor) | ].
-  apply (rngl_leb_gt Hor) in Hab, Hba.
-  apply (rngl_lt_le_incl Hor) in Hba.
-  now apply rngl_nlt_ge in Hba.
-} {
-  destruct ab; [ easy | ].
-  apply rngl_leb_le in H1.
-  now rewrite Hab in H1.
+  subst; apply (rngl_le_refl Hor).
 }
+destruct ab; [ easy | ].
+apply rngl_leb_le in H1.
+congruence.
 Qed.
 
 Theorem rngl_min_r_iff :
@@ -610,24 +606,21 @@ Qed.
 
 Theorem rngl_max_l_iff :
   rngl_is_ordered T = true →
-  ∀ a b, rngl_max a b = a ↔ (b ≤ a)%L.
+  ∀ a b, (rngl_max a b = a)%L ↔ (b ≤ a)%L.
 Proof.
 intros Hor *.
-specialize (rngl_min_l_iff Hor a b) as H1.
-progress unfold rngl_min in H1.
+rewrite (rngl_max_comm Hor).
 progress unfold rngl_max.
-remember (a ≤? b)%L as ab eqn:Hab.
-symmetry in Hab.
-destruct ab. {
-  apply rngl_leb_le in Hab.
-  split; [ now intros; subst b | ].
-  intros Hba.
-...
-  apply (rngl_le_antisymm Hor _ _ Hba Hab).
+remember (b ≤? a)%L as ba eqn:Hba.
+symmetry in Hba.
+split; intros Hab. {
+  destruct ba; [ now apply rngl_leb_le | ].
+  rewrite Hab.
+  apply (rngl_le_refl Hor).
 } {
-  apply (rngl_leb_gt Hor) in Hab.
-  apply (rngl_lt_le_incl Hor) in Hab.
-  easy.
+  destruct ba; [ easy | ].
+  apply rngl_leb_le in Hab.
+  congruence.
 }
 Qed.
 
@@ -636,9 +629,20 @@ Theorem rngl_max_r_iff :
   ∀ a b, rngl_max a b = b ↔ (a ≤ b)%L.
 Proof.
 intros Hor *.
-rewrite (rngl_max_comm Hor).
-apply (rngl_max_l_iff Hor).
+progress unfold rngl_max.
+remember (a ≤? b)%L as ab eqn:Hab.
+remember (b ≤? a)%L as ba eqn:Hba.
+symmetry in Hab, Hba.
+split; intros H1. {
+  destruct ab; [ now apply rngl_leb_le in Hab | ].
+  subst; apply (rngl_le_refl Hor).
+}
+destruct ab; [ easy | ].
+apply rngl_leb_le in H1.
+congruence.
 Qed.
+
+...
 
 Theorem rngl_min_glb_lt_iff :
   rngl_is_ordered T = true →
