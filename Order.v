@@ -301,14 +301,13 @@ Qed.
 
 Theorem rngl_not_le :
   rngl_is_ordered T = true →
-  ∀ a b, (¬ a ≤ b → a ≠ b ∧ b ≤ a)%L.
+  ∀ a b, (¬ a ≤ b)%L → (a ≠ b)%L ∧ (b ≤ a)%L.
 Proof.
 intros Hor *.
 specialize rngl_opt_ord as rr.
 rewrite Hor in rr.
 move rr after rp.
 specialize rngl_ord_not_le as H.
-...
 apply H.
 Qed.
 
@@ -338,6 +337,7 @@ split; intros Hab. {
   apply (rngl_not_le Hor) in Hab.
   apply (rngl_lt_iff Hor).
   split; [ easy | ].
+...
   now apply not_eq_sym.
 } {
   intros H1.
