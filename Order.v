@@ -505,13 +505,12 @@ Qed.
 
 Theorem rngl_max_comm :
   rngl_is_ordered T = true →
-  ∀ a b, rngl_max a b = rngl_max b a.
+  ∀ a b, (rngl_max a b = rngl_max b a)%L.
 Proof.
 intros Hor *.
 specialize (rngl_min_comm Hor a b) as H1.
 progress unfold rngl_min in H1.
 progress unfold rngl_max.
-...
 now destruct (a ≤? b)%L, (b ≤? a)%L.
 Qed.
 
@@ -591,11 +590,22 @@ Qed.
 
 Theorem rngl_min_r_iff :
   rngl_is_ordered T = true →
-  ∀ a b, rngl_min a b = b ↔ (b ≤ a)%L.
+  ∀ a b, (rngl_min a b = b)%L ↔ (b ≤ a)%L.
 Proof.
 intros Hor *.
 rewrite (rngl_min_comm Hor).
-apply (rngl_min_l_iff Hor).
+progress unfold rngl_min.
+remember (b ≤? a)%L as ba eqn:Hba.
+symmetry in Hba.
+split; intros Hab. {
+  destruct ba; [ now apply rngl_leb_le | ].
+  rewrite Hab.
+  apply (rngl_le_refl Hor).
+} {
+  destruct ba; [ easy | ].
+  apply rngl_leb_le in Hab.
+  congruence.
+}
 Qed.
 
 Theorem rngl_max_l_iff :
@@ -612,6 +622,7 @@ destruct ab. {
   apply rngl_leb_le in Hab.
   split; [ now intros; subst b | ].
   intros Hba.
+...
   apply (rngl_le_antisymm Hor _ _ Hba Hab).
 } {
   apply (rngl_leb_gt Hor) in Hab.
