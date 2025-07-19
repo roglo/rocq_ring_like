@@ -642,8 +642,6 @@ apply rngl_leb_le in H1.
 congruence.
 Qed.
 
-...
-
 Theorem rngl_min_glb_lt_iff :
   rngl_is_ordered T = true →
   ∀ a b c, (c < rngl_min a b ↔ c < a ∧ c < b)%L.
@@ -846,6 +844,7 @@ rename Heo into Hor.
 destruct (rngl_le_dec Hor a b) as [Hab| Hab]. {
   destruct (rngl_le_dec Hor b a) as [Hba| Hba]. {
     left.
+...
     now apply (rngl_le_antisymm Hor).
   }
   apply (rngl_nle_gt_iff Hor) in Hba.
