@@ -337,8 +337,7 @@ split; intros Hab. {
   apply (rngl_not_le Hor) in Hab.
   apply (rngl_lt_iff Hor).
   split; [ easy | ].
-...
-  now apply not_eq_sym.
+  now apply rngl_neq_symm.
 } {
   intros H1.
   apply (rngl_lt_iff Hor) in Hab.
@@ -383,7 +382,7 @@ split. {
   apply (rngl_le_trans Hor _ b); [ | easy ].
   now apply (rngl_lt_le_incl Hor).
 } {
-  intros H; subst c.
+  intros H; rewrite <- H in Hbc.
   now apply rngl_nle_gt in Hab.
 }
 Qed.
@@ -398,7 +397,7 @@ split. {
   apply (rngl_le_trans Hor _ b); [ easy | ].
   now apply (rngl_lt_le_incl Hor).
 } {
-  intros H; subst c.
+  intros H; rewrite H in Hab.
   now apply rngl_nle_gt in Hbc.
 }
 Qed.
@@ -422,7 +421,7 @@ split; intros Hab. {
   apply (rngl_not_le Hor) in Hab.
   apply (rngl_lt_iff Hor).
   split; [ easy | ].
-  now apply not_eq_sym.
+  now apply rngl_neq_symm.
 } {
   apply rngl_leb_nle.
   intros H1.
@@ -486,7 +485,7 @@ Qed.
 
 Theorem rngl_min_comm :
   rngl_is_ordered T = true →
-  ∀ a b, rngl_min a b = rngl_min b a.
+  ∀ a b, (rngl_min a b = rngl_min b a)%L.
 Proof.
 intros Hor *.
 progress unfold rngl_min.
@@ -512,6 +511,7 @@ intros Hor *.
 specialize (rngl_min_comm Hor a b) as H1.
 progress unfold rngl_min in H1.
 progress unfold rngl_max.
+...
 now destruct (a ≤? b)%L, (b ≤? a)%L.
 Qed.
 
