@@ -826,7 +826,6 @@ Qed.
 
 (* equality *)
 
-(*
 Theorem rngl_rngl_eq_dec :
   rngl_has_eq_dec_or_order T = true →
   ∀ a b : T, {(a = b)%L} + {(a ≠ b)%L}.
@@ -865,36 +864,12 @@ Qed.
 *)
 
 Theorem rngl_eq_dec :
-  rngl_has_eq_dec_or_order T = true →
+  rngl_has_eq_dec T = true →
   ∀ a b : T, {a = b} + {a ≠ b}.
 Proof.
-intros Heo *.
-progress unfold rngl_has_eq_dec_or_order in Heo.
-remember (rngl_has_eq_dec T) as ed eqn:Hed.
-symmetry in Hed.
-destruct ed. {
-  progress unfold rngl_has_eq_dec in Hed.
-  destruct rngl_opt_eq_dec as [rngl_eq_dec| ]; [ | easy ].
-  apply rngl_eq_dec.
-}
-cbn in Heo.
-rename Heo into Hor.
-destruct (rngl_le_dec Hor a b) as [Hab| Hab]. {
-  destruct (rngl_le_dec Hor b a) as [Hba| Hba]. {
-(* not provable; I need the hypothesis rngl_has_eq_dec, I guess *)
-...
-    left.
-    now apply (rngl_le_antisymm Hor).
-  }
-  apply (rngl_nle_gt_iff Hor) in Hba.
-  right.
-  intros H; subst b.
-  now apply (rngl_lt_irrefl Hor) in Hba.
-}
-apply (rngl_nle_gt_iff Hor) in Hab.
-right.
-intros H; subst b.
-now apply (rngl_lt_irrefl Hor) in Hab.
+intros Hed *.
+progress unfold rngl_has_eq_dec in Hed.
+now destruct rngl_opt_eq_dec.
 Qed.
 
 (* comparison *)
