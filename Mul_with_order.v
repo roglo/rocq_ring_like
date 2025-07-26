@@ -644,7 +644,7 @@ Theorem int_part :
   rngl_characteristic T ≠ 1 →
   rngl_is_ordered T = true →
   rngl_is_archimedean T = true →
-  ∀ a, ∃ n, (rngl_of_nat n ≤ rngl_abs a < rngl_of_nat (n + 1))%L.
+  ∀ a, {n | (rngl_of_nat n ≤ rngl_abs a < rngl_of_nat (n + 1))%L}.
 Proof.
 intros Hon Hop Hc1 Hor Har.
 specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.

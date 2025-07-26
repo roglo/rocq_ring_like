@@ -1235,7 +1235,7 @@ Theorem rngl_archimedean_ub :
   rngl_is_archimedean T = true →
   rngl_is_ordered T = true →
   ∀ a b : T, (0 < a < b)%L →
-  ∃ n : nat, (rngl_mul_nat a n ≤ b < rngl_mul_nat a (n + 1))%L.
+  {n : nat | (rngl_mul_nat a n ≤ b < rngl_mul_nat a (n + 1))%L}.
 Proof.
 intros Har Hor * (Ha, Hab).
 specialize rngl_opt_archimedean as H1.
