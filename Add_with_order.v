@@ -1258,7 +1258,7 @@ Qed.
 Theorem rngl_archimedean :
   rngl_is_archimedean T = true →
   rngl_is_ordered T = true →
-  ∀ a b, (0 < a)%L → ∃ n, (b < rngl_mul_nat a n)%L.
+  ∀ a b, (0 < a)%L → {n | (b < rngl_mul_nat a n)%L}.
 Proof.
 intros Har Hor.
 specialize rngl_opt_archimedean as H1.

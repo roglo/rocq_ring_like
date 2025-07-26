@@ -346,7 +346,7 @@ Class ring_like_prop T {ro : ring_like_op T} :=
     (* archimedean *)
     rngl_opt_archimedean :
       if (rngl_is_archimedean && rngl_is_ordered T)%bool then
-        ∀ a b, (0 < a)%L → ∃ n, (b < rngl_mul_nat a n)%L
+        ∀ a b, (0 < a)%L → {n | (b < rngl_mul_nat a n)%L}
       else not_applicable }.
 
 Definition rngl_abs {T} {ro : ring_like_op T} a :=

@@ -124,7 +124,7 @@ Qed.
 
 Theorem nat_archimedean :
   let ro := nat_ring_like_op in
-  ∀ a b : nat, (0 < a)%L → ∃ n : nat, (b < rngl_mul_nat a n)%L.
+  ∀ a b : nat, (0 < a)%L → {n : nat | (b < rngl_mul_nat a n)%L}.
 Proof.
 intros * Ha *.
 exists (S b).

@@ -148,7 +148,7 @@ Qed.
 
 (* code borrowed from my application "coq_real" *)
 
-Theorem nat_archimedean : ∀ a b, (0 < a → ∃ n, n * a > b)%nat.
+Theorem nat_archimedean : ∀ a b, (0 < a → {n | (n * a > b)%nat}).
 Proof.
 intros * Ha.
 exists (S b); simpl.
@@ -164,7 +164,7 @@ specialize (Pos2Nat.is_pos a) as Ha.
 now intros H; rewrite H in Ha.
 Qed.
 
-Theorem Pos_archimedean : ∀ a b, (∃ n, Pos.of_nat n * a > b)%positive.
+Theorem Pos_archimedean : ∀ a b, {n | (Pos.of_nat n * a > b)%positive}.
 Proof.
 intros.
 specialize (Pos2Nat.is_pos a) as Ha.
@@ -190,7 +190,7 @@ rewrite <- Nat2Pos.inj_mul.
  apply Pos2Nat_neq_0.
 Qed.
 
-Theorem Z_archimedean' : ∀ a b, (0 < a → ∃ n, Z.of_nat n * a > b)%Z.
+Theorem Z_archimedean' : ∀ a b, (0 < a → {n | Z.of_nat n * a > b})%Z.
 Proof.
 intros * Ha.
 destruct b as [| b| b].
@@ -239,7 +239,7 @@ now rewrite <- Nat2Z.inj_succ.
 Qed.
 
 Theorem Z_archimedean :
-  ∀ a b : Z, (0 < a)%L → ∃ n : nat, (b < rngl_mul_nat a n)%L.
+  ∀ a b : Z, (0 < a)%L → {n : nat | (b < rngl_mul_nat a n)%L}.
 Proof.
 intros * Ha *.
 apply Z.leb_gt in Ha.
