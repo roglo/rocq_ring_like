@@ -387,12 +387,12 @@ rewrite rngl_add_comm.
 apply (rngl_opp_add_distr Hop).
 Qed.
 
-Theorem rngl_add_add_swap : ∀ n m p, (n + m + p = n + p + m)%L.
+Theorem rngl_add_add_swap : ∀ a b c, (a + b + c = a + c + b)%L.
 Proof.
-intros n m p; simpl.
+intros.
 do 2 rewrite <- rngl_add_assoc.
-assert (m + p = p + m)%L as H by apply rngl_add_comm.
-rewrite H; reflexivity.
+progress f_equal.
+apply rngl_add_comm.
 Qed.
 
 Theorem rngl_add_add_add_swap :
@@ -400,7 +400,7 @@ Theorem rngl_add_add_add_swap :
 Proof.
 intros.
 do 2 rewrite <- rngl_add_assoc.
-f_equal.
+progress f_equal.
 rewrite rngl_add_comm, rngl_add_assoc.
 apply rngl_add_add_swap.
 Qed.
@@ -756,6 +756,7 @@ End a.
 Arguments rngl_abs {T ro} a%_L.
 Arguments rngl_add_sub {T ro rp} Hom (a b)%_L.
 Arguments rngl_add_sub_assoc {T ro rp} Hop (a b c)%_L.
+Arguments rngl_add_add_swap {T ro rp} (a b c)%_L.
 Arguments rngl_add_sub_swap {T ro rp} Hop (a b c)%_L.
 Arguments rngl_min {T ro} (a b)%_L.
 Arguments rngl_mul_nat {T ro} a%_L n%_nat.
