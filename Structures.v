@@ -40,6 +40,9 @@ Arguments rngl_opt_is_zero_divisor T {ring_like_op}.
 Declare Scope ring_like_scope.
 Delimit Scope ring_like_scope with L.
 
+Notation "'∃ₜ' x .. y , P" := (sig (fun x => .. (sig (fun y => P)) ..))
+  (at level 200, x binder, right associativity) : type_scope.
+
 Definition bool_of_option {T} (x : option T) :=
   match x with
   | Some _ => true
@@ -346,7 +349,7 @@ Class ring_like_prop T {ro : ring_like_op T} :=
     (* archimedean *)
     rngl_opt_archimedean :
       if (rngl_is_archimedean && rngl_is_ordered T)%bool then
-        ∀ a b, (0 < a)%L → {n | (b < rngl_mul_nat a n)%L}
+        ∀ a b, (0 < a)%L → ∃ₜ n, (b < rngl_mul_nat a n)%L
       else not_applicable }.
 
 Definition rngl_abs {T} {ro : ring_like_op T} a :=
