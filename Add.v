@@ -248,21 +248,34 @@ intros a b c Hab.
 now rewrite Hab.
 Qed.
 
+Theorem rngl_add_move_0_l :
+  rngl_has_opp T = true →
+  ∀ a b, (a + b = 0)%L ↔ (b = - a)%L.
+Proof.
+intros Hop.
+specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
+intros.
+split; intros H. {
+  apply rngl_sub_compat_l with (c := a) in H.
+  rewrite rngl_add_comm in H.
+  rewrite (rngl_add_sub Hos) in H.
+  unfold rngl_sub in H.
+  rewrite Hop in H.
+  now rewrite rngl_add_0_l in H.
+} {
+  rewrite H.
+  rewrite (rngl_add_opp_r Hop).
+  apply (rngl_sub_diag Hos).
+}
+Qed.
+
 Theorem rngl_add_move_0_r :
   rngl_has_opp T = true →
   ∀ a b, (a + b = 0)%L ↔ (a = - b)%L.
 Proof.
 intros Hro *.
-split; intros H. {
-  apply rngl_sub_compat_l with (c := b) in H.
-  rewrite rngl_add_sub in H; [ | now apply rngl_has_opp_or_subt_iff; left ].
-  unfold rngl_sub in H.
-  rewrite Hro in H.
-  now rewrite rngl_add_0_l in H.
-} {
-  rewrite H.
-  now rewrite rngl_add_opp_diag_l.
-}
+rewrite rngl_add_comm.
+now apply rngl_add_move_0_l.
 Qed.
 
 Theorem rngl_add_compat_r : ∀ a b c,
