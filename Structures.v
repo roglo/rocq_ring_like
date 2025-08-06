@@ -36,6 +36,7 @@ Arguments rngl_opt_one T {ring_like_op}.
 Arguments rngl_opt_opp_or_subt T {ring_like_op}.
 Arguments rngl_opt_inv_or_quot T {ring_like_op}.
 Arguments rngl_opt_is_zero_divisor T {ring_like_op}.
+Arguments rngl_opt_eq_dec T {ring_like_op}.
 
 Declare Scope ring_like_scope.
 Delimit Scope ring_like_scope with L.
@@ -68,7 +69,7 @@ Definition rngl_is_ordered T {R : ring_like_op T} :=
   bool_of_option rngl_opt_leb.
 
 Definition rngl_has_eq_dec T {R : ring_like_op T} :=
-  bool_of_option rngl_opt_eq_dec.
+  bool_of_option (rngl_opt_eq_dec T).
 
 Definition rngl_has_inv_and_1_or_quot T {R : ring_like_op T} :=
   match rngl_opt_inv_or_quot T with
@@ -179,7 +180,7 @@ Fixpoint rngl_power {T} {ro : ring_like_op T} a n :=
 Definition rngl_of_nat {T} {ro : ring_like_op T} a := rngl_mul_nat rngl_one a.
 
 Definition rngl_eqb {T} {ro : ring_like_op T} a b :=
-  match rngl_opt_eq_dec with
+  match rngl_opt_eq_dec T with
   | Some rngl_eq_dec =>
       match rngl_eq_dec a b with left _ => true | right _ => false end
   | None => false
