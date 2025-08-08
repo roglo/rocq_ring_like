@@ -153,6 +153,7 @@ destruct ai. {
   }
   specialize rngl_opt_mul_inv_diag_r as rngl_mul_inv_diag_r.
   rewrite Hai, Hon, Hic in rngl_mul_inv_diag_r; cbn in rngl_mul_inv_diag_r.
+  progress unfold rngl_div; rewrite Hai.
   now apply rngl_mul_inv_diag_r.
 }
 remember (rngl_has_quot T) as qu eqn:Hqu; symmetry in Hqu.
@@ -695,11 +696,7 @@ destruct ic. {
   rewrite rngl_mul_inv_diag_l; [ | easy | easy | easy ].
   easy.
 } {
-  cbn in H2.
-  rewrite rngl_mul_inv_r; [ | easy ].
-  rewrite rngl_mul_inv_r; [ | easy ].
-  rewrite H2; [ | easy ].
-  now rewrite H2.
+  rewrite H2; [ now rewrite H2 | easy ].
 }
 Qed.
 

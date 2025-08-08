@@ -313,7 +313,7 @@ Class ring_like_prop T {ro : ring_like_op T} :=
       else not_applicable;
     rngl_opt_mul_inv_diag_r :
       if (rngl_has_inv T && rngl_has_1 T && negb rngl_mul_is_comm)%bool then
-        ∀ a : T, a ≠ 0%L → (a / a = 1)%L
+        ∀ a : T, a ≠ 0%L → (a * a⁻¹ = 1)%L
       else not_applicable;
     (* when has division (quot) *)
     rngl_opt_mul_div :
