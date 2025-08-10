@@ -773,6 +773,7 @@ Arguments rngl_add_add_swap {T ro rp} (a b c)%_L.
 Arguments rngl_add_sub_swap {T ro rp} Hop (a b c)%_L.
 Arguments rngl_min {T ro} (a b)%_L.
 Arguments rngl_mul_nat {T ro} a%_L n%_nat.
+Arguments rngl_opp_sub_swap {T ro rp} Hop (a b)%_L.
 Arguments rngl_sub_add {T ro rp} Hop (a b)%_L.
 Arguments rngl_sub_add_distr {T ro rp} Hos (a b c)%_L.
 Arguments rngl_sub_sub_swap {T ro rp} Hop (a b c)%_L.
