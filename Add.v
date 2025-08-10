@@ -372,7 +372,7 @@ Qed.
 
 Theorem rngl_opp_add_distr :
   rngl_has_opp T = true →
-  ∀ a b, (- (a + b) = - b - a)%L.
+  ∀ a b, (- (a + b) = - a - b)%L.
 Proof.
 intros Hop *.
 specialize (proj2 rngl_has_opp_or_subt_iff) as Hop'.
@@ -384,6 +384,7 @@ unfold rngl_sub.
 rewrite Hop.
 rewrite rngl_add_assoc.
 do 2 rewrite (rngl_add_opp_r Hop).
+rewrite rngl_add_comm.
 rewrite rngl_add_sub; [ | now apply Hop'; left ].
 symmetry.
 apply rngl_sub_diag.
@@ -467,7 +468,6 @@ destruct op. {
   rewrite rngl_opp_add_distr; [ | easy ].
   unfold rngl_sub; rewrite Hop.
   rewrite rngl_add_assoc.
-  rewrite rngl_add_add_swap.
   rewrite (rngl_add_add_swap a).
   rewrite rngl_add_opp_r; [ | easy ].
   rewrite rngl_add_opp_r; [ | easy ].
@@ -537,11 +537,12 @@ Theorem rngl_opp_sub_distr :
   rngl_has_opp T = true →
   ∀ a b, (- (a - b) = b - a)%L.
 Proof.
-intros Hro *.
+intros Hop *.
 unfold rngl_sub at 1.
-rewrite Hro.
+rewrite Hop.
 rewrite rngl_opp_add_distr; [ | easy ].
-now rewrite rngl_opp_involutive.
+rewrite (rngl_sub_opp_r Hop).
+apply (rngl_add_opp_l Hop).
 Qed.
 
 Theorem rngl_sub_add_distr :
@@ -555,8 +556,7 @@ destruct op. {
   unfold rngl_sub.
   rewrite rngl_opp_add_distr; [ | easy ].
   unfold rngl_sub; rewrite Hop.
-  rewrite rngl_add_assoc.
-  apply rngl_add_add_swap.
+  apply rngl_add_assoc.
 }
 remember (rngl_has_subt T) as mo eqn:Hmo.
 symmetry in Hmo.
@@ -576,10 +576,8 @@ intros Hop *.
 unfold rngl_sub.
 rewrite Hop.
 rewrite (rngl_opp_add_distr Hop).
-rewrite (rngl_opp_involutive Hop).
-unfold rngl_sub; rewrite Hop.
-rewrite rngl_add_assoc.
-apply rngl_add_add_swap.
+rewrite (rngl_sub_opp_r Hop).
+apply rngl_add_assoc.
 Qed.
 
 Theorem rngl_mul_nat_add_r : ∀ a m n,

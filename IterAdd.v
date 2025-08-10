@@ -256,7 +256,6 @@ intros Hop *.
 rewrite iter_list_inv. 2: {
   intros.
   rewrite (rngl_add_opp_r Hop).
-  rewrite rngl_add_comm.
   apply (rngl_opp_add_distr Hop).
 }
 now rewrite (rngl_opp_0 Hop).
@@ -299,7 +298,6 @@ intros Hop *.
 rewrite iter_seq_inv. 2: {
   intros.
   rewrite (rngl_add_opp_r Hop).
-  rewrite rngl_add_comm.
   apply (rngl_opp_add_distr Hop).
 }
 now rewrite (rngl_opp_0 Hop).

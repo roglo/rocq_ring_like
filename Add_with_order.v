@@ -1049,7 +1049,6 @@ destruct abz. {
     rewrite (rngl_opp_add_distr Hop).
     progress unfold rngl_sub.
     rewrite Hop.
-    rewrite rngl_add_comm.
     apply (rngl_add_le_compat Hor); [ apply (rngl_le_refl Hor) | ].
     destruct bz; [ apply (rngl_le_refl Hor) | ].
     apply (rngl_leb_gt Hor) in Hbz.
@@ -1064,6 +1063,7 @@ destruct abz. {
     rewrite (rngl_opp_add_distr Hop).
     progress unfold rngl_sub.
     rewrite Hop.
+    rewrite rngl_add_comm.
     apply (rngl_add_le_compat Hor); [ | apply (rngl_le_refl Hor) ].
     apply (rngl_lt_le_incl Hor).
     apply (rngl_lt_trans Hor _ 0)%L; [ | easy ].
