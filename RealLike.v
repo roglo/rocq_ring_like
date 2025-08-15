@@ -348,7 +348,7 @@ Theorem rl_sqrt_pos :
 Proof.
 intros Hon Hos Hor.
 intros a Ha.
-apply (rngl_lt_iff Hor).
+apply (rngl_le_neq Hor).
 split. {
   apply rl_sqrt_nonneg.
   now apply (rngl_lt_le_incl Hor).

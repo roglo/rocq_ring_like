@@ -166,7 +166,7 @@ assert (Hdz : da x x₀ ≠ 0%L). {
 }
 apply (rngl_mul_lt_mono_pos_r Hop Hor Hii (da x x₀)) in Hd. 2: {
   clear H.
-  apply (rngl_lt_iff Hor).
+  apply (rngl_le_neq Hor).
   split; [ apply (dist_nonneg Hon Hop Hiv Hor dist) | easy ].
 }
 cbn in Hd |-*.
@@ -266,7 +266,7 @@ assert (Hdz : da x x₀ ≠ 0%L). {
 cbn in Hd |-*.
 apply (rngl_mul_lt_mono_pos_r Hop Hor Hii (da x x₀)) in Hd. 2: {
   clear H.
-  apply (rngl_lt_iff Hor).
+  apply (rngl_le_neq Hor).
   split; [ apply (dist_nonneg Hon Hop Hiv Hor dist) | easy ].
 }
 rewrite (rngl_dist_mul_distr_r Hii) in Hd. 2: {
@@ -297,7 +297,7 @@ destruct b. {
         apply Hb; clear Hb.
         eapply (rngl_le_lt_trans Hor). {
           apply (rngl_mul_le_mono_pos_r Hop Hor Hii). {
-            apply (rngl_lt_iff Hor).
+            apply (rngl_le_neq Hor).
             split; [ apply (dist_nonneg Hon Hop Hiv Hor dist) | easy ].
           }
           apply Hflz.
@@ -305,7 +305,7 @@ destruct b. {
         rewrite (rngl_mul_0_l Hos).
         rewrite (rngl_mul_1_l Hon).
         apply (rngl_lt_0_sub Hop Hor).
-        apply (rngl_lt_iff Hor).
+        apply (rngl_le_neq Hor).
         split; [ easy | ].
         intros H; rewrite H, (rngl_sub_diag Hos) in Hea.
         now apply rngl_nlt_ge in Hea.
@@ -330,7 +330,7 @@ destruct b. {
               rewrite Hi1; cbn.
               apply (rngl_has_eq_dec_or_is_ordered_r Hor).
             }
-            now apply (rngl_lt_iff Hor).
+            now apply (rngl_le_neq Hor).
           }
           apply (rngl_lt_le_incl Hor), H2.
         }
@@ -374,7 +374,7 @@ destruct b. {
         now apply (rngl_lt_le_incl Hor).
       } {
         rewrite (rngl_abs_nonneg_eq Hop Hor) in Hd. 2: {
-          now apply (rngl_lt_iff Hor).
+          now apply (rngl_le_neq Hor).
         }
         subst σ.
         rewrite (rngl_mul_opp_l Hop) in Hd.
@@ -413,7 +413,7 @@ destruct b. {
               rewrite Hi1; cbn.
               apply (rngl_has_eq_dec_or_is_ordered_r Hor).
             }
-            now apply (rngl_lt_iff Hor).
+            now apply (rngl_le_neq Hor).
           }
           apply (rngl_lt_le_incl Hor), H2.
         }
@@ -758,7 +758,7 @@ destruct is_left. {
   cbn.
   rewrite (rngl_mul_1_l Hon) in H1, H2 |-*.
   assert (Hzd : (0 < da x x₀)%L). {
-    apply (rngl_lt_iff Hor).
+    apply (rngl_le_neq Hor).
     split; [ apply (dist_nonneg Hon Hop Hiv Hor dist) | ].
     cbn; intros H; symmetry in H.
     apply (dist_separation dist) in H.
@@ -1049,7 +1049,7 @@ destruct is_left. {
   rewrite (rngl_opp_sub_distr Hop) in H1, H2 |-*.
   cbn.
   assert (Hzd : (0 < da x x₀)%L). {
-    apply (rngl_lt_iff Hor).
+    apply (rngl_le_neq Hor).
     split; [ now apply (dist_nonneg Hon Hop Hiv Hor) | ].
     cbn; intros H; symmetry in H.
     apply (dist_separation dist) in H.
@@ -1909,7 +1909,7 @@ eapply (rngl_lt_le_trans Hor). {
   apply (rngl_mul_pos_pos Hos Hor Hii). {
     now apply (rngl_abs_pos Hop Hor).
   }
-  apply (rngl_lt_iff Hor).
+  apply (rngl_le_neq Hor).
   split; [ apply (rngl_squ_nonneg Hos Hor) | ].
   symmetry.
   intros H'.

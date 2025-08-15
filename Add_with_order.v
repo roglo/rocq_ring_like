@@ -115,15 +115,15 @@ Proof.
 intros * Hop Hor *.
 specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
 split; intros Hab. {
-  apply (rngl_lt_iff Hor) in Hab.
-  apply (rngl_lt_iff Hor).
+  apply (rngl_le_neq Hor) in Hab.
+  apply (rngl_le_neq Hor).
   destruct Hab as (Hab, Habz).
   split; [ now apply (rngl_le_0_sub Hop Hor) | ].
   intros H; subst b.
   now rewrite (rngl_sub_diag Hos) in Habz.
 } {
-  apply (rngl_lt_iff Hor) in Hab.
-  apply (rngl_lt_iff Hor).
+  apply (rngl_le_neq Hor) in Hab.
+  apply (rngl_le_neq Hor).
   destruct Hab as (Hab, Habz).
   split; [ now apply (rngl_le_0_sub Hop Hor) | ].
   apply not_eq_sym.
@@ -162,8 +162,8 @@ Theorem rngl_opp_lt_compat :
 Proof.
 intros * Hop Hor *.
 split; intros Hxy. {
-  apply (rngl_lt_iff Hor) in Hxy.
-  apply (rngl_lt_iff Hor).
+  apply (rngl_le_neq Hor) in Hxy.
+  apply (rngl_le_neq Hor).
   split. {
     apply (rngl_opp_le_compat Hop Hor).
     now do 2 rewrite (rngl_opp_involutive Hop).
@@ -173,8 +173,8 @@ split; intros Hxy. {
     now do 2 rewrite (rngl_opp_involutive Hop) in H.
   }
 } {
-  apply (rngl_lt_iff Hor) in Hxy.
-  apply (rngl_lt_iff Hor).
+  apply (rngl_le_neq Hor) in Hxy.
+  apply (rngl_le_neq Hor).
   split. {
     now apply (rngl_opp_le_compat Hop Hor).
   } {
@@ -250,9 +250,9 @@ Theorem rngl_add_lt_mono :
   (a < b → c + a < c + b)%L.
 Proof.
 intros Hos Hor * Hab.
-apply (rngl_lt_iff Hor) in Hab.
+apply (rngl_le_neq Hor) in Hab.
 destruct Hab as (Hab, Haeb).
-apply (rngl_lt_iff Hor).
+apply (rngl_le_neq Hor).
 split. {
   apply (rngl_add_le_compat Hor); [ | easy ].
   apply (rngl_le_refl Hor).
@@ -556,7 +556,7 @@ Theorem rngl_lt_add_l :
   ∀ a b : T, (0 < a)%L → (b < a + b)%L.
 Proof.
 intros Hos Hor * Hbz.
-apply (rngl_lt_iff Hor).
+apply (rngl_le_neq Hor).
 split; [ now apply (rngl_le_add_l Hor), (rngl_lt_le_incl Hor) | ].
 intros H.
 symmetry in H.
@@ -1018,7 +1018,7 @@ Theorem rngl_abs_pos :
   ∀ x, (x ≠ 0 → 0 < rngl_abs x)%L.
 Proof.
 intros Hop Hor * Hxz.
-apply (rngl_lt_iff Hor).
+apply (rngl_le_neq Hor).
 split. 2: {
   apply not_eq_sym.
   intros H; apply Hxz; clear Hxz.

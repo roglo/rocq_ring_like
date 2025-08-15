@@ -54,7 +54,7 @@ assert (Haz : a ≠ 0%L). {
 }
 specialize (rngl_inv_neq_0 Hon Hos Hiv) as H1.
 destruct (rngl_le_dec Hor 0 a⁻¹)%L as [H2| H2]. {
-  apply (rngl_lt_iff Hor).
+  apply (rngl_le_neq Hor).
   split; [ easy | ].
   intros H; symmetry in H; revert H.
   now apply H1.
@@ -62,7 +62,7 @@ destruct (rngl_le_dec Hor 0 a⁻¹)%L as [H2| H2]. {
 apply (rngl_not_le Hor) in H2.
 destruct H2 as (H2, H3).
 specialize (rngl_mul_nonneg_nonpos Hop Hor) as H4.
-assert (H : (0 ≤ a)%L) by now apply (rngl_lt_iff Hor) in Hza.
+assert (H : (0 ≤ a)%L) by now apply (rngl_le_neq Hor) in Hza.
 specialize (H4 _ _ H H3); clear H.
 rewrite (rngl_mul_inv_diag_r Hon Hiv a Haz) in H4.
 specialize (rngl_0_le_1 Hon Hos Hor) as H5.
@@ -86,7 +86,7 @@ specialize (rngl_inv_pos Hon Hop Hiv Hor) as H2.
 specialize (H2 (- a))%L.
 apply (rngl_opp_lt_compat Hop Hor).
 rewrite (rngl_opp_0 Hop).
-rewrite (rngl_opp_inv Hon Hop Hiv); [ | now apply rngl_lt_iff ].
+rewrite (rngl_opp_inv Hon Hop Hiv); [ | now apply rngl_le_neq ].
 apply H2.
 apply (rngl_opp_lt_compat Hop Hor) in Hza.
 now rewrite (rngl_opp_0 Hop) in Hza.
@@ -110,7 +110,7 @@ assert (H : (0 ≤ b⁻¹ ≤ b⁻¹)%L). {
   split; [ | apply (rngl_le_refl Hor) ].
   apply (rngl_lt_le_incl Hor).
   apply (rngl_inv_pos Hon Hop Hiv Hor).
-  apply (rngl_lt_iff Hor).
+  apply (rngl_le_neq Hor).
   split; [ | congruence ].
   now apply (rngl_le_trans Hor _ a).
 }
@@ -241,7 +241,7 @@ destruct xz. {
         rewrite (rngl_opp_0 Hop) in Hy.
         apply (rngl_lt_le_incl Hor).
         apply (rngl_inv_pos Hon Hop Hiv Hor).
-        apply (rngl_lt_iff Hor).
+        apply (rngl_le_neq Hor).
         split; [ easy | ].
         intros H.
         apply (f_equal rngl_opp) in H.
@@ -321,7 +321,7 @@ destruct yz. {
     apply (rngl_mul_nonneg_nonpos Hop Hor _ _ Hx).
     apply (rngl_lt_le_incl Hor).
     apply (rngl_inv_neg Hon Hop Hiv Hor).
-    apply (rngl_lt_iff Hor).
+    apply (rngl_le_neq Hor).
     split; [ easy | congruence ].
   }
 }
@@ -333,7 +333,7 @@ apply rngl_leb_le in Hxy.
 unfold rngl_div in Hxy.
 rewrite Hiv in Hxy.
 assert (Hzy : (0 < y)%L). {
-  apply (rngl_lt_iff Hor).
+  apply (rngl_le_neq Hor).
   split; [ easy | congruence ].
 }
 specialize (rngl_inv_pos Hon Hop Hiv Hor _ Hzy) as Hy'.
@@ -361,9 +361,9 @@ Theorem rngl_mul_pos_pos :
   ∀ a b : T, (0 < a)%L → (0 < b)%L → (0 < a * b)%L.
 Proof.
 intros Hos Hor Hii * Haz Hbz.
-apply (rngl_lt_iff Hor) in Haz.
-apply (rngl_lt_iff Hor) in Hbz.
-apply (rngl_lt_iff Hor).
+apply (rngl_le_neq Hor) in Haz.
+apply (rngl_le_neq Hor) in Hbz.
+apply (rngl_le_neq Hor).
 destruct Haz as (Haz, Hza).
 destruct Hbz as (Hbz, Hzb).
 split. {
@@ -384,9 +384,9 @@ Proof.
 intros Hop Hor Hii * Ha.
 specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
 split; intros Hb. {
-  apply (rngl_lt_iff Hor) in Ha.
-  apply (rngl_lt_iff Hor) in Hb.
-  apply (rngl_lt_iff Hor).
+  apply (rngl_le_neq Hor) in Ha.
+  apply (rngl_le_neq Hor) in Hb.
+  apply (rngl_le_neq Hor).
   destruct Ha as (Haz, Hza).
   destruct Hb as (Habz, Hzab).
   apply not_eq_sym in Hza, Hzab.
@@ -475,9 +475,9 @@ Proof.
 intros Hop Hor Hii * Ha.
 specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
 split; intros Hb. {
-  apply (rngl_lt_iff Hor) in Ha.
-  apply (rngl_lt_iff Hor) in Hb.
-  apply (rngl_lt_iff Hor).
+  apply (rngl_le_neq Hor) in Ha.
+  apply (rngl_le_neq Hor) in Hb.
+  apply (rngl_le_neq Hor).
   destruct Ha as (Haz, Hza).
   destruct Hb as (Habz, Hzab).
   apply not_eq_sym in Hza, Hzab.
@@ -682,7 +682,7 @@ apply (rngl_mul_le_mono_pos_l Hop Hor) with (c := b); [ | easy | ]. {
 }
 rewrite rngl_mul_0_r; [ | now apply rngl_has_opp_or_subt_iff; left ].
 rewrite (rngl_mul_inv_diag_r Hon Hiv); [ apply (rngl_0_le_1 Hon Hos Hor) | ].
-apply (rngl_lt_iff Hor) in Hb.
+apply (rngl_le_neq Hor) in Hb.
 now apply not_eq_sym.
 Qed.
 
@@ -921,7 +921,7 @@ Theorem rngl_mul_pos_neg :
 Proof.
 intros Hop Hor Hid * Hza Hbz.
 specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
-apply (rngl_lt_iff Hor).
+apply (rngl_le_neq Hor).
 split. {
   apply (rngl_mul_nonneg_nonpos Hop Hor). {
     now apply (rngl_lt_le_incl Hor).
@@ -1001,7 +1001,7 @@ destruct abz. {
   apply (rngl_leb_gt Hor) in Hbz.
   apply rngl_nlt_ge in Habz.
   exfalso; apply Habz; clear Habz.
-  apply (rngl_lt_iff Hor).
+  apply (rngl_le_neq Hor).
   split. {
     now apply (rngl_mul_nonneg_nonneg Hos Hor); apply (rngl_lt_le_incl Hor).
   }
@@ -1027,7 +1027,7 @@ destruct az. {
     apply (rngl_opp_involutive Hop).
   }
   apply (rngl_leb_gt Hor) in Hbz.
-  apply (rngl_lt_iff Hor) in Hbz.
+  apply (rngl_le_neq Hor) in Hbz.
   destruct Hbz as (Hbz, Hzb).
   specialize (rngl_mul_nonpos_nonneg Hop Hor _ _ Haz Hbz) as H1.
   now apply rngl_nlt_ge in H1.
@@ -1035,7 +1035,7 @@ destruct az. {
 apply (rngl_leb_gt Hor) in Haz.
 destruct bz; [ | easy ].
 apply rngl_leb_le in Hbz.
-apply (rngl_lt_iff Hor) in Haz.
+apply (rngl_le_neq Hor) in Haz.
 destruct Haz as (Haz, Hza).
 specialize (rngl_mul_nonneg_nonpos Hop Hor _ _ Haz Hbz) as H1.
 now apply rngl_nlt_ge in H1.
@@ -1123,7 +1123,7 @@ destruct (rngl_eq_dec Heo a 0%L) as [Haz| Haz]. {
   apply (rngl_min_id Hor).
 }
 assert (H : (0 < a)%L). {
-  apply (rngl_lt_iff Hor).
+  apply (rngl_le_neq Hor).
   split; [ easy | ].
   now apply not_eq_sym.
 }
@@ -1222,7 +1222,7 @@ Theorem rngl_abs_lt_squ_lt :
 Proof.
 intros Hop Hor Hii.
 intros * Habc Hab.
-apply (rngl_lt_iff Hor).
+apply (rngl_le_neq Hor).
 split. {
   apply (rngl_abs_le_squ_le Hop Hor).
   now apply (rngl_lt_le_incl Hor).
@@ -1284,7 +1284,7 @@ Theorem rngl_squ_lt_abs_lt :
   ∀ a b : T, (a² < b²)%L → (rngl_abs a < rngl_abs b)%L.
 Proof.
 intros Hop Hor Hii * Hab.
-apply (rngl_lt_iff Hor).
+apply (rngl_le_neq Hor).
 split. {
   apply (rngl_squ_le_abs_le Hop Hor Hii).
   now apply (rngl_lt_le_incl Hor).

@@ -210,7 +210,7 @@ split. {
   intros Hca.
   specialize (Hlim (dt a c))%L.
   assert (H : (0 < dt a c)%L). {
-    apply (rngl_lt_iff Hor).
+    apply (rngl_le_neq Hor).
     split; [ apply (dist_nonneg Hon Hop Hiv Hor dist) | ].
     intros H; symmetry in H.
     apply -> (dist_separation dist) in H.
@@ -232,7 +232,7 @@ split. {
   intros Hbc.
   specialize (Hlim (dt b c))%L.
   assert (H : (0 < dt b c)%L). {
-    apply (rngl_lt_iff Hor).
+    apply (rngl_le_neq Hor).
     split; [ apply (dist_nonneg Hon Hop Hiv Hor dist) | ].
     intros H; symmetry in H.
     apply -> (dist_separation dist) in H.

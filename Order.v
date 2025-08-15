@@ -160,7 +160,7 @@ destruct ab. {
 }
 Qed.
 
-Theorem rngl_lt_iff :
+Theorem rngl_le_neq :
   rngl_is_ordered T = true → ∀ a b, (a < b ↔ a ≤ b ∧ a ≠ b)%L.
 Proof.
 intros * Hor a b.
@@ -229,13 +229,13 @@ move rr after rp.
 specialize rngl_ord_le_dec as H1.
 destruct (H1 b a) as [H2| H2]; [ right | left ]. {
   intros H3.
-  apply (rngl_lt_iff Hor) in H3.
+  apply (rngl_le_neq Hor) in H3.
   destruct H3 as (H3, H4).
   now apply (rngl_le_antisymm Hor) in H2.
 } {
   specialize rngl_ord_not_le as H3.
   apply H3 in H2.
-  apply (rngl_lt_iff Hor).
+  apply (rngl_le_neq Hor).
   split; [ easy | ].
   destruct H2 as (H2, _).
   now apply not_eq_sym.
@@ -257,7 +257,7 @@ Theorem rngl_lt_asymm :
   ∀ a b, (a < b → ¬ b < a)%L.
 Proof.
 intros Hor * Hab Hba.
-apply (rngl_lt_iff Hor) in Hab, Hba.
+apply (rngl_le_neq Hor) in Hab, Hba.
 destruct Hab as (Hab, Hnab).
 destruct Hba as (Hba, _).
 now apply Hnab, (rngl_le_antisymm Hor).
@@ -280,7 +280,7 @@ Theorem rngl_lt_le_incl :
   ∀ a b, (a < b → a ≤ b)%L.
 Proof.
 intros Hor * Hab.
-now apply (rngl_lt_iff Hor) in Hab.
+now apply (rngl_le_neq Hor) in Hab.
 Qed.
 
 Theorem rngl_nle_gt :
@@ -299,12 +299,12 @@ Proof.
 intros Hor *.
 split; intros Hab. {
   apply (rngl_not_le Hor) in Hab.
-  apply (rngl_lt_iff Hor).
+  apply (rngl_le_neq Hor).
   split; [ easy | ].
   now apply not_eq_sym.
 } {
   intros H1.
-  apply (rngl_lt_iff Hor) in Hab.
+  apply (rngl_le_neq Hor) in Hab.
   destruct Hab as (H2, H3).
   now apply H3, (rngl_le_antisymm Hor).
 }
@@ -330,7 +330,7 @@ split; intros Hab. {
   now apply (rngl_nle_gt_iff Hor).
 } {
   intros H1.
-  apply (rngl_lt_iff Hor) in H1.
+  apply (rngl_le_neq Hor) in H1.
   destruct H1 as (H2, H3).
   now apply H3, (rngl_le_antisymm Hor).
 }
@@ -341,7 +341,7 @@ Theorem rngl_lt_le_trans :
    ∀ a b c : T, (a < b)%L → (b ≤ c)%L → (a < c)%L.
 Proof.
 intros Hor * Hab Hbc.
-apply (rngl_lt_iff Hor).
+apply (rngl_le_neq Hor).
 split. {
   apply (rngl_le_trans Hor _ b); [ | easy ].
   now apply (rngl_lt_le_incl Hor).
@@ -356,7 +356,7 @@ Theorem rngl_le_lt_trans :
    ∀ a b c : T, (a ≤ b)%L → (b < c)%L → (a < c)%L.
 Proof.
 intros Hor * Hab Hbc.
-apply (rngl_lt_iff Hor).
+apply (rngl_le_neq Hor).
 split. {
   apply (rngl_le_trans Hor _ b); [ easy | ].
   now apply (rngl_lt_le_incl Hor).
@@ -383,7 +383,7 @@ intros Hor *.
 split; intros Hab. {
   apply rngl_leb_nle in Hab.
   apply (rngl_not_le Hor) in Hab.
-  apply (rngl_lt_iff Hor).
+  apply (rngl_le_neq Hor).
   split; [ easy | ].
   now apply not_eq_sym.
 } {
@@ -856,7 +856,7 @@ destruct ab. {
     apply rngl_leb_le in Halb.
     split; [ | easy ].
     intros _.
-    now apply (rngl_lt_iff Hor).
+    now apply (rngl_le_neq Hor).
   } {
     split; [ easy | ].
     apply (rngl_leb_gt Hor) in Halb.

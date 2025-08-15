@@ -235,7 +235,7 @@ Theorem rngl_0_lt_1 :
   (0 < 1)%L.
 Proof.
 intros Hon Hos Hc1 Hor.
-apply (rngl_lt_iff Hor).
+apply (rngl_le_neq Hor).
 split. 2: {
   apply not_eq_sym.
   now apply (rngl_1_neq_0_iff Hon).
@@ -525,7 +525,7 @@ destruct az. {
 apply (rngl_ltb_ge_iff Hor) in Haz.
 right.
 split. {
-  apply (rngl_lt_iff Hor).
+  apply (rngl_le_neq Hor).
   split; [ easy | ].
   intros H; subst a.
   rewrite (rngl_mul_0_l Hos) in Hab.
@@ -664,7 +664,7 @@ destruct (rngl_eq_dec Heo (rngl_abs a) 1) as [Ha1| Ha1]. {
   rewrite Ha1; cbn.
   rewrite rngl_add_0_r.
   split; [ apply (rngl_le_refl Hor) | ].
-  apply (rngl_lt_iff Hor).
+  apply (rngl_le_neq Hor).
   split; [ apply (rngl_1_le_2 Hon Hos Hor) | ].
   intros H12.
   apply (f_equal (λ b, rngl_sub b 1))%L in H12.
@@ -676,7 +676,7 @@ destruct (rngl_eq_dec Heo (rngl_abs a) 1) as [Ha1| Ha1]. {
 exists 0; cbn.
 rewrite rngl_add_0_r.
 split; [ apply (rngl_abs_nonneg Hop Hor) | ].
-now apply (rngl_lt_iff Hor).
+now apply (rngl_le_neq Hor).
 Qed.
 
 End a.
