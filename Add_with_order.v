@@ -1268,4 +1268,5 @@ Qed.
 End a.
 
 Arguments rngl_abs_nonneg_eq {T ro rp} Hop Hor a%_L.
+Arguments rngl_add_le_mono_l {T ro rp} Hop Hor (a b c)%_L.
 Arguments rngl_le_add_r {T ro rp} Hor (a b)%_L Hb.
