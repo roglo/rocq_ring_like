@@ -1272,32 +1272,37 @@ Arguments rngl_add_le_mono_l {T ro rp} Hop Hor (a b c)%_L.
 Arguments rngl_add_lt_mono_l {T ro rp} Hop Hor (a b c)%_L.
 Arguments rngl_le_add_r {T ro rp} Hor (a b)%_L Hb.
 
-(**
-  # Order Compatibility
+(** ** Order Compatibility
 
-  Encapsulates the key symmetry between two order relations
-  in a ring-like structure with `rngl_le` (≤) and `rngl_lt` (<).
+This structure, [order_compatibility], captures the key symmetry
+between the two order relations [rngl_le] (≤) and [rngl_lt] (<) in
+a ring-like structure.
 
-  ## Core idea
+## Core Idea
 
-  - Duality: l1 a b → ¬ l2 b a
-  - Left monotonicity: a ≤ b → l2 b c → l2 a c
-  - Right monotonicity: l2 a b → b ≤ c → l2 a c
-  - Optional (with additive inverses):
-      * l1 (a + b) c ↔ l1 b (c - a)
-      * l2 a (b + c) ↔ l2 (a - b) c
+- Duality: If [l1 a b] holds, then [¬ l2 b a].
 
-  ## Example
+- Left Monotonicity: If [a ≤ b] and [l2 b c] then [l2 a c].
 
-  For l1 = rngl_le (≤) and l2 = rngl_lt (<), in the case where there is
-  an opposite, this recovers:
-    a + b ≤ c ↔ b ≤ c - a
-    a + b < c ↔ b < c - a
+- Right Monotonicity: If [l2 a b] and [b ≤ c] then [l2 a c].
 
-  ## Benefit
+- Optional (requires additive inverses):
 
-  Reduces duplicated proofs involving ≤ and < by capturing
-  their fundamental compatibility.
+  - [l1 (a + b) c ↔ l1 b (c - a)]
+  - [l2 a (b + c) ↔ l2 (a - b) c]
+
+## Example
+
+For [l1 = rngl_le] (≤) and [l2 = rngl_lt] (<), this recovers:
+
+  - [a + b ≤ c ↔ b ≤ c - a]
+  - [a + b < c ↔ b < c - a]
+
+## Benefit
+
+Capturing this compatibility reduces the need to duplicate
+proofs for ≤ and <, making reasoning in ordered ring-like
+structures more concise and systematic.
 *)
 
 Class rngl_order_compatibility {T} {ro : ring_like_op T}
