@@ -1317,7 +1317,7 @@ Class rngl_order_compatibility {T} {ro : ring_like_op T}
       if rngl_has_opp T then ∀ a b c, l2 a (b + c)%L → l2 (a - b)%L c
       else not_applicable }.
 
-Theorem roc_add_sub_1 {T} {ro : ring_like_op T} {l1 l2}
+Theorem roc_add_sub_l_1 {T} {ro : ring_like_op T} {l1 l2}
   {roc : rngl_order_compatibility l1 l2} :
   rngl_has_opp T = true →
   ∀ a b c, l1 (a + b)%L c → l1 b (c - a)%L.
@@ -1327,7 +1327,7 @@ specialize (@roc_opt_add_sub_l_1 T ro l1 l2 roc) as H1.
 now rewrite Hop in H1.
 Qed.
 
-Theorem roc_sub_add_2 {T} {ro : ring_like_op T} {l1 l2}
+Theorem roc_add_sub_l_2 {T} {ro : ring_like_op T} {l1 l2}
   {roc : rngl_order_compatibility l1 l2} :
   rngl_has_opp T = true →
   ∀ a b c, l2 a (b + c)%L → l2 (a - b)%L c.
