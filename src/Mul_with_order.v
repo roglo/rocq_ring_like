@@ -148,6 +148,20 @@ rewrite (rngl_opp_involutive Hop) in H1.
 now rewrite (rngl_opp_0 Hop) in H1.
 Qed.
 
+(*
+Theorem rngl_0_le_or_lt_1 {l1 l2} :
+  rngl_order_compatibility l1 l2 →
+  rngl_has_1 T = true →
+  rngl_has_opp_or_subt T = true →
+  rngl_is_ordered T = true →
+  (l2 0 1)%L.
+Proof.
+intros Hroc Hon Hos Hor.
+destruct Hroc.
+destruct (rngl_le_dec Hor 0%L 1%L) as [| H1]; [ | ].
+...
+*)
+
 Theorem rngl_0_le_1 :
   rngl_has_1 T = true →
   rngl_has_opp_or_subt T = true →
@@ -161,6 +175,20 @@ destruct H1 as (H1, H2).
 specialize (rngl_mul_nonpos_nonpos Hos Hor) as H3.
 specialize (H3 1 1 H2 H2)%L.
 now rewrite (rngl_mul_1_l Hon) in H3.
+Qed.
+
+Theorem rngl_0_lt_1 :
+  rngl_has_1 T = true →
+  rngl_has_opp_or_subt T = true →
+  rngl_characteristic T ≠ 1 →
+  rngl_is_ordered T = true →
+  (0 < 1)%L.
+Proof.
+intros Hon Hos Hc1 Hor.
+apply (rngl_le_neq Hor).
+split; [ apply (rngl_0_le_1 Hon Hos Hor) | ].
+apply not_eq_sym.
+now apply (rngl_1_neq_0_iff Hon).
 Qed.
 
 Theorem rngl_0_leb_1 :
@@ -225,22 +253,6 @@ Theorem rngl_0_le_squ :
 Proof.
 intros Hos Hor *.
 apply (rngl_squ_nonneg Hos Hor).
-Qed.
-
-Theorem rngl_0_lt_1 :
-  rngl_has_1 T = true →
-  rngl_has_opp_or_subt T = true →
-  rngl_characteristic T ≠ 1 →
-  rngl_is_ordered T = true →
-  (0 < 1)%L.
-Proof.
-intros Hon Hos Hc1 Hor.
-apply (rngl_le_neq Hor).
-split. 2: {
-  apply not_eq_sym.
-  now apply (rngl_1_neq_0_iff Hon).
-}
-apply (rngl_0_le_1 Hon Hos Hor).
 Qed.
 
 Theorem rngl_0_lt_2 :
