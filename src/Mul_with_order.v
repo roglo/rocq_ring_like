@@ -148,20 +148,6 @@ rewrite (rngl_opp_involutive Hop) in H1.
 now rewrite (rngl_opp_0 Hop) in H1.
 Qed.
 
-(*
-Theorem rngl_0_le_or_lt_1 {l1 l2} :
-  rngl_order_compatibility l1 l2 →
-  rngl_has_1 T = true →
-  rngl_has_opp_or_subt T = true →
-  rngl_is_ordered T = true →
-  (l2 0 1)%L.
-Proof.
-intros Hroc Hon Hos Hor.
-destruct Hroc.
-destruct (rngl_le_dec Hor 0%L 1%L) as [| H1]; [ | ].
-...
-*)
-
 Theorem rngl_0_le_1 :
   rngl_has_1 T = true →
   rngl_has_opp_or_subt T = true →

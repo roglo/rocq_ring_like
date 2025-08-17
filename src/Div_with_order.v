@@ -530,14 +530,7 @@ Proof.
 intros Hop Hor Hii * Hc.
 specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
 split; intros Hab. {
-  apply (rngl_lt_eq_cases Hor) in Hab.
-  destruct Hab as [Hab| Hab]; [ | subst b; apply (rngl_le_refl Hor) ].
-  apply (rngl_le_0_sub Hop Hor).
-  rewrite <- (rngl_mul_sub_distr_l Hop).
-  apply (rngl_mul_nonneg_nonneg Hos Hor). {
-    now apply (rngl_lt_le_incl Hor).
-  }
-  apply (rngl_le_0_sub Hop Hor).
+  apply (rngl_mul_le_mono_nonneg_l Hop Hor); [ | easy ].
   now apply (rngl_lt_le_incl Hor).
 } {
   apply (rngl_le_0_sub Hop Hor) in Hab.
@@ -725,28 +718,6 @@ split; intros Habq. {
 }
 Qed.
 
-Theorem rngl_le_div_r :
-  rngl_has_1 T = true →
-  rngl_has_opp T = true →
-  rngl_has_inv T = true →
-  rngl_is_ordered T = true →
-  ∀ a b c, (0 < c → a * c ≤ b ↔ a ≤ b / c)%L.
-Proof.
-intros Hon Hop Hiv Hor * Hzc.
-assert (Hcz : c ≠ 0%L). {
-  intros H; rewrite H in Hzc.
-  now apply (rngl_lt_irrefl Hor) in Hzc.
-}
-specialize (rngl_int_dom_or_inv_1_quo Hiv Hon) as Hii.
-split; intros Habq. {
-  apply (rngl_mul_le_mono_pos_r Hop Hor Hii) with (c := c); [ easy | ].
-  now rewrite (rngl_div_mul Hon Hiv).
-} {
-  apply (rngl_mul_le_mono_pos_r Hop Hor Hii _ _ c) in Habq; [ | easy ].
-  now rewrite (rngl_div_mul Hon Hiv) in Habq.
-}
-Qed.
-
 Theorem rngl_lt_div_l :
   rngl_has_1 T = true →
   rngl_has_opp T = true →
@@ -765,6 +736,43 @@ split; intros Habq. {
   now rewrite (rngl_div_mul Hon Hiv).
 } {
   apply (rngl_mul_lt_mono_pos_r Hop Hor Hii c) in Habq; [ | easy ].
+  now rewrite (rngl_div_mul Hon Hiv) in Habq.
+}
+Qed.
+
+Theorem rngl_le_div_r :
+  rngl_has_1 T = true →
+  rngl_has_opp T = true →
+  rngl_has_inv T = true →
+  rngl_is_ordered T = true →
+  ∀ a b c, (0 < c → a * c ≤ b ↔ a ≤ b / c)%L.
+Proof.
+intros Hon Hop Hiv Hor * Hzc.
+assert (Hcz : c ≠ 0%L). {
+  intros H; rewrite H in Hzc.
+  now apply (rngl_lt_irrefl Hor) in Hzc.
+}
+(*
+About rngl_mul_le_mono_pos_l.
+...
+rngl_mul_le_mono_pos_r
+     : rngl_has_opp T = true
+       → rngl_is_ordered T = true
+         → (rngl_is_integral_domain T || rngl_has_inv_and_1_or_quot T)%bool = true
+           → ∀ a b c : T, (0 < c)%L → (a ≤ b)%L ↔ (a * c ≤ b * c)%L
+rngl_mul_lt_mono_pos_r
+     : rngl_has_opp T = true
+       → rngl_is_ordered T = true
+         → (rngl_is_integral_domain T || rngl_has_inv_and_1_or_quot T)%bool = true
+           → ∀ a b c : T, (0 < a)%L → (b < c)%L ↔ (b * a < c * a)%L
+...
+*)
+specialize (rngl_int_dom_or_inv_1_quo Hiv Hon) as Hii.
+split; intros Habq. {
+  apply (rngl_mul_le_mono_pos_r Hop Hor Hii) with (c := c); [ easy | ].
+  now rewrite (rngl_div_mul Hon Hiv).
+} {
+  apply (rngl_mul_le_mono_pos_r Hop Hor Hii _ _ c) in Habq; [ | easy ].
   now rewrite (rngl_div_mul Hon Hiv) in Habq.
 }
 Qed.
