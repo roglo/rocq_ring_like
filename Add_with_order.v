@@ -1272,13 +1272,33 @@ Arguments rngl_add_le_mono_l {T ro rp} Hop Hor (a b c)%_L.
 Arguments rngl_add_lt_mono_l {T ro rp} Hop Hor (a b c)%_L.
 Arguments rngl_le_add_r {T ro rp} Hor (a b)%_L Hb.
 
-(* order_compatibility expresses the standard relationship between < and ≤ :
-   - if a < b then ¬ (b ≤ a)
-   - ≤ is monotone w.r.t. <
-   - when subtraction is available, addition/subtraction preserves < and ≤
-   This corresponds to the usual compatibility axioms between strict and
-   non-strict orders in ordered ring-likes. *)
-(* to be moved to ring-like library *)
+(**
+  # Order Compatibility
+
+  Encapsulates the key symmetry between two order relations
+  in a ring-like structure with `rngl_le` (≤) and `rngl_lt` (<).
+
+  ## Core idea
+
+  - Duality: l1 a b → ¬ l2 b a
+  - Left monotonicity: a ≤ b → l2 b c → l2 a c
+  - Right monotonicity: l2 a b → b ≤ c → l2 a c
+  - Optional (with additive inverses):
+      * l1 (a + b) c ↔ l1 b (c - a)
+      * l2 a (b + c) ↔ l2 (a - b) c
+
+  ## Example
+
+  For l1 = rngl_le (≤) and l2 = rngl_lt (<), in the case where there is
+  an opposite, this recovers:
+    a + b ≤ c ↔ b ≤ c - a
+    a + b < c ↔ b < c - a
+
+  ## Benefit
+
+  Reduces duplicated proofs involving ≤ and < by capturing
+  their fundamental compatibility.
+*)
 
 Class rngl_order_compatibility {T} {ro : ring_like_op T}
   (l1 l2 : T → T → Prop) :=
