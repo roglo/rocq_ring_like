@@ -428,31 +428,84 @@ which imports the present module and some other ones.
 </div>
 
 <div class="doc">
-   Order Compatibility
+<a id="lab3"></a><h2 class="section">Order Compatibility</h2>
 
-  Encapsulates the key symmetry between two order relations
-  in a ring-like structure with `rngl_le` (≤) and `rngl_lt` (<).
 
-  # Core idea
+<div class="paragraph"> </div>
 
-  - Duality: l1 a b → ¬ l2 b a
-  - Left monotonicity: a ≤ b → l2 b c → l2 a c
-  - Right monotonicity: l2 a b → b ≤ c → l2 a c
-  - Optional (with additive inverses):
-      * l1 (a + b) c ↔ l1 b (c - a)
-      * l2 a (b + c) ↔ l2 (a - b) c
+This structure, <span class="inlinecode"><span class="id" title="var">order_compatibility</span></span>, captures the key symmetry
+between the two order relations <span class="inlinecode"><span class="id" title="var">rngl_le</span></span> (≤) and <span class="inlinecode"><span class="id" title="var">rngl_lt</span></span> (&lt;) in
+a ring-like structure.
 
-  # Example
+<div class="paragraph"> </div>
 
-  For l1 = rngl_le (≤) and l2 = rngl_lt (<), in the case where there is
-  an opposite, this recovers:
-    a + b ≤ c ↔ b ≤ c - a
-    a + b < c ↔ b < c - a
+# Core Idea
 
-  # Benefit
+<div class="paragraph"> </div>
 
-  Reduces duplicated proofs involving ≤ and < by capturing
-  their fundamental compatibility.
+<ul class="doclist">
+<li> Duality: If <span class="inlinecode"><span class="id" title="var">l1</span></span> <span class="inlinecode"><span class="id" title="var">a</span></span> <span class="inlinecode"><span class="id" title="var">b</span></span> holds, then <span class="inlinecode">¬</span> <span class="inlinecode"><span class="id" title="var">l2</span></span> <span class="inlinecode"><span class="id" title="var">b</span></span> <span class="inlinecode"><span class="id" title="var">a</span></span>.
+
+<div class="paragraph"> </div>
+
+
+</li>
+<li> Left Monotonicity: If <span class="inlinecode"><span class="id" title="var">a</span></span> <span class="inlinecode">≤</span> <span class="inlinecode"><span class="id" title="var">b</span></span> and <span class="inlinecode"><span class="id" title="var">l2</span></span> <span class="inlinecode"><span class="id" title="var">b</span></span> <span class="inlinecode"><span class="id" title="var">c</span></span> then <span class="inlinecode"><span class="id" title="var">l2</span></span> <span class="inlinecode"><span class="id" title="var">a</span></span> <span class="inlinecode"><span class="id" title="var">c</span></span>.
+
+<div class="paragraph"> </div>
+
+
+</li>
+<li> Right Monotonicity: If <span class="inlinecode"><span class="id" title="var">l2</span></span> <span class="inlinecode"><span class="id" title="var">a</span></span> <span class="inlinecode"><span class="id" title="var">b</span></span> and <span class="inlinecode"><span class="id" title="var">b</span></span> <span class="inlinecode">≤</span> <span class="inlinecode"><span class="id" title="var">c</span></span> then <span class="inlinecode"><span class="id" title="var">l2</span></span> <span class="inlinecode"><span class="id" title="var">a</span></span> <span class="inlinecode"><span class="id" title="var">c</span></span>.
+
+<div class="paragraph"> </div>
+
+
+</li>
+<li> Optional (requires additive inverses):
+
+<div class="paragraph"> </div>
+
+<ul class="doclist">
+<li> <span class="inlinecode"><span class="id" title="var">l1</span></span> <span class="inlinecode">(<span class="id" title="var">a</span></span> <span class="inlinecode">+</span> <span class="inlinecode"><span class="id" title="var">b</span>)</span> <span class="inlinecode"><span class="id" title="var">c</span></span> <span class="inlinecode">↔</span> <span class="inlinecode"><span class="id" title="var">l1</span></span> <span class="inlinecode"><span class="id" title="var">b</span></span> <span class="inlinecode">(<span class="id" title="var">c</span></span> <span class="inlinecode">-</span> <span class="inlinecode"><span class="id" title="var">a</span>)</span>
+
+</li>
+<li> <span class="inlinecode"><span class="id" title="var">l2</span></span> <span class="inlinecode"><span class="id" title="var">a</span></span> <span class="inlinecode">(<span class="id" title="var">b</span></span> <span class="inlinecode">+</span> <span class="inlinecode"><span class="id" title="var">c</span>)</span> <span class="inlinecode">↔</span> <span class="inlinecode"><span class="id" title="var">l2</span></span> <span class="inlinecode">(<span class="id" title="var">a</span></span> <span class="inlinecode">-</span> <span class="inlinecode"><span class="id" title="var">b</span>)</span> <span class="inlinecode"><span class="id" title="var">c</span></span>
+
+</li>
+</ul>
+
+</li>
+</ul>
+
+<div class="paragraph"> </div>
+
+# Example
+
+<div class="paragraph"> </div>
+
+For <span class="inlinecode"><span class="id" title="var">l1</span></span> <span class="inlinecode">=</span> <span class="inlinecode"><span class="id" title="var">rngl_le</span></span> (≤) and <span class="inlinecode"><span class="id" title="var">l2</span></span> <span class="inlinecode">=</span> <span class="inlinecode"><span class="id" title="var">rngl_lt</span></span> (&lt;), this recovers:
+
+<div class="paragraph"> </div>
+
+<ul class="doclist">
+<li> <span class="inlinecode"><span class="id" title="var">a</span></span> <span class="inlinecode">+</span> <span class="inlinecode"><span class="id" title="var">b</span></span> <span class="inlinecode">≤</span> <span class="inlinecode"><span class="id" title="var">c</span></span> <span class="inlinecode">↔</span> <span class="inlinecode"><span class="id" title="var">b</span></span> <span class="inlinecode">≤</span> <span class="inlinecode"><span class="id" title="var">c</span></span> <span class="inlinecode">-</span> <span class="inlinecode"><span class="id" title="var">a</span></span>
+
+</li>
+<li> <span class="inlinecode"><span class="id" title="var">a</span></span> <span class="inlinecode">+</span> <span class="inlinecode"><span class="id" title="var">b</span></span> <span class="inlinecode">&lt;</span> <span class="inlinecode"><span class="id" title="var">c</span></span> <span class="inlinecode">↔</span> <span class="inlinecode"><span class="id" title="var">b</span></span> <span class="inlinecode">&lt;</span> <span class="inlinecode"><span class="id" title="var">c</span></span> <span class="inlinecode">-</span> <span class="inlinecode"><span class="id" title="var">a</span></span>
+
+</li>
+</ul>
+
+<div class="paragraph"> </div>
+
+# Benefit
+
+<div class="paragraph"> </div>
+
+Capturing this compatibility reduces the need to duplicate
+proofs for ≤ and &lt;, making reasoning in ordered ring-like
+structures more concise and systematic.
 
 </div>
 <div class="code">
