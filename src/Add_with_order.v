@@ -27,6 +27,39 @@ Context {T : Type}.
 Context {ro : ring_like_op T}.
 Context {rp : ring_like_prop T}.
 
+(*
+Theorem rngl_ord_add_lt_compat :
+  rngl_has_opp_or_subt T = true →
+  rngl_is_ordered T = true →
+  ∀ a b c d, (a < b)%L → (c < d)%L → (a + c < b + d)%L.
+Proof.
+intros Hos Hor.
+intros * Hab Hcd.
+specialize rngl_opt_ord as rr.
+rewrite Hor in rr.
+move rr before rp.
+apply (rngl_le_neq Hor) in Hab.
+destruct Hab as (Hab, Haeb).
+apply (rngl_le_neq Hor).
+split. {
+  apply rr; [ easy | ].
+  now apply (rngl_lt_le_incl Hor).
+}
+intros H; apply Haeb; clear Haeb.
+...
+apply (f_equal (λ x, rngl_sub x a)) in H.
+...
+apply (rngl_add_cancel_l Hos) in H.
+...
+  apply (rngl_le_refl Hor).
+  } {
+    intros H; apply Haeb; clear Haeb.
+    now apply (rngl_add_cancel_l Hos) in H.
+  }
+}
+...
+*)
+
 Theorem rngl_add_le_compat :
   rngl_is_ordered T = true →
   ∀ a b c d, (a ≤ b → c ≤ d → a + c ≤ b + d)%L.
