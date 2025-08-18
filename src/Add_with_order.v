@@ -1311,6 +1311,8 @@ Class rngl_order_compatibility {T} {ro : ring_like_op T}
     roc_dual_2 : ∀ a b, l2 a b ↔ ¬ l1 b a;
     roc_mono_l_1 : ∀ a b c, (a ≤ b)%L → l1 b c → l1 a c;
     roc_mono_r_1 : ∀ a b c, l1 a b → (b ≤ c)%L → l1 a c;
+    roc_of_lt : ∀ a b, (a < b)%L → l1 a b;
+    roc_to_le : ∀ a b, l1 a b → (a ≤ b)%L;
     roc_opt_add_sub_l_1 :
       if rngl_has_opp T then ∀ a b c, l1 (a + b)%L c ↔ l1 b (c - a)%L
       else not_applicable;
@@ -1417,6 +1419,10 @@ split. {
   intros.
   eapply (rngl_le_trans Hor); [ eassumption | easy ].
 } {
+  apply (rngl_lt_le_incl Hor).
+} {
+  easy.
+} {
   intros.
   remember (rngl_has_opp T) as op eqn:Hop.
   symmetry in Hop.
@@ -1450,6 +1456,10 @@ split. {
 } {
   intros.
   eapply (rngl_lt_le_trans Hor); [ eassumption | easy ].
+} {
+  easy.
+} {
+  apply (rngl_lt_le_incl Hor).
 } {
   intros.
   remember (rngl_has_opp T) as op eqn:Hop.
