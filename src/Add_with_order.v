@@ -160,18 +160,18 @@ Qed.
 Theorem rngl_le_or_lt_0_sub {l1} :
   rngl_has_opp T = true →
   rngl_is_ordered T = true →
-  (∀ a b c : T, l1 a b → l1 (c + a)%L (c + b)%L) →
-  (∀ a b : T, (l1 0 (b - a))%L ↔ l1 a b).
+  (∀ a b c, l1 b c → l1 (a + b)%L (a + c)%L) →
+  (∀ a b, (l1 0 (b - a))%L ↔ l1 a b).
 Proof.
 intros Hop Hor H1.
 specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
 intros.
 split; intros Hab. {
-  apply (H1 _ _ a) in Hab.
+  apply (H1 a) in Hab.
   rewrite rngl_add_0_r, rngl_add_comm in Hab.
   now rewrite (rngl_sub_add Hop) in Hab.
 } {
-  apply (H1 _ _ (- a))%L in Hab.
+  apply (H1 (- a))%L in Hab.
   do 2 rewrite (rngl_add_opp_l Hop) in Hab.
   now rewrite (rngl_sub_diag Hos) in Hab.
 }
@@ -199,8 +199,6 @@ intros * H.
 now apply (rngl_add_lt_mono_l Hop Hor).
 Qed.
 
-(***)
-
 Theorem rngl_add_lt_le_mono :
   rngl_has_opp T = true →
   rngl_is_ordered T = true →
@@ -212,23 +210,46 @@ now apply (rngl_add_lt_mono_r Hop Hor).
 now apply (rngl_add_le_mono_l Hop Hor).
 Qed.
 
+Theorem rngl_le_lt_sub_0 l1 l2 :
+  rngl_has_opp T = true →
+  rngl_is_ordered T = true →
+  (∀ a b c, l1 b c → l1 (a + b)%L (a + c)%L) →
+  (∀ a b, l1 a b ↔ ¬ l2 b a) →
+  (∀ a b, l2 a b ↔ ¬ l1 b a) →
+  ∀ a b, ((l1 (a - b) 0) ↔ l1 a b)%L.
+Proof.
+intros Hop Hor.
+specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
+intros H1 H2 H3 *.
+split; intros Hab. {
+  apply H2 in Hab; apply H2.
+  intros Hba; apply Hab; clear Hab.
+  apply (rngl_le_or_lt_0_sub Hop Hor); [ | easy ].
+  clear b a Hba.
+  intros * Hab.
+  apply H3 in Hab; apply H3.
+  intros H4; apply Hab; clear Hab.
+  apply (H1 (-a))%L in H4.
+  do 2 rewrite (rngl_add_opp_l Hop) in H4.
+  do 2 rewrite (rngl_add_comm a) in H4.
+  do 2 rewrite (rngl_add_sub Hos) in H4.
+  easy.
+}
+apply (H1 (-b))%L in Hab.
+do 2 rewrite (rngl_add_opp_l Hop) in Hab.
+now rewrite (rngl_sub_diag Hos) in Hab.
+Qed.
+
 Theorem rngl_le_sub_0 :
   rngl_has_opp T = true →
   rngl_is_ordered T = true →
   ∀ a b, (a - b ≤ 0 ↔ a ≤ b)%L.
 Proof.
 intros Hop Hor *.
-specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
-specialize (rngl_add_le_compat Hor) as H1.
-split; intros Hab. {
-  specialize (H1 (a - b) 0 b b Hab (rngl_le_refl Hor _))%L.
-  rewrite (rngl_sub_add Hop) in H1.
-  now rewrite rngl_add_0_l in H1.
-} {
-  specialize (H1 a b (- b) (- b) Hab (rngl_le_refl Hor _))%L.
-  do 2 rewrite (rngl_add_opp_r Hop) in H1.
-  now rewrite (rngl_sub_diag Hos) in H1.
-}
+apply (rngl_le_lt_sub_0 _ rngl_lt Hop Hor).
+now intros; apply (rngl_add_le_mono_l Hop Hor).
+intros; apply iff_sym, (rngl_nlt_ge_iff Hor).
+intros; apply iff_sym, (rngl_nle_gt_iff Hor).
 Qed.
 
 Theorem rngl_lt_sub_0 :
@@ -237,17 +258,10 @@ Theorem rngl_lt_sub_0 :
   ∀ a b, (a - b < 0 ↔ a < b)%L.
 Proof.
 intros Hop Hor *.
-specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
-specialize (rngl_add_lt_le_mono Hop Hor) as H1.
-split; intros Hab. {
-  specialize (H1 (a - b) 0 b b Hab (rngl_le_refl Hor _))%L.
-  rewrite (rngl_sub_add Hop) in H1.
-  now rewrite rngl_add_0_l in H1.
-} {
-  specialize (H1 a b (- b) (- b) Hab (rngl_le_refl Hor _))%L.
-  do 2 rewrite (rngl_add_opp_r Hop) in H1.
-  now rewrite (rngl_sub_diag Hos) in H1.
-}
+apply (rngl_le_lt_sub_0 _ rngl_le Hop Hor).
+now intros; apply (rngl_add_lt_mono_l Hop Hor).
+intros; apply iff_sym, (rngl_nle_gt_iff Hor).
+intros; apply iff_sym, (rngl_nlt_ge_iff Hor).
 Qed.
 
 Theorem rngl_leb_sub_0 :
@@ -261,26 +275,38 @@ apply rngl_le_iff_leb_eq.
 apply (rngl_le_sub_0 Hop Hor).
 Qed.
 
-Theorem rngl_opp_le_compat :
+Theorem rngl_opp_le_or_lt_compat l1 :
   rngl_has_opp T = true →
   rngl_is_ordered T = true →
-  ∀ a b, (a ≤ b ↔ - b ≤ - a)%L.
+  (∀ a b c : T, l1 b c → l1 (a + b)%L (a + c)%L) →
+  ∀ a b, l1 a b ↔ (l1 (- b) (- a))%L.
 Proof.
-intros * Hop Hor *.
+intros Hop Hor H1 *.
 split; intros Hxy. {
-  apply (rngl_le_0_sub Hop Hor).
+  apply (rngl_le_or_lt_0_sub Hop Hor H1).
   rewrite (rngl_sub_opp_r Hop).
   rewrite rngl_add_comm, (rngl_add_opp_r Hop).
-  now apply (rngl_le_0_sub Hop Hor).
+  now apply (rngl_le_or_lt_0_sub Hop Hor H1).
 } {
-  apply (rngl_le_0_sub Hop Hor).
+  apply (rngl_le_or_lt_0_sub Hop Hor H1).
   progress unfold rngl_sub.
   rewrite Hop.
   rewrite rngl_add_comm.
   rewrite <- (rngl_opp_involutive Hop b).
   rewrite (rngl_add_opp_r Hop).
-  now apply (rngl_le_0_sub Hop Hor).
+  now apply (rngl_le_or_lt_0_sub Hop Hor H1).
 }
+Qed.
+
+Theorem rngl_opp_le_compat :
+  rngl_has_opp T = true →
+  rngl_is_ordered T = true →
+  ∀ a b, (a ≤ b ↔ - b ≤ - a)%L.
+Proof.
+intros Hop Hor *.
+apply (rngl_opp_le_or_lt_compat _ Hop Hor).
+intros * H.
+apply (rngl_add_le_compat Hor); [ apply (rngl_le_refl Hor) | easy ].
 Qed.
 
 Theorem rngl_opp_lt_compat :
@@ -288,29 +314,13 @@ Theorem rngl_opp_lt_compat :
   rngl_is_ordered T = true →
   ∀ a b, (a < b ↔ - b < - a)%L.
 Proof.
-intros * Hop Hor *.
-split; intros Hxy. {
-  apply (rngl_le_neq Hor) in Hxy.
-  apply (rngl_le_neq Hor).
-  split. {
-    apply (rngl_opp_le_compat Hop Hor).
-    now do 2 rewrite (rngl_opp_involutive Hop).
-  } {
-    intros H; symmetry in H.
-    apply (f_equal rngl_opp) in H.
-    now do 2 rewrite (rngl_opp_involutive Hop) in H.
-  }
-} {
-  apply (rngl_le_neq Hor) in Hxy.
-  apply (rngl_le_neq Hor).
-  split. {
-    now apply (rngl_opp_le_compat Hop Hor).
-  } {
-    intros H; symmetry in H.
-    now apply (f_equal rngl_opp) in H.
-  }
-}
+intros Hop Hor *.
+apply (rngl_opp_le_or_lt_compat _ Hop Hor).
+intros * H.
+apply (rngl_add_le_lt_compat Hop Hor); [ apply (rngl_le_refl Hor) | easy ].
 Qed.
+
+(*********)
 
 Theorem rngl_opp_nonneg_nonpos :
   rngl_has_opp T = true →
