@@ -210,7 +210,7 @@ now apply (rngl_add_lt_mono_r Hop Hor).
 now apply (rngl_add_le_mono_l Hop Hor).
 Qed.
 
-Theorem rngl_le_lt_sub_0 l1 l2 :
+Theorem rngl_le_or_lt_sub_0 l1 l2 :
   rngl_has_opp T = true →
   rngl_is_ordered T = true →
   (∀ a b c, l1 b c → l1 (a + b)%L (a + c)%L) →
@@ -246,7 +246,7 @@ Theorem rngl_le_sub_0 :
   ∀ a b, (a - b ≤ 0 ↔ a ≤ b)%L.
 Proof.
 intros Hop Hor *.
-apply (rngl_le_lt_sub_0 _ rngl_lt Hop Hor).
+apply (rngl_le_or_lt_sub_0 _ rngl_lt Hop Hor).
 now intros; apply (rngl_add_le_mono_l Hop Hor).
 intros; apply iff_sym, (rngl_nlt_ge_iff Hor).
 intros; apply iff_sym, (rngl_nle_gt_iff Hor).
@@ -258,7 +258,7 @@ Theorem rngl_lt_sub_0 :
   ∀ a b, (a - b < 0 ↔ a < b)%L.
 Proof.
 intros Hop Hor *.
-apply (rngl_le_lt_sub_0 _ rngl_le Hop Hor).
+apply (rngl_le_or_lt_sub_0 _ rngl_le Hop Hor).
 now intros; apply (rngl_add_lt_mono_l Hop Hor).
 intros; apply iff_sym, (rngl_nle_gt_iff Hor).
 intros; apply iff_sym, (rngl_nlt_ge_iff Hor).
