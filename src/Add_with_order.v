@@ -118,6 +118,22 @@ split; intros Hxy. {
 }
 Qed.
 
+Theorem rngl_le_or_lt_0_opp {l1} :
+  rngl_has_opp T = true →
+  rngl_is_ordered T = true →
+  (∀ a b c : T, l1 b c → l1 (a + b)%L (a + c)%L) →
+  (∀ a, (l1 0 (- a) ↔ l1 a 0)%L).
+Proof.
+intros Hop Hor H1 *.
+split; intros Ha. {
+  apply (rngl_opp_le_or_lt_compat Hop Hor H1).
+  now rewrite (rngl_opp_0 Hop).
+} {
+  apply (rngl_opp_le_or_lt_compat Hop Hor H1) in Ha.
+  now rewrite (rngl_opp_0 Hop) in Ha.
+}
+Qed.
+
 (* *)
 
 Theorem rngl_add_le_compat :
@@ -198,7 +214,8 @@ Theorem rngl_add_lt_mono_r :
 Proof.
 intros Hop Hor *.
 do 2 rewrite (rngl_add_comm _ c).
-now apply (rngl_add_lt_mono_l Hop Hor).
+apply (rngl_add_le_or_lt_mono_l Hop Hor); intros.
+apply (rngl_add_le_lt_compat Hop Hor); [ apply (rngl_le_refl Hor) | easy ].
 Qed.
 
 Theorem rngl_eq_add_0 :
@@ -229,7 +246,10 @@ Proof.
 intros Hop Hor *.
 apply (rngl_le_or_lt_0_sub Hop Hor).
 intros * H.
-now apply (rngl_add_le_mono_l Hop Hor).
+apply (rngl_add_le_or_lt_mono_l Hop Hor); [ intros | easy ].
+specialize rngl_opt_ord as H1.
+rewrite Hor in H1.
+apply H1; [ apply (rngl_le_refl Hor) | easy ].
 Qed.
 
 Theorem rngl_lt_0_sub :
@@ -240,7 +260,8 @@ Proof.
 intros Hop Hor *.
 apply (rngl_le_or_lt_0_sub Hop Hor).
 intros * H.
-now apply (rngl_add_lt_mono_l Hop Hor).
+apply (rngl_add_le_or_lt_mono_l Hop Hor); [ intros | easy ].
+apply (rngl_add_le_lt_compat Hop Hor); [ apply (rngl_le_refl Hor) | easy ].
 Qed.
 
 Theorem rngl_add_lt_le_mono :
@@ -311,22 +332,31 @@ intros * H.
 apply (rngl_add_le_lt_compat Hop Hor); [ apply (rngl_le_refl Hor) | easy ].
 Qed.
 
-(*********)
-
 Theorem rngl_opp_nonneg_nonpos :
   rngl_has_opp T = true →
   rngl_is_ordered T = true →
   ∀ a, (0 ≤ - a)%L ↔ (a ≤ 0)%L.
 Proof.
 intros Hop Hor *.
-split; intros Ha. {
-  apply (rngl_opp_le_compat Hop Hor).
-  now rewrite (rngl_opp_0 Hop).
-} {
-  apply (rngl_opp_le_compat Hop Hor) in Ha.
-  now rewrite (rngl_opp_0 Hop) in Ha.
-}
+apply (rngl_le_or_lt_0_opp Hop Hor).
+intros * H.
+apply (rngl_add_le_compat Hor); [ apply (rngl_le_refl Hor) | easy ].
 Qed.
+
+Theorem rngl_opp_pos_neg :
+  rngl_has_opp T = true →
+  rngl_is_ordered T = true →
+  ∀ a, (0 < - a)%L ↔ (a < 0)%L.
+Proof.
+intros Hop Hor *.
+apply (rngl_le_or_lt_0_opp Hop Hor).
+intros * H.
+apply (rngl_add_le_lt_compat Hop Hor); [ apply (rngl_le_refl Hor) | easy ].
+Qed.
+
+(*********)
+
+...
 
 Theorem rngl_opp_nonpos_nonneg :
   rngl_has_opp T = true →
@@ -354,21 +384,6 @@ split; intros Ha. {
   now apply (rngl_opp_lt_compat Hop Hor) in Ha.
 } {
   now apply (rngl_opp_lt_compat Hop Hor) in Ha.
-}
-Qed.
-
-Theorem rngl_opp_pos_neg :
-  rngl_has_opp T = true →
-  rngl_is_ordered T = true →
-  ∀ a, (0 < - a)%L ↔ (a < 0)%L.
-Proof.
-intros Hop Hor *.
-split; intros Ha. {
-  apply (rngl_opp_lt_compat Hop Hor).
-  now rewrite (rngl_opp_0 Hop).
-} {
-  apply (rngl_opp_lt_compat Hop Hor) in Ha.
-  now rewrite (rngl_opp_0 Hop) in Ha.
 }
 Qed.
 
@@ -1503,3 +1518,6 @@ split. {
   apply iff_sym, (rngl_lt_sub_lt_add_l Hop Hor).
 }
 Qed.
+
+Search (0 < - _)%L.
+  ∀ a, (0 ≤ - a)%L ↔ (a ≤ 0)%L.
