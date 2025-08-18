@@ -166,13 +166,8 @@ Theorem rngl_add_le_mono_l :
   ∀ a b c, (b ≤ c ↔ a + b ≤ a + c)%L.
 Proof.
 intros Hop Hor.
-assert (H1 : ∀ a b c, (b ≤ c → a + b ≤ a + c)%L). {
-  intros.
-  apply (rngl_add_le_compat Hor); [ apply (rngl_le_refl Hor) | easy ].
-}
-split.
-now apply (rngl_add_le_or_lt_mono_l Hop Hor H1).
-now apply (rngl_add_le_or_lt_mono_l Hop Hor H1).
+apply (rngl_add_le_or_lt_mono_l Hop Hor); intros.
+apply (rngl_add_le_compat Hor); [ apply (rngl_le_refl Hor) | easy ].
 Qed.
 
 Theorem rngl_add_lt_mono_l :
@@ -181,14 +176,8 @@ Theorem rngl_add_lt_mono_l :
   ∀ a b c, (b < c ↔ a + b < a + c)%L.
 Proof.
 intros Hop Hor *.
-assert (H1 : ∀ a b c, (b < c → a + b < a + c)%L). {
-  intros.
-  apply (rngl_add_le_lt_compat Hop Hor); [ apply (rngl_le_refl Hor) | easy ].
-}
-intros.
-split.
-now apply (rngl_add_le_or_lt_mono_l Hop Hor H1).
-now apply (rngl_add_le_or_lt_mono_l Hop Hor H1).
+apply (rngl_add_le_or_lt_mono_l Hop Hor); intros.
+apply (rngl_add_le_lt_compat Hop Hor); [ apply (rngl_le_refl Hor) | easy ].
 Qed.
 
 Theorem rngl_add_le_mono_r :
