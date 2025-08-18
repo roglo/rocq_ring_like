@@ -25,6 +25,8 @@ Class rngl_order_compatibility {T} {ro : ring_like_op T}
   (l1 : T → T → Prop) :=
   { roc_add_ord_compat : ∀ a b c, l1 b c → (l1 (a + b) (a + c))%L }.
 
+Arguments roc_add_ord_compat {T ro l1} {rngl_order_compatibility} (a b c)%_L.
+
 Section a.
 
 Context {T : Type}.
@@ -107,7 +109,7 @@ specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
 intros.
 split; [ apply roc_add_ord_compat | ].
 intros Hab.
-apply (roc_add_ord_compat (-a) (a + b) (a + c))%L in Hab.
+apply (roc_add_ord_compat (-a) (a + b) (a + c)) in Hab.
 do 2 rewrite (rngl_add_opp_l Hop) in Hab.
 do 2 rewrite (rngl_add_comm a) in Hab.
 do 2 rewrite (rngl_add_sub Hos) in Hab.
