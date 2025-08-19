@@ -204,3 +204,95 @@ Compute (7 - 3)%nat.
 Compute (15 / 3)%L.
 Compute (15 / 3)%nat.
 *)
+
+(* Semiring by Mohammed Abu Shamia in his PhD
+   "On Some Types Of Ideals In Semirings", Aug 2008,
+   https://iugspace.iugaza.edu.ps/bitstream/handle/20.500.12358/21352/
+     file_1.pdf
+   Example 1.15
+   This "almost" semiring is special because:
+   1/ 1=0, but not a trivial set
+   2/ 0 is not absorbing
+   3/ it is integral
+   4/ its characteristic is 1
+   5/ the natural 0 (which is not the 0) is absorbing for + and x
+ *)
+
+Instance lcm_ring_like_op : ring_like_op nat :=
+  {| rngl_zero := 1;
+     rngl_add := Nat.lcm;
+     rngl_mul := Nat.mul;
+     rngl_opt_one := Some 1;
+     rngl_opt_opp_or_subt := None;
+     rngl_opt_inv_or_quot := None; (* perhaps an eucledian division? *)
+     rngl_opt_is_zero_divisor := None;
+     rngl_opt_eq_dec := Some Nat.eq_dec;
+     rngl_opt_leb := None |}.
+
+Section a.
+
+Context (ro := lcm_ring_like_op).
+(*
+Existing Instance ro.
+*)
+
+Theorem lcm_mul_add_distr_l : ∀ a b c,
+  a * Nat.lcm b c = Nat.lcm (a * b) (a * c).
+Proof.
+intros.
+symmetry.
+apply Nat.lcm_mul_mono_l.
+Qed.
+
+Theorem lcm_opt_integral :
+  ∀ a b : nat,
+  (a * b)%L = 0%L
+  → a = 0%L ∨ b = 0%L ∨ rngl_is_zero_divisor a ∨ rngl_is_zero_divisor b.
+Proof.
+intros * Hab.
+apply Nat.eq_mul_1 in Hab.
+destruct Hab as (Hab, _).
+now left.
+Qed.
+
+Theorem lcm_characteristic_prop :
+  let rol := lcm_ring_like_op in
+  if 1 =? 0 then ∀ i : nat, rngl_mul_nat 1 (S i) ≠ 0%L
+  else (∀ i, 0 < i < 1 → rngl_mul_nat 1 i ≠ 0%L) ∧ rngl_mul_nat 1 1 = 0%L.
+Proof.
+split; [ | easy ].
+intros i (Hzi, Hi1).
+destruct i; [ easy | ].
+now apply Nat.succ_lt_mono in Hi1.
+Qed.
+
+Definition lcm_ring_like_prop :=
+  let rol := lcm_ring_like_op in
+  {| rngl_mul_is_comm := true;
+     rngl_is_archimedean := false;
+     rngl_is_alg_closed := false;
+     rngl_characteristic := 1;
+     rngl_add_comm := Nat.lcm_comm;
+     rngl_add_assoc := Nat.lcm_assoc;
+     rngl_add_0_l := Nat.lcm_1_l;
+     rngl_mul_assoc := Nat.mul_assoc;
+     rngl_opt_mul_1_l := Nat.mul_1_l;
+     rngl_mul_add_distr_l := lcm_mul_add_distr_l;
+     rngl_opt_mul_comm := Nat.mul_comm;
+     rngl_opt_mul_1_r := NA;
+     rngl_opt_mul_add_distr_r := NA;
+     rngl_opt_add_opp_diag_l := NA;
+     rngl_opt_add_sub := NA;
+     rngl_opt_sub_add_distr := NA;
+     rngl_opt_sub_0_l := NA;
+     rngl_opt_mul_inv_diag_l := NA;
+     rngl_opt_mul_inv_diag_r := NA;
+     rngl_opt_mul_div := NA;
+     rngl_opt_mul_quot_r := NA;
+     rngl_opt_integral := lcm_opt_integral;
+     rngl_opt_alg_closed := NA;
+     rngl_opt_characteristic_prop := lcm_characteristic_prop;
+     rngl_opt_ord := NA;
+     rngl_opt_archimedean := NA |}.
+
+End a.
