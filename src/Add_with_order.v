@@ -248,6 +248,30 @@ split; intros Ha. {
 }
 Qed.
 
+Theorem rngl_sub_le_or_lt_mono_l {l1} l2 :
+  rngl_has_opp T = true →
+  rngl_is_ordered T = true →
+  rngl_order_compatibility l1 l2 →
+  ∀ a b c : T, (l1 a b ↔ l1 (c - b) (c - a))%L.
+Proof.
+intros Hop Hor.
+specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
+intros Hroc *.
+split; intros Hab. {
+  progress unfold rngl_sub.
+  rewrite Hop.
+  apply roc_add_ord_compat.
+  now apply -> (rngl_opp_le_or_lt_compat l2 Hop Hor Hroc).
+} {
+  apply (roc_add_ord_compat (-c)) in Hab.
+  do 2 rewrite (rngl_add_opp_l Hop) in Hab.
+  do 2 rewrite (rngl_sub_sub_swap Hop _ _ c) in Hab.
+  rewrite (rngl_sub_diag Hos) in Hab.
+  do 2 rewrite (rngl_sub_0_l Hop) in Hab.
+  now apply (rngl_opp_le_or_lt_compat l2 Hop Hor Hroc).
+}
+Qed.
+
 (* specific theorems: version for ≤, followed with version for < *)
 
 Theorem rngl_add_le_mono_l :
@@ -393,27 +417,14 @@ apply (rngl_le_or_lt_opp_0 rngl_le Hop Hor).
 apply (rngl_lt_le_compatibility Hop Hor).
 Qed.
 
-(*********)
-
 Theorem rngl_sub_le_mono_l :
   rngl_has_opp T = true →
   rngl_is_ordered T = true →
   ∀ a b c : T, (a ≤ b)%L ↔ (c - b ≤ c - a)%L.
 Proof.
 intros Hop Hor *.
-split; intros Hab. {
-  progress unfold rngl_sub.
-  rewrite Hop.
-  apply (rngl_add_le_compat Hor); [ apply (rngl_le_refl Hor) | ].
-  now apply -> (rngl_opp_le_compat Hop Hor).
-} {
-  apply (rngl_opp_le_compat Hop Hor) in Hab.
-  do 2 rewrite (rngl_opp_sub_distr Hop) in Hab.
-  apply (rngl_add_le_compat Hor) with (c := c) (d := c) in Hab. 2: {
-    apply (rngl_le_refl Hor).
-  }
-  now do 2 rewrite (rngl_sub_add Hop) in Hab.
-}
+apply (rngl_sub_le_or_lt_mono_l rngl_lt Hop Hor).
+apply (rngl_le_lt_compatibility Hor).
 Qed.
 
 Theorem rngl_sub_lt_mono_l :
@@ -422,16 +433,11 @@ Theorem rngl_sub_lt_mono_l :
   ∀ a b c : T, (a < b)%L ↔ (c - b < c - a)%L.
 Proof.
 intros Hop Hor *.
-progress unfold rngl_sub.
-rewrite Hop.
-split; intros Hab. {
-  apply (rngl_add_lt_mono_l Hop Hor).
-  now apply -> (rngl_opp_lt_compat Hop Hor).
-} {
-  apply (rngl_add_lt_mono_l Hop Hor) in Hab.
-  now apply (rngl_opp_lt_compat Hop Hor).
-}
+apply (rngl_sub_le_or_lt_mono_l rngl_le Hop Hor).
+apply (rngl_lt_le_compatibility Hop Hor).
 Qed.
+
+(*********)
 
 Theorem rngl_sub_le_mono_r :
   rngl_has_opp T = true →
