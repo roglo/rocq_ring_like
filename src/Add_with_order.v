@@ -396,6 +396,17 @@ split; intros H2. {
 }
 Qed.
 
+Theorem rngl_le_or_lt_sub_add_r {l1 l2} :
+  rngl_order_compatibility l1 l2 →
+  rngl_has_opp T = true →
+  rngl_is_ordered T = true →
+  ∀ a b c, (l1 (a - b) c ↔ l1 a (c + b))%L.
+Proof.
+intros Hroc Hop Hor *.
+rewrite rngl_add_comm.
+apply (rngl_le_or_lt_sub_add_l Hroc Hop Hor).
+Qed.
+
 (** *** specific theorems: version for ≤, followed with version for < *)
 
 Theorem rngl_add_le_mono_l :
@@ -614,6 +625,24 @@ intros Hop Hor *.
 apply (rngl_le_or_lt_sub_add_l (rngl_lt_le_comp Hop Hor) Hop Hor).
 Qed.
 
+Theorem rngl_le_sub_le_add_r :
+  rngl_has_opp T = true →
+  rngl_is_ordered T = true →
+  ∀ a b c, (a - b ≤ c ↔ a ≤ c + b)%L.
+Proof.
+intros Hop Hor *.
+apply (rngl_le_or_lt_sub_add_r (rngl_le_lt_comp Hor) Hop Hor).
+Qed.
+
+Theorem rngl_lt_sub_lt_add_r :
+  rngl_has_opp T = true →
+  rngl_is_ordered T = true →
+  ∀ a b c, (a - b < c ↔ a < c + b)%L.
+Proof.
+intros Hop Hor *.
+apply (rngl_le_or_lt_sub_add_r (rngl_lt_le_comp Hop Hor) Hop Hor).
+Qed.
+
 Theorem rngl_add_le_lt_mono :
   rngl_has_opp T = true →
   rngl_is_ordered T = true →
@@ -633,26 +662,6 @@ now apply (rngl_add_le_or_lt_compat_r (rngl_lt_le_comp Hop Hor) Hop Hor).
 Qed.
 
 (******************)
-
-Theorem rngl_le_sub_le_add_r :
-  rngl_has_opp T = true →
-  rngl_is_ordered T = true →
-  ∀ a b c, (a - b ≤ c ↔ a ≤ c + b)%L.
-Proof.
-intros Hop Hor *.
-rewrite rngl_add_comm.
-apply (rngl_le_sub_le_add_l Hop Hor).
-Qed.
-
-Theorem rngl_lt_sub_lt_add_r :
-  rngl_has_opp T = true →
-  rngl_is_ordered T = true →
-  ∀ a b c, (a - b < c ↔ a < c + b)%L.
-Proof.
-intros Hop Hor *.
-rewrite rngl_add_comm.
-apply (rngl_lt_sub_lt_add_l Hop Hor).
-Qed.
 
 (** *** other theorems *)
 
