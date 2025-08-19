@@ -25,6 +25,8 @@ Class rngl_order_compatibility {T} {ro : ring_like_op T}
   (l1 l2 : T → T → Prop) :=
   { roc_dual_1 : ∀ a b, l1 a b ↔ ¬ l2 b a;
     roc_dual_2 : ∀ a b, l2 a b ↔ ¬ l1 b a;
+    roc_mono_l : ∀ a b c, (a ≤ b)%L → l1 b c → l1 a c;
+    roc_mono_r : ∀ a b c, l1 a b → (b ≤ c)%L → l1 a c;
     roc_add_ord_compat : ∀ a b c, l1 b c → (l1 (a + b) (a + c))%L }.
 
 Arguments roc_add_ord_compat {T ro l1 l2} {rngl_order_compatibility}
@@ -43,7 +45,17 @@ Proof.
 intros Hop.
 specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
 intros * H12.
-split; [ apply roc_dual_2 | apply roc_dual_1 | ].
+split; [ apply roc_dual_2 | apply roc_dual_1 | | | ]. {
+  intros * Hab Hbc.
+  apply roc_dual_2 in Hbc; apply roc_dual_2.
+  intros Hcb; apply Hbc; clear Hbc.
+  now apply (roc_mono_r _ a).
+} {
+  intros * Hab Hbc.
+  apply roc_dual_2 in Hab; apply roc_dual_2.
+  intros Hca; apply Hab; clear Hab.
+  now apply (roc_mono_l _ c).
+}
 intros * Hbc.
 apply roc_dual_2 in Hbc; apply roc_dual_2.
 intros H; apply Hbc; clear Hbc.
@@ -109,6 +121,12 @@ split. {
   apply iff_sym, (rngl_nle_gt_iff Hor).
 } {
   intros.
+  now apply (rngl_le_trans Hor _ b).
+} {
+  intros.
+  now apply (rngl_le_trans Hor _ b).
+} {
+  intros.
   apply (rngl_add_le_compat Hor); [ apply (rngl_le_refl Hor) | easy ].
 }
 Qed.
@@ -129,11 +147,30 @@ split. {
   apply iff_sym, (rngl_nlt_ge_iff Hor).
 } {
   intros.
+  now apply (rngl_le_lt_trans Hor _ b).
+} {
+  intros.
+  now apply (rngl_lt_le_trans Hor _ b).
+} {
+  intros.
   apply (rngl_add_le_lt_compat Hop Hor); [ apply (rngl_le_refl Hor) | easy ].
 }
 Qed.
 
 (* generic theorems: work for pair (≤, <) and for pair (<, ≤) *)
+
+Theorem rngl_add_le_or_lt_compat {l1 l2} :
+  rngl_order_compatibility l1 l2 →
+  rngl_is_ordered T = true →
+  ∀ a b c d, (a ≤ b → l1 c d → l1 (a + c) (b + d))%L.
+Proof.
+intros Hroc Hor * Hab Hbc.
+apply (roc_mono_l _ (b + c))%L. {
+  apply (rngl_add_le_compat Hor); [ easy | apply (rngl_le_refl Hor) ].
+} {
+  now apply roc_add_ord_compat.
+}
+Qed.
 
 Theorem rngl_add_le_or_lt_mono_l {l1 l2} :
   rngl_order_compatibility l1 l2 →
@@ -461,6 +498,42 @@ Qed.
 
 (*********)
 
+(*
+Theorem rngl_le_or_lt_add_le_sub_l {l1 l2} :
+  rngl_order_compatibility l1 l2 →
+  rngl_has_opp T = true →
+  rngl_is_ordered T = true →
+  ∀ a b c, (l1 (a + b) c ↔ l1 b (c - a))%L.
+Proof.
+intros Hroc Hop Hor.
+specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
+intros.
+specialize (rngl_add_le_or_lt_compat Hroc Hor) as H1.
+specialize (H1 (a + b) c (- a))%L.
+rewrite (rngl_add_opp_r Hop) in H1.
+rewrite (rngl_add_comm a) in H1.
+rewrite (rngl_add_sub Hos) in H1.
+rewrite (rngl_add_comm _ a) in H1.
+split; intros Habc. {
+...
+  apply H1 in Habc.
+...
+  specialize (H1 (a + b) c (- a))%L.
+  specialize (H1 (a + b) c (- a) (- a) Habc)%L.
+  specialize (H1 (rngl_le_refl Hor _)).
+  do 2 rewrite (rngl_add_opp_r Hop) in H1.
+  rewrite rngl_add_comm in H1.
+  now rewrite (rngl_add_sub Hos) in H1.
+} {
+  apply (rngl_le_0_sub Hop Hor).
+  rewrite (rngl_sub_add_distr Hos).
+  now apply (rngl_le_0_sub Hop Hor).
+}
+Qed.
+
+...
+*)
+
 Theorem rngl_le_add_le_sub_l :
   rngl_has_opp T = true →
   rngl_is_ordered T = true →
@@ -545,6 +618,19 @@ Qed.
 
 (*********)
 
+Theorem rngl_add_lt_compat :
+  rngl_has_opp T = true →
+  rngl_is_ordered T = true →
+  ∀ a b c d, (a < b → c < d → a + c < b + d)%L.
+Proof.
+intros Hop Hor * Hab Hcd.
+apply (rngl_lt_trans Hor _ (a + d)%L). {
+  now apply (rngl_add_lt_mono_l Hop Hor).
+} {
+  now apply (rngl_add_lt_mono_r Hop Hor).
+}
+Qed.
+
 Theorem rngl_le_add_le_sub_r :
   rngl_has_opp T = true →
   rngl_is_ordered T = true →
@@ -617,19 +703,6 @@ apply (rngl_le_sub_le_add_l Hop Hor).
 rewrite (rngl_add_sub_assoc Hop).
 apply (rngl_le_add_le_sub_l Hop Hor).
 now apply (rngl_add_le_compat Hor).
-Qed.
-
-Theorem rngl_add_lt_compat :
-  rngl_has_opp T = true →
-  rngl_is_ordered T = true →
-  ∀ a b c d, (a < b → c < d → a + c < b + d)%L.
-Proof.
-intros Hop Hor * Hab Hcd.
-apply (rngl_lt_trans Hor _ (a + d)%L). {
-  now apply (rngl_add_lt_mono_l Hop Hor).
-} {
-  now apply (rngl_add_lt_mono_r Hop Hor).
-}
 Qed.
 
 Theorem rngl_add_le_lt_mono :
