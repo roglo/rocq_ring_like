@@ -445,17 +445,9 @@ Theorem rngl_sub_le_mono_r :
   ∀ a b c, (a ≤ b ↔ a - c ≤ b - c)%L.
 Proof.
 intros Hop Hor *.
-split; intros Hab. {
-  rewrite <- (rngl_opp_sub_distr Hop c a).
-  rewrite <- (rngl_opp_sub_distr Hop c b).
-  apply -> (rngl_opp_le_compat Hop Hor).
-  now apply (rngl_sub_le_mono_l Hop Hor).
-} {
-  apply (rngl_add_le_compat Hor _ _ c c) in Hab. 2: {
-    apply (rngl_le_refl Hor).
-  }
-  now do 2 rewrite (rngl_sub_add Hop) in Hab.
-}
+progress unfold rngl_sub.
+rewrite Hop.
+apply (rngl_add_le_mono_r Hop Hor).
 Qed.
 
 Theorem rngl_sub_lt_mono_r :
