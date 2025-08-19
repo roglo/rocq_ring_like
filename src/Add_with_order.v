@@ -77,6 +77,42 @@ rewrite Hor in H.
 apply H.
 Qed.
 
+(* to be completed
+Theorem rngl_ord_add_sub_assoc :
+  rngl_has_opp_or_subt T = true →
+  rngl_is_ordered T = true →
+  ∀ a b c, (c ≤ b → a + (b - c) = a + b - c)%L.
+Proof.
+intros Hos Hor * Hcb.
+remember (rngl_has_opp T) as op eqn:Hop.
+symmetry in Hop.
+destruct op. {
+  progress unfold rngl_sub.
+  rewrite Hop.
+  apply rngl_add_assoc.
+}
+remember (rngl_has_subt T) as su eqn:Hsu.
+symmetry in Hsu.
+destruct su. {
+  specialize (rngl_ord_sub_add Hsu Hor) as H1.
+  specialize (H1 b c Hcb).
+...
+  rewrite <- H1.
+  rewrite (rngl_add_sub Hos).
+...
+  progress unfold rngl_sub.
+  rewrite Hop, Hsu.
+...
+  apply rngl_add_assoc.
+}
+...
+intros Hop *.
+progress unfold rngl_sub.
+rewrite Hop.
+apply rngl_add_assoc.
+Qed.
+*)
+
 Theorem rngl_add_le_lt_compat :
   rngl_has_opp T = true →
   rngl_is_ordered T = true →
@@ -84,6 +120,9 @@ Theorem rngl_add_le_lt_compat :
 Proof.
 intros Hop Hor.
 specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
+(*
+clear Hop.
+*)
 intros * Hab Hcd.
 apply (rngl_le_neq Hor).
 split. {
@@ -98,6 +137,10 @@ rewrite (rngl_add_comm a) in H.
 rewrite (rngl_add_sub Hos) in H.
 rewrite H.
 rewrite (rngl_add_comm b).
+(*
+About rngl_add_sub_assoc.
+...
+*)
 rewrite <- (rngl_add_sub_assoc Hop).
 rewrite <- (rngl_add_0_r d) at 1.
 apply (rngl_add_le_compat Hor); [ apply (rngl_le_refl Hor) | ].
@@ -140,6 +183,10 @@ Theorem rngl_lt_le_comp :
   rngl_order_compatibility rngl_lt rngl_le.
 Proof.
 intros Hop Hor.
+specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
+(*
+clear Hop.
+*)
 split. {
   intros.
   apply iff_sym, (rngl_nle_gt_iff Hor).
@@ -689,6 +736,7 @@ Theorem rngl_lt_add_l :
 Proof.
 intros Hos Hor * Hbz.
 (*
+...
 apply (rngl_le_or_lt_add_l (rngl_lt_le_comp Hop Hor)).
 *)
 apply (rngl_le_neq Hor).

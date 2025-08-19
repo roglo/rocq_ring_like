@@ -275,6 +275,20 @@ specialize rngl_ord_not_le as H.
 apply H.
 Qed.
 
+Theorem rngl_ord_sub_add :
+  rngl_has_subt T = true →
+  rngl_is_ordered T = true →
+  ∀ a b, (b ≤ a → a - b + b = a)%L.
+Proof.
+intros Hos Hor * Hba.
+specialize rngl_opt_ord as rr.
+rewrite Hor in rr.
+move rr after rp.
+specialize rngl_ord_opt_sub_add as H1.
+rewrite Hos in H1.
+now apply H1.
+Qed.
+
 Theorem rngl_lt_le_incl :
   rngl_is_ordered T = true →
   ∀ a b, (a < b → a ≤ b)%L.
