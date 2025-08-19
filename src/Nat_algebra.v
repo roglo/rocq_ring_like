@@ -154,6 +154,13 @@ apply Nat.le_0_r in Hac, Hbd.
 now subst a b.
 Qed.
 
+Theorem Nat_sub_add : ∀ a b : nat, (b ≤ a)%L → (a - b + b)%L = a.
+Proof.
+cbn; intros * Hba.
+apply Nat.leb_le in Hba.
+now apply Nat.sub_add.
+Qed.
+
 Definition nat_ring_like_ord :=
   {| rngl_ord_le_dec := Nat_opt_le_dec;
      rngl_ord_le_refl := Nat.leb_refl;
@@ -162,7 +169,8 @@ Definition nat_ring_like_ord :=
      rngl_ord_add_le_compat := Nat_add_le_compat;
      rngl_ord_mul_le_compat_nonneg := Nat_mul_le_compat_nonneg;
      rngl_ord_mul_le_compat_nonpos := Nat_mul_le_compat_nonpos;
-     rngl_ord_not_le := Nat_not_le |}.
+     rngl_ord_not_le := Nat_not_le;
+     rngl_ord_opt_sub_add := Nat_sub_add |}.
 
 Canonical Structure nat_ring_like_prop : ring_like_prop nat :=
   {| rngl_mul_is_comm := true;

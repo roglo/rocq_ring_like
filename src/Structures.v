@@ -267,7 +267,10 @@ Class ring_like_ord T {ro : ring_like_op T} :=
       ∀ a b c d, (0 ≤ a ≤ c)%L → (0 ≤ b ≤ d)%L → (a * b ≤ c * d)%L;
     rngl_ord_mul_le_compat_nonpos :
       ∀ a b c d, (c ≤ a ≤ 0)%L → (d ≤ b ≤ 0)%L → (a * b ≤ c * d)%L;
-    rngl_ord_not_le : ∀ a b, (¬ a ≤ b → a ≠ b ∧ b ≤ a)%L }.
+    rngl_ord_not_le : ∀ a b, (¬ a ≤ b → a ≠ b ∧ b ≤ a)%L;
+    rngl_ord_opt_sub_add :
+      if rngl_has_subt T then ∀ a b, (b ≤ a → a - b + b = a)%L
+      else not_applicable }.
 
 Class ring_like_prop T {ro : ring_like_op T} :=
   { rngl_mul_is_comm : bool;
