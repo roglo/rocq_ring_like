@@ -77,7 +77,6 @@ rewrite Hor in H.
 apply H.
 Qed.
 
-(* to be completed
 Theorem rngl_ord_add_sub_assoc :
   rngl_has_opp_or_subt T = true →
   rngl_is_ordered T = true →
@@ -96,22 +95,14 @@ symmetry in Hsu.
 destruct su. {
   specialize (rngl_ord_sub_add Hsu Hor) as H1.
   specialize (H1 b c Hcb).
-...
-  rewrite <- H1.
-  rewrite (rngl_add_sub Hos).
-...
-  progress unfold rngl_sub.
-  rewrite Hop, Hsu.
-...
-  apply rngl_add_assoc.
+  rewrite <- H1 at 2.
+  rewrite rngl_add_assoc; symmetry.
+  apply (rngl_add_sub Hos).
 }
-...
-intros Hop *.
-progress unfold rngl_sub.
-rewrite Hop.
-apply rngl_add_assoc.
+apply rngl_has_opp_or_subt_iff in Hos.
+rewrite Hop, Hsu in Hos.
+now destruct Hos.
 Qed.
-*)
 
 Theorem rngl_add_le_lt_compat :
   rngl_has_opp T = true →
