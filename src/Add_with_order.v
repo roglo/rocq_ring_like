@@ -332,7 +332,7 @@ rewrite Hop.
 apply (rngl_add_le_or_lt_mono_r Hroc Hop Hor).
 Qed.
 
-Theorem rngl_le_or_lt_add_le_sub_l {l1 l2} :
+Theorem rngl_le_or_lt_add_sub_l {l1 l2} :
   rngl_order_compatibility l1 l2 →
   rngl_has_opp T = true →
   rngl_is_ordered T = true →
@@ -518,15 +518,13 @@ intros Hop Hor.
 apply (rngl_sub_le_or_lt_mono_r (rngl_lt_le_comp Hop Hor) Hop Hor).
 Qed.
 
-(*********)
-
 Theorem rngl_le_add_le_sub_l :
   rngl_has_opp T = true →
   rngl_is_ordered T = true →
   ∀ a b c, (a + b ≤ c ↔ b ≤ c - a)%L.
 Proof.
 intros Hop Hor.
-apply (rngl_le_or_lt_add_le_sub_l (rngl_le_lt_comp Hor) Hop Hor).
+apply (rngl_le_or_lt_add_sub_l (rngl_le_lt_comp Hor) Hop Hor).
 Qed.
 
 Theorem rngl_lt_add_lt_sub_l :
@@ -535,7 +533,7 @@ Theorem rngl_lt_add_lt_sub_l :
   ∀ a b c, (a + b < c ↔ b < c - a)%L.
 Proof.
 intros Hop Hor.
-apply (rngl_le_or_lt_add_le_sub_l (rngl_lt_le_comp Hop Hor) Hop Hor).
+apply (rngl_le_or_lt_add_sub_l (rngl_lt_le_comp Hop Hor) Hop Hor).
 Qed.
 
 (*********)
