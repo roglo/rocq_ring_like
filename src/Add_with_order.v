@@ -106,7 +106,7 @@ do 2 rewrite (rngl_add_opp_r Hop) in H1.
 now rewrite (rngl_sub_diag Hos) in H1.
 Qed.
 
-(* rngl_order_compatibility works for pair (≤, <) *)
+(** *** rngl_order_compatibility works for pair (≤, <) *)
 
 Theorem rngl_le_lt_comp :
   rngl_is_ordered T = true →
@@ -131,7 +131,7 @@ split. {
 }
 Qed.
 
-(* rngl_order_compatibility works for pair (<, ≤) *)
+(** *** rngl_order_compatibility works for pair (<, ≤) *)
 
 Theorem rngl_lt_le_comp :
   rngl_has_opp T = true →
@@ -157,7 +157,7 @@ split. {
 }
 Qed.
 
-(* generic theorems: work for pair (≤, <) and for pair (<, ≤) *)
+(** *** generic theorems: work for pair (≤, <) and for pair (<, ≤) *)
 
 Theorem rngl_add_le_or_lt_compat_l {l1 l2} :
   rngl_order_compatibility l1 l2 →
@@ -365,7 +365,7 @@ split; intros H2. {
 }
 Qed.
 
-(* specific theorems: version for ≤, followed with version for < *)
+(** *** specific theorems: version for ≤, followed with version for < *)
 
 Theorem rngl_add_le_mono_l :
   rngl_has_opp T = true →
