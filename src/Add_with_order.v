@@ -16,6 +16,7 @@ normal usage is to do:
 which imports the present module and some other ones.
  *)
 
+Set Nested Proofs Allowed.
 From Stdlib Require Import Utf8 Arith.
 Require Import Structures.
 Require Import Order.
@@ -663,6 +664,43 @@ Qed.
 
 (******************)
 
+Theorem rngl_le_or_lt_add_l {l1 l2} :
+  rngl_order_compatibility l1 l2 →
+  ∀ a b, (l1 0 a → l1 b (a + b))%L.
+Proof.
+intros Hroc * Hza.
+rewrite <- (rngl_add_0_l b) at 1.
+do 2 rewrite (rngl_add_comm _ b).
+now apply roc_add_ord_compat.
+Qed.
+
+Theorem rngl_le_add_l :
+  rngl_is_ordered T = true →
+  ∀ a b, (0 ≤ a → b ≤ a + b)%L.
+Proof.
+intros Hor * Hbz.
+now apply (rngl_le_or_lt_add_l (rngl_le_lt_comp Hor)).
+Qed.
+
+Theorem rngl_lt_add_l :
+  rngl_has_opp_or_subt T = true →
+  rngl_is_ordered T = true →
+  ∀ a b : T, (0 < a)%L → (b < a + b)%L.
+Proof.
+intros Hos Hor * Hbz.
+(*
+apply (rngl_le_or_lt_add_l (rngl_lt_le_comp Hop Hor)).
+*)
+apply (rngl_le_neq Hor).
+split; [ now apply (rngl_le_add_l Hor), (rngl_lt_le_incl Hor) | ].
+intros H.
+symmetry in H.
+apply (rngl_add_sub_eq_r Hos) in H.
+rewrite (rngl_sub_diag Hos) in H; subst a.
+revert Hbz.
+apply (rngl_lt_irrefl Hor).
+Qed.
+
 (** *** other theorems *)
 
 Theorem rngl_add_lt_compat :
@@ -721,16 +759,6 @@ apply (rngl_le_add_le_sub_l Hop Hor).
 now apply (rngl_add_le_compat Hor).
 Qed.
 
-Theorem rngl_le_add_l :
-  rngl_is_ordered T = true →
-  ∀ a b, (0 ≤ a → b ≤ a + b)%L.
-Proof.
-intros Hor * Hbz.
-remember (a + b)%L as c.
-rewrite <- (rngl_add_0_l b); subst c.
-apply (rngl_add_le_compat Hor); [ easy | apply (rngl_le_refl Hor) ].
-Qed.
-
 Theorem rngl_le_add_r :
   rngl_is_ordered T = true →
   ∀ a b, (0 ≤ b → a ≤ a + b)%L.
@@ -738,22 +766,6 @@ Proof.
 intros Hor * Hbz.
 rewrite rngl_add_comm.
 now apply (rngl_le_add_l Hor).
-Qed.
-
-Theorem rngl_lt_add_l :
-  rngl_has_opp_or_subt T = true →
-  rngl_is_ordered T = true →
-  ∀ a b : T, (0 < a)%L → (b < a + b)%L.
-Proof.
-intros Hos Hor * Hbz.
-apply (rngl_le_neq Hor).
-split; [ now apply (rngl_le_add_l Hor), (rngl_lt_le_incl Hor) | ].
-intros H.
-symmetry in H.
-apply (rngl_add_sub_eq_r Hos) in H.
-rewrite (rngl_sub_diag Hos) in H; subst a.
-revert Hbz.
-apply (rngl_lt_irrefl Hor).
 Qed.
 
 Theorem rngl_lt_add_r :
