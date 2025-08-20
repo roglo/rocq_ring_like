@@ -26,6 +26,8 @@ Class rngl_order_compatibility {T} {ro : ring_like_op T}
   (l1 l2 : T → T → Prop) :=
   { roc_dual_1 : ∀ a b, l1 a b ↔ ¬ l2 b a;
     roc_dual_2 : ∀ a b, l2 a b ↔ ¬ l1 b a;
+    roc_of_lt : ∀ a b, (a < b)%L → l1 a b;
+    roc_to_le : ∀ a b, l1 a b → (a ≤ b)%L;
     roc_mono_l : ∀ a b c, (a ≤ b)%L → l1 b c → l1 a c;
     roc_mono_r : ∀ a b c, l1 a b → (b ≤ c)%L → l1 a c;
     roc_add_ord_compat : ∀ a b c, l1 b c → (l1 (a + b) (a + c))%L }.
@@ -41,12 +43,26 @@ Context {rp : ring_like_prop T}.
 
 Theorem rngl_order_compatibility_comm :
   rngl_has_opp T = true →
+  rngl_is_ordered T = true →
   ∀ l1 l2, rngl_order_compatibility l1 l2 → rngl_order_compatibility l2 l1.
 Proof.
-intros Hop.
+intros Hop Hor.
 specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
 intros * H12.
-split; [ apply roc_dual_2 | apply roc_dual_1 | | | ]. {
+split; [ apply roc_dual_2 | apply roc_dual_1 | | | | | ]. {
+  intros * Hab.
+  apply roc_dual_2.
+  intros H.
+  apply rngl_nle_gt in Hab.
+  apply Hab; clear Hab.
+  now apply roc_to_le.
+} {
+  intros * Hab.
+  apply roc_dual_2 in Hab.
+  apply (rngl_nlt_ge_iff Hor).
+  intros H; apply Hab; clear Hab.
+  now apply roc_of_lt.
+} {
   intros * Hab Hbc.
   apply roc_dual_2 in Hbc; apply roc_dual_2.
   intros Hcb; apply Hbc; clear Hbc.
@@ -121,6 +137,10 @@ split. {
   intros.
   apply iff_sym, (rngl_nle_gt_iff Hor).
 } {
+  apply (rngl_lt_le_incl Hor).
+} {
+  easy.
+} {
   intros.
   now apply (rngl_le_trans Hor _ b).
 } {
@@ -150,6 +170,10 @@ split. {
 } {
   intros.
   apply iff_sym, (rngl_nlt_ge_iff Hor).
+} {
+  easy.
+} {
+  apply (rngl_lt_le_incl Hor).
 } {
   intros.
   now apply (rngl_le_lt_trans Hor _ b).
@@ -249,7 +273,7 @@ intros.
 split; intros Hab. {
   apply roc_dual_1 in Hab; apply roc_dual_1.
   intros Hba; apply Hab; clear Hab.
-  apply (rngl_order_compatibility_comm Hop) in Hroc.
+  apply (rngl_order_compatibility_comm Hop Hor) in Hroc.
   now apply (rngl_le_or_lt_0_sub Hroc Hop Hor).
 }
 apply (roc_add_ord_compat (-b))%L in Hab.
@@ -420,6 +444,21 @@ intros Hroc * Hza.
 rewrite <- (rngl_add_0_l b) at 1.
 do 2 rewrite (rngl_add_comm _ b).
 now apply roc_add_ord_compat.
+Qed.
+
+Theorem rngl_sub_le_or_lt_compat {l1 l2} :
+  rngl_order_compatibility l1 l2 →
+  rngl_has_opp T = true →
+  rngl_is_ordered T = true →
+  ∀ a b c d, (l1 a b → l1 c d → l1 (a - d) (b - c))%L.
+Proof.
+intros Hroc Hop Hor * Hab Hcd.
+apply (roc_mono_l _ (a - c))%L. {
+  apply roc_to_le.
+  now apply (rngl_sub_le_or_lt_mono_l Hroc Hop Hor).
+} {
+  now apply (rngl_sub_le_or_lt_mono_r Hroc Hop Hor).
+}
 Qed.
 
 (** *** specific theorems: version for ≤, followed with version for < *)
@@ -709,6 +748,24 @@ revert Hbz.
 apply (rngl_lt_irrefl Hor).
 Qed.
 
+Theorem rngl_sub_le_compat :
+  rngl_has_opp T = true →
+  rngl_is_ordered T = true →
+  ∀ a b c d, (a ≤ b → c ≤ d → a - d ≤ b - c)%L.
+Proof.
+intros Hop Hor.
+apply (rngl_sub_le_or_lt_compat (rngl_le_lt_comp Hor) Hop Hor).
+Qed.
+
+Theorem rngl_sub_lt_compat :
+  rngl_has_opp T = true →
+  rngl_is_ordered T = true →
+  ∀ a b c d, (a < b → c < d → a - d < b - c)%L.
+Proof.
+intros Hop Hor.
+apply (rngl_sub_le_or_lt_compat (rngl_lt_le_comp Hop Hor) Hop Hor).
+Qed.
+
 (** *** other theorems *)
 
 Theorem rngl_add_lt_compat :
@@ -754,18 +811,6 @@ split. {
 Qed.
 
 (*********)
-
-Theorem rngl_sub_le_compat :
-  rngl_has_opp T = true →
-  rngl_is_ordered T = true →
-  ∀ a b c d, (a ≤ b → c ≤ d → a - d ≤ b - c)%L.
-Proof.
-intros Hop Hor * Hab Hcd.
-apply (rngl_le_sub_le_add_l Hop Hor).
-rewrite (rngl_add_sub_assoc Hop).
-apply (rngl_le_add_le_sub_l Hop Hor).
-now apply (rngl_add_le_compat Hor).
-Qed.
 
 Theorem rngl_le_add_r :
   rngl_is_ordered T = true →
@@ -1496,8 +1541,8 @@ Class rngl_order_compatibility' {T} {ro : ring_like_op T}
     roc_dual_2' : ∀ a b, l2 a b ↔ ¬ l1 b a;
     roc_mono_l_1 : ∀ a b c, (a ≤ b)%L → l1 b c → l1 a c;
     roc_mono_r_1 : ∀ a b c, l1 a b → (b ≤ c)%L → l1 a c;
-    roc_of_lt : ∀ a b, (a < b)%L → l1 a b;
-    roc_to_le : ∀ a b, l1 a b → (a ≤ b)%L;
+    roc_of_lt' : ∀ a b, (a < b)%L → l1 a b;
+    roc_to_le' : ∀ a b, l1 a b → (a ≤ b)%L;
     roc_opt_add_sub_l_1 :
       if rngl_has_opp T then ∀ a b c, l1 (a + b)%L c ↔ l1 b (c - a)%L
       else not_applicable;
