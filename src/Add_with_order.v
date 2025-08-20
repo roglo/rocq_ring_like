@@ -471,6 +471,17 @@ split; intros Hb. {
 }
 Qed.
 
+Theorem rngl_le_or_lt_opp_l {l1 l2} :
+  rngl_order_compatibility l1 l2 →
+  rngl_has_opp T = true →
+  rngl_is_ordered T = true →
+  ∀ a b, (l1 (- a) b ↔ l1 0 (a + b))%L.
+Proof.
+intros Hroc Hop Hor *.
+rewrite <- (rngl_sub_0_l Hop).
+apply (rngl_le_or_lt_sub_add_l Hroc Hop Hor).
+Qed.
+
 (** *** specific theorems: version for ≤, followed with version for < *)
 
 Theorem rngl_add_le_mono_l :
@@ -811,6 +822,25 @@ specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
 apply (rngl_le_or_lt_sub_l (rngl_lt_le_comp Hos Hor) Hop Hor).
 Qed.
 
+Theorem rngl_le_opp_l :
+  rngl_has_opp T = true →
+  rngl_is_ordered T = true →
+  ∀ a b, (- a ≤ b ↔ 0 ≤ a + b)%L.
+Proof.
+intros Hop Hor.
+apply (rngl_le_or_lt_opp_l (rngl_le_lt_comp Hor) Hop Hor).
+Qed.
+
+Theorem rngl_lt_opp_l :
+  rngl_has_opp T = true →
+  rngl_is_ordered T = true →
+  ∀ a b, (- a < b ↔ 0 < a + b)%L.
+Proof.
+intros Hop Hor.
+specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
+apply (rngl_le_or_lt_opp_l (rngl_lt_le_comp Hos Hor) Hop Hor).
+Qed.
+
 (** *** other theorems *)
 
 Theorem rngl_add_lt_compat :
@@ -857,18 +887,6 @@ Qed.
 
 (*********)
 
-Theorem rngl_le_opp_l :
-  rngl_has_opp T = true →
-  rngl_is_ordered T = true →
-  ∀ a b, (- a ≤ b ↔ 0 ≤ a + b)%L.
-Proof.
-intros Hop Hor *.
-rewrite <- (rngl_sub_0_l Hop).
-split; intros Hab.
-now apply (rngl_le_sub_le_add_l Hop Hor) in Hab.
-now apply (rngl_le_sub_le_add_l Hop Hor) in Hab.
-Qed.
-
 Theorem rngl_le_opp_r :
   rngl_has_opp T = true →
   rngl_is_ordered T = true →
@@ -879,18 +897,6 @@ rewrite <- (rngl_sub_0_l Hop).
 split; intros Hab.
 now apply (rngl_le_add_le_sub_r Hop Hor) in Hab.
 now apply (rngl_le_add_le_sub_r Hop Hor) in Hab.
-Qed.
-
-Theorem rngl_lt_opp_l :
-  rngl_has_opp T = true →
-  rngl_is_ordered T = true →
-  ∀ a b, (- a < b ↔ 0 < a + b)%L.
-Proof.
-intros Hop Hor *.
-rewrite <- (rngl_sub_0_l Hop).
-split; intros Hab.
-now apply (rngl_lt_sub_lt_add_l Hop Hor) in Hab.
-now apply (rngl_lt_sub_lt_add_l Hop Hor) in Hab.
 Qed.
 
 Theorem rngl_lt_opp_r :
