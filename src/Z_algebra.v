@@ -260,8 +260,7 @@ Definition Z_ring_like_ord :=
      rngl_ord_add_le_compat := Z_add_le_compat;
      rngl_ord_mul_le_compat_nonneg := Z_mul_le_compat_nonneg;
      rngl_ord_mul_le_compat_nonpos := Z_mul_le_compat_nonpos;
-     rngl_ord_not_le := Z_not_le;
-     rngl_ord_opt_sub_add := NA |}.
+     rngl_ord_not_le := Z_not_le |}.
 
 Definition Z_ring_like_prop : ring_like_prop Z :=
   {| rngl_mul_is_comm := true;
