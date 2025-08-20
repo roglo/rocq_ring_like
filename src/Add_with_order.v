@@ -104,16 +104,13 @@ rewrite Hop, Hsu in Hos.
 now destruct Hos.
 Qed.
 
+(* to be completed
 Theorem rngl_add_le_lt_compat :
-  rngl_has_opp T = true →
+  rngl_has_opp_or_subt T = true →
   rngl_is_ordered T = true →
   ∀ a b c d, (a ≤ b)%L → (c < d)%L → (a + c < b + d)%L.
 Proof.
-intros Hop Hor.
-specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
-(*
-clear Hop.
-*)
+intros Hos Hor.
 intros * Hab Hcd.
 apply (rngl_le_neq Hor).
 split. {
@@ -128,10 +125,113 @@ rewrite (rngl_add_comm a) in H.
 rewrite (rngl_add_sub Hos) in H.
 rewrite H.
 rewrite (rngl_add_comm b).
-(*
-About rngl_add_sub_assoc.
+remember (rngl_has_opp T) as op eqn:Hop.
+symmetry in Hop.
+destruct op. {
+  rewrite <- (rngl_add_sub_assoc Hop).
+  rewrite <- (rngl_add_0_r d) at 1.
+  apply (rngl_add_le_compat Hor); [ apply (rngl_le_refl Hor) | ].
+  specialize (rngl_add_le_compat Hor) as H1.
+  specialize (H1 a b (- a)%L (- a)%L Hab (rngl_le_refl Hor _)).
+  do 2 rewrite (rngl_add_opp_r Hop) in H1.
+  now rewrite (rngl_sub_diag Hos) in H1.
+}
+remember (rngl_has_subt T) as su eqn:Hsu.
+symmetry in Hsu.
+destruct su. {
+  rewrite <- (rngl_ord_add_sub_assoc Hos Hor); [ | easy ].
+  rewrite <- (rngl_add_0_r d) at 1.
+  apply (rngl_add_le_compat Hor); [ apply (rngl_le_refl Hor) | ].
+  move Hab at bottom.
+  specialize (rngl_ord_sub_add Hsu Hor) as H1.
+  specialize (rngl_ord_add_sub_assoc Hos Hor) as H2.
 ...
+  specialize (H1 b a Hab).
+  rewrite <- H1.
+  rewrite <- H2.
+...
+(*
+  specialize rngl_opt_sub_0_l as H1.
+  rewrite Hsu in H1.
+  rewrite <- (H1 a).
 *)
+Check roc_add_ord_compat.
+Check rngl_add_le_compat.
+...
+  apply (rngl_add_le_compat Hor); [ apply (rngl_le_refl Hor) | easy ].
+...
+Theorem rngl_le_0_sub :
+  rngl_has_opp T = true →
+  rngl_is_ordered T = true →
+  ∀ a b : T, (0 ≤ b - a ↔ a ≤ b)%L.
+Proof.
+intros Hop Hor.
+apply (rngl_le_or_lt_0_sub (rngl_le_lt_comp Hor) Hop Hor).
+Qed.
+...
+Search (_ - _ ≤ _ - _)%L.
+
+  specialize rngl_opt_sub_0_l as H1.
+  rewrite Hsu in H1.
+...
+rewrite (rngl_add_sub Hos) in H.
+rewrite H.
+rewrite (rngl_add_comm b).
+(**)
+remember (rngl_has_opp T) as op eqn:Hop.
+symmetry in Hop.
+destruct op. {
+  specialize (rngl_add_le_compat Hor) as H1.
+  specialize (H1 a b (- a)%L (- a)%L Hab (rngl_le_refl Hor _)).
+  do 2 rewrite (rngl_add_opp_r Hop) in H1.
+  rewrite (rngl_sub_diag Hos) in H1.
+...
+rewrite <- (rngl_ord_add_sub_assoc Hos Hor); [ | easy ].
+rewrite <- (rngl_add_0_r d) at 1.
+apply (rngl_add_le_compat Hor); [ apply (rngl_le_refl Hor) | ].
+specialize rngl_opt_sub_0_l as H1.
+...
+rngl_sub_compat_l: ∀ {T : Type} {ro : ring_like_op T} (a b c : T), a = b → (a - c)%L = (b - c)%L
+rngl_opt_sub_0_l:
+  ∀ {T : Type} {ro : ring_like_op T},
+    ring_like_prop T → if rngl_has_subt T then ∀ a : T, (0 - a)%L = 0%L else not_applicable
+specialize (rngl_add_le_compat Hor) as H1.
+...
+specialize (H1 a b (- a)%L (- a)%L Hab (rngl_le_refl Hor _)).
+do 2 rewrite (rngl_add_opp_r Hop) in H1.
+now rewrite (rngl_sub_diag Hos) in H1.
+...
+rewrite <- (rngl_add_sub_assoc Hop).
+rewrite <- (rngl_add_0_r d) at 1.
+apply (rngl_add_le_compat Hor); [ apply (rngl_le_refl Hor) | ].
+specialize (rngl_add_le_compat Hor) as H1.
+specialize (H1 a b (- a)%L (- a)%L Hab (rngl_le_refl Hor _)).
+do 2 rewrite (rngl_add_opp_r Hop) in H1.
+now rewrite (rngl_sub_diag Hos) in H1.
+Qed.
+*)
+
+Theorem rngl_add_le_lt_compat :
+  rngl_has_opp T = true →
+  rngl_is_ordered T = true →
+  ∀ a b c d, (a ≤ b)%L → (c < d)%L → (a + c < b + d)%L.
+Proof.
+intros Hop Hor.
+specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
+intros * Hab Hcd.
+apply (rngl_le_neq Hor).
+split. {
+  apply (rngl_add_le_compat Hor); [ easy | ].
+  now apply (rngl_lt_le_incl Hor).
+}
+intros H.
+apply rngl_nle_gt in Hcd.
+apply Hcd; clear Hcd.
+apply (f_equal (λ x, rngl_sub x a)) in H.
+rewrite (rngl_add_comm a) in H.
+rewrite (rngl_add_sub Hos) in H.
+rewrite H.
+rewrite (rngl_add_comm b).
 rewrite <- (rngl_add_sub_assoc Hop).
 rewrite <- (rngl_add_0_r d) at 1.
 apply (rngl_add_le_compat Hor); [ apply (rngl_le_refl Hor) | ].
