@@ -446,6 +446,15 @@ do 2 rewrite (rngl_add_comm _ b).
 now apply roc_add_ord_compat.
 Qed.
 
+Theorem rngl_le_or_lt_add_r {l1 l2} :
+  rngl_order_compatibility l1 l2 →
+  ∀ a b, (l1 0 b → l1 a (a + b))%L.
+Proof.
+intros Hroc * Hbz.
+rewrite rngl_add_comm.
+now apply (rngl_le_or_lt_add_l Hroc).
+Qed.
+
 Theorem rngl_sub_le_or_lt_compat {l1 l2} :
   rngl_order_compatibility l1 l2 →
   rngl_has_opp T = true →
@@ -748,6 +757,33 @@ revert Hbz.
 apply (rngl_lt_irrefl Hor).
 Qed.
 
+Theorem rngl_le_add_r :
+  rngl_is_ordered T = true →
+  ∀ a b, (0 ≤ b → a ≤ a + b)%L.
+Proof.
+intros Hor.
+apply (rngl_le_or_lt_add_r (rngl_le_lt_comp Hor)).
+Qed.
+
+Theorem rngl_lt_add_r' :
+  rngl_has_opp T = true →
+  rngl_is_ordered T = true →
+  ∀ a b, (0 < b → a < a + b)%L.
+Proof.
+intros Hop Hor.
+apply (rngl_le_or_lt_add_r (rngl_lt_le_comp Hop Hor)).
+Qed.
+
+Theorem rngl_lt_add_r :
+  rngl_has_opp_or_subt T = true →
+  rngl_is_ordered T = true →
+  ∀ a b, (0 < b → a < a + b)%L.
+Proof.
+intros Hos Hor * Hbz.
+rewrite rngl_add_comm.
+now apply (rngl_lt_add_l Hos Hor).
+Qed.
+
 Theorem rngl_sub_le_compat :
   rngl_has_opp T = true →
   rngl_is_ordered T = true →
@@ -811,25 +847,6 @@ split. {
 Qed.
 
 (*********)
-
-Theorem rngl_le_add_r :
-  rngl_is_ordered T = true →
-  ∀ a b, (0 ≤ b → a ≤ a + b)%L.
-Proof.
-intros Hor * Hbz.
-rewrite rngl_add_comm.
-now apply (rngl_le_add_l Hor).
-Qed.
-
-Theorem rngl_lt_add_r :
-  rngl_has_opp_or_subt T = true →
-  rngl_is_ordered T = true →
-  ∀ a b : T, (0 < b)%L → (a < a + b)%L.
-Proof.
-intros Hos Hor * Hbz.
-rewrite rngl_add_comm.
-now apply (rngl_lt_add_l Hos Hor).
-Qed.
 
 Theorem rngl_le_sub_nonneg :
   rngl_has_opp T = true →
