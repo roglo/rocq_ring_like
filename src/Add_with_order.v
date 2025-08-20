@@ -104,6 +104,48 @@ rewrite Hop, Hsu in Hos.
 now destruct Hos.
 Qed.
 
+(*
+Theorem rngl_ord_sub_add :
+  rngl_has_opp_or_subt T = true →
+  rngl_is_ordered T = true →
+  ∀ a b, (b ≤ a ↔ a - b + b = a)%L.
+Proof.
+intros Hos Hor *.
+remember (rngl_has_opp T) as op eqn:Hop.
+symmetry in Hop.
+destruct op. {
+  split; intros Hba; [ apply (rngl_sub_add Hop) | ].
+  rewrite <- Hba.
+  rewrite rngl_add_comm.
+Check rngl_sub_add.
+Search (_ - _ ≤ _)%L.
+Search (_ ≤ _ + _)%L.
+...
+destruct op; [ apply (rngl_sub_add Hop) | ].
+remember (rngl_has_subt T) as su eqn:Hsu.
+symmetry in Hsu.
+destruct su; [ now apply (rngl_ord_sub_add Hsu Hor) | ].
+apply rngl_has_opp_or_subt_iff in Hos.
+destruct Hos; congruence.
+Qed.
+*)
+
+Theorem rngl_ord_sub_add :
+  rngl_has_opp_or_subt T = true →
+  rngl_is_ordered T = true →
+  ∀ a b, (b ≤ a → a - b + b = a)%L.
+Proof.
+intros Hos Hor * Hba.
+remember (rngl_has_opp T) as op eqn:Hop.
+symmetry in Hop.
+destruct op; [ apply (rngl_sub_add Hop) | ].
+remember (rngl_has_subt T) as su eqn:Hsu.
+symmetry in Hsu.
+destruct su; [ now apply (rngl_ord_sub_add Hsu Hor) | ].
+apply rngl_has_opp_or_subt_iff in Hos.
+destruct Hos; congruence.
+Qed.
+
 (* to be completed
 Theorem rngl_le_0_subt :
   rngl_has_subt T = true →
@@ -117,7 +159,13 @@ assert (Hos : rngl_has_opp_or_subt T = true). {
 }
 specialize (rngl_ord_sub_add Hsu Hor) as H1.
 specialize (rngl_ord_add_sub_assoc Hos Hor) as H2.
+specialize (rngl_add_le_compat Hor) as H3.
 intros.
+split; intros Hab. 2: {
+...
+  specialize (H1 b a Hab) as H.
+  rewrite <- H.
+  rewrite <- H2.
 ...
 
 Theorem rngl_add_le_lt_compat :
