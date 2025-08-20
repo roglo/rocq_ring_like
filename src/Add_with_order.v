@@ -188,11 +188,10 @@ Qed.
 
 Theorem rngl_add_le_or_lt_compat_r {l1 l2} :
   rngl_order_compatibility l1 l2 →
-  rngl_has_opp T = true →
   rngl_is_ordered T = true →
   ∀ a b c d, (l1 a b → c ≤ d → l1 (a + c) (b + d))%L.
 Proof.
-intros Hroc Hop Hor * Hab Hbc.
+intros Hroc Hor * Hab Hbc.
 rewrite (rngl_add_comm a), (rngl_add_comm b).
 now apply (rngl_add_le_or_lt_compat_l Hroc Hor).
 Qed.
@@ -399,7 +398,7 @@ Proof.
 intros Hroc Hop Hor.
 specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
 intros.
-specialize (rngl_add_le_or_lt_compat_r Hroc Hop Hor) as H1.
+specialize (rngl_add_le_or_lt_compat_r Hroc Hor) as H1.
 split; intros H2. {
   apply (H1 _ _ b b)%L in H2; [ | apply (rngl_le_refl Hor) ].
   now rewrite (rngl_sub_add Hop), rngl_add_comm in H2.
@@ -715,13 +714,12 @@ now apply (rngl_add_le_or_lt_compat_l (rngl_lt_le_comp Hos Hor) Hor).
 Qed.
 
 Theorem rngl_add_lt_le_mono :
-  rngl_has_opp T = true →
+  rngl_has_opp_or_subt T = true →
   rngl_is_ordered T = true →
   ∀ a b c d, (a < b)%L → (c ≤ d)%L → (a + c < b + d)%L.
 Proof.
-intros Hop Hor * Hab Hcd.
-specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
-now apply (rngl_add_le_or_lt_compat_r (rngl_lt_le_comp Hos Hor) Hop Hor).
+intros Hos Hor * Hab Hcd.
+now apply (rngl_add_le_or_lt_compat_r (rngl_lt_le_comp Hos Hor) Hor).
 Qed.
 
 Theorem rngl_le_add_l :
