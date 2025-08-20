@@ -105,6 +105,21 @@ now destruct Hos.
 Qed.
 
 (* to be completed
+Theorem rngl_le_0_subt :
+  rngl_has_subt T = true →
+  rngl_is_ordered T = true →
+  ∀ a b, (0 ≤ b - a)%L ↔ (a ≤ b)%L.
+Proof.
+intros Hsu Hor.
+assert (Hos : rngl_has_opp_or_subt T = true). {
+  apply rngl_has_opp_or_subt_iff.
+  now right.
+}
+specialize (rngl_ord_sub_add Hsu Hor) as H1.
+specialize (rngl_ord_add_sub_assoc Hos Hor) as H2.
+intros.
+...
+
 Theorem rngl_add_le_lt_compat :
   rngl_has_opp_or_subt T = true →
   rngl_is_ordered T = true →
@@ -143,6 +158,10 @@ destruct su. {
   rewrite <- (rngl_add_0_r d) at 1.
   apply (rngl_add_le_compat Hor); [ apply (rngl_le_refl Hor) | ].
   move Hab at bottom.
+... ...
+now apply (rngl_le_0_subt Hsu Hor).
+...
+
   specialize (rngl_ord_sub_add Hsu Hor) as H1.
   specialize (rngl_ord_add_sub_assoc Hos Hor) as H2.
 ...
