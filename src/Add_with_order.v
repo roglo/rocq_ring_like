@@ -47,7 +47,6 @@ Theorem rngl_order_compatibility_comm :
   ∀ l1 l2, rngl_order_compatibility l1 l2 → rngl_order_compatibility l2 l1.
 Proof.
 intros Hop Hor.
-specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
 intros * H12.
 split; [ apply roc_dual_2 | apply roc_dual_1 | | | | | ]. {
   intros * Hab.
@@ -73,6 +72,7 @@ split; [ apply roc_dual_2 | apply roc_dual_1 | | | | | ]. {
   intros Hca; apply Hab; clear Hab.
   now apply (roc_mono_l _ c).
 }
+specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
 intros * Hbc.
 apply roc_dual_2 in Hbc; apply roc_dual_2.
 intros H; apply Hbc; clear Hbc.
@@ -454,6 +454,23 @@ apply (roc_mono_l _ (a - c))%L. {
 }
 Qed.
 
+Theorem rngl_le_or_lt_sub_l {l1 l2} :
+  rngl_order_compatibility l1 l2 →
+  rngl_has_opp T = true →
+  rngl_is_ordered T = true →
+  ∀ a b, (l1 0 b ↔ l1 (a - b) a)%L.
+Proof.
+intros Hroc Hop Hor *.
+split; intros Hb. {
+  apply (rngl_le_or_lt_sub_add_r Hroc Hop Hor).
+  now apply (rngl_le_or_lt_add_r Hroc).
+} {
+  apply (rngl_le_or_lt_sub_add_l Hroc Hop Hor) in Hb.
+  apply (rngl_add_le_or_lt_mono_r Hroc Hop Hor _ _ a).
+  now rewrite rngl_add_0_l.
+}
+Qed.
+
 (** *** specific theorems: version for ≤, followed with version for < *)
 
 Theorem rngl_add_le_mono_l :
@@ -775,6 +792,25 @@ specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
 apply (rngl_sub_le_or_lt_compat (rngl_lt_le_comp Hos Hor) Hop Hor).
 Qed.
 
+Theorem rngl_le_sub_l :
+  rngl_has_opp T = true →
+  rngl_is_ordered T = true →
+  ∀ a b, (0 ≤ b ↔ a - b ≤ a)%L.
+Proof.
+intros Hop Hor.
+apply (rngl_le_or_lt_sub_l (rngl_le_lt_comp Hor) Hop Hor).
+Qed.
+
+Theorem rngl_lt_sub_l :
+  rngl_has_opp T = true →
+  rngl_is_ordered T = true →
+  ∀ a b, (0 < b ↔ a - b < a)%L.
+Proof.
+intros Hop Hor.
+specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
+apply (rngl_le_or_lt_sub_l (rngl_lt_le_comp Hos Hor) Hop Hor).
+Qed.
+
 (** *** other theorems *)
 
 Theorem rngl_add_lt_compat :
@@ -820,22 +856,6 @@ split. {
 Qed.
 
 (*********)
-
-Theorem rngl_le_sub_nonneg :
-  rngl_has_opp T = true →
-  rngl_is_ordered T = true →
-  ∀ a b, (0 ≤ b ↔ a - b ≤ a)%L.
-Proof.
-intros Hop Hor *.
-split; intros Hb. {
-  apply (rngl_le_sub_le_add_r Hop Hor).
-  now apply (rngl_le_add_r Hor).
-} {
-  apply (rngl_le_sub_le_add_l Hop Hor) in Hb.
-  apply (rngl_add_le_mono_r Hop Hor _ _ a).
-  now rewrite rngl_add_0_l.
-}
-Qed.
 
 Theorem rngl_le_opp_l :
   rngl_has_opp T = true →
