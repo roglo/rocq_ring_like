@@ -953,26 +953,6 @@ Qed.
 
 (*********)
 
-Theorem rngl_add_nonneg_pos :
-  rngl_is_ordered T = true →
-  ∀ a b, (0 ≤ a)%L → (0 < b)%L → (0 < a + b)%L.
-Proof.
-intros Hor * Hza Hzb.
-rewrite rngl_add_comm.
-now apply (rngl_lt_0_add Hor).
-Qed.
-
-Theorem rngl_add_nonpos_nonpos :
-  rngl_is_ordered T = true →
-  ∀ a b, (a ≤ 0 → b ≤ 0 → a + b ≤ 0)%L.
-Proof.
-intros Hor * Ha Hb.
-apply (rngl_le_trans Hor _ a); [ | easy ].
-rewrite <- rngl_add_0_r.
-apply (rngl_add_le_compat Hor); [ | easy ].
-apply (rngl_le_refl Hor).
-Qed.
-
 Theorem rngl_mul_nat_inj_le :
   rngl_has_opp T = true →
   rngl_is_ordered T = true →
@@ -1055,6 +1035,26 @@ split; intros Hij. {
   apply (rngl_add_lt_mono_l Hop Hor) in Hij.
   now apply IHi.
 }
+Qed.
+
+Theorem rngl_add_nonneg_pos :
+  rngl_is_ordered T = true →
+  ∀ a b, (0 ≤ a)%L → (0 < b)%L → (0 < a + b)%L.
+Proof.
+intros Hor * Hza Hzb.
+rewrite rngl_add_comm.
+now apply (rngl_lt_0_add Hor).
+Qed.
+
+Theorem rngl_add_nonpos_nonpos :
+  rngl_is_ordered T = true →
+  ∀ a b, (a ≤ 0 → b ≤ 0 → a + b ≤ 0)%L.
+Proof.
+intros Hor * Ha Hb.
+apply (rngl_le_trans Hor _ a); [ | easy ].
+rewrite <- rngl_add_0_r.
+apply (rngl_add_le_compat Hor); [ | easy ].
+apply (rngl_le_refl Hor).
 Qed.
 
 Theorem rngl_abs_nonneg :
