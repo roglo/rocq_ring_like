@@ -954,8 +954,6 @@ split. {
 }
 Qed.
 
-(*********)
-
 Theorem rngl_mul_nat_inj_le :
   rngl_has_opp T = true →
   rngl_is_ordered T = true →
@@ -1049,6 +1047,8 @@ rewrite rngl_add_comm.
 now apply (rngl_lt_0_add Hor).
 Qed.
 
+(*********)
+
 Theorem rngl_add_nonpos_nonpos :
   rngl_is_ordered T = true →
   ∀ a b, (a ≤ 0 → b ≤ 0 → a + b ≤ 0)%L.
@@ -1058,6 +1058,28 @@ apply (rngl_le_trans Hor _ a); [ | easy ].
 rewrite <- rngl_add_0_r.
 apply (rngl_add_le_compat Hor); [ | easy ].
 pauto.
+Qed.
+
+Theorem rngl_add_neg_nonpos :
+  rngl_has_opp T = true →
+  rngl_is_ordered T = true →
+  ∀ a b, (a < 0 → b ≤ 0 → a + b < 0)%L.
+Proof.
+intros Hop Hor * Haz Hbz.
+specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
+eapply (rngl_lt_le_trans Hor); [ | apply Hbz ].
+apply (rngl_lt_add_lt_sub_r Hop Hor).
+now rewrite (rngl_sub_diag Hos).
+Qed.
+
+Theorem rngl_add_nonpos_neg :
+  rngl_has_opp T = true →
+  rngl_is_ordered T = true →
+  ∀ a b, (a ≤ 0 → b < 0 → a + b < 0)%L.
+Proof.
+intros Hop Hor * Haz Hbz.
+rewrite rngl_add_comm.
+now apply (rngl_add_neg_nonpos Hop Hor).
 Qed.
 
 Theorem rngl_abs_nonneg :
@@ -1351,28 +1373,6 @@ apply (rngl_le_trans Hor _ 0)%L; [ easy | ].
 apply (rngl_opp_le_compat Hop Hor).
 rewrite (rngl_opp_involutive Hop).
 now rewrite (rngl_opp_0 Hop).
-Qed.
-
-Theorem rngl_add_neg_nonpos :
-  rngl_has_opp T = true →
-  rngl_is_ordered T = true →
-  ∀ a b, (a < 0)%L → (b ≤ 0)%L → (a + b < 0)%L.
-Proof.
-intros Hop Hor * Haz Hbz.
-specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
-eapply (rngl_lt_le_trans Hor); [ | apply Hbz ].
-apply (rngl_lt_add_lt_sub_r Hop Hor).
-now rewrite (rngl_sub_diag Hos).
-Qed.
-
-Theorem rngl_add_nonpos_neg :
-  rngl_has_opp T = true →
-  rngl_is_ordered T = true →
-  ∀ a b, (a ≤ 0)%L → (b < 0)%L → (a + b < 0)%L.
-Proof.
-intros Hop Hor * Haz Hbz.
-rewrite rngl_add_comm.
-now apply (rngl_add_neg_nonpos Hop Hor).
 Qed.
 
 Theorem rngl_leb_opp_l :
