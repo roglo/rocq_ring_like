@@ -1047,8 +1047,6 @@ rewrite rngl_add_comm.
 now apply (rngl_lt_0_add Hor).
 Qed.
 
-(*********)
-
 Theorem rngl_add_nonpos_nonpos :
   rngl_is_ordered T = true →
   ∀ a b, (a ≤ 0 → b ≤ 0 → a + b ≤ 0)%L.
@@ -1160,6 +1158,19 @@ subst a.
 apply (rngl_opp_0 Hop).
 Qed.
 
+Theorem rngl_abs_nonpos_eq :
+  rngl_has_opp T = true →
+  rngl_is_ordered T = true →
+  ∀ a : T, (a ≤ 0)%L → rngl_abs a = (- a)%L.
+Proof.
+intros Hop Hor * Haz.
+rewrite <- (rngl_opp_involutive Hop a) at 1.
+rewrite (rngl_abs_opp Hop Hor).
+apply (rngl_abs_nonneg_eq Hop Hor).
+rewrite <- (rngl_opp_0 Hop).
+now apply -> (rngl_opp_le_compat Hop Hor).
+Qed.
+
 Theorem rngl_abs_le :
   rngl_has_opp T = true →
   rngl_is_ordered T = true →
@@ -1269,19 +1280,6 @@ Proof.
 intros Hop Hor *.
 rewrite <- (rngl_abs_opp Hop Hor).
 now rewrite (rngl_opp_sub_distr Hop).
-Qed.
-
-Theorem rngl_abs_nonpos_eq :
-  rngl_has_opp T = true →
-  rngl_is_ordered T = true →
-  ∀ a : T, (a ≤ 0)%L → rngl_abs a = (- a)%L.
-Proof.
-intros Hop Hor * Haz.
-rewrite <- (rngl_opp_involutive Hop a) at 1.
-rewrite (rngl_abs_opp Hop Hor).
-apply (rngl_abs_nonneg_eq Hop Hor).
-rewrite <- (rngl_opp_0 Hop).
-now apply -> (rngl_opp_le_compat Hop Hor).
 Qed.
 
 Theorem rngl_abs_pos :
