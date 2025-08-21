@@ -199,6 +199,8 @@ apply (rngl_le_add_l Hor).
 apply (rngl_0_le_1 Hon Hos Hor).
 Qed.
 
+(***************)
+
 Theorem rngl_mul_diag_nonneg :
   rngl_has_opp_or_subt T = true →
   rngl_is_ordered T = true →
@@ -230,15 +232,6 @@ Theorem rngl_squ_nonneg :
 Proof.
 intros Hos Hor *.
 apply (rngl_mul_diag_nonneg Hos Hor).
-Qed.
-
-Theorem rngl_0_le_squ :
-  rngl_has_opp_or_subt T = true →
-  rngl_is_ordered T = true →
-  ∀ n, (0 ≤ n * n)%L.
-Proof.
-intros Hos Hor *.
-apply (rngl_squ_nonneg Hos Hor).
 Qed.
 
 Theorem rngl_0_lt_2 :
