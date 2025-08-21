@@ -420,8 +420,6 @@ intros Hos Hor *.
 apply (rngl_le_0_add Hor); apply (rngl_squ_nonneg Hos Hor).
 Qed.
 
-(***************)
-
 Theorem rngl_mul_le_mono_nonneg_l :
   rngl_has_opp T = true →
   rngl_is_ordered T = true →
