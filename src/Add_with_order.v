@@ -22,6 +22,39 @@ Require Import Structures.
 Require Import Order.
 Require Import Add.
 
+(** ** Order Compatibility
+
+This structure, [order_compatibility], captures the key symmetry
+between the two order relations [rngl_le] (≤) and [rngl_lt] (<) in
+a ring-like structure.
+
+## Core Idea
+
+- Duality: If [l1 a b] holds, then [¬ l2 b a].
+
+- Left Monotonicity: If [a ≤ b] and [l2 b c] then [l2 a c].
+
+- Right Monotonicity: If [l2 a b] and [b ≤ c] then [l2 a c].
+
+- Optional (requires additive inverses):
+
+  - [l1 (a + b) c ↔ l1 b (c - a)]
+  - [l2 a (b + c) ↔ l2 (a - b) c]
+
+## Example
+
+For [l1 = rngl_le] (≤) and [l2 = rngl_lt] (<), this recovers:
+
+  - [a + b ≤ c ↔ b ≤ c - a]
+  - [a + b < c ↔ b < c - a]
+
+## Benefit
+
+Capturing this compatibility reduces the need to duplicate
+proofs for ≤ and <, making reasoning in ordered ring-like
+structures more concise and systematic.
+*)
+
 Class rngl_order_compatibility {T} {ro : ring_like_op T}
   (l1 l2 : T → T → Prop) :=
   { roc_dual_1 : ∀ a b, l1 a b ↔ ¬ l2 b a;
@@ -1519,209 +1552,3 @@ Arguments rngl_abs_nonneg_eq {T ro rp} Hop Hor a%_L.
 Arguments rngl_add_le_mono_l {T ro rp} Hop Hor (a b c)%_L.
 Arguments rngl_add_lt_mono_l {T ro rp} Hop Hor (a b c)%_L.
 Arguments rngl_le_add_r {T ro rp} Hor (a b)%_L Hb.
-
-(** ** Order Compatibility (old version to be removed one day)
-
-This structure, [order_compatibility], captures the key symmetry
-between the two order relations [rngl_le] (≤) and [rngl_lt] (<) in
-a ring-like structure.
-
-## Core Idea
-
-- Duality: If [l1 a b] holds, then [¬ l2 b a].
-
-- Left Monotonicity: If [a ≤ b] and [l2 b c] then [l2 a c].
-
-- Right Monotonicity: If [l2 a b] and [b ≤ c] then [l2 a c].
-
-- Optional (requires additive inverses):
-
-  - [l1 (a + b) c ↔ l1 b (c - a)]
-  - [l2 a (b + c) ↔ l2 (a - b) c]
-
-## Example
-
-For [l1 = rngl_le] (≤) and [l2 = rngl_lt] (<), this recovers:
-
-  - [a + b ≤ c ↔ b ≤ c - a]
-  - [a + b < c ↔ b < c - a]
-
-## Benefit
-
-Capturing this compatibility reduces the need to duplicate
-proofs for ≤ and <, making reasoning in ordered ring-like
-structures more concise and systematic.
-*)
-
-(* previous version that should be removed if new version
-   seems to be better *)
-Class rngl_order_compatibility' {T} {ro : ring_like_op T}
-  (l1 l2 : T → T → Prop) :=
-  { roc_dual_1' : ∀ a b, l1 a b ↔ ¬ l2 b a;
-    roc_dual_2' : ∀ a b, l2 a b ↔ ¬ l1 b a;
-    roc_mono_l_1 : ∀ a b c, (a ≤ b)%L → l1 b c → l1 a c;
-    roc_mono_r_1 : ∀ a b c, l1 a b → (b ≤ c)%L → l1 a c;
-    roc_of_lt' : ∀ a b, (a < b)%L → l1 a b;
-    roc_to_le' : ∀ a b, l1 a b → (a ≤ b)%L;
-    roc_opt_add_sub_l_1 :
-      if rngl_has_opp T then ∀ a b c, l1 (a + b)%L c ↔ l1 b (c - a)%L
-      else not_applicable;
-    roc_opt_add_sub_r_1 :
-      if rngl_has_opp T then ∀ a b c, l1 a (b + c)%L ↔ l1 (a - b)%L c
-      else not_applicable }.
-
-Theorem roc_add_sub_l_1 {T} {ro : ring_like_op T} {l1 l2}
-  {Hroc : rngl_order_compatibility' l1 l2} :
-  rngl_has_opp T = true →
-  ∀ a b c, l1 (a + b)%L c ↔ l1 b (c - a)%L.
-Proof.
-intros Hop *.
-specialize (@roc_opt_add_sub_l_1 T ro l1 l2 Hroc) as H1.
-now rewrite Hop in H1.
-Qed.
-
-Theorem roc_add_sub_r_1 {T} {ro : ring_like_op T} {l1 l2}
-  {Hroc : rngl_order_compatibility' l1 l2} :
-  rngl_has_opp T = true →
-  ∀ a b c, l1 a (b + c)%L ↔ l1 (a - b)%L c.
-Proof.
-intros Hop *.
-specialize (@roc_opt_add_sub_r_1 T ro l1 l2 Hroc) as H1.
-now rewrite Hop in H1.
-Qed.
-
-Theorem roc_mono_l_2 {T} {ro : ring_like_op T} {l1 l2}
-  {Hroc : rngl_order_compatibility' l1 l2} :
-  ∀ a b c, (a ≤ b)%L → l2 b c → l2 a c.
-Proof.
-intros * Hab Hbc.
-apply roc_dual_2' in Hbc.
-apply roc_dual_2'.
-intros Hca; apply Hbc; clear Hbc.
-now apply (roc_mono_r_1 _ a).
-Qed.
-
-Theorem roc_mono_r_2 {T} {ro : ring_like_op T} {l1 l2}
-  {Hroc : rngl_order_compatibility' l1 l2} :
-  ∀ a b c, l2 a b → (b ≤ c)%L → l2 a c.
-Proof.
-intros * Hab Hbc.
-apply roc_dual_2' in Hab.
-apply roc_dual_2'.
-intros Hca; apply Hab; clear Hab.
-now apply (roc_mono_l_1 _ c).
-Qed.
-
-Theorem roc_add_sub_l_2 {T} {ro : ring_like_op T} {l1 l2}
-  {Hroc : rngl_order_compatibility' l1 l2} :
-  rngl_has_opp T = true →
-  ∀ a b c, l2 (a + b)%L c ↔ l2 b (c - a)%L.
-Proof.
-intros Hop *.
-split; intros H1. {
-  apply roc_dual_2' in H1.
-  apply roc_dual_2'.
-  intros H2; apply H1; clear H1.
-  now apply (roc_add_sub_r_1 Hop).
-} {
-  apply roc_dual_2' in H1.
-  apply roc_dual_2'.
-  intros H2; apply H1; clear H1.
-  now apply (roc_add_sub_r_1 Hop).
-}
-Qed.
-
-Theorem roc_add_sub_r_2 {T} {ro : ring_like_op T} {l1 l2}
-  {Hroc : rngl_order_compatibility' l1 l2} :
-  rngl_has_opp T = true →
-  ∀ a b c, l2 a (b + c)%L ↔ l2 (a - b)%L c.
-Proof.
-intros Hop *.
-split; intros H1. {
-  apply roc_dual_2' in H1.
-  apply roc_dual_2'.
-  intros H2; apply H1; clear H1.
-  now apply (roc_add_sub_l_1 Hop).
-} {
-  apply roc_dual_2' in H1.
-  apply roc_dual_2'.
-  intros H2; apply H1; clear H1.
-  now apply (roc_add_sub_l_1 Hop).
-}
-Qed.
-
-Theorem rngl_le_lt_compatibility' {T}
-    {ro : ring_like_op T} {rp : ring_like_prop T} :
-  rngl_is_ordered T = true →
-  rngl_order_compatibility' rngl_le rngl_lt.
-Proof.
-intros Hor.
-split. {
-  intros.
-  apply iff_sym, (rngl_nlt_ge_iff Hor).
-} {
-  intros.
-  apply iff_sym, (rngl_nle_gt_iff Hor).
-} {
-  intros.
-  eapply (rngl_le_trans Hor); [ eassumption | easy ].
-} {
-  intros.
-  eapply (rngl_le_trans Hor); [ eassumption | easy ].
-} {
-  apply (rngl_lt_le_incl Hor).
-} {
-  easy.
-} {
-  intros.
-  remember (rngl_has_opp T) as op eqn:Hop.
-  symmetry in Hop.
-  destruct op; [ | easy ].
-  now apply (rngl_le_add_le_sub_l Hop Hor).
-} {
-  intros.
-  remember (rngl_has_opp T) as op eqn:Hop.
-  symmetry in Hop.
-  destruct op; [ | easy ].
-  intros.
-  apply iff_sym, (rngl_le_sub_le_add_l Hop Hor).
-}
-Qed.
-
-Theorem rngl_lt_le_compatibility' {T}
-    {ro : ring_like_op T} {rp : ring_like_prop T} :
-  rngl_is_ordered T = true →
-  rngl_order_compatibility' rngl_lt rngl_le.
-Proof.
-intros Hor.
-split. {
-  intros.
-  apply iff_sym, (rngl_nle_gt_iff Hor).
-} {
-  intros.
-  apply iff_sym, (rngl_nlt_ge_iff Hor).
-} {
-  intros.
-  eapply (rngl_le_lt_trans Hor); [ eassumption | easy ].
-} {
-  intros.
-  eapply (rngl_lt_le_trans Hor); [ eassumption | easy ].
-} {
-  easy.
-} {
-  apply (rngl_lt_le_incl Hor).
-} {
-  intros.
-  remember (rngl_has_opp T) as op eqn:Hop.
-  symmetry in Hop.
-  destruct op; [ | easy ].
-  now apply (rngl_lt_add_lt_sub_l Hop Hor).
-} {
-  intros.
-  remember (rngl_has_opp T) as op eqn:Hop.
-  symmetry in Hop.
-  destruct op; [ | easy ].
-  intros.
-  apply iff_sym, (rngl_lt_sub_lt_add_l Hop Hor).
-}
-Qed.
