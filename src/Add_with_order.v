@@ -976,27 +976,6 @@ Qed.
 Theorem rngl_mul_nat_inj_le :
   rngl_has_opp T = true →
   rngl_is_ordered T = true →
-  ∀ a, ∀ i j, (0 ≤ a)%L → i ≤ j → (rngl_mul_nat a i ≤ rngl_mul_nat a j)%L.
-Proof.
-intros Hop Hor * Haz Hij.
-progress unfold rngl_mul_nat.
-progress unfold mul_nat.
-revert j Hij.
-induction i; intros; cbn. {
-  induction j; [ apply (rngl_le_refl Hor) | cbn ].
-  eapply (rngl_le_trans Hor); [ apply IHj, Nat.le_0_l | ].
-  now apply (rngl_le_add_l Hor).
-}
-destruct j; [ easy | ].
-cbn.
-apply Nat.succ_le_mono in Hij.
-apply (rngl_add_le_mono_l Hop Hor).
-now apply IHi.
-Qed.
-
-Theorem rngl_mul_nat_inj_le_iff :
-  rngl_has_opp T = true →
-  rngl_is_ordered T = true →
   ∀ a, (0 < a)%L → ∀ i j, i ≤ j ↔ (rngl_mul_nat a i ≤ rngl_mul_nat a j)%L.
 Proof.
 intros Hop Hor * Haz *.

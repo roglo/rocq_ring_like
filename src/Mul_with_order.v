@@ -361,7 +361,7 @@ Proof.
 intros Hon Hop Hc1 Hor.
 specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
 intros.
-apply (rngl_mul_nat_inj_le_iff Hop Hor).
+apply (rngl_mul_nat_inj_le Hop Hor).
 apply (rngl_0_lt_1 Hon Hos Hc1 Hor).
 Qed.
 
