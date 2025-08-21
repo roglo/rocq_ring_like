@@ -1352,7 +1352,7 @@ destruct Hlfc as (δ & Hδ & H1).
 exists δ, (1 + rngl_abs u)%L.
 split; [ easy | ].
 split. {
-  apply (rngl_add_pos_nonneg Hor).
+  apply (rngl_lt_0_add Hor).
   apply (rngl_0_lt_1 Hon Hos Hc1 Hor).
   apply (rngl_abs_nonneg Hop Hor).
 }

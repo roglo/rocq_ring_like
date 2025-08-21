@@ -493,6 +493,16 @@ rewrite <- (rngl_sub_0_l Hop).
 apply iff_sym, (rngl_le_or_lt_add_sub_r Hroc Hop Hor).
 Qed.
 
+Theorem rngl_le_or_lt_0_add {l1 l2} :
+  rngl_order_compatibility l1 l2 →
+  rngl_is_ordered T = true →
+  ∀ a b, (l1 0 a → 0 ≤ b → l1 0 (a + b))%L.
+Proof.
+intros Hroc Hor * Ha Hb.
+apply (roc_mono_r _ a); [ easy | ].
+now apply (rngl_le_or_lt_add_r (rngl_le_lt_comp Hor)).
+Qed.
+
 (** *** specific theorems: version for ≤, followed with version for < *)
 
 Theorem rngl_add_le_mono_l :
@@ -871,6 +881,32 @@ specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
 apply (rngl_le_or_lt_opp_r (rngl_lt_le_comp Hos Hor) Hop Hor).
 Qed.
 
+Theorem rngl_le_0_add :
+  rngl_is_ordered T = true →
+  ∀ a b, (0 ≤ a → 0 ≤ b → 0 ≤ a + b)%L.
+Proof.
+intros Hor.
+now apply (rngl_le_or_lt_0_add (rngl_le_lt_comp Hor) Hor).
+Qed.
+
+Theorem rngl_lt_0_add' :
+  rngl_has_opp_or_subt T = true →
+  rngl_is_ordered T = true →
+  ∀ a b, (0 < a)%L → (0 ≤ b)%L → (0 < a + b)%L.
+Proof.
+intros Hos Hor.
+now apply (rngl_le_or_lt_0_add (rngl_lt_le_comp Hos Hor) Hor).
+Qed.
+
+Theorem rngl_lt_0_add :
+  rngl_is_ordered T = true →
+  ∀ a b, (0 < a)%L → (0 ≤ b)%L → (0 < a + b)%L.
+Proof.
+intros Hor * Hza Hzb.
+apply (rngl_lt_le_trans Hor _ a); [ easy | ].
+now apply (rngl_le_add_r Hor).
+Qed.
+
 (** *** other theorems *)
 
 Theorem rngl_add_lt_compat :
@@ -917,31 +953,13 @@ Qed.
 
 (*********)
 
-Theorem rngl_add_nonneg_nonneg :
-  rngl_is_ordered T = true →
-  ∀ a b, (0 ≤ a → 0 ≤ b → 0 ≤ a + b)%L.
-Proof.
-intros Hor * Ha Hb.
-apply (rngl_le_trans Hor _ a); [ easy | ].
-now apply (rngl_le_add_r Hor).
-Qed.
-
-Theorem rngl_add_pos_nonneg :
-  rngl_is_ordered T = true →
-  ∀ a b, (0 < a)%L → (0 ≤ b)%L → (0 < a + b)%L.
-Proof.
-intros Hor * Hza Hzb.
-apply (rngl_lt_le_trans Hor _ a); [ easy | ].
-now apply (rngl_le_add_r Hor).
-Qed.
-
 Theorem rngl_add_nonneg_pos :
   rngl_is_ordered T = true →
   ∀ a b, (0 ≤ a)%L → (0 < b)%L → (0 < a + b)%L.
 Proof.
 intros Hor * Hza Hzb.
 rewrite rngl_add_comm.
-now apply (rngl_add_pos_nonneg Hor).
+now apply (rngl_lt_0_add Hor).
 Qed.
 
 Theorem rngl_add_nonpos_nonpos :

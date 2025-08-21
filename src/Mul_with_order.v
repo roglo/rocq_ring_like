@@ -426,8 +426,7 @@ Theorem rngl_add_squ_nonneg :
   ∀ a b, (0 ≤ a² + b²)%L.
 Proof.
 intros Hos Hor *.
-apply (rngl_add_nonneg_nonneg Hor);
-apply (rngl_squ_nonneg Hos Hor).
+apply (rngl_le_0_add Hor); apply (rngl_squ_nonneg Hos Hor).
 Qed.
 
 Theorem rngl_mul_le_mono_nonneg_l :
