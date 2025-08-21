@@ -126,40 +126,6 @@ rewrite Hor in H.
 apply H.
 Qed.
 
-Theorem rngl_le_trans :
-  rngl_is_ordered T = true →
-   ∀ a b c : T, (a ≤ b)%L → (b ≤ c)%L → (a ≤ c)%L.
-Proof.
-intros Hor *.
-specialize rngl_opt_ord as H.
-rewrite Hor in H.
-apply H.
-Qed.
-
-Theorem rngl_le_iff_leb_eq :
-  ∀ a b c d,
-  (a ≤ b ↔ c ≤ d)%L
-  → ((a ≤? b) = (c ≤? d))%L.
-Proof.
-intros * Habcd.
-remember (a ≤? b)%L as ab eqn:Hab.
-remember (c ≤? d)%L as cd eqn:Hcd.
-symmetry in Hab, Hcd.
-destruct ab. {
-  destruct cd; [ easy | ].
-  apply rngl_leb_le in Hab.
-  apply rngl_leb_nle in Hcd.
-  exfalso; apply Hcd.
-  apply Habcd, Hab.
-} {
-  destruct cd; [ | easy ].
-  apply rngl_leb_nle in Hab.
-  apply rngl_leb_le in Hcd.
-  exfalso; apply Hab.
-  apply Habcd, Hcd.
-}
-Qed.
-
 Theorem rngl_le_neq :
   rngl_is_ordered T = true → ∀ a b, (a < b ↔ a ≤ b ∧ a ≠ b)%L.
 Proof.
@@ -187,6 +153,115 @@ split. {
   remember (rngl_leb b a) as x eqn:Hx; symmetry in Hx.
   destruct x; [ | easy ].
   now specialize (H2 _ _ H3 Hx).
+}
+Qed.
+
+Theorem rngl_lt_le_incl :
+  rngl_is_ordered T = true →
+  ∀ a b, (a < b → a ≤ b)%L.
+Proof.
+intros Hor * Hab.
+now apply (rngl_le_neq Hor) in Hab.
+Qed.
+
+Theorem rngl_lt_asymm :
+  rngl_is_ordered T = true →
+  ∀ a b, (a < b → ¬ b < a)%L.
+Proof.
+intros Hor * Hab Hba.
+apply (rngl_le_neq Hor) in Hab, Hba.
+destruct Hab as (Hab, Hnab).
+destruct Hba as (Hba, _).
+now apply Hnab, (rngl_le_antisymm Hor).
+Qed.
+
+Theorem rngl_nle_gt :
+  ∀ a b, (b < a → ¬ (a ≤ b))%L.
+Proof.
+intros * Hab H1.
+progress unfold rngl_lt in Hab.
+progress unfold rngl_le in H1.
+destruct rngl_opt_leb as [leb| ]; [ congruence | easy ].
+Qed.
+
+(********)
+
+Theorem rngl_le_trans :
+  rngl_is_ordered T = true →
+   ∀ a b c : T, (a ≤ b)%L → (b ≤ c)%L → (a ≤ c)%L.
+Proof.
+intros Hor *.
+specialize rngl_opt_ord as H.
+rewrite Hor in H.
+apply H.
+Qed.
+
+Theorem rngl_lt_trans :
+  rngl_is_ordered T = true →
+   ∀ a b c : T, (a < b)%L → (b < c)%L → (a < c)%L.
+Proof.
+intros Hor * Hab Hbc.
+apply (rngl_le_neq Hor).
+split. {
+  apply (rngl_lt_le_incl Hor) in Hab, Hbc.
+  now apply (rngl_le_trans Hor _ b).
+} {
+  intros H; subst c.
+  now apply (rngl_lt_asymm Hor a b).
+}
+Qed.
+
+Theorem rngl_lt_le_trans :
+  rngl_is_ordered T = true →
+   ∀ a b c : T, (a < b)%L → (b ≤ c)%L → (a < c)%L.
+Proof.
+intros Hor * Hab Hbc.
+apply (rngl_le_neq Hor).
+split. {
+  apply (rngl_le_trans Hor _ b); [ | easy ].
+  now apply (rngl_lt_le_incl Hor).
+} {
+  intros H; subst c.
+  now apply rngl_nle_gt in Hab.
+}
+Qed.
+
+Theorem rngl_le_lt_trans :
+  rngl_is_ordered T = true →
+   ∀ a b c : T, (a ≤ b)%L → (b < c)%L → (a < c)%L.
+Proof.
+intros Hor * Hab Hbc.
+apply (rngl_le_neq Hor).
+split. {
+  apply (rngl_le_trans Hor _ b); [ easy | ].
+  now apply (rngl_lt_le_incl Hor).
+} {
+  intros H; subst c.
+  now apply rngl_nle_gt in Hbc.
+}
+Qed.
+
+Theorem rngl_le_iff_leb_eq :
+  ∀ a b c d,
+  (a ≤ b ↔ c ≤ d)%L
+  → ((a ≤? b) = (c ≤? d))%L.
+Proof.
+intros * Habcd.
+remember (a ≤? b)%L as ab eqn:Hab.
+remember (c ≤? d)%L as cd eqn:Hcd.
+symmetry in Hab, Hcd.
+destruct ab. {
+  destruct cd; [ easy | ].
+  apply rngl_leb_le in Hab.
+  apply rngl_leb_nle in Hcd.
+  exfalso; apply Hcd.
+  apply Habcd, Hab.
+} {
+  destruct cd; [ | easy ].
+  apply rngl_leb_nle in Hab.
+  apply rngl_leb_le in Hcd.
+  exfalso; apply Hab.
+  apply Habcd, Hcd.
 }
 Qed.
 
@@ -252,17 +327,6 @@ unfold rngl_le in H1.
 destruct rngl_opt_leb; congruence.
 Qed.
 
-Theorem rngl_lt_asymm :
-  rngl_is_ordered T = true →
-  ∀ a b, (a < b → ¬ b < a)%L.
-Proof.
-intros Hor * Hab Hba.
-apply (rngl_le_neq Hor) in Hab, Hba.
-destruct Hab as (Hab, Hnab).
-destruct Hba as (Hba, _).
-now apply Hnab, (rngl_le_antisymm Hor).
-Qed.
-
 Theorem rngl_not_le :
   rngl_is_ordered T = true →
   ∀ a b, (¬ a ≤ b → a ≠ b ∧ b ≤ a)%L.
@@ -273,23 +337,6 @@ rewrite Hor in rr.
 move rr after rp.
 specialize rngl_ord_not_le as H.
 apply H.
-Qed.
-
-Theorem rngl_lt_le_incl :
-  rngl_is_ordered T = true →
-  ∀ a b, (a < b → a ≤ b)%L.
-Proof.
-intros Hor * Hab.
-now apply (rngl_le_neq Hor) in Hab.
-Qed.
-
-Theorem rngl_nle_gt :
-  ∀ a b, (b < a → ¬ (a ≤ b))%L.
-Proof.
-intros * Hab H1.
-progress unfold rngl_lt in Hab.
-progress unfold rngl_le in H1.
-destruct rngl_opt_leb as [leb| ]; [ congruence | easy ].
 Qed.
 
 Theorem rngl_nle_gt_iff :
@@ -334,45 +381,6 @@ split; intros Hab. {
   destruct H1 as (H2, H3).
   now apply H3, (rngl_le_antisymm Hor).
 }
-Qed.
-
-Theorem rngl_lt_le_trans :
-  rngl_is_ordered T = true →
-   ∀ a b c : T, (a < b)%L → (b ≤ c)%L → (a < c)%L.
-Proof.
-intros Hor * Hab Hbc.
-apply (rngl_le_neq Hor).
-split. {
-  apply (rngl_le_trans Hor _ b); [ | easy ].
-  now apply (rngl_lt_le_incl Hor).
-} {
-  intros H; subst c.
-  now apply rngl_nle_gt in Hab.
-}
-Qed.
-
-Theorem rngl_le_lt_trans :
-  rngl_is_ordered T = true →
-   ∀ a b c : T, (a ≤ b)%L → (b < c)%L → (a < c)%L.
-Proof.
-intros Hor * Hab Hbc.
-apply (rngl_le_neq Hor).
-split. {
-  apply (rngl_le_trans Hor _ b); [ easy | ].
-  now apply (rngl_lt_le_incl Hor).
-} {
-  intros H; subst c.
-  now apply rngl_nle_gt in Hbc.
-}
-Qed.
-
-Theorem rngl_lt_trans :
-  rngl_is_ordered T = true →
-   ∀ a b c : T, (a < b)%L → (b < c)%L → (a < c)%L.
-Proof.
-intros Hor * Hab Hbc.
-apply (rngl_le_lt_trans Hor _ b); [ | easy ].
-now apply (rngl_lt_le_incl Hor).
 Qed.
 
 Theorem rngl_leb_gt :
