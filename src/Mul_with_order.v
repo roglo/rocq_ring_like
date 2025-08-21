@@ -199,39 +199,17 @@ apply (rngl_le_add_l Hor).
 apply (rngl_0_le_1 Hon Hos Hor).
 Qed.
 
-(***************)
-
-Theorem rngl_mul_diag_nonneg :
+Theorem rngl_0_le_2 :
+  rngl_has_1 T = true →
   rngl_has_opp_or_subt T = true →
   rngl_is_ordered T = true →
-  ∀ a, (0 ≤ a * a)%L.
+  (0 ≤ 2)%L.
 Proof.
-intros Hos Hor *.
-destruct (rngl_le_dec Hor 0%L a) as [Hap| Han]. {
-  now apply (rngl_mul_nonneg_nonneg Hos Hor).
-} {
-  apply (rngl_not_le Hor) in Han.
-  now apply (rngl_mul_nonpos_nonpos Hos Hor).
+intros Hon Hos Hor.
+apply (rngl_le_trans Hor _ 1)%L. {
+  apply (rngl_0_le_1 Hon Hos Hor).
 }
-Qed.
-
-Theorem rngl_squ_abs :
-  rngl_has_opp T = true →
-  ∀ a, rngl_squ (rngl_abs a) = rngl_squ a.
-Proof.
-intros Hop *.
-progress unfold rngl_abs.
-destruct (a ≤? 0)%L; [ | easy ].
-apply (rngl_squ_opp Hop).
-Qed.
-
-Theorem rngl_squ_nonneg :
-  rngl_has_opp_or_subt T = true →
-  rngl_is_ordered T = true →
-  ∀ a, (0 ≤ a²)%L.
-Proof.
-intros Hos Hor *.
-apply (rngl_mul_diag_nonneg Hos Hor).
+apply (rngl_1_le_2 Hon Hos Hor).
 Qed.
 
 Theorem rngl_0_lt_2 :
@@ -247,19 +225,6 @@ apply (rngl_le_lt_trans Hor _ 1)%L. {
 }
 apply (rngl_lt_add_r Hos Hor).
 apply (rngl_0_lt_1 Hon Hos Hc1 Hor).
-Qed.
-
-Theorem rngl_0_le_2 :
-  rngl_has_1 T = true →
-  rngl_has_opp_or_subt T = true →
-  rngl_is_ordered T = true →
-  (0 ≤ 2)%L.
-Proof.
-intros Hon Hos Hor.
-apply (rngl_le_trans Hor _ 1)%L. {
-  apply (rngl_0_le_1 Hon Hos Hor).
-}
-apply (rngl_1_le_2 Hon Hos Hor).
 Qed.
 
 Theorem rngl_2_neq_0 :
@@ -327,6 +292,39 @@ apply (rngl_le_trans Hor _ 0). {
 } {
   apply (rngl_0_le_1 Hon Hos Hor).
 }
+Qed.
+
+Theorem rngl_mul_diag_nonneg :
+  rngl_has_opp_or_subt T = true →
+  rngl_is_ordered T = true →
+  ∀ a, (0 ≤ a * a)%L.
+Proof.
+intros Hos Hor *.
+destruct (rngl_le_dec Hor 0%L a) as [Hap| Han]. {
+  now apply (rngl_mul_nonneg_nonneg Hos Hor).
+} {
+  apply (rngl_not_le Hor) in Han.
+  now apply (rngl_mul_nonpos_nonpos Hos Hor).
+}
+Qed.
+
+Theorem rngl_squ_nonneg :
+  rngl_has_opp_or_subt T = true →
+  rngl_is_ordered T = true →
+  ∀ a, (0 ≤ a²)%L.
+Proof.
+intros Hos Hor *.
+apply (rngl_mul_diag_nonneg Hos Hor).
+Qed.
+
+Theorem rngl_squ_abs :
+  rngl_has_opp T = true →
+  ∀ a, rngl_squ (rngl_abs a) = rngl_squ a.
+Proof.
+intros Hop *.
+progress unfold rngl_abs.
+destruct (a ≤? 0)%L; [ | easy ].
+apply (rngl_squ_opp Hop).
 Qed.
 
 Theorem rngl_of_nat_nonneg :
@@ -421,6 +419,8 @@ Proof.
 intros Hos Hor *.
 apply (rngl_le_0_add Hor); apply (rngl_squ_nonneg Hos Hor).
 Qed.
+
+(***************)
 
 Theorem rngl_mul_le_mono_nonneg_l :
   rngl_has_opp T = true →
