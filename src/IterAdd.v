@@ -784,7 +784,7 @@ induction l as [| a]; intros. {
   apply (rngl_le_refl Hor).
 }
 do 2 rewrite rngl_summation_list_cons.
-apply (rngl_add_le_compat Hor); [ now apply Hgh; left | ].
+apply (rngl_add_le_mono Hos Hor); [ now apply Hgh; left | ].
 apply IHl.
 intros i Hi.
 now apply Hgh; right.

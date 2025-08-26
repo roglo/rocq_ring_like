@@ -99,14 +99,19 @@ apply Nat.leb_le.
 now apply (Nat.le_trans _ b).
 Qed.
 
-Theorem Nat_add_le_compat :
-  ∀ a b c d : nat,
-  (a <=? b) = true → (c <=? d) = true → (a + c <=? b + d) = true.
+Theorem Nat_add_le_mono_l :
+  ∀ a b c, (b <=? c) = true ↔ (a + b <=? a + c) = true.
 Proof.
-intros * Hab Hcd.
-apply Nat.leb_le in Hab, Hcd.
-apply Nat.leb_le.
-now apply Nat.add_le_mono.
+intros.
+split; intros Hab. {
+  apply Nat.leb_le in Hab.
+  apply Nat.leb_le.
+  now apply Nat.add_le_mono_l.
+} {
+  apply Nat.leb_le in Hab.
+  apply Nat.leb_le.
+  now apply Nat.add_le_mono_l in Hab.
+}
 Qed.
 
 Theorem nat_rngl_mul_nat :
@@ -159,7 +164,7 @@ Definition nat_ring_like_ord :=
      rngl_ord_le_refl := Nat.leb_refl;
      rngl_ord_le_antisymm := Nat_le_antisymm;
      rngl_ord_le_trans := Nat_le_trans;
-     rngl_ord_add_le_compat := Nat_add_le_compat;
+     rngl_ord_add_le_mono_l := Nat_add_le_mono_l;
      rngl_ord_mul_le_compat_nonneg := Nat_mul_le_compat_nonneg;
      rngl_ord_mul_le_compat_nonpos := Nat_mul_le_compat_nonpos;
      rngl_ord_not_le := Nat_not_le |}.

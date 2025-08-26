@@ -195,7 +195,7 @@ Theorem rngl_1_le_2 :
   (1 ≤ 2)%L.
 Proof.
 intros Hon Hos Hor.
-apply (rngl_le_add_l Hor).
+apply (rngl_le_add_l Hos Hor).
 apply (rngl_0_le_1 Hon Hos Hor).
 Qed.
 
@@ -338,35 +338,31 @@ intros.
 induction n; [ apply (rngl_le_refl Hor) | ].
 rewrite rngl_of_nat_succ.
 eapply (rngl_le_trans Hor); [ apply IHn | ].
-apply (rngl_le_add_l Hor).
+apply (rngl_le_add_l Hos Hor).
 apply (rngl_0_le_1 Hon Hos Hor).
 Qed.
 
 Theorem rngl_of_nat_inj_le :
   rngl_has_1 T = true →
-  rngl_has_opp T = true →
+  rngl_has_opp_or_subt T = true →
   rngl_characteristic T ≠ 1 →
   rngl_is_ordered T = true →
   ∀ i j, i ≤ j ↔ (rngl_of_nat i ≤ rngl_of_nat j)%L.
 Proof.
-intros Hon Hop Hc1 Hor.
-specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
-intros.
-apply (rngl_mul_nat_inj_le Hop Hor).
+intros Hon Hos Hc1 Hor *.
+apply (rngl_mul_nat_inj_le Hos Hor).
 apply (rngl_0_lt_1 Hon Hos Hc1 Hor).
 Qed.
 
 Theorem rngl_of_nat_inj_lt :
   rngl_has_1 T = true →
-  rngl_has_opp T = true →
+  rngl_has_opp_or_subt T = true →
   rngl_characteristic T ≠ 1 →
   rngl_is_ordered T = true →
   ∀ i j, i < j ↔ (rngl_of_nat i < rngl_of_nat j)%L.
 Proof.
-intros Hon Hop Hc1 Hor.
-specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
-intros.
-apply (rngl_mul_nat_inj_lt Hop Hor).
+intros Hon Hos Hc1 Hor *.
+apply (rngl_mul_nat_inj_lt Hos Hor).
 apply (rngl_0_lt_1 Hon Hos Hc1 Hor).
 Qed.
 
@@ -417,7 +413,7 @@ Theorem rngl_add_squ_nonneg :
   ∀ a b, (0 ≤ a² + b²)%L.
 Proof.
 intros Hos Hor *.
-apply (rngl_le_0_add Hor); apply (rngl_squ_nonneg Hos Hor).
+apply (rngl_le_0_add Hos Hor); apply (rngl_squ_nonneg Hos Hor).
 Qed.
 
 Theorem rngl_mul_le_mono_nonneg_l :

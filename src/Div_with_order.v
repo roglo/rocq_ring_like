@@ -951,7 +951,7 @@ assert (Hio :
   now apply (rngl_has_eq_dec_or_is_ordered_r).
 }
 intros * Hab.
-apply (rngl_eq_add_0 Hor) in Hab; cycle 1. {
+apply (rngl_eq_add_0 Hos Hor) in Hab; cycle 1. {
   apply (rngl_mul_diag_nonneg Hos Hor).
 } {
   apply (rngl_mul_diag_nonneg Hos Hor).

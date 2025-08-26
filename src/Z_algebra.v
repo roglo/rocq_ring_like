@@ -136,14 +136,19 @@ apply Z.leb_le.
 now apply (Z.le_trans _ b).
 Qed.
 
-Theorem Z_add_le_compat :
-  ∀ a b c d : Z,
-  (a <=? b)%Z = true → (c <=? d)%Z = true → (a + c <=? b + d)%Z = true.
+Theorem Z_add_le_mono_l :
+  ∀ a b c, (b <=? c)%Z = true ↔ (a + b <=? a + c)%Z = true.
 Proof.
-intros * Hab Hcd.
-apply Z.leb_le in Hab, Hcd.
-apply Z.leb_le.
-now apply Z.add_le_mono.
+intros.
+split; intros Hbc. {
+  apply Z.leb_le in Hbc.
+  apply Z.leb_le.
+  now apply Z.add_le_mono_l.
+} {
+  apply Z.leb_le in Hbc.
+  apply Z.leb_le.
+  now apply Z.add_le_mono_l in Hbc.
+}
 Qed.
 
 (* code borrowed from my application "coq_real" *)
@@ -257,7 +262,7 @@ Definition Z_ring_like_ord :=
      rngl_ord_le_refl := Z_le_refl;
      rngl_ord_le_antisymm := Z_le_antisymm;
      rngl_ord_le_trans := Z_le_trans;
-     rngl_ord_add_le_compat := Z_add_le_compat;
+     rngl_ord_add_le_mono_l := Z_add_le_mono_l;
      rngl_ord_mul_le_compat_nonneg := Z_mul_le_compat_nonneg;
      rngl_ord_mul_le_compat_nonpos := Z_mul_le_compat_nonpos;
      rngl_ord_not_le := Z_not_le |}.
