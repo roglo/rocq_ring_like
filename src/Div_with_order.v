@@ -469,7 +469,7 @@ Theorem rngl_mul_le_mono_pos_l :
   rngl_has_opp T = true →
   rngl_is_ordered T = true →
   (rngl_is_integral_domain T || rngl_has_inv_and_1_or_quot T)%bool = true →
-  ∀ a b c : T, (0 < c)%L → (a ≤ b)%L ↔ (c * a ≤ c * b)%L.
+  ∀ a b c : T, (0 < a)%L → (b ≤ c)%L ↔ (a * b ≤ a * c)%L.
 Proof.
 intros Hop Hor Hii * Hc.
 specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
@@ -482,7 +482,7 @@ split; intros Hab. {
   apply rngl_nlt_ge in Hab.
   apply (rngl_nlt_ge_iff Hor).
   intros H1; apply Hab; clear Hab.
-  replace 0%L with (c * 0)%L by apply (rngl_mul_0_r Hos).
+  replace 0%L with (a * 0)%L by apply (rngl_mul_0_r Hos).
   apply (rngl_mul_lt_mono_pos_l Hop Hor Hii); [ easy | ].
   apply (rngl_nle_gt_iff Hor).
   intros H2.
@@ -645,7 +645,7 @@ split; intros Hab. {
   rewrite (rngl_mul_1_r Hon) in Hab.
   easy.
 } {
-  apply (rngl_mul_le_mono_pos_l Hop Hor Hii _ _ a); [ easy | ].
+  apply (rngl_mul_le_mono_pos_l Hop Hor Hii a); [ easy | ].
   apply (rngl_mul_le_mono_pos_r Hop Hor Hii _ _ b); [ easy | ].
   rewrite (rngl_mul_inv_diag_r Hon Hiv). 2: {
     now apply (rngl_lt_neq Hor) in Haz.
@@ -673,7 +673,7 @@ intros * Ha Hb.
 progress unfold rngl_div.
 rewrite Hiv.
 apply (rngl_mul_nonneg_nonneg Hos Hor); [ easy | ].
-apply (rngl_mul_le_mono_pos_l Hop Hor) with (c := b); [ | easy | ]. {
+apply (rngl_mul_le_mono_pos_l Hop Hor) with (a := b); [ | easy | ]. {
   apply Bool.orb_true_iff; right.
   now apply rngl_has_inv_and_1_or_quot_iff; left.
 }
