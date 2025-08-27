@@ -487,8 +487,18 @@ split; intros Hbc. {
 } {
   apply (rngl_lt_0_sub Hop Hor) in Hbc.
   rewrite <- (rngl_mul_sub_distr_l Hop) in Hbc.
-  apply (rngl_mul_pos_cancel_l Hop Hor Hii) in Hbc; [ | easy ].
-  now apply (rngl_lt_0_sub Hop Hor).
+  apply rngl_nle_gt in Hbc.
+  apply (rngl_nle_gt_iff Hor).
+  intros H1; apply Hbc; clear Hbc.
+  rewrite <- (rngl_mul_0_r Hos a).
+  apply (rngl_le_0_sub Hop Hor).
+  rewrite <- (rngl_mul_sub_distr_l Hop).
+  rewrite (rngl_sub_0_l Hop).
+  rewrite (rngl_opp_sub_distr Hop).
+  apply (rngl_mul_nonneg_nonneg Hos Hor). {
+    now apply (rngl_lt_le_incl Hor).
+  }
+  now apply (rngl_le_0_sub Hop Hor).
 }
 Qed.
 
