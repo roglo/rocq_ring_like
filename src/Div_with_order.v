@@ -408,6 +408,8 @@ split; intros Hb. {
 }
 Qed.
 
+(*************)
+
 Theorem rngl_mul_lt_mono_pos_r :
   rngl_has_opp T = true →
   rngl_is_ordered T = true →
@@ -427,6 +429,32 @@ split; intros Hbc. {
   rewrite <- (rngl_mul_sub_distr_r Hop) in Hbc.
   apply (rngl_mul_pos_cancel_r Hop Hor Hii) in Hbc; [ | easy ].
   now apply (rngl_lt_0_sub Hop Hor).
+}
+Qed.
+
+Theorem rngl_mul_le_mono_pos_r :
+  rngl_has_opp T = true →
+  rngl_is_ordered T = true →
+  (rngl_is_integral_domain T || rngl_has_inv_and_1_or_quot T)%bool = true →
+  ∀ a b c : T, (0 < c)%L → (a ≤ b)%L ↔ (a * c ≤ b * c)%L.
+Proof.
+intros Hop Hor Hii * Hc.
+specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
+split; intros Hab. {
+  apply (rngl_mul_le_mono_nonneg_r Hop Hor); [ | easy ].
+  now apply (rngl_lt_le_incl Hor).
+} {
+  apply (rngl_le_0_sub Hop Hor) in Hab.
+  rewrite <- (rngl_mul_sub_distr_r Hop) in Hab.
+  apply rngl_nlt_ge in Hab.
+  apply (rngl_nlt_ge_iff Hor).
+  intros H1; apply Hab; clear Hab.
+  replace 0%L with (0 * c)%L by apply (rngl_mul_0_l Hos).
+  apply (rngl_mul_lt_mono_pos_r Hop Hor Hii); [ easy | ].
+  apply (rngl_nle_gt_iff Hor).
+  intros H2.
+  apply -> (rngl_le_0_sub Hop Hor) in H2.
+  now apply rngl_nlt_ge in H2.
 }
 Qed.
 
@@ -499,6 +527,8 @@ split; intros Hb. {
 }
 Qed.
 
+(*************)
+
 Theorem rngl_mul_lt_mono_pos_l :
   rngl_has_opp T = true →
   rngl_is_ordered T = true →
@@ -540,32 +570,6 @@ split; intros Hab. {
   intros H1; apply Hab; clear Hab.
   replace 0%L with (c * 0)%L by apply (rngl_mul_0_r Hos).
   apply (rngl_mul_lt_mono_pos_l Hop Hor Hii); [ easy | ].
-  apply (rngl_nle_gt_iff Hor).
-  intros H2.
-  apply -> (rngl_le_0_sub Hop Hor) in H2.
-  now apply rngl_nlt_ge in H2.
-}
-Qed.
-
-Theorem rngl_mul_le_mono_pos_r :
-  rngl_has_opp T = true →
-  rngl_is_ordered T = true →
-  (rngl_is_integral_domain T || rngl_has_inv_and_1_or_quot T)%bool = true →
-  ∀ a b c : T, (0 < c)%L → (a ≤ b)%L ↔ (a * c ≤ b * c)%L.
-Proof.
-intros Hop Hor Hii * Hc.
-specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
-split; intros Hab. {
-  apply (rngl_mul_le_mono_nonneg_r Hop Hor); [ | easy ].
-  now apply (rngl_lt_le_incl Hor).
-} {
-  apply (rngl_le_0_sub Hop Hor) in Hab.
-  rewrite <- (rngl_mul_sub_distr_r Hop) in Hab.
-  apply rngl_nlt_ge in Hab.
-  apply (rngl_nlt_ge_iff Hor).
-  intros H1; apply Hab; clear Hab.
-  replace 0%L with (0 * c)%L by apply (rngl_mul_0_l Hos).
-  apply (rngl_mul_lt_mono_pos_r Hop Hor Hii); [ easy | ].
   apply (rngl_nle_gt_iff Hor).
   intros H2.
   apply -> (rngl_le_0_sub Hop Hor) in H2.

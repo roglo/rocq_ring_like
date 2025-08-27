@@ -342,6 +342,8 @@ apply (rngl_le_add_l Hos Hor).
 apply (rngl_0_le_1 Hon Hos Hor).
 Qed.
 
+(******)
+
 Theorem rngl_of_nat_inj_le :
   rngl_has_1 T = true →
   rngl_has_opp_or_subt T = true →
