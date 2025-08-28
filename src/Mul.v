@@ -805,10 +805,17 @@ some kinds of expressions in the "ring" world. It can be applied to
 ring-like structures, providing the following code is added:
 <<
   From Stdlib Require Import Ring.
-  Add Ring rngl_ring : rngl_ring_theory.
+  Section a.
+  Context {T : Type}.
+  Context {ro : ring_like_op T}.
+  Context {rp : ring_like_prop T}.
+  Context {Hic : rngl_mul_is_comm T = true}.
+  Context {Hon : rngl_has_1 T = true}.
+  Context {Hop : rngl_has_opp T = true}.
+  Add Ring rngl_ring : (rngl_ring_theory Hic Hop Hon).
 >>
 
-A typical example:
+A typical example (you must stay in this section):
 <<
   Example a2_b2 : ∀ a b, ((a + b) * (a - b) = a * a - b * b)%L.
   Proof.
