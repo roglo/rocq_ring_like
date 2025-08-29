@@ -562,8 +562,25 @@ f_equal.
 apply (rngl_mul_mul_swap Hic).
 Qed.
 
-Theorem rngl_pow_succ_r :
-  ∀ n a, (a ^ S n = a * a ^ n)%L.
+Theorem rngl_pow_1_r :
+  rngl_has_1 T = true →
+  ∀ a, (a ^ 1)%L = a.
+Proof.
+intros Hon *; cbn.
+apply (rngl_mul_1_r Hon).
+Qed.
+
+Theorem rngl_pow_succ_l :
+  rngl_has_1 T = true →
+  ∀ n a, (a ^ S n = a ^ n * a)%L.
+Proof.
+intros Hon *.
+rewrite <- Nat.add_1_r.
+rewrite (rngl_pow_add_r Hon).
+now rewrite (rngl_pow_1_r Hon).
+Qed.
+
+Theorem rngl_pow_succ_r : ∀ n a, (a ^ S n = a * a ^ n)%L.
 Proof. easy. Qed.
 
 Theorem rngl_squ_0 :
@@ -675,14 +692,6 @@ intros Hic Hon *.
 rewrite (rngl_squ_pow_2 Hon).
 rewrite Nat.mul_comm.
 now rewrite (rngl_pow_mul_r Hic Hon).
-Qed.
-
-Theorem rngl_pow_1_r :
-  rngl_has_1 T = true →
-  ∀ a, (a ^ 1)%L = a.
-Proof.
-intros Hon *; cbn.
-apply (rngl_mul_1_r Hon).
 Qed.
 
 (* (-1) ^ n *)

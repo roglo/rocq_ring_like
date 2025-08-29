@@ -30,6 +30,7 @@ usage is to do:
 which imports the present module and some other ones.
  *)
 
+Set Nested Proofs Allowed.
 From Stdlib Require Import Utf8 Arith.
 Require Import Structures.
 Require Import Add.
@@ -198,6 +199,16 @@ apply rngl_has_inv_and_1_or_quot_iff in Hii.
 destruct Hii as [(H1, H2)|]; congruence.
 Qed.
 
+Theorem rngl_mul_div_r :
+  rngl_mul_is_comm T = true →
+  rngl_has_inv_and_1_or_quot T = true →
+  ∀ a b : T, a ≠ 0%L → (a * b / a)%L = b.
+Proof.
+intros Hic Hii a b Hbz.
+rewrite (rngl_mul_comm Hic).
+now apply (rngl_mul_div Hii).
+Qed.
+
 Theorem rngl_div_0_l :
   rngl_has_opp_or_subt T = true →
   rngl_has_inv_and_1_or_quot T = true →
@@ -267,38 +278,19 @@ split. {
 Qed.
 
 Theorem rngl_eq_mul_0_l :
+  rngl_has_1 T = true →
   rngl_has_opp_or_subt T = true →
-  (rngl_is_integral_domain T || rngl_has_inv_and_1_or_quot T)%bool = true →
+  rngl_has_inv_or_quot T = true →
   ∀ a b, (a * b = 0)%L → b ≠ 0%L → a = 0%L.
 Proof.
-intros Hos Hii * Hab Hbz.
-remember (rngl_is_integral_domain T) as id eqn:Hid.
-symmetry in Hid.
-destruct id. {
-  apply rngl_opt_integral in Hab.
-  destruct Hab as [Hab| [Hab| Hab]]; [ easy | easy | ].
-  destruct Hab as [Hab| Hab]. {
-    progress unfold rngl_is_zero_divisor in Hab.
-    progress unfold rngl_is_integral_domain in Hid.
-    now destruct (rngl_opt_is_zero_divisor T).
-  } {
-    progress unfold rngl_is_zero_divisor in Hab.
-    progress unfold rngl_is_integral_domain in Hid.
-    now destruct (rngl_opt_is_zero_divisor T).
-  }
-}
-cbn in Hii.
+intros Hon Hos Hiq.
+specialize (rngl_has_1_has_inv_or_quot_has_inv_and_1_or_quot Hon Hiq) as Hii.
+intros * Hab Hbz.
 remember (rngl_has_inv T) as iv eqn:Hiv; symmetry in Hiv.
 destruct iv. {
-  assert (Hon : rngl_has_1 T = true). {
-    apply rngl_has_inv_and_1_or_quot_iff in Hii.
-    destruct Hii as [Hii| Hii]; [ easy | ].
-    apply rngl_has_quot_has_no_inv in Hii.
-    congruence.
-  }
   apply (f_equal (λ x, (x * b⁻¹)%L)) in Hab.
   rewrite <- rngl_mul_assoc in Hab.
-  rewrite rngl_mul_inv_diag_r in Hab; [ | easy | easy | easy ].
+  rewrite (rngl_mul_inv_diag_r Hon Hiv) in Hab; [ | easy ].
   rewrite (rngl_mul_1_r Hon) in Hab; rewrite Hab.
   apply (rngl_mul_0_l Hos).
 }
@@ -314,52 +306,29 @@ now destruct Hii.
 Qed.
 
 Theorem rngl_eq_mul_0_r :
+  rngl_mul_is_comm T = true →
+  rngl_has_1 T = true →
   rngl_has_opp_or_subt T = true →
-  (rngl_is_integral_domain T || rngl_has_inv_and_1_or_quot T)%bool = true →
+  rngl_has_inv_or_quot T = true →
   ∀ a b, (a * b = 0)%L → a ≠ 0%L → b = 0%L.
 Proof.
-intros Hos Hii * Hab Haz.
-remember (rngl_mul_is_comm T) as ic eqn:Hic; symmetry in Hic.
-destruct ic. {
-  rewrite (rngl_mul_comm Hic) in Hab.
-  now apply (rngl_eq_mul_0_l Hos Hii) in Hab.
-}
-remember (rngl_is_integral_domain T) as id eqn:Hid.
-symmetry in Hid.
-destruct id. {
-  apply rngl_opt_integral in Hab.
-  destruct Hab as [Hab| [Hab| Hab]]; [ easy | easy | ].
-  destruct Hab as [Hab| Hab]. {
-    progress unfold rngl_is_zero_divisor in Hab.
-    progress unfold rngl_is_integral_domain in Hid.
-    now destruct (rngl_opt_is_zero_divisor T).
-  } {
-    progress unfold rngl_is_zero_divisor in Hab.
-    progress unfold rngl_is_integral_domain in Hid.
-    now destruct (rngl_opt_is_zero_divisor T).
-  }
-}
-cbn in Hii.
+intros Hic Hon Hos Hiq.
+specialize (rngl_has_1_has_inv_or_quot_has_inv_and_1_or_quot Hon Hiq) as Hii.
+intros * Hab Haz.
 remember (rngl_has_inv T) as iv eqn:Hiv; symmetry in Hiv.
 destruct iv. {
-  assert (Hon : rngl_has_1 T = true). {
-    apply rngl_has_inv_and_1_or_quot_iff in Hii.
-    destruct Hii as [Hii| Hii]; [ easy | ].
-    apply rngl_has_quot_has_no_inv in Hii.
-    congruence.
-  }
-  apply (f_equal (rngl_mul a⁻¹%L)) in Hab.
-  rewrite rngl_mul_assoc, (rngl_mul_0_r Hos) in Hab.
+  apply (f_equal (λ x, (a⁻¹ * x)%L)) in Hab.
+  rewrite rngl_mul_assoc in Hab.
   rewrite (rngl_mul_inv_diag_l Hon Hiv) in Hab; [ | easy ].
-  now rewrite rngl_mul_1_l in Hab.
+  rewrite (rngl_mul_1_l Hon) in Hab; rewrite Hab.
+  apply (rngl_mul_0_r Hos).
 }
 remember (rngl_has_quot T) as qu eqn:Hqu; symmetry in Hqu.
 destruct qu. {
-  specialize rngl_opt_mul_quot_r as rngl_mul_quot_r.
-  rewrite Hqu, Hic in rngl_mul_quot_r; cbn in rngl_mul_quot_r.
-  specialize (rngl_mul_quot_r b a Haz) as H1.
+  specialize (rngl_mul_div Hii b a Haz) as H1.
+  rewrite (rngl_mul_comm Hic) in H1.
   rewrite Hab in H1.
-  now rewrite (rngl_div_0_l Hos Hii) in H1.
+  now rewrite rngl_div_0_l in H1.
 }
 apply rngl_has_inv_and_1_or_quot_iff in Hii.
 rewrite Hiv, Hqu in Hii.
@@ -602,18 +571,12 @@ Theorem rngl_inv_mul_distr :
   rngl_has_inv T = true →
   ∀ a b, a ≠ 0%L → b ≠ 0%L →((a * b)⁻¹ = b⁻¹ * a⁻¹)%L.
 Proof.
-intros Hon Hom Hiv * Haz Hbz.
+intros Hon Hos Hiv * Haz Hbz.
 specialize (rngl_has_inv_has_inv_or_quot Hiv) as Hiq.
 specialize (rngl_has_inv_and_1_has_inv_and_1_or_quot Hon Hiv) as Hi1.
+Check rngl_div_diag.
 specialize (rngl_div_diag Hon Hiq) as div_diag.
-specialize (rngl_eq_mul_0_l Hom) as integral.
-assert
-  (H :
-    (rngl_is_integral_domain T ||
-     rngl_has_inv_and_1_or_quot T)%bool = true). {
-  now rewrite Hi1; destruct rngl_is_integral_domain.
-}
-specialize (integral H); clear H.
+specialize (rngl_eq_mul_0_l Hon Hos Hiq) as integral.
 unfold rngl_div in div_diag.
 rewrite Hiv in div_diag.
 assert (Habz : (a * b)%L ≠ 0%L). {
@@ -630,12 +593,12 @@ now symmetry; apply div_diag.
 Qed.
 
 Theorem rngl_div_div :
-  rngl_has_opp_or_subt T = true →
   rngl_has_1 T = true →
+  rngl_has_opp_or_subt T = true →
   rngl_has_inv T = true →
   ∀ a b c, (b ≠ 0 → c ≠ 0 → a / b / c = a / (c * b))%L.
 Proof.
-intros Hos Hon Hiv * Hbz Hzc.
+intros Hon Hos Hiv * Hbz Hzc.
 progress unfold rngl_div.
 rewrite Hiv.
 rewrite <- rngl_mul_assoc; f_equal; symmetry.
@@ -726,36 +689,31 @@ Qed.
 Theorem eq_rngl_add_same_0 :
   rngl_has_1 T = true →
   rngl_has_opp_or_subt T = true →
-  (rngl_is_integral_domain T || rngl_has_inv_or_quot T)%bool = true →
+  rngl_has_inv_or_quot T = true →
   rngl_characteristic T = 0 →
   ∀ a,
   (a + a = 0)%L
   → a = 0%L.
 Proof.
-intros Hon Hos Hii Hch * Haa.
-rewrite <- (rngl_mul_2_l Hon) in Haa.
+intros Hon Hos Hiq Hch * Haa.
+rewrite <- (rngl_mul_2_r Hon) in Haa.
+apply (rngl_eq_mul_0_l Hon Hos Hiq) in Haa; [ easy | ].
 specialize (rngl_characteristic_0 Hon Hch 1) as H1.
 cbn in H1.
-rewrite rngl_add_0_r in H1.
-apply (rngl_eq_mul_0_r Hos) in Haa; [ easy | | easy ].
-destruct rngl_is_integral_domain; [ easy | ].
-cbn in Hii |-*.
-apply rngl_has_inv_or_quot_iff in Hii.
-apply rngl_has_inv_and_1_or_quot_iff.
-now destruct Hii; [ left | right ].
+now rewrite rngl_add_0_r in H1.
 Qed.
 
 Theorem rngl_pow_nonzero :
   rngl_has_1 T = true →
   rngl_characteristic T ≠ 1 →
   rngl_has_opp_or_subt T = true →
-  (rngl_is_integral_domain T || rngl_has_inv_and_1_or_quot T)%bool = true →
+  rngl_has_inv_or_quot T = true →
   ∀ a n, (a ≠ 0 → a ^ n ≠ 0)%L.
 Proof.
-intros Hon Hc1 Hos Hii * Haz.
+intros Hon Hc1 Hos Hiq * Haz.
 induction n; [ now apply (rngl_1_neq_0_iff Hon) | cbn ].
 intros H1; apply IHn.
-now apply (rngl_eq_mul_0_l Hos Hii) in H1.
+now apply (rngl_eq_mul_0_l Hon Hos Hiq) in H1.
 Qed.
 
 Theorem rngl_squ_inv :
@@ -811,14 +769,13 @@ apply (rngl_opp_involutive Hop).
 Qed.
 
 Theorem rngl_inv_pow :
-  rngl_mul_is_comm T = true →
   rngl_has_1 T = true →
-  rngl_has_inv T = true →
   rngl_has_opp_or_subt T = true →
+  rngl_has_inv T = true →
   ∀ x n, x ≠ 0%L → ((x ^ n)⁻¹ = x⁻¹ ^ n)%L.
 Proof.
-intros Hic Hon Hiv Hos.
-specialize (rngl_int_dom_or_inv_1_quo Hiv Hon) as Hii.
+intros Hon Hos Hiv.
+specialize (rngl_has_inv_has_inv_or_quot Hiv) as Hiq.
 destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
   specialize (rngl_characteristic_1 Hon Hos Hc1) as H1.
   intros.
@@ -826,12 +783,12 @@ destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
 }
 intros * Hxz.
 induction n; [ apply (rngl_inv_1 Hon Hiv Hc1) | ].
-cbn.
+rewrite rngl_pow_succ_r.
+rewrite (rngl_pow_succ_l Hon).
 rewrite (rngl_inv_mul_distr Hon Hos Hiv); [ | easy | ]. 2: {
-  now apply (rngl_pow_nonzero Hon Hc1 Hos Hii).
+  now apply (rngl_pow_nonzero Hon Hc1 Hos Hiq).
 }
-rewrite IHn.
-apply (rngl_mul_comm Hic).
+now progress f_equal.
 Qed.
 
 End a.
