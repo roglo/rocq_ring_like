@@ -539,16 +539,16 @@ split; intros Hbc. {
 Qed.
 
 Theorem rngl_mul_le_mono_pos_r :
+  rngl_has_1 T = true →
   rngl_has_opp T = true →
+  rngl_has_inv_or_quot T = true →
   rngl_is_ordered T = true →
-  (rngl_is_integral_domain T || rngl_has_inv_and_1_or_quot T)%bool = true →
   ∀ a b c : T, (0 < c)%L → (a ≤ b)%L ↔ (a * c ≤ b * c)%L.
 Proof.
-intros Hop Hor Hii * Hc.
+intros Hon Hop Hiq Hor * Hc.
 specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
 split; intros Hab. {
-...
-  apply (rngl_mul_le_mono_nonneg_r Hop Hor); [ | easy ].
+  apply (rngl_mul_le_mono_nonneg_r Hon Hop Hiq Hor); [ | easy ].
   now apply (rngl_lt_le_incl Hor).
 } {
   apply (rngl_le_0_sub Hop Hor) in Hab.
@@ -557,7 +557,7 @@ split; intros Hab. {
   apply (rngl_nlt_ge_iff Hor).
   intros H1; apply Hab; clear Hab.
   replace 0%L with (0 * c)%L by apply (rngl_mul_0_l Hos).
-  apply (rngl_mul_lt_mono_pos_r Hop Hor Hii); [ easy | ].
+  apply (rngl_mul_lt_mono_pos_r Hon Hop Hiq Hor); [ easy | ].
   apply (rngl_nle_gt_iff Hor).
   intros H2.
   apply -> (rngl_le_0_sub Hop Hor) in H2.
@@ -570,11 +570,11 @@ Theorem rngl_div_lt_mono_pos_r :
   rngl_has_opp T = true →
   rngl_has_inv T = true →
   rngl_is_ordered T = true →
-  (rngl_is_integral_domain T || rngl_has_inv_and_1_or_quot T)%bool = true →
   ∀ a b c : T, (0 < a)%L → (b < c)%L ↔ (b / a < c / a)%L.
 Proof.
-intros Hon Hop Hiv Hor Hii.
+intros Hon Hop Hiv Hor.
 specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
+specialize (rngl_has_inv_has_inv_or_quot Hiv) as Hiq.
 destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
   specialize (rngl_characteristic_1 Hon Hos Hc1) as H1.
   intros * Hza.
@@ -585,10 +585,10 @@ intros * Hza.
 split; intros Hbc. {
   progress unfold rngl_div at 1 2.
   rewrite Hiv.
-  apply (rngl_mul_lt_mono_pos_r Hop Hor Hii); [ | easy ].
+  apply (rngl_mul_lt_mono_pos_r Hon Hop Hiq Hor); [ | easy ].
   now apply (rngl_inv_pos Hon Hop Hiv Hor).
 } {
-  apply (rngl_mul_lt_mono_pos_r Hop Hor Hii a) in Hbc; [ | easy ].
+  apply (rngl_mul_lt_mono_pos_r Hon Hop Hiq Hor a) in Hbc; [ | easy ].
   rewrite (rngl_div_mul Hon Hiv) in Hbc. 2: {
     intros H; subst a.
     now apply (rngl_lt_irrefl Hor) in Hza.
@@ -612,6 +612,7 @@ intros Hop Hiv Hor Hii.
 intros * Haz.
 progress unfold rngl_div.
 rewrite Hiv.
+...
 now apply (rngl_mul_le_mono_pos_l Hop Hor Hii).
 Qed.
 
