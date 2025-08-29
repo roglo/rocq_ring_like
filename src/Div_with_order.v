@@ -481,19 +481,19 @@ split; intros Hbc. {
 Qed.
 
 Theorem rngl_mul_lt_mono_pos_l :
+  rngl_has_1 T = true →
   rngl_has_opp T = true →
+  rngl_has_inv_or_quot T = true →
   rngl_is_ordered T = true →
-  (rngl_is_integral_domain T || rngl_has_inv_and_1_or_quot T)%bool = true →
   ∀ a b c : T, (0 < a)%L → (b < c)%L ↔ (a * b < a * c)%L.
 Proof.
-intros Hop Hor Hii.
+intros Hon Hop Hiq Hor.
 specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
 intros * Ha.
 split; intros Hbc. {
   apply (rngl_lt_0_sub Hop Hor).
   rewrite <- (rngl_mul_sub_distr_l Hop).
-...
-  apply (rngl_mul_pos_pos Hos Hor Hii); [ easy | ].
+  apply (rngl_mul_pos_pos Hon Hop Hiq Hor); [ easy | ].
   now apply (rngl_lt_0_sub Hop Hor).
 } {
   apply (rngl_lt_0_sub Hop Hor) in Hbc.
@@ -506,7 +506,7 @@ split; intros Hbc. {
   rewrite <- (rngl_mul_sub_distr_l Hop).
   rewrite (rngl_sub_0_l Hop).
   rewrite (rngl_opp_sub_distr Hop).
-  apply (rngl_mul_nonneg_nonneg Hos Hor). {
+  apply (rngl_mul_nonneg_nonneg Hon Hop Hiq Hor). {
     now apply (rngl_lt_le_incl Hor).
   }
   now apply (rngl_le_0_sub Hop Hor).
@@ -516,23 +516,24 @@ Qed.
 (*************)
 
 Theorem rngl_mul_lt_mono_pos_r :
+  rngl_has_1 T = true →
   rngl_has_opp T = true →
+  rngl_has_inv_or_quot T = true →
   rngl_is_ordered T = true →
-  (rngl_is_integral_domain T || rngl_has_inv_and_1_or_quot T)%bool = true →
   ∀ a b c : T, (0 < a)%L → (b < c)%L ↔ (b * a < c * a)%L.
 Proof.
-intros Hop Hor Hii.
+intros Hon Hop Hiq Hor.
 specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
 intros * Ha.
 split; intros Hbc. {
   apply (rngl_lt_0_sub Hop Hor).
   rewrite <- (rngl_mul_sub_distr_r Hop).
-  apply (rngl_mul_pos_pos Hos Hor Hii); [ | easy ].
+  apply (rngl_mul_pos_pos Hon Hop Hiq Hor); [ | easy ].
   now apply (rngl_lt_0_sub Hop Hor).
 } {
   apply (rngl_lt_0_sub Hop Hor) in Hbc.
   rewrite <- (rngl_mul_sub_distr_r Hop) in Hbc.
-  apply (rngl_mul_pos_cancel_r Hop Hor Hii) in Hbc; [ | easy ].
+  apply (rngl_mul_pos_cancel_r Hon Hop Hiq Hor) in Hbc; [ | easy ].
   now apply (rngl_lt_0_sub Hop Hor).
 }
 Qed.
@@ -546,6 +547,7 @@ Proof.
 intros Hop Hor Hii * Hc.
 specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
 split; intros Hab. {
+...
   apply (rngl_mul_le_mono_nonneg_r Hop Hor); [ | easy ].
   now apply (rngl_lt_le_incl Hor).
 } {
