@@ -802,18 +802,18 @@ Theorem rngl_lt_div_r :
   rngl_is_ordered T = true →
   ∀ a b c, (0 < c → a * c < b ↔ a < b / c)%L.
 Proof.
-intros Hon Hop Hiv Hor * Hzc.
-specialize (rngl_int_dom_or_inv_1_quo Hiv Hon) as Hii.
+intros Hon Hop Hiv Hor.
+specialize (rngl_has_inv_has_inv_or_quot Hiv) as Hiq.
+intros * Hzc.
 assert (Hcz : c ≠ 0%L). {
   intros H; rewrite H in Hzc.
   now apply (rngl_lt_irrefl Hor) in Hzc.
 }
 split; intros Habq. {
-...
-  apply (rngl_mul_lt_mono_pos_r Hop Hor Hii) with (a := c); [ easy | ].
+  apply (rngl_mul_lt_mono_pos_r Hon Hop Hiq Hor c); [ easy | ].
   now rewrite (rngl_div_mul Hon Hiv).
 } {
-  apply (rngl_mul_lt_mono_pos_r Hop Hor Hii c) in Habq; [ | easy ].
+  apply (rngl_mul_lt_mono_pos_r Hon Hop Hiq Hor c) in Habq; [ | easy ].
   now rewrite (rngl_div_mul Hon Hiv) in Habq.
 }
 Qed.
@@ -876,8 +876,8 @@ Theorem rngl_abs_le_ε :
   → a = 0%L.
 Proof.
 intros Hon Hop Hiv Hor * H1.
-specialize (rngl_int_dom_or_inv_1_quo Hiv Hon) as Hii.
 specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
+specialize (rngl_has_inv_has_inv_or_quot Hiv) as Hiq.
 destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
   apply (rngl_characteristic_1 Hon Hos Hc1).
 }
@@ -886,12 +886,12 @@ destruct (rngl_lt_dec Hor a 0%L) as [H12| H12]. {
   assert (H : (0 < - a / 2)%L). {
     progress unfold rngl_div.
     rewrite Hiv.
-    apply (rngl_mul_pos_pos Hos Hor Hii). {
+    apply (rngl_mul_pos_pos Hon Hop Hiq Hor). {
       rewrite <- (rngl_opp_0 Hop).
       now apply -> (rngl_opp_lt_compat Hop Hor).
     }
     apply (rngl_inv_pos Hon Hop Hiv Hor).
-    apply (rngl_0_lt_2 Hon Hos Hc1 Hor).
+    apply (rngl_0_lt_2 Hon Hos Hiq Hc1 Hor).
   }
   specialize (H1 H); clear H.
   exfalso.
@@ -900,14 +900,14 @@ destruct (rngl_lt_dec Hor a 0%L) as [H12| H12]. {
     now apply (rngl_lt_le_incl Hor).
   }
   apply (rngl_lt_div_l Hon Hop Hiv Hor). {
-    apply (rngl_0_lt_2 Hon Hos Hc1 Hor).
+    apply (rngl_0_lt_2 Hon Hos Hiq Hc1 Hor).
   }
   remember (_ * _)%L as x.
   rewrite <- (rngl_mul_1_r Hon (- a))%L.
   subst x.
-  apply (rngl_mul_lt_mono_pos_l Hop Hor Hii). 2: {
+  apply (rngl_mul_lt_mono_pos_l Hon Hop Hiq Hor). 2: {
     apply (rngl_lt_add_r Hos Hor).
-    apply (rngl_0_lt_1 Hon Hos Hc1 Hor).
+    apply (rngl_0_lt_1 Hon Hos Hiq Hc1 Hor).
   }
   rewrite <- (rngl_opp_0 Hop).
   now apply -> (rngl_opp_lt_compat Hop Hor).
@@ -917,9 +917,9 @@ destruct (rngl_lt_dec Hor 0%L a) as [H21| H21]. {
   assert (H : (0 < a / 2)%L). {
     progress unfold rngl_div.
     rewrite Hiv.
-    apply (rngl_mul_pos_pos Hos Hor Hii); [ easy | ].
+    apply (rngl_mul_pos_pos Hon Hop Hiq Hor); [ easy | ].
     apply (rngl_inv_pos Hon Hop Hiv Hor).
-    apply (rngl_0_lt_2 Hon Hos Hc1 Hor).
+    apply (rngl_0_lt_2 Hon Hos Hiq Hc1 Hor).
   }
   specialize (H1 H); clear H.
   exfalso.
@@ -928,7 +928,7 @@ destruct (rngl_lt_dec Hor 0%L a) as [H21| H21]. {
     now apply (rngl_lt_le_incl Hor).
   }
   apply (rngl_lt_div_l Hon Hop Hiv Hor). {
-    apply (rngl_0_lt_2 Hon Hos Hc1 Hor).
+    apply (rngl_0_lt_2 Hon Hos Hiq Hc1 Hor).
   }
   rewrite rngl_mul_add_distr_l.
   rewrite (rngl_mul_1_r Hon).
@@ -939,30 +939,27 @@ now apply (rngl_le_antisymm Hor).
 Qed.
 
 Theorem rngl_mul_pos_neg :
+  rngl_has_1 T = true →
   rngl_has_opp T = true →
+  rngl_has_inv_or_quot T = true →
   rngl_is_ordered T = true →
-  (rngl_is_integral_domain T ||
-     rngl_has_inv_and_1_or_quot T &&
-     rngl_has_eq_dec_or_order T)%bool = true →
   ∀ a b, (0 < a → b < 0 → a * b < 0)%L.
 Proof.
-intros Hop Hor Hid * Hza Hbz.
+intros Hon Hop Hiq Hor.
 specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
+intros * Hza Hbz.
 apply (rngl_le_neq Hor).
 split. {
-  apply (rngl_mul_nonneg_nonpos Hop Hor). {
-    now apply (rngl_lt_le_incl Hor).
-  } {
-    now apply (rngl_lt_le_incl Hor).
-  }
+  apply (rngl_mul_nonneg_nonpos Hon Hop Hiq Hor).
+  now apply (rngl_lt_le_incl Hor).
+  now apply (rngl_lt_le_incl Hor).
 }
 intros H.
-apply (rngl_integral Hos Hid) in H.
-destruct H as [H| H]. {
+apply (rngl_eq_mul_0_l Hon Hos Hiq) in H. {
   subst a.
   now apply (rngl_lt_irrefl Hor) in Hza.
 } {
-  subst b.
+  intros H1; subst b.
   now apply (rngl_lt_irrefl Hor) in Hbz.
 }
 Qed.
@@ -986,6 +983,7 @@ assert (Hio :
 }
 intros * Hab.
 apply (rngl_eq_add_0 Hos Hor) in Hab; cycle 1. {
+...
   apply (rngl_mul_diag_nonneg Hos Hor).
 } {
   apply (rngl_mul_diag_nonneg Hos Hor).
