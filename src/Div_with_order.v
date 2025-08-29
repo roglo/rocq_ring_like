@@ -417,12 +417,13 @@ split; intros Hb. {
 Qed.
 
 Theorem rngl_mul_pos_cancel_l :
+  rngl_has_1 T = true →
   rngl_has_opp T = true →
+  rngl_has_inv_or_quot T = true →
   rngl_is_ordered T = true →
-  (rngl_is_integral_domain T || rngl_has_inv_and_1_or_quot T)%bool = true →
   ∀ a b : T, (0 < a → 0 < a * b ↔ 0 < b)%L.
 Proof.
-intros Hop Hor Hii * Ha.
+intros Hon Hop Hiq Hor * Ha.
 specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
 split; intros Hb. {
   apply (rngl_le_neq Hor) in Ha.
@@ -437,8 +438,7 @@ split; intros Hb. {
       apply rngl_nle_gt in Habz.
       apply (rngl_nlt_ge_iff Hor).
       intros Hb; apply Habz; clear Habz.
-...
-      apply (rngl_mul_nonneg_nonpos Hop Hor); [ easy | ].
+      apply (rngl_mul_nonneg_nonpos Hon Hop Hiq Hor); [ easy | ].
       now apply (rngl_lt_le_incl Hor).
     }
     now rewrite Habz in Hzab.
@@ -446,22 +446,23 @@ split; intros Hb. {
   intros H; subst b.
   now rewrite (rngl_mul_0_r Hos) in Hzab.
 } {
-  now apply (rngl_mul_pos_pos Hos Hor).
+  now apply (rngl_mul_pos_pos Hon Hop Hiq Hor).
 }
 Qed.
 
 (*************)
 
 Theorem rngl_mul_le_mono_pos_l :
+  rngl_has_1 T = true →
   rngl_has_opp T = true →
+  rngl_has_inv_or_quot T = true →
   rngl_is_ordered T = true →
-  (rngl_is_integral_domain T || rngl_has_inv_and_1_or_quot T)%bool = true →
   ∀ a b c : T, (0 < a)%L → (b ≤ c)%L ↔ (a * b ≤ a * c)%L.
 Proof.
-intros Hop Hor Hii * Hc.
+intros Hon Hop Hiq Hor * Hc.
 specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
 split; intros Hbc. {
-  apply (rngl_mul_le_mono_nonneg_l Hop Hor); [ | easy ].
+  apply (rngl_mul_le_mono_nonneg_l Hon Hop Hiq Hor); [ | easy ].
   now apply (rngl_lt_le_incl Hor).
 } {
   apply (rngl_le_0_sub Hop Hor) in Hbc.
@@ -474,7 +475,7 @@ split; intros Hbc. {
   rewrite <- (rngl_mul_sub_distr_l Hop).
   rewrite (rngl_sub_0_l Hop).
   rewrite (rngl_opp_sub_distr Hop).
-  apply (rngl_mul_pos_pos Hos Hor Hii); [ easy | ].
+  apply (rngl_mul_pos_pos Hon Hop Hiq Hor); [ easy | ].
   now apply (rngl_lt_0_sub Hop Hor).
 }
 Qed.
@@ -491,6 +492,7 @@ intros * Ha.
 split; intros Hbc. {
   apply (rngl_lt_0_sub Hop Hor).
   rewrite <- (rngl_mul_sub_distr_l Hop).
+...
   apply (rngl_mul_pos_pos Hos Hor Hii); [ easy | ].
   now apply (rngl_lt_0_sub Hop Hor).
 } {
