@@ -185,9 +185,9 @@ destruct iv. {
   progress unfold rngl_div.
   rewrite Hiv.
   rewrite <- rngl_mul_assoc.
-  rewrite rngl_mul_inv_r; [ | easy ].
-  rewrite rngl_div_diag; [ | easy | easy | easy ].
-  now apply rngl_mul_1_r.
+  rewrite (rngl_mul_inv_r Hiv).
+  rewrite (rngl_div_diag Hon Hiq); [ | easy ].
+  apply (rngl_mul_1_r Hon).
 }
 remember (rngl_has_quot T) as qu eqn:Hqu; symmetry in Hqu.
 destruct qu. {
@@ -343,8 +343,8 @@ Theorem rngl_mul_cancel_r :
 Proof.
 intros Hii * Hcz Hab.
 assert (H : (a * c / c = b * c / c)%L) by now rewrite Hab.
-rewrite rngl_mul_div in H; [ | easy | easy ].
-rewrite rngl_mul_div in H; [ | easy | easy ].
+rewrite (rngl_mul_div Hii) in H; [ | easy ].
+rewrite (rngl_mul_div Hii) in H; [ | easy ].
 easy.
 Qed.
 
@@ -574,7 +574,6 @@ Proof.
 intros Hon Hos Hiv * Haz Hbz.
 specialize (rngl_has_inv_has_inv_or_quot Hiv) as Hiq.
 specialize (rngl_has_inv_and_1_has_inv_and_1_or_quot Hon Hiv) as Hi1.
-Check rngl_div_diag.
 specialize (rngl_div_diag Hon Hiq) as div_diag.
 specialize (rngl_eq_mul_0_l Hon Hos Hiq) as integral.
 unfold rngl_div in div_diag.
