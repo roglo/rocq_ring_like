@@ -1213,14 +1213,12 @@ Qed.
 Theorem rngl_le_0_mul :
   rngl_has_1 T = true →
   rngl_has_opp T = true →
-  rngl_has_inv T = true →
+  rngl_has_inv_or_quot T = true →
   rngl_is_ordered T = true →
   ∀ a b, (0 ≤ a * b → 0 ≤ a ∧ 0 ≤ b ∨ a ≤ 0 ∧ b ≤ 0)%L.
 Proof.
-intros Hon Hop Hiv Hor * Hab.
+intros Hon Hop Hiq Hor * Hab.
 specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
-specialize (rngl_has_inv_and_1_has_inv_and_1_or_quot Hon Hiv) as Hi1.
-specialize (rngl_int_dom_or_inv_1_quo Hiv Hon) as Hii.
 destruct (rngl_le_dec Hor 0 a)%L as [Hza| Hza]. {
   destruct (rngl_lt_dec Hor 0 a)%L as [Hlza| Hlza]. 2: {
     apply (rngl_nlt_ge_iff Hor) in Hlza.
@@ -1231,8 +1229,7 @@ destruct (rngl_le_dec Hor 0 a)%L as [Hza| Hza]. {
     now right.
   }
   rewrite <- (rngl_mul_0_r Hos a) in Hab.
-...
-  now left; apply (rngl_mul_le_mono_pos_l Hop Hor Hii) in Hab.
+  now left; apply (rngl_mul_le_mono_pos_l Hon Hop Hiq Hor) in Hab.
 } {
   apply (rngl_nle_gt_iff Hor) in Hza.
   right.
@@ -1241,7 +1238,7 @@ destruct (rngl_le_dec Hor 0 a)%L as [Hza| Hza]. {
   apply rngl_nle_gt in Hza.
   apply (rngl_nlt_ge_iff Hor).
   intros Hzb; apply Hza.
-  now apply (rngl_mul_le_mono_pos_r Hop Hor Hii) in Hab.
+  now apply (rngl_mul_le_mono_pos_r Hon Hop Hiq Hor) in Hab.
 }
 Qed.
 
@@ -1255,6 +1252,7 @@ intros Hop Hor Hii.
 intros * Habc Hab.
 apply (rngl_le_neq Hor).
 split. {
+...
   apply (rngl_abs_le_squ_le Hop Hor).
   now apply (rngl_lt_le_incl Hor).
 }
