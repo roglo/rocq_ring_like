@@ -1047,6 +1047,7 @@ unfold rngl_div.
 rewrite Hiv.
 right.
 intros Hq.
+...
 apply (rngl_eq_mul_0_l Hos) in Hq; [ easy | | ]. {
   apply Bool.orb_true_iff; right.
   now apply rngl_has_inv_and_1_or_quot_iff; left.
