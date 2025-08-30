@@ -266,11 +266,13 @@ Class ring_like_ord T {ro : ring_like_op T} :=
       if rngl_has_opp_or_subt T then ∀ a b c, (b ≤ c ↔ a + b ≤ a + c)%L
       else not_applicable;
     rngl_ord_mul_le_compat_nonneg :
-      if rngl_has_inv_or_quot T then
+      if (rngl_has_1 T &&
+            rngl_has_opp_or_subt T && rngl_has_inv_or_quot T)%bool then
         ∀ a b c d, (0 ≤ a ≤ c)%L → (0 ≤ b ≤ d)%L → (a * b ≤ c * d)%L
       else not_applicable;
     rngl_ord_mul_le_compat_nonpos :
-      if rngl_has_inv_or_quot T then
+      if (rngl_has_1 T &&
+            rngl_has_opp_or_subt T && rngl_has_inv_or_quot T)%bool then
         ∀ a b c d, (c ≤ a ≤ 0)%L → (d ≤ b ≤ 0)%L → (a * b ≤ c * d)%L
       else not_applicable;
     rngl_ord_not_le : ∀ a b, (¬ a ≤ b → a ≠ b ∧ b ≤ a)%L }.

@@ -62,7 +62,7 @@ destruct (rngl_le_dec Hor 0 a⁻¹)%L as [H2| H2]. {
 }
 apply (rngl_not_le Hor) in H2.
 destruct H2 as (H2, H3).
-specialize (rngl_mul_nonneg_nonpos Hop Hiq Hor) as H4.
+specialize (rngl_mul_nonneg_nonpos Hon Hop Hiq Hor) as H4.
 assert (H : (0 ≤ a)%L) by now apply (rngl_le_neq Hor) in Hza.
 specialize (H4 _ _ H H3); clear H.
 rewrite (rngl_mul_inv_diag_r Hon Hiv a Haz) in H4.
@@ -106,7 +106,7 @@ specialize (rngl_has_inv_has_inv_or_quot Hiv) as Hiq.
 intros * Hbz (Hza, Hab).
 unfold rngl_div.
 rewrite Hiv.
-specialize (rngl_mul_le_compat_nonneg Hiq Hor) as H1.
+specialize (rngl_mul_le_compat_nonneg Hon Hos Hiq Hor) as H1.
 specialize (H1 a b⁻¹ b b⁻¹)%L.
 assert (H : (0 ≤ a ≤ b)%L) by easy.
 specialize (H1 H); clear H.
@@ -232,7 +232,7 @@ destruct xz. {
       apply rngl_leb_le in Hxy.
       progress unfold rngl_div in Hxy.
       rewrite Hiv in Hxy.
-      specialize (rngl_mul_le_compat_nonpos Hiq Hor) as H1.
+      specialize (rngl_mul_le_compat_nonpos Hon Hos Hiq Hor) as H1.
       specialize (H1 0 0 x y⁻¹)%L.
       assert (H : (x ≤ 0 ≤ 0)%L). {
         split; [ easy | apply (rngl_le_refl Hor) ].
@@ -302,7 +302,7 @@ destruct xz. {
       exfalso; apply Hxy; clear Hxy.
       progress unfold rngl_div.
       rewrite Hiv.
-      apply (rngl_mul_nonpos_nonneg Hop Hiq Hor _ _ Hx).
+      apply (rngl_mul_nonpos_nonneg Hon Hop Hiq Hor _ _ Hx).
       apply (rngl_lt_le_incl Hor).
       now apply (rngl_inv_pos Hon Hop Hiv Hor).
     }
@@ -324,7 +324,7 @@ destruct yz. {
     progress unfold rngl_div.
     rewrite Hiv.
     apply (rngl_lt_le_incl Hor) in Hx.
-    apply (rngl_mul_nonneg_nonpos Hop Hiq Hor _ _ Hx).
+    apply (rngl_mul_nonneg_nonpos Hon Hop Hiq Hor _ _ Hx).
     apply (rngl_lt_le_incl Hor).
     apply (rngl_inv_neg Hon Hop Hiv Hor).
     apply (rngl_le_neq Hor).
@@ -346,7 +346,7 @@ specialize (rngl_inv_pos Hon Hop Hiv Hor _ Hzy) as Hy'.
 apply (rngl_lt_le_incl Hor) in Hy'.
 generalize Hx; intros Hx'.
 apply (rngl_lt_le_incl Hor) in Hx'.
-specialize (rngl_mul_nonneg_nonneg Hos Hiq Hor _ _ Hx' Hy') as H1.
+specialize (rngl_mul_nonneg_nonneg Hon Hop Hiq Hor _ _ Hx' Hy') as H1.
 specialize (rngl_le_antisymm Hor _ _ Hxy H1) as H2.
 apply (rngl_integral Hos) in H2. 2: {
   rewrite Hi1, Heo.
@@ -375,7 +375,6 @@ apply (rngl_le_neq Hor) in Hbz.
 apply (rngl_le_neq Hor).
 destruct Haz as (Haz, Hza).
 destruct Hbz as (Hbz, Hzb).
-...
 split; [ now apply (rngl_mul_nonneg_nonneg Hon Hop Hiq Hor) | ].
 apply not_eq_sym in Hza, Hzb.
 apply not_eq_sym.
