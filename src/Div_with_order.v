@@ -1252,6 +1252,49 @@ intros Hop Hor Hii.
 intros * Habc Hab.
 apply (rngl_le_neq Hor).
 split. {
+Search (_ * _ ≤ _ * _)%L.
+Check rngl_mul_le_mono_pos_l.
+...
+Z.add_cancel_l
+     : ∀ n m p : Z, (p + n)%Z = (p + m)%Z ↔ n = m
+Z.mul_cancel_r
+     : ∀ n m p : Z, p ≠ 0%Z → (n * p)%Z = (m * p)%Z ↔ n = m
+
+Z.add_le_mono_l
+     : ∀ n m p : Z, (n <= m)%Z ↔ (p + n <= p + m)%Z
+
+Z.mul_le_mono_pos_l
+     : ∀ n m p : Z, (0 < p)%Z → (n <= m)%Z ↔ (p * n <= p * m)%Z
+Z.mul_le_mono_neg_l
+     : ∀ n m p : Z, (p < 0)%Z → (n <= m)%Z ↔ (p * m <= p * n)%Z
+Check rngl_mul_cancel_l.
+...
+Check rngl_add_cancel_l.
+Check rngl_add_le_mono_l.
+...
+rngl_add_cancel_l
+     : rngl_has_opp_or_subt T = true
+       → ∀ a b c : T, (a + b)%L = (a + c)%L ↔ b = c
+rngl_mul_cancel_l
+     : rngl_has_inv_and_1_or_quot T = true
+       → ∀ a b c : T, a ≠ 0%L → (a * b)%L = (a * c)%L → b = c
+
+rngl_add_le_mono_l
+     : rngl_has_opp_or_subt T = true
+       → rngl_is_ordered T = true → ∀ a b c : T, (b ≤ c)%L ↔ (a + b ≤ a + c)%L
+rngl_mul_le_mono_pos_l
+     : rngl_has_1 T = true
+       → rngl_has_opp T = true
+         → rngl_has_inv_or_quot T = true
+           → rngl_is_ordered T = true
+             → ∀ a b c : T, (0 < a)%L → (b ≤ c)%L ↔ (a * b ≤ a * c)%L
+...
+rngl_mul_le_compat_nonneg
+     : rngl_has_1 T = true
+       → rngl_has_opp_or_subt T = true
+         → rngl_has_inv_or_quot T = true
+           → rngl_is_ordered T = true
+             → ∀ a b c d : T, (0 ≤ a ≤ c)%L → (0 ≤ b ≤ d)%L → (a * b ≤ c * d)%L
 ...
   apply (rngl_abs_le_squ_le Hop Hor).
   now apply (rngl_lt_le_incl Hor).
