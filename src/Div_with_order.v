@@ -62,6 +62,7 @@ destruct (rngl_le_dec Hor 0 a⁻¹)%L as [H2| H2]. {
 }
 apply (rngl_not_le Hor) in H2.
 destruct H2 as (H2, H3).
+...
 specialize (rngl_mul_nonneg_nonpos Hon Hop Hiq Hor) as H4.
 assert (H : (0 ≤ a)%L) by now apply (rngl_le_neq Hor) in Hza.
 specialize (H4 _ _ H H3); clear H.
