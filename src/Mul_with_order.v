@@ -457,76 +457,73 @@ apply (rngl_le_0_add Hos Hor); apply (rngl_squ_nonneg Hop Hiq Hor).
 Qed.
 
 Theorem rngl_mul_le_mono_nonneg_l :
-  rngl_has_1 T = true →
   rngl_has_opp T = true →
   rngl_has_inv_or_quot T = true →
   rngl_is_ordered T = true →
   ∀ a b c, (0 ≤ a)%L → (b ≤ c)%L → (a * b ≤ a * c)%L.
 Proof.
-intros Hon Hop Hiq Hor.
+intros Hop Hiq Hor.
+specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
 intros * Ha Hbc.
 apply (rngl_lt_eq_cases Hor) in Hbc.
 destruct Hbc as [Hbc| Hbc]; [ | subst b; pauto ].
 apply (rngl_le_0_sub Hop Hor).
 rewrite <- (rngl_mul_sub_distr_l Hop).
-...
-apply (rngl_mul_nonneg_nonneg Hon Hop Hiq Hor); [ easy | ].
+apply (rngl_mul_nonneg_nonneg Hos Hiq Hor); [ easy | ].
 apply (rngl_le_0_sub Hop Hor).
 now apply (rngl_lt_le_incl Hor).
 Qed.
 
 Theorem rngl_mul_le_mono_nonneg_r :
-  rngl_has_1 T = true →
   rngl_has_opp T = true →
   rngl_has_inv_or_quot T = true →
   rngl_is_ordered T = true →
   ∀ a b c, (0 ≤ c → a ≤ b → a * c ≤ b * c)%L.
 Proof.
-intros Hon Hop Hiq Hor.
+intros Hop Hiq Hor.
+specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
 intros * Hc Hab.
 apply (rngl_lt_eq_cases Hor) in Hab.
 destruct Hab as [Hab| Hab]; [ | subst b; pauto ].
 apply (rngl_le_0_sub Hop Hor).
 rewrite <- (rngl_mul_sub_distr_r Hop).
-apply (rngl_mul_nonneg_nonneg Hon Hop Hiq Hor); [ | easy ].
+apply (rngl_mul_nonneg_nonneg Hos Hiq Hor); [ | easy ].
 apply (rngl_le_0_sub Hop Hor).
 now apply (rngl_lt_le_incl Hor).
 Qed.
 
 Theorem rngl_mul_le_mono_nonpos_l :
-  rngl_has_1 T = true →
   rngl_has_opp T = true →
   rngl_has_inv_or_quot T = true →
   rngl_is_ordered T = true →
   ∀ a b c, (a ≤ 0)%L → (b ≤ c)%L → (a * c ≤ a * b)%L.
 Proof.
-intros Hon Hop Hiq Hor.
+intros Hop Hiq Hor.
 specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
 intros * Ha Hbc.
 apply (rngl_lt_eq_cases Hor) in Hbc.
 destruct Hbc as [Hbc| Hbc]; [ | subst b; pauto ].
 apply (rngl_le_0_sub Hop Hor).
 rewrite <- (rngl_mul_sub_distr_l Hop).
-apply (rngl_mul_nonpos_nonpos Hon Hos Hiq Hor); [ easy | ].
+apply (rngl_mul_nonpos_nonpos Hos Hiq Hor); [ easy | ].
 apply (rngl_le_sub_0 Hop Hor).
 now apply (rngl_lt_le_incl Hor).
 Qed.
 
 Theorem rngl_mul_le_mono_nonpos_r :
-  rngl_has_1 T = true →
   rngl_has_opp T = true →
   rngl_has_inv_or_quot T = true →
   rngl_is_ordered T = true →
   ∀ a b c, (c ≤ 0 → a ≤ b → b * c ≤ a * c)%L.
 Proof.
-intros Hon Hop Hiq Hor.
+intros Hop Hiq Hor.
 specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
 intros * Hc Hab.
 apply (rngl_lt_eq_cases Hor) in Hab.
 destruct Hab as [Hab| Hab]; [ | subst b; pauto ].
 apply (rngl_le_0_sub Hop Hor).
 rewrite <- (rngl_mul_sub_distr_r Hop).
-apply (rngl_mul_nonpos_nonpos Hon Hos Hiq Hor); [ | easy ].
+apply (rngl_mul_nonpos_nonpos Hos Hiq Hor); [ | easy ].
 apply (rngl_le_sub_0 Hop Hor).
 now apply (rngl_lt_le_incl Hor).
 Qed.
@@ -553,6 +550,7 @@ destruct az. {
   apply (rngl_ltb_ge_iff Hor) in Hzb.
   apply rngl_nle_gt in Hab.
   apply Hab; clear Hab.
+...
   apply (rngl_mul_nonpos_nonpos Hon Hos Hiq Hor); [ | easy ].
   now apply (rngl_lt_le_incl Hor) in Haz.
 }
