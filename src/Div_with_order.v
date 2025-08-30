@@ -1135,12 +1135,13 @@ now apply (rngl_le_lt_trans Hor _ a).
 Qed.
 
 Theorem rngl_mul_min_distr_l :
+  rngl_has_1 T = true →
   rngl_has_opp T = true →
+  rngl_has_inv_or_quot T = true →
   rngl_is_ordered T = true →
-  (rngl_is_integral_domain T || rngl_has_inv_and_1_or_quot T)%bool = true →
   ∀ a b c, (0 ≤ a)%L → rngl_min (a * b)%L (a * c)%L = (a * rngl_min b c)%L.
 Proof.
-intros Hop Hor Hii.
+intros Hon Hop Hiq Hor.
 specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
 specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
 intros * Hza.
@@ -1164,25 +1165,25 @@ destruct abc. {
   destruct bc; [ easy | ].
   apply rngl_leb_le in Habc.
   apply (rngl_leb_gt Hor) in Hbc.
-...
-  apply (rngl_mul_le_mono_pos_l Hop Hor Hii) in Habc; [ | easy ].
+  apply (rngl_mul_le_mono_pos_l Hon Hop Hiq Hor) in Habc; [ | easy ].
   now apply rngl_nle_gt in Hbc.
 }
 destruct bc; [ | easy ].
 f_equal.
 apply rngl_leb_le in Hbc.
 apply (rngl_leb_gt Hor) in Habc.
-apply (rngl_mul_lt_mono_pos_l Hop Hor Hii) in Habc; [ | easy ].
+apply (rngl_mul_lt_mono_pos_l Hon Hop Hiq Hor) in Habc; [ | easy ].
 now apply rngl_nle_gt in Habc.
 Qed.
 
 Theorem rngl_square_le_simpl_nonneg :
+  rngl_has_1 T = true →
   rngl_has_opp T = true →
+  rngl_has_inv_or_quot T = true →
   rngl_is_ordered T = true →
-  (rngl_is_integral_domain T || rngl_has_inv_and_1_or_quot T)%bool = true →
   ∀ a b, (0 ≤ b → a * a ≤ b * b → a ≤ b)%L.
 Proof.
-intros Hop Hor Hii * Hzb Hab.
+intros Hon Hop Hiq Hor * Hzb Hab.
 destruct (rngl_le_dec Hor a 0%L) as [Haz| Haz]. {
   now apply (rngl_le_trans Hor a 0%L b).
 }
@@ -1190,22 +1191,23 @@ apply (rngl_nle_gt_iff Hor) in Haz.
 apply rngl_nlt_ge in Hab.
 apply (rngl_nlt_ge_iff Hor).
 intros Hba; apply Hab; clear Hab.
-now apply (rngl_mul_lt_mono_nonneg Hop Hor Hii).
+now apply (rngl_mul_lt_mono_nonneg Hon Hop Hiq Hor).
 Qed.
 
 Theorem rngl_pow_pos_pos :
   rngl_has_1 T = true →
-  rngl_has_opp_or_subt T = true →
+  rngl_has_opp T = true →
   rngl_has_inv T = true →
   rngl_characteristic T ≠ 1 →
   rngl_is_ordered T = true →
   ∀ a n, (0 < a → 0 < a ^ n)%L.
 Proof.
-intros Hon Hos Hiv Hc1 Hor.
+intros Hon Hop Hiv Hc1 Hor.
+specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
+specialize (rngl_has_inv_has_inv_or_quot Hiv) as Hiq.
 intros * Hza.
-induction n; cbn; [ apply (rngl_0_lt_1 Hon Hos Hc1 Hor) | ].
-specialize (rngl_int_dom_or_inv_1_quo Hiv Hon) as Hii.
-now apply (rngl_mul_pos_pos Hos Hor Hii).
+induction n; cbn; [ apply (rngl_0_lt_1 Hon Hos Hiq Hc1 Hor) | ].
+now apply (rngl_mul_pos_pos Hon Hop Hiq Hor).
 Qed.
 
 Theorem rngl_le_0_mul :
@@ -1229,6 +1231,7 @@ destruct (rngl_le_dec Hor 0 a)%L as [Hza| Hza]. {
     now right.
   }
   rewrite <- (rngl_mul_0_r Hos a) in Hab.
+...
   now left; apply (rngl_mul_le_mono_pos_l Hop Hor Hii) in Hab.
 } {
   apply (rngl_nle_gt_iff Hor) in Hza.
