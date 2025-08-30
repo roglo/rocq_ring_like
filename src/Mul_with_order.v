@@ -91,13 +91,10 @@ Theorem rngl_mul_nonneg_nonneg :
 Proof.
 intros Hon Hos Hiq Hor.
 intros * Ha Hb.
-specialize (rngl_mul_le_compat_nonneg Hon Hiq Hor) as H1.
-specialize (H1 0 0 a b)%L.
-assert (H : (0 ≤ 0 ≤ a)%L) by now split; [ pauto | ].
-specialize (H1 H); clear H.
-assert (H : (0 ≤ 0 ≤ b)%L) by now split; [ pauto | ].
-specialize (H1 H); clear H.
-now rewrite (rngl_mul_0_l Hos) in H1.
+rewrite <- (rngl_mul_0_l Hos 0)%L.
+apply (rngl_mul_le_compat_nonneg Hon Hiq Hor).
+split; [ pauto | easy ].
+split; [ pauto | easy ].
 Qed.
 
 Theorem rngl_mul_nonpos_nonpos :
@@ -109,13 +106,10 @@ Theorem rngl_mul_nonpos_nonpos :
 Proof.
 intros Hon Hos Hiq Hor.
 intros * Ha Hb.
-specialize (rngl_mul_le_compat_nonpos Hon Hiq Hor) as H1.
-specialize (H1 0 0 a b)%L.
-assert (H : (a ≤ 0 ≤ 0)%L) by now split; [ | pauto ].
-specialize (H1 H); clear H.
-assert (H : (b ≤ 0 ≤ 0)%L) by now split; [ | pauto ].
-specialize (H1 H); clear H.
-now rewrite (rngl_mul_0_l Hos) in H1.
+rewrite <- (rngl_mul_0_l Hos 0)%L.
+apply (rngl_mul_le_compat_nonpos Hon Hiq Hor).
+split; [ easy | pauto ].
+split; [ easy | pauto ].
 Qed.
 
 Theorem rngl_mul_nonneg_nonpos :
