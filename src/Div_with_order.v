@@ -106,9 +106,9 @@ specialize (rngl_has_inv_has_inv_or_quot Hiv) as Hiq.
 intros * Hbz (Hza, Hab).
 (*
 Search (_ / _ ≤ _)%L.
-il faudrait ajouter les axiomes, pour rngl_has_subt T
-b ≤ c → a * b / c ≤ a
-b ≤ c → a + b - c ≤ a
+il faudrait ajouter les axiomes
+pour rngl_has_subt : b ≤ c → a + b - c ≤ a
+pour rngl_has_quot : b ≤ c → a * b / c ≤ a
 *)
 ...
 unfold rngl_div.
