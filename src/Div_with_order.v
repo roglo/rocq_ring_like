@@ -104,10 +104,16 @@ intros * Hon Hop Hiv Hor.
 specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
 specialize (rngl_has_inv_has_inv_or_quot Hiv) as Hiq.
 intros * Hbz (Hza, Hab).
+(*
+Search (_ / _ ≤ _)%L.
+il faudrait ajouter les axiomes, pour rngl_has_subt T
+b ≤ c → a * b / c ≤ a
+b ≤ c → a + b - c ≤ a
+*)
+...
 unfold rngl_div.
 rewrite Hiv.
-...
-specialize (rngl_mul_le_compat_nonneg Hon Hos Hiq Hor) as H1.
+specialize (rngl_mul_le_compat_nonneg Hon Hiq Hor) as H1.
 specialize (H1 a b⁻¹ b b⁻¹)%L.
 assert (H : (0 ≤ a ≤ b)%L) by easy.
 specialize (H1 H); clear H.
@@ -122,6 +128,8 @@ assert (H : (0 ≤ b⁻¹ ≤ b⁻¹)%L). {
 specialize (H1 H); clear H.
 now rewrite (rngl_mul_inv_diag_r Hon Hiv) in H1.
 Qed.
+
+...
 
 Theorem rngl_one_sub_half :
   rngl_has_1 T = true →
