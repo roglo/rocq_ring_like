@@ -185,6 +185,7 @@ specialize (Hdtri a b a) as H2.
 rewrite H1, (Hdsym b a) in H2.
 rewrite <- (rngl_mul_2_l Hon) in H2.
 replace 0%L with (2 * 0)%L in H2 by apply (rngl_mul_0_r Hos).
+...
 apply (rngl_mul_le_mono_pos_l Hop Hor Hii) in H2; [ easy | ].
 apply (rngl_0_lt_2 Hon Hos Hc1 Hor).
 Qed.

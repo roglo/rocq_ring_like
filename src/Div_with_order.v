@@ -1258,7 +1258,6 @@ split. {
   now apply (rngl_lt_le_incl Hor).
 }
 intros H.
-Search (rngl_is_integral_domain _).
 apply (eq_rngl_squ_rngl_abs Hop Hor Hii _ _ Habc) in H.
 rewrite H in Hab.
 now apply (rngl_lt_irrefl Hor) in Hab.
@@ -1311,16 +1310,16 @@ destruct az. {
 Qed.
 
 Theorem rngl_squ_lt_abs_lt :
+  rngl_has_1 T = true →
   rngl_has_opp T = true →
+  rngl_has_inv_or_quot T = true →
   rngl_is_ordered T = true →
-  (rngl_is_integral_domain T || rngl_has_inv_and_1_or_quot T)%bool = true →
   ∀ a b : T, (a² < b²)%L → (rngl_abs a < rngl_abs b)%L.
 Proof.
-intros Hop Hor Hii * Hab.
+intros Hon Hop Hiq Hor * Hab.
 apply (rngl_le_neq Hor).
 split. {
-...
-  apply (rngl_squ_le_abs_le Hop Hor Hii).
+  apply (rngl_squ_le_abs_le Hon Hop Hiq Hor).
   now apply (rngl_lt_le_incl Hor).
 }
 intros H.
@@ -1343,54 +1342,58 @@ now destruct Ha.
 Qed.
 
 Theorem rngl_le_squ_le :
+  rngl_has_1 T = true →
   rngl_has_opp T = true →
+  rngl_has_inv_or_quot T = true →
   rngl_is_ordered T = true →
-  (rngl_is_integral_domain T || rngl_has_inv_and_1_or_quot T)%bool = true →
   ∀ a b, (0 ≤ a → 0 ≤ b → a² ≤ b² → a ≤ b)%L.
 Proof.
-intros Hop Hor Hii.
+intros Hon Hop Hiq Hor.
 intros * Hza Hzb Hab.
 rewrite <- (rngl_abs_nonneg_eq Hop Hor a); [ | easy ].
 rewrite <- (rngl_abs_nonneg_eq Hop Hor b); [ | easy ].
-now apply (rngl_squ_le_abs_le Hop Hor Hii).
+now apply (rngl_squ_le_abs_le Hon Hop Hiq Hor).
 Qed.
 
 Theorem rngl_le_le_squ :
+  rngl_has_1 T = true →
   rngl_has_opp T = true →
+  rngl_has_inv_or_quot T = true →
   rngl_is_ordered T = true →
-  (rngl_is_integral_domain T || rngl_has_inv_and_1_or_quot T)%bool = true →
   ∀ a b, (0 ≤ a → a ≤ b → a² ≤ b²)%L.
 Proof.
-intros Hop Hor Hii.
+intros Hon Hop Hiq Hor.
 intros * Hza Hab.
-apply (rngl_abs_le_squ_le Hop Hor).
+apply (rngl_abs_le_squ_le Hon Hop Hiq Hor).
 rewrite (rngl_abs_nonneg_eq Hop Hor a); [ | easy ].
 rewrite (rngl_abs_nonneg_eq Hop Hor b); [ easy | ].
 now apply (rngl_le_trans Hor _ a).
 Qed.
 
 Theorem rngl_lt_squ_lt :
+  rngl_has_1 T = true →
   rngl_has_opp T = true →
+  rngl_has_inv_or_quot T = true →
   rngl_is_ordered T = true →
-  (rngl_is_integral_domain T || rngl_has_inv_and_1_or_quot T)%bool = true →
   ∀ a b, (0 ≤ a → 0 ≤ b → a² < b² → a < b)%L.
 Proof.
-intros Hop Hor Hii.
+intros Hon Hop Hiq Hor.
 intros * Hza Hzb Hab.
 rewrite <- (rngl_abs_nonneg_eq Hop Hor a); [ | easy ].
 rewrite <- (rngl_abs_nonneg_eq Hop Hor b); [ | easy ].
-now apply (rngl_squ_lt_abs_lt Hop Hor Hii).
+now apply (rngl_squ_lt_abs_lt Hon Hop Hiq Hor).
 Qed.
 
 Theorem rngl_lt_lt_squ :
+  rngl_has_1 T = true →
   rngl_has_opp T = true →
+  rngl_has_inv_or_quot T = true →
   rngl_is_ordered T = true →
-  (rngl_is_integral_domain T || rngl_has_inv_and_1_or_quot T)%bool = true →
   ∀ a b, (a * b = b * a → 0 ≤ a → a < b → a² < b²)%L.
 Proof.
-intros Hop Hor Hii.
+intros Hon Hop Hiq Hor.
 intros * Habba Hza Hab.
-apply (rngl_abs_lt_squ_lt Hop Hor Hii _ _ Habba).
+apply (rngl_abs_lt_squ_lt Hon Hop Hiq Hor _ _ Habba).
 rewrite (rngl_abs_nonneg_eq Hop Hor a); [ | easy ].
 rewrite (rngl_abs_nonneg_eq Hop Hor b); [ easy | ].
 apply (rngl_le_trans Hor _ a); [ easy | ].
@@ -1426,7 +1429,6 @@ destruct Hab as [Hab| Hab]; [ right | left ]. {
 Qed.
 
 Theorem rngl_pow_div_pow :
-  rngl_mul_is_comm T = true →
   rngl_has_1 T = true →
   rngl_has_opp_or_subt T = true →
   rngl_has_inv T = true →
@@ -1435,7 +1437,7 @@ Theorem rngl_pow_div_pow :
   → n ≤ m
   → (a ^ m / a ^ n = a ^ (m - n))%L.
 Proof.
-intros Hic Hon Hos Hiv.
+intros Hon Hos Hiv.
 specialize (rngl_has_inv_has_inv_or_quot Hiv) as Hiq.
 specialize (rngl_has_inv_and_1_has_inv_and_1_or_quot Hon Hiv) as Hi1.
 destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
@@ -1446,19 +1448,15 @@ destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
 }
 intros * Haz Hnm.
 revert m Hnm.
-induction n; intros; cbn. {
+induction n; intros. {
   rewrite (rngl_div_1_r Hon Hiq Hc1).
   now rewrite Nat.sub_0_r.
 }
 destruct m; [ easy | ].
 apply Nat.succ_le_mono in Hnm.
-cbn.
-rewrite (rngl_mul_comm Hic a).
-rewrite (rngl_mul_comm Hic _ (a ^ n)).
-rewrite <- (rngl_div_div Hos Hon Hiv); [ | easy | ]. 2: {
-  apply (rngl_pow_nonzero Hon Hc1 Hos); [ | easy ].
-  rewrite Hi1.
-  apply Bool.orb_true_r.
+do 2 rewrite (rngl_pow_succ_l Hon).
+rewrite <- (rngl_div_div Hon Hos Hiv); [ | easy | ]. 2: {
+  now apply (rngl_pow_nonzero Hon Hc1 Hos Hiq).
 }
 rewrite (rngl_mul_div Hi1); [ | easy ].
 now apply IHn.
@@ -1467,8 +1465,8 @@ Qed.
 End a.
 
 Arguments rngl_div_le_mono_pos_l {T ro rp} Hop Hiv Hor Hii (a b c)%_L.
-Arguments rngl_div_le_mono_pos_r {T ro rp} Hon Hop Hiv Hor Hii (a b c)%_L.
+Arguments rngl_div_le_mono_pos_r {T ro rp} Hon Hop Hiv Hor (a b c)%_L.
 Arguments rngl_middle_sub_r {T ro rp} Hon Hop Hiv Hor (a b)%_L.
-Arguments rngl_mul_le_mono_pos_l {T ro rp} Hop Hor Hii (a b c)%_L.
-Arguments rngl_mul_le_mono_pos_r {T ro rp} Hop Hor Hii (a b c)%_L.
-Arguments rngl_pow_div_pow {T ro rp} Hic Hon Hos Hiv a%_L (m n)%_nat.
+Arguments rngl_mul_le_mono_pos_l {T ro rp} Hon Hop Hiq Hor (a b c)%_L.
+Arguments rngl_mul_le_mono_pos_r {T ro rp} Hon Hop Hiq Hor (a b c)%_L.
+Arguments rngl_pow_div_pow {T ro rp} Hon Hos Hiv a%_L (m n)%_nat.
