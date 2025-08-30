@@ -504,14 +504,13 @@ Proof.
 intros Hroc Hop Hor.
 specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
 intros.
-specialize (rngl_add_le_or_lt_compat_r Hroc Hos Hor) as H1.
 split; intros H2. {
-  apply (H1 _ _ b b)%L in H2; [ | pauto ].
-  now rewrite (rngl_sub_add Hop), rngl_add_comm in H2.
+  rewrite rngl_add_comm, <- (rngl_sub_add Hop a b).
+  apply (rngl_add_le_or_lt_compat_r Hroc Hos Hor _ _ _ _ H2); pauto.
 } {
-  apply (H1 _ _ (-b) (-b))%L in H2; [ | pauto ].
-  do 2 rewrite (rngl_add_opp_r Hop) in H2.
-  now rewrite rngl_add_comm, (rngl_add_sub Hos) in H2.
+  rewrite <- (rngl_add_sub Hos c b), rngl_add_comm.
+  progress unfold rngl_sub; rewrite Hop.
+  apply (rngl_add_le_or_lt_compat_r Hroc Hos Hor _ _ _ _ H2); pauto.
 }
 Qed.
 

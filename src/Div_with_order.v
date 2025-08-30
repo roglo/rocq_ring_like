@@ -107,10 +107,21 @@ intros * Hbz (Hza, Hab).
 (*
 Search (_ / _ ≤ _)%L.
 il faudrait ajouter les axiomes
-pour rngl_has_subt : b ≤ c → a + b - c ≤ a
-pour rngl_has_quot : b ≤ c → a * b / c ≤ a
-*)
+pour rngl_has_subt :
+  b ≤ c → a + b - c ≤ a
+  b ≤ a → a = a - b + b
+pour rngl_has_quot :
+  b ≤ c → a * b / c ≤ a
+  b ≤ a → a ≤ a / b * b
+Theorem glop :
+  rngl_has_subt T = true →
+  ∀ a b c, (b ≤ c → a + b - c ≤ a)%L.
+Proof.
+intros Hsu * Hbc.
+Check rngl_le_sub_le_add_l.
+apply rngl_le_sub_le_add_l.
 ...
+*)
 unfold rngl_div.
 rewrite Hiv.
 specialize (rngl_mul_le_compat_nonneg Hon Hiq Hor) as H1.
