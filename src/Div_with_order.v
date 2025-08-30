@@ -1265,12 +1265,14 @@ now apply (rngl_lt_irrefl Hor) in Hab.
 Qed.
 
 Theorem rngl_squ_le_abs_le :
+  rngl_has_1 T = true →
   rngl_has_opp T = true →
+  rngl_has_inv_or_quot T = true →
   rngl_is_ordered T = true →
-  (rngl_is_integral_domain T || rngl_has_inv_and_1_or_quot T)%bool = true →
   ∀ a b, (a² ≤ b² → rngl_abs a ≤ rngl_abs b)%L.
 Proof.
-intros Hop Hor Hii * Hab.
+intros Hon Hop Hiq Hor.
+intros * Hab.
 progress unfold rngl_squ in Hab.
 progress unfold rngl_abs.
 remember (a ≤? 0)%L as az eqn:Haz; symmetry in Haz.
@@ -1281,8 +1283,7 @@ destruct az. {
     apply rngl_leb_le in Hbz.
     rewrite <- (rngl_mul_opp_opp Hop) in Hab.
     rewrite <- (rngl_mul_opp_opp Hop b) in Hab.
-...
-    apply (rngl_square_le_simpl_nonneg Hop Hor Hii) in Hab; [ easy | ].
+    apply (rngl_square_le_simpl_nonneg Hon Hop Hiq Hor) in Hab; [ easy | ].
     rewrite <- (rngl_opp_0 Hop).
     now apply -> (rngl_opp_le_compat Hop Hor).
   } {
@@ -1290,7 +1291,7 @@ destruct az. {
     apply (rngl_opp_le_compat Hop Hor) in Haz.
     rewrite (rngl_opp_0 Hop) in Haz.
     rewrite <- (rngl_mul_opp_opp Hop) in Hab.
-    apply (rngl_square_le_simpl_nonneg Hop Hor Hii) in Hab; [ easy | ].
+    apply (rngl_square_le_simpl_nonneg Hon Hop Hiq Hor) in Hab; [ easy | ].
     now apply (rngl_lt_le_incl Hor).
   }
 } {
@@ -1300,11 +1301,11 @@ destruct az. {
     apply (rngl_opp_le_compat Hop Hor) in Hbz.
     rewrite (rngl_opp_0 Hop) in Hbz.
     rewrite <- (rngl_mul_opp_opp Hop b) in Hab.
-    now apply (rngl_square_le_simpl_nonneg Hop Hor Hii) in Hab.
+    now apply (rngl_square_le_simpl_nonneg Hon Hop Hiq Hor) in Hab.
   } {
     apply (rngl_leb_gt Hor) in Hbz.
     apply (rngl_lt_le_incl Hor) in Haz, Hbz.
-    now apply (rngl_square_le_simpl_nonneg Hop Hor Hii) in Hab.
+    now apply (rngl_square_le_simpl_nonneg Hon Hop Hiq Hor) in Hab.
   }
 }
 Qed.
@@ -1318,6 +1319,7 @@ Proof.
 intros Hop Hor Hii * Hab.
 apply (rngl_le_neq Hor).
 split. {
+...
   apply (rngl_squ_le_abs_le Hop Hor Hii).
   now apply (rngl_lt_le_incl Hor).
 }
