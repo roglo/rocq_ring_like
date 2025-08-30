@@ -173,6 +173,7 @@ Theorem dist_nonneg :
 Proof.
 intros Hon Hop Hiv Hor * dist *.
 specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
+specialize (rngl_has_inv_has_inv_or_quot Hiv) as Hiq.
 specialize (rngl_int_dom_or_inv_1_quo Hiv Hon) as Hii.
 destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
   specialize (rngl_characteristic_1 Hon Hos Hc1) as H1.
@@ -185,9 +186,8 @@ specialize (Hdtri a b a) as H2.
 rewrite H1, (Hdsym b a) in H2.
 rewrite <- (rngl_mul_2_l Hon) in H2.
 replace 0%L with (2 * 0)%L in H2 by apply (rngl_mul_0_r Hos).
-...
-apply (rngl_mul_le_mono_pos_l Hop Hor Hii) in H2; [ easy | ].
-apply (rngl_0_lt_2 Hon Hos Hc1 Hor).
+apply (rngl_mul_le_mono_pos_l Hon Hop Hiq Hor) in H2; [ easy | ].
+apply (rngl_0_lt_2 Hon Hos Hiq Hc1 Hor).
 Qed.
 
 Theorem rngl_limit_interv :
@@ -264,6 +264,7 @@ Theorem limit_unique :
 Proof.
 intros Hon Hop Hiv Hor * dist * Hu1 Hu2.
 specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
+specialize (rngl_has_inv_has_inv_or_quot Hiv) as Hiq.
 specialize (rngl_int_dom_or_inv_1_quo Hiv Hon) as Hii.
 specialize (rngl_has_inv_and_1_has_inv_and_1_or_quot Hon Hiv) as Hi1.
 destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
@@ -276,12 +277,12 @@ specialize (dist_nonneg Hon Hop Hiv Hor dist) as Hdpos.
 assert (Hu : is_limit_when_seq_tends_to_inf da (λ _, lim1) lim2). {
   intros ε Hε.
   assert (Hε2 : (0 < ε / 2)%L). {
-    apply (rngl_mul_lt_mono_pos_r Hop Hor Hii) with (a := 2%L). {
-      apply (rngl_0_lt_2 Hon Hos Hc1 Hor).
+    apply (rngl_mul_lt_mono_pos_r Hon Hop Hiq Hor) with (a := 2%L). {
+      apply (rngl_0_lt_2 Hon Hos Hiq Hc1 Hor).
     }
     rewrite (rngl_mul_0_l Hos).
     rewrite (rngl_div_mul Hon Hiv); [ easy | ].
-    apply (rngl_2_neq_0 Hon Hos Hc1 Hor).
+    apply (rngl_2_neq_0 Hon Hos Hiq Hc1 Hor).
   }
   specialize (Hu1 (ε / 2) Hε2)%L.
   specialize (Hu2 (ε / 2) Hε2)%L.
@@ -294,11 +295,11 @@ assert (Hu : is_limit_when_seq_tends_to_inf da (λ _, lim1) lim2). {
   rewrite Hdsym.
   replace ε with (ε / 2 + ε / 2)%L. 2: {
     apply (rngl_mul_cancel_r Hi1 _ _ 2%L). {
-      apply (rngl_2_neq_0 Hon Hos Hc1 Hor).
+      apply (rngl_2_neq_0 Hon Hos Hiq Hc1 Hor).
     }
     rewrite rngl_mul_add_distr_r.
     rewrite (rngl_div_mul Hon Hiv). 2: {
-      apply (rngl_2_neq_0 Hon Hos Hc1 Hor).
+      apply (rngl_2_neq_0 Hon Hos Hiq Hc1 Hor).
     }
     symmetry.
     apply (rngl_mul_2_r Hon).
@@ -352,7 +353,8 @@ destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
   now apply (rngl_lt_irrefl Hor) in Hε.
 }
 assert (Hε2 : (0 < ε / 2)%L). {
-  apply (rngl_mul_lt_mono_pos_r Hop Hor Hii 2⁻¹%L) in Hε. 2: {
+...
+  apply (rngl_mul_lt_mono_pos_r Hon Hop Hiq Hor Hii 2⁻¹%L) in Hε. 2: {
     apply (rngl_inv_pos Hon Hop Hiv Hor).
     apply (rngl_0_lt_2 Hon Hos Hc1 Hor).
   }
