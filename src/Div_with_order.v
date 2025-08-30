@@ -106,6 +106,7 @@ specialize (rngl_has_inv_has_inv_or_quot Hiv) as Hiq.
 intros * Hbz (Hza, Hab).
 unfold rngl_div.
 rewrite Hiv.
+...
 specialize (rngl_mul_le_compat_nonneg Hon Hos Hiq Hor) as H1.
 specialize (H1 a b⁻¹ b b⁻¹)%L.
 assert (H : (0 ≤ a ≤ b)%L) by easy.
