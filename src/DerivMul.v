@@ -62,6 +62,7 @@ destruct ab. {
   exfalso.
   apply rngl_nle_gt in Hacbc.
   apply Hacbc; clear Hacbc.
+...
   now apply (rngl_mul_le_mono_nonneg_r Hop Hor).
 }
 apply (rngl_leb_gt Hor) in Hab.

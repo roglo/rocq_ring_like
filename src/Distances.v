@@ -346,17 +346,16 @@ Theorem limit_add :
 Proof.
 intros Hon Hop Hiv Hor * dist * Hd * Hu Hv ε Hε.
 specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
-specialize (rngl_int_dom_or_inv_1_quo Hiv Hon) as Hii.
+specialize (rngl_has_inv_has_inv_or_quot Hiv) as Hiq.
 destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
   specialize (rngl_characteristic_1 Hon Hos Hc1) as H1.
   rewrite H1 in Hε.
   now apply (rngl_lt_irrefl Hor) in Hε.
 }
 assert (Hε2 : (0 < ε / 2)%L). {
-...
-  apply (rngl_mul_lt_mono_pos_r Hon Hop Hiq Hor Hii 2⁻¹%L) in Hε. 2: {
+  apply (rngl_mul_lt_mono_pos_r Hon Hop Hiq Hor 2⁻¹%L) in Hε. 2: {
     apply (rngl_inv_pos Hon Hop Hiv Hor).
-    apply (rngl_0_lt_2 Hon Hos Hc1 Hor).
+    apply (rngl_0_lt_2 Hon Hos Hiq Hc1 Hor).
   }
   rewrite (rngl_mul_0_l Hos) in Hε.
   now rewrite (rngl_mul_inv_r Hiv) in Hε.
@@ -373,7 +372,7 @@ specialize (Hvn _ Hnvn).
 apply (rngl_lt_le_trans Hor _ (ε / 2 + ε / 2)%L). 2: {
   rewrite <- (rngl_mul_2_r Hon).
   rewrite (rngl_div_mul Hon Hiv). 2: {
-    apply (rngl_2_neq_0 Hon Hos Hc1 Hor).
+    apply (rngl_2_neq_0 Hon Hos Hiq Hc1 Hor).
   }
   apply (rngl_le_refl Hor).
 }

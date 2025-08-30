@@ -175,26 +175,32 @@ Theorem rl_modl_add_le :
 Proof.
 intros Hic Hon Hop Hiv Hor *.
 specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
-specialize (rngl_int_dom_or_inv_1_quo Hiv Hon) as Hii.
+specialize (rngl_has_inv_has_inv_or_quot Hiv) as Hiq.
 progress unfold rl_modl.
 rewrite <- (rngl_abs_nonneg_eq Hop Hor). 2: {
   apply (rngl_le_0_add Hos Hor). {
     apply rl_sqrt_nonneg.
-    apply (rngl_add_squ_nonneg Hos Hor).
+    apply (rngl_add_squ_nonneg Hon Hos Hiq Hor).
   } {
     apply rl_sqrt_nonneg.
-    apply (rngl_add_squ_nonneg Hos Hor).
+    apply (rngl_add_squ_nonneg Hon Hos Hiq Hor).
   }
 }
 rewrite <- (rngl_abs_nonneg_eq Hop Hor (√_))%L. 2: {
   apply rl_sqrt_nonneg.
-  apply (rngl_add_squ_nonneg Hos Hor).
+  apply (rngl_add_squ_nonneg Hon Hos Hiq Hor).
 }
-apply (rngl_squ_le_abs_le Hop Hor Hii).
-rewrite (rngl_squ_sqrt Hon); [ | apply (rngl_add_squ_nonneg Hos Hor) ].
+apply (rngl_squ_le_abs_le Hon Hop Hiq Hor).
+rewrite (rngl_squ_sqrt Hon). 2: {
+  apply (rngl_add_squ_nonneg Hon Hos Hiq Hor).
+}
 rewrite (rngl_squ_add Hic Hon (√_))%L.
-rewrite (rngl_squ_sqrt Hon); [ | apply (rngl_add_squ_nonneg Hos Hor) ].
-rewrite (rngl_squ_sqrt Hon); [ | apply (rngl_add_squ_nonneg Hos Hor) ].
+rewrite (rngl_squ_sqrt Hon). 2: {
+  apply (rngl_add_squ_nonneg Hon Hos Hiq Hor).
+}
+rewrite (rngl_squ_sqrt Hon). 2: {
+  apply (rngl_add_squ_nonneg Hon Hos Hiq Hor).
+}
 apply (rngl_le_sub_le_add_r Hop Hor).
 apply -> (rngl_le_sub_le_add_l Hop Hor).
 do 2 rewrite (rngl_squ_add Hic Hon)%L.
@@ -215,45 +221,30 @@ rewrite (rngl_sub_diag Hos).
 rewrite rngl_add_0_l.
 do 3 rewrite <- rngl_mul_assoc.
 rewrite <- rngl_mul_add_distr_l.
-apply (rngl_mul_le_mono_nonneg_l Hop Hor). {
-  apply (rngl_0_le_2 Hon Hos Hor).
+apply (rngl_mul_le_mono_nonneg_l Hon Hop Hiq Hor). {
+  apply (rngl_0_le_2 Hon Hos Hiq Hor).
 }
 eapply (rngl_le_trans Hor); [ apply (rngl_le_abs_diag Hop Hor) | ].
 rewrite <- (rngl_abs_nonneg_eq Hop Hor). 2: {
-  apply (rngl_mul_nonneg_nonneg Hos Hor). {
+  apply (rngl_mul_nonneg_nonneg Hon Hos Hiq Hor). {
     apply rl_sqrt_nonneg.
-    apply (rngl_add_squ_nonneg Hos Hor).
+    apply (rngl_add_squ_nonneg Hon Hos Hiq Hor).
   } {
     apply rl_sqrt_nonneg.
-    apply (rngl_add_squ_nonneg Hos Hor).
+    apply (rngl_add_squ_nonneg Hon Hos Hiq Hor).
   }
 }
-apply (rngl_squ_le_abs_le Hop Hor Hii).
+apply (rngl_squ_le_abs_le Hon Hop Hiq Hor).
 rewrite (rngl_squ_mul Hic).
-rewrite (rngl_squ_sqrt Hon); [ | apply (rngl_add_squ_nonneg Hos Hor) ].
-rewrite (rngl_squ_sqrt Hon); [ | apply (rngl_add_squ_nonneg Hos Hor) ].
-(* c'est pas une formule connue, ça ? un truc chinois, chais plus *)
-rewrite (rngl_squ_add Hic Hon).
-do 2 rewrite (rngl_squ_mul Hic).
-rewrite rngl_mul_add_distr_l.
-rewrite (rngl_mul_add_distr_r _ _ c²)%L.
-rewrite (rngl_mul_add_distr_r _ _ d²)%L.
-rewrite rngl_add_assoc.
-apply (rngl_add_le_mono_r Hos Hor).
-rewrite <- rngl_add_assoc.
-apply (rngl_add_le_mono_l Hos Hor).
-rewrite (rngl_add_comm (_ * _))%L.
-rewrite (rngl_mul_comm Hic b²)%L.
-do 2 rewrite <- (rngl_squ_mul Hic).
-do 2 rewrite rngl_mul_assoc.
-rewrite (rngl_mul_mul_swap Hic (2 * a * c))%L.
-rewrite (rngl_mul_mul_swap Hic (2 * a))%L.
-rewrite <- rngl_mul_assoc.
-rewrite <- (rngl_mul_assoc 2)%L.
-apply (rngl_le_0_sub Hop Hor).
-rewrite (rngl_add_sub_swap Hop).
-rewrite <- (rngl_squ_sub Hop Hic Hon).
-apply (rngl_squ_nonneg Hos Hor).
+rewrite (rngl_squ_sqrt Hon). 2: {
+  apply (rngl_add_squ_nonneg Hon Hos Hiq Hor).
+}
+rewrite (rngl_squ_sqrt Hon). 2: {
+  apply (rngl_add_squ_nonneg Hon Hos Hiq Hor).
+}
+rewrite (Brahmagupta_Fibonacci_identity_2 Hic Hon Hop).
+apply (rngl_le_add_r Hos Hor).
+apply (rngl_squ_nonneg Hon Hos Hiq Hor).
 Qed.
 
 Theorem euclidean_distance_triangular :
@@ -284,18 +275,18 @@ Qed.
 Theorem rl_sqrt_le_rl_sqrt :
   rngl_has_1 T = true →
   rngl_has_opp T = true →
+  rngl_has_inv_or_quot T = true →
   rngl_is_ordered T = true →
-  (rngl_is_integral_domain T || rngl_has_inv_and_1_or_quot T)%bool = true →
   ∀ a b,
   (0 ≤ a)%L
   → (a ≤ b)%L
   → (√ a ≤ √ b)%L.
 Proof.
-intros Hon Hop Hor Hii.
+intros Hon Hop Hiq Hor.
 intros * Ha Hab.
 apply (rngl_nlt_ge_iff Hor).
 intros H1.
-specialize (rngl_mul_lt_mono_nonneg Hop Hor Hii) as H2.
+specialize (rngl_mul_lt_mono_nonneg Hon Hop Hiq Hor) as H2.
 specialize (H2 (√b) (√a) (√b) (√a))%L.
 assert (H : (0 ≤ √b < √a)%L). {
   split; [ | easy ].
@@ -313,16 +304,17 @@ Qed.
 
 Theorem rl_sqrt_lt_rl_sqrt :
   rngl_has_1 T = true →
+  rngl_has_inv_or_quot T = true →
   rngl_is_ordered T = true →
   ∀ a b,
   (0 ≤ a)%L
   → (a < b)%L
   → (√ a < √ b)%L.
 Proof.
-intros Hon Hor * Ha Hab.
+intros Hon Hiq Hor * Ha Hab.
 apply (rngl_nle_gt_iff Hor).
 intros H1.
-specialize (rngl_mul_le_compat_nonneg Hor) as H2.
+specialize (rngl_mul_le_compat_nonneg Hon Hiq Hor) as H2.
 specialize (H2 (√b) (√b) (√a) (√a))%L.
 assert (H : (0 ≤ √b ≤ √a)%L). {
   split; [ | easy ].
@@ -362,13 +354,14 @@ Qed.
 Theorem rl_sqrt_1 :
   rngl_has_1 T = true →
   rngl_has_opp T = true →
+  rngl_has_inv_or_quot T = true →
   rngl_is_ordered T = true →
-  (rngl_is_integral_domain T || rngl_has_inv_and_1_or_quot T)%bool = true →
   rl_sqrt 1%L = 1%L.
 Proof.
-intros Hon Hop Hor Hii.
+intros Hon Hop Hiq Hor.
 specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
-specialize (rngl_0_le_1 Hon Hos Hor) as Hz1.
+specialize (rngl_int_dom_or_inv_1_or_quot_r Hon Hiq) as Hii.
+specialize (rngl_0_le_1 Hon Hos Hiq Hor) as Hz1.
 progress unfold rl_sqrt.
 specialize (rl_nth_root_pow 2 1%L Hz1) as H1.
 rewrite <- (rngl_squ_1 Hon) in H1 at 2.
@@ -380,37 +373,38 @@ apply (eq_rngl_squ_rngl_abs Hop Hor Hii) in H1. 2: {
 rewrite (rngl_abs_nonneg_eq Hop Hor) in H1. 2: {
   now apply rl_sqrt_nonneg.
 }
-now rewrite (rngl_abs_1 Hon Hos Hor) in H1.
+now rewrite (rngl_abs_1 Hon Hos Hiq Hor) in H1.
 Qed.
 
 Theorem rngl_squ_le_1 :
   rngl_has_1 T = true →
   rngl_has_opp T = true →
+  rngl_has_inv_or_quot T = true →
   rngl_is_ordered T = true →
   ∀ a, (-1 ≤ a ≤ 1)%L → (a² ≤ 1)%L.
 Proof.
-intros Hon Hop Hor.
+intros Hon Hop Hiq Hor.
 specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
 intros * Ha.
 rewrite <- (rngl_squ_1 Hon).
-apply (rngl_abs_le_squ_le Hop Hor).
-rewrite (rngl_abs_1 Hon Hos Hor).
+apply (rngl_abs_le_squ_le Hon Hop Hiq Hor).
+rewrite (rngl_abs_1 Hon Hos Hiq Hor).
 now apply -> (rngl_abs_le Hop Hor).
 Qed.
 
 Theorem rngl_squ_le_1_if :
   rngl_has_1 T = true →
   rngl_has_opp T = true →
+  rngl_has_inv_or_quot T = true →
   rngl_is_ordered T = true →
-  (rngl_is_integral_domain T || rngl_has_inv_and_1_or_quot T)%bool = true →
   ∀ a, (a² ≤ 1)%L → (-1 ≤ a ≤ 1)%L.
 Proof.
-intros Hon Hop Hor Hii.
+intros Hon Hop Hiq Hor.
 specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
 intros * Ha.
 rewrite <- (rngl_squ_1 Hon) in Ha.
-apply (rngl_squ_le_abs_le Hop Hor Hii) in Ha.
-rewrite (rngl_abs_1 Hon Hos Hor) in Ha.
+apply (rngl_squ_le_abs_le Hon Hop Hiq Hor) in Ha.
+rewrite (rngl_abs_1 Hon Hos Hiq Hor) in Ha.
 now apply (rngl_abs_le Hop Hor).
 Qed.
 
