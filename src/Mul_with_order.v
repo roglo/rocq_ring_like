@@ -35,37 +35,32 @@ Tactic Notation "pauto" := progress auto.
 Hint Resolve rngl_le_refl : core.
 
 Theorem rngl_mul_le_compat_nonneg :
-  rngl_has_1 T = true →
-  rngl_has_opp_or_subt T = true →
   rngl_has_inv_or_quot T = true →
   rngl_is_ordered T = true →
   ∀ a b c d, (0 ≤ a ≤ c)%L → (0 ≤ b ≤ d)%L → (a * b ≤ c * d)%L.
 Proof.
-intros Hon Hos Hiq Hor.
+intros Hiq Hor.
 specialize rngl_opt_ord as rr.
 rewrite Hor in rr.
 move rr after rp.
 specialize rngl_ord_mul_le_compat_nonneg as H1.
-now rewrite Hon, Hos, Hiq in H1.
+now rewrite Hiq in H1.
 Qed.
 
 Theorem rngl_mul_le_compat_nonpos :
-  rngl_has_1 T = true →
-  rngl_has_opp_or_subt T = true →
   rngl_has_inv_or_quot T = true →
   rngl_is_ordered T = true →
   ∀ a b c d, (c ≤ a ≤ 0)%L → (d ≤ b ≤ 0)%L → (a * b ≤ c * d)%L.
 Proof.
-intros Hon Hos Hiq Hor.
+intros Hiq Hor.
 specialize rngl_opt_ord as rr.
 rewrite Hor in rr.
 move rr after rp.
 specialize rngl_ord_mul_le_compat_nonpos as H1.
-now rewrite Hon, Hos, Hiq in H1.
+now rewrite Hiq in H1.
 Qed.
 
 Theorem rngl_mul_le_compat_nonpos_nonneg :
-  rngl_has_1 T = true →
   rngl_has_opp T = true →
   rngl_has_inv_or_quot T = true →
   rngl_is_ordered T = true →
@@ -74,28 +69,25 @@ Theorem rngl_mul_le_compat_nonpos_nonneg :
   → (b ≤ d ≤ 0)%L
   → (a * b ≤ c * d)%L.
 Proof.
-intros Hon Hop Hiq Hor.
-specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
+intros Hop Hiq Hor.
 intros * Had Hcd.
 apply (rngl_opp_le_compat Hop Hor).
 do 2 rewrite <- (rngl_mul_opp_r Hop).
-apply (rngl_mul_le_compat_nonneg Hon Hos Hiq Hor); [ easy | ].
+apply (rngl_mul_le_compat_nonneg Hiq Hor); [ easy | ].
 split.
 now apply (rngl_opp_nonneg_nonpos Hop Hor).
 now apply -> (rngl_opp_le_compat Hop Hor).
 Qed.
 
 Theorem rngl_mul_nonneg_nonneg :
-  rngl_has_1 T = true →
-  rngl_has_opp T = true →
+  rngl_has_opp_or_subt T = true →
   rngl_has_inv_or_quot T = true →
   rngl_is_ordered T = true →
   ∀ a b, (0 ≤ a → 0 ≤ b → 0 ≤ a * b)%L.
 Proof.
-intros Hon Hop Hiq Hor.
-specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
+intros Hos Hiq Hor.
 intros * Ha Hb.
-specialize (rngl_mul_le_compat_nonneg Hon Hos Hiq Hor) as H1.
+specialize (rngl_mul_le_compat_nonneg Hiq Hor) as H1.
 specialize (H1 0 0 a b)%L.
 assert (H : (0 ≤ 0 ≤ a)%L) by now split; [ pauto | ].
 specialize (H1 H); clear H.
@@ -105,15 +97,14 @@ now rewrite (rngl_mul_0_l Hos) in H1.
 Qed.
 
 Theorem rngl_mul_nonpos_nonpos :
-  rngl_has_1 T = true →
   rngl_has_opp_or_subt T = true →
   rngl_has_inv_or_quot T = true →
   rngl_is_ordered T = true →
   ∀ a b, (a ≤ 0 → b ≤ 0 → 0 ≤ a * b)%L.
 Proof.
-intros Hon Hos Hiq Hor.
+intros Hos Hiq Hor.
 intros * Ha Hb.
-specialize (rngl_mul_le_compat_nonpos Hon Hos Hiq Hor) as H1.
+specialize (rngl_mul_le_compat_nonpos Hiq Hor) as H1.
 specialize (H1 0 0 a b)%L.
 assert (H : (a ≤ 0 ≤ 0)%L) by now split; [ | pauto ].
 specialize (H1 H); clear H.
@@ -123,16 +114,15 @@ now rewrite (rngl_mul_0_l Hos) in H1.
 Qed.
 
 Theorem rngl_mul_nonneg_nonpos :
-  rngl_has_1 T = true →
   rngl_has_opp T = true →
   rngl_has_inv_or_quot T = true →
   rngl_is_ordered T = true →
   ∀ a b, (0 ≤ a → b ≤ 0 → a * b ≤ 0)%L.
 Proof.
-intros Hon Hop Hiq Hor.
+intros Hop Hiq Hor.
 specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
 intros * Ha Hb.
-specialize (rngl_mul_le_compat_nonneg Hon Hos Hiq Hor) as H1.
+specialize (rngl_mul_le_compat_nonneg Hiq Hor) as H1.
 specialize (H1 0 0 a (- b))%L.
 assert (H : (0 ≤ 0 ≤ a)%L) by now split; [ pauto | ].
 specialize (H1 H); clear H.
@@ -150,16 +140,15 @@ now rewrite (rngl_opp_0 Hop) in H1.
 Qed.
 
 Theorem rngl_mul_nonpos_nonneg :
-  rngl_has_1 T = true →
   rngl_has_opp T = true →
   rngl_has_inv_or_quot T = true →
   rngl_is_ordered T = true →
   ∀ a b, (a ≤ 0 → 0 ≤ b → a * b ≤ 0)%L.
 Proof.
-intros Hon Hop Hiq Hor.
+intros Hop Hiq Hor.
 specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
 intros * Ha Hb.
-specialize (rngl_mul_le_compat_nonneg Hon Hos Hiq Hor) as H1.
+specialize (rngl_mul_le_compat_nonneg Hiq Hor) as H1.
 specialize (H1 0 0 (- a) b)%L.
 assert (H : (0 ≤ 0 ≤ - a)%L). {
   split; [ pauto | ].
@@ -187,7 +176,7 @@ intros Hon Hos Hiq Hor.
 destruct (rngl_le_dec Hor 0%L 1%L) as [| H1]; [ easy | ].
 apply (rngl_not_le Hor) in H1.
 destruct H1 as (H1, H2).
-specialize (rngl_mul_nonpos_nonpos Hon Hos Hiq Hor) as H3.
+specialize (rngl_mul_nonpos_nonpos Hos Hiq Hor) as H3.
 specialize (H3 1 1 H2 H2)%L.
 now rewrite (rngl_mul_1_l Hon) in H3.
 Qed.
@@ -332,32 +321,30 @@ apply (rngl_0_le_1 Hon Hos Hiq Hor).
 Qed.
 
 Theorem rngl_mul_diag_nonneg :
-  rngl_has_1 T = true →
   rngl_has_opp T = true →
   rngl_has_inv_or_quot T = true →
   rngl_is_ordered T = true →
   ∀ a, (0 ≤ a * a)%L.
 Proof.
-intros Hon Hop Hiq Hor.
+intros Hop Hiq Hor.
 specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
 intros.
 destruct (rngl_le_dec Hor 0 a) as [Hap| Han]. {
-  now apply (rngl_mul_nonneg_nonneg Hon Hop Hiq Hor).
+  now apply (rngl_mul_nonneg_nonneg Hos Hiq Hor).
 } {
   apply (rngl_not_le Hor) in Han.
-  now apply (rngl_mul_nonpos_nonpos Hon Hos Hiq Hor).
+  now apply (rngl_mul_nonpos_nonpos Hos Hiq Hor).
 }
 Qed.
 
 Theorem rngl_squ_nonneg :
-  rngl_has_1 T = true →
   rngl_has_opp T = true →
   rngl_has_inv_or_quot T = true →
   rngl_is_ordered T = true →
   ∀ a, (0 ≤ a²)%L.
 Proof.
-intros Hon Hop Hiq Hor *.
-apply (rngl_mul_diag_nonneg Hon Hop Hiq Hor).
+intros Hop Hiq Hor *.
+apply (rngl_mul_diag_nonneg Hop Hiq Hor).
 Qed.
 
 Theorem rngl_squ_abs :
@@ -458,16 +445,15 @@ apply (rngl_0_lt_2 Hon Hos Hiq Hc1 Hor).
 Qed.
 
 Theorem rngl_add_squ_nonneg :
-  rngl_has_1 T = true →
   rngl_has_opp T = true →
   rngl_has_inv_or_quot T = true →
   rngl_is_ordered T = true →
   ∀ a b, (0 ≤ a² + b²)%L.
 Proof.
-intros Hon Hop Hiq Hor.
+intros Hop Hiq Hor.
 specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
 intros *.
-apply (rngl_le_0_add Hos Hor); apply (rngl_squ_nonneg Hon Hop Hiq Hor).
+apply (rngl_le_0_add Hos Hor); apply (rngl_squ_nonneg Hop Hiq Hor).
 Qed.
 
 Theorem rngl_mul_le_mono_nonneg_l :
@@ -483,6 +469,7 @@ apply (rngl_lt_eq_cases Hor) in Hbc.
 destruct Hbc as [Hbc| Hbc]; [ | subst b; pauto ].
 apply (rngl_le_0_sub Hop Hor).
 rewrite <- (rngl_mul_sub_distr_l Hop).
+...
 apply (rngl_mul_nonneg_nonneg Hon Hop Hiq Hor); [ easy | ].
 apply (rngl_le_0_sub Hop Hor).
 now apply (rngl_lt_le_incl Hor).
