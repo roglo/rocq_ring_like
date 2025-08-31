@@ -124,50 +124,32 @@ Theorem rngl_mul_div :
 Proof.
 intros Hii a b Hbz.
 progress unfold rngl_has_inv_and_1_or_divl_comm_or_divr in Hii.
-remember (rngl_has_inv T) as iv eqn:Hiv; symmetry in Hiv.
-destruct iv. {
-...
-  specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
-  assert (Hon : rngl_has_1 T = true). {
-    progress unfold rngl_has_inv_and_1_or_divl_comm_or_divr in Hii.
-    progress unfold rngl_has_inv in Hiv.
-    destruct (rngl_opt_inv_or_pdiv T) as [ii| ]; [ | easy ].
-    now destruct ii.
+apply Bool.orb_true_iff in Hii.
+destruct Hii as [Hii| Hdr]. {
+  apply Bool.orb_true_iff in Hii.
+  destruct Hii as [Hii| Hii]. {
+    apply Bool.andb_true_iff in Hii.
+    destruct Hii as (Hiv, Hon).
+    specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
+    progress unfold rngl_div.
+    rewrite Hiv.
+    rewrite <- rngl_mul_assoc.
+    rewrite (rngl_mul_inv_r Hiv).
+    rewrite (rngl_div_diag Hon Hiq); [ | easy ].
+    apply (rngl_mul_1_r Hon).
+  } {
+    apply Bool.andb_true_iff in Hii.
+    destruct Hii as (Hdl, Hic).
+    specialize rngl_opt_mul_div_l as H1.
+    rewrite Hdl in H1.
+    rewrite (rngl_mul_comm Hic).
+    now apply H1.
   }
-  progress unfold rngl_div.
-  rewrite Hiv.
-  rewrite <- rngl_mul_assoc.
-  rewrite (rngl_mul_inv_r Hiv).
-  rewrite (rngl_div_diag Hon Hiq); [ | easy ].
-  apply (rngl_mul_1_r Hon).
-}
-remember (rngl_has_divl T) as dl eqn:Hdl; symmetry in Hdl.
-destruct dl. {
-  specialize rngl_opt_mul_div_l as H1.
-  progress unfold rngl_has_inv_and_1_or_divl_comm_or_divr in Hii.
-  progress unfold rngl_has_inv in Hiv.
-  progress unfold rngl_has_divl in Hdl.
-  progress unfold rngl_has_divl in H1.
-  destruct (rngl_opt_inv_or_pdiv T) as [ii| ]; [ | easy ].
-  destruct ii as [| ii]; [ easy | clear Hiv ].
-  destruct ii; [ | easy ].
-  rename Hii into Hic.
-  rewrite (rngl_mul_comm Hic).
-  now apply H1.
-}
-remember (rngl_has_divr T) as dr eqn:Hdr; symmetry in Hdr.
-destruct dr. {
+} {
   specialize rngl_opt_mul_div_r as H1.
   rewrite Hdr in H1.
   now apply H1.
 }
-progress unfold rngl_has_inv_and_1_or_divl_comm_or_divr in Hii.
-progress unfold rngl_has_inv in Hiv.
-progress unfold rngl_has_divr in Hdr.
-progress unfold rngl_has_divl in Hdl.
-destruct (rngl_opt_inv_or_pdiv T) as [ii| ]; [ | easy ].
-destruct ii as [| ii]; [ easy | ].
-now destruct ii.
 Qed.
 
 ...
