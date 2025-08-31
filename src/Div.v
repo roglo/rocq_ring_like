@@ -114,13 +114,8 @@ destruct dr. {
   now rewrite rngl_mul_1_l in H1.
 }
 apply rngl_has_inv_or_pdiv_iff in Hiq.
-...
-progress unfold rngl_has_divl in Hdl.
-progress unfold rngl_has_divr in Hdr.
-...
-progress unfold rngl_has_pdiv in Hiq.
-cbn in Hiq.
-destruct Hiq; congruence.
+rewrite Hai, Hdl, Hdr in Hiq.
+now destruct Hiq as [|[|]].
 Qed.
 
 Theorem rngl_mul_div :
@@ -144,6 +139,7 @@ destruct iv. {
   rewrite (rngl_div_diag Hon Hiq); [ | easy ].
   apply (rngl_mul_1_r Hon).
 }
+...
 remember (rngl_has_pdiv T) as qu eqn:Hqu; symmetry in Hqu.
 destruct qu. {
   specialize rngl_opt_mul_div as mul_div.
