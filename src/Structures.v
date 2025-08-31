@@ -326,11 +326,11 @@ Class ring_like_prop T {ro : ring_like_op T} :=
       if rngl_has_quot T then ∀ a b, b ≠ 0%L → (a * b / b)%L = a
       else not_applicable;
     rngl_opt_mul_quot_r :
-      (* not sure there exists algebras having at the same time
+      (* actually there is no algebra having at the same time
          - no inverse (has_inv = false)
          - a primitive division (has_quot = true)
          - a non commutative multiplication (mul_comm = false);
-         if not existing, this axiom is useless *)
+         this axiom is therefore useless *)
       if (rngl_has_quot T && negb rngl_mul_is_comm)%bool then
         ∀ a b, b ≠ 0%L → (b * a / b)%L = a
       else not_applicable;
