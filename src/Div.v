@@ -123,8 +123,10 @@ Theorem rngl_mul_div :
   ∀ a b : T, b ≠ 0%L → (a * b / b)%L = a.
 Proof.
 intros Hii a b Hbz.
+progress unfold rngl_has_inv_and_1_or_divl_comm_or_divr in Hii.
 remember (rngl_has_inv T) as iv eqn:Hiv; symmetry in Hiv.
 destruct iv. {
+...
   specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
   assert (Hon : rngl_has_1 T = true). {
     progress unfold rngl_has_inv_and_1_or_divl_comm_or_divr in Hii.

@@ -394,16 +394,18 @@ Notation "∣ x ∣" := (rngl_abs x) (at level 35, x at level 30).
 
 Definition rngl_has_inv_and_1_or_divl_comm_or_divr T {ro : ring_like_op T}
   {rp : ring_like_prop T} :=
+(*
   match rngl_opt_inv_or_pdiv T with
   | Some (inl _) => rngl_has_1 T
   | Some (inr (inl _)) => rngl_mul_is_comm T
   | Some (inr (inr _)) => true
   | None => false
   end.
-(*
-  rngl_has_inv T = true ∧ rngl_has_1 T = true ∨
-  rngl_has_divl T = true ∧ rngl_mul_is_comm T = true.
 *)
+  (rngl_has_inv T && rngl_has_1 T ||
+   rngl_has_divl T && rngl_mul_is_comm T ||
+   rngl_has_divr T)%bool.
+(**)
 
 Definition rngl_has_inv_and_1_or_divl_or_divr_comm T {ro : ring_like_op T}
   {rp : ring_like_prop T} :=
