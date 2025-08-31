@@ -139,23 +139,24 @@ destruct iv. {
   rewrite (rngl_div_diag Hon Hiq); [ | easy ].
   apply (rngl_mul_1_r Hon).
 }
-remember (rngl_has_divr T) as dr eqn:Hdr; symmetry in Hdr.
-destruct dr. {
-  specialize rngl_opt_mul_div_r as H1.
-  rewrite Hdr in H1.
-  now apply H1.
-}
 remember (rngl_has_divl T) as dl eqn:Hdl; symmetry in Hdl.
 destruct dl. {
+  specialize rngl_opt_mul_div_l as H1.
   progress unfold rngl_has_inv_and_1_or_divl_comm_or_divr in Hii.
   progress unfold rngl_has_inv in Hiv.
+  progress unfold rngl_has_divl in Hdl.
+  progress unfold rngl_has_divl in H1.
   destruct (rngl_opt_inv_or_pdiv T) as [ii| ]; [ | easy ].
   destruct ii as [| ii]; [ easy | clear Hiv ].
   destruct ii; [ | easy ].
   rename Hii into Hic.
-  specialize rngl_opt_mul_div_l as H1.
-  rewrite Hdl in H1.
   rewrite (rngl_mul_comm Hic).
+  now apply H1.
+}
+remember (rngl_has_divr T) as dr eqn:Hdr; symmetry in Hdr.
+destruct dr. {
+  specialize rngl_opt_mul_div_r as H1.
+  rewrite Hdr in H1.
   now apply H1.
 }
 progress unfold rngl_has_inv_and_1_or_divl_comm_or_divr in Hii.
@@ -166,6 +167,8 @@ destruct (rngl_opt_inv_or_pdiv T) as [ii| ]; [ | easy ].
 destruct ii as [| ii]; [ easy | ].
 now destruct ii.
 Qed.
+
+...
 
 Theorem rngl_mul_cancel_l :
   rngl_has_inv_and_1_or_pdiv T = true →
