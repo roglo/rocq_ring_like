@@ -118,7 +118,39 @@ rewrite Hai, Hdl, Hdr in Hiq.
 now destruct Hiq as [|[|]].
 Qed.
 
-Theorem rngl_mul_div :
+Theorem rngl_mul_div_l :
+  rngl_has_inv_and_1_or_divl_or_divr_comm T = true →
+  ∀ a b : T, a ≠ 0%L → (a * b / a)%L = b.
+Proof.
+intros Hii a b Haz.
+progress unfold rngl_has_inv_and_1_or_divl_or_divr_comm in Hii.
+apply Bool.orb_true_iff in Hii.
+destruct Hii as [Hii| Hii]. {
+  apply Bool.orb_true_iff in Hii.
+  destruct Hii as [Hii| Hii]. {
+    apply Bool.andb_true_iff in Hii.
+    destruct Hii as (Hiv, Hon).
+    progress unfold rngl_div.
+    rewrite Hiv.
+...
+  } {
+    specialize rngl_opt_mul_div_l as H1.
+    rewrite Hii in H1.
+    now apply H1.
+  }
+} {
+  apply Bool.andb_true_iff in Hii.
+  destruct Hii as (Hdr, Hic).
+  specialize rngl_opt_mul_div_r as H1.
+  rewrite Hdr in H1.
+  rewrite (rngl_mul_comm Hic).
+  now apply H1.
+}
+Qed.
+
+...
+
+Theorem rngl_mul_div_r :
   rngl_has_inv_and_1_or_divl_comm_or_divr T = true →
   ∀ a b : T, b ≠ 0%L → (a * b / b)%L = a.
 Proof.
