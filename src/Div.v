@@ -151,59 +151,20 @@ destruct dl. {
   progress unfold rngl_has_inv in Hiv.
   destruct (rngl_opt_inv_or_pdiv T) as [ii| ]; [ | easy ].
   destruct ii as [| ii]; [ easy | clear Hiv ].
-...
-  destruct ii. {
-    rename Hii into Hic.
-    specialize rngl_opt_mul_div_l as H1.
-    rewrite Hdl in H1.
-    rewrite (rngl_mul_comm Hic).
-    now apply H1.
-  }
+  destruct ii; [ | easy ].
+  rename Hii into Hic.
   specialize rngl_opt_mul_div_l as H1.
-  specialize rngl_opt_mul_div_r as H2.
-  rewrite Hdr in H2.
   rewrite Hdl in H1.
-...
-apply H1.
-...
-  rewrite Hdr in H1.
-    rewrite (rngl_mul_comm Hic).
-...
-
- 2: {
-  apply rngl_has_inv_and_1_or_pdiv_iff in Hii.
-  rewrite Hiv, Hdr, Hdl in Hii.
-  destruct Hii as [| Hii]; [ easy | now destruct Hii].
+  rewrite (rngl_mul_comm Hic).
+  now apply H1.
 }
-specialize rngl_opt_mul_div_l as H1.
-rewrite Hdl in H1.
-specialize (H1 b a Hbz) as H2.
-...
-    now rewrite (rngl_mul_comm Hic).
-
-remember (rngl_mul_is_comm T) as ic eqn:Hic.
-symmetry in Hic.
-destruct ic. {
-  remember (rngl_has_divl T) as dl eqn:Hdl; symmetry in Hdl.
-  destruct dl. {
-    specialize rngl_opt_mul_div_l as H1.
-    rewrite Hdl in H1.
-    specialize (H1 b a Hbz) as H2.
-    now rewrite (rngl_mul_comm Hic).
-  } {
-    specialize rngl_opt_mul_div_r as H1.
-    rewrite Hdl in H1.
-    specialize (H1 b a Hbz) as H2.
-    now rewrite (rngl_mul_comm Hic).
-...
-remember (rngl_has_pdiv T) as qu eqn:Hqu; symmetry in Hqu.
-destruct qu. {
-  specialize rngl_opt_mul_div as mul_div.
-  rewrite Hqu in mul_div.
-  now apply mul_div.
-}
-apply rngl_has_inv_and_1_or_pdiv_iff in Hii.
-destruct Hii as [(H1, H2)|]; congruence.
+progress unfold rngl_has_inv_and_1_or_divl_comm_or_divr in Hii.
+progress unfold rngl_has_inv in Hiv.
+progress unfold rngl_has_divr in Hdr.
+progress unfold rngl_has_divl in Hdl.
+destruct (rngl_opt_inv_or_pdiv T) as [ii| ]; [ | easy ].
+destruct ii as [| ii]; [ easy | ].
+now destruct ii.
 Qed.
 
 Theorem rngl_mul_cancel_l :
@@ -213,6 +174,7 @@ Theorem rngl_mul_cancel_l :
   → b = c.
 Proof.
 intros Hii * Haz Habc.
+...
 remember (rngl_has_inv T) as iv eqn:Hiv.
 symmetry in Hiv.
 destruct iv. {
