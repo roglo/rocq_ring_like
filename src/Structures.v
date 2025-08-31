@@ -398,9 +398,9 @@ Definition rngl_has_inv_and_1_or_divl_comm_or_divr T {ro : ring_like_op T}
    rngl_has_divl T && rngl_mul_is_comm T ||
    rngl_has_divr T)%bool.
 
-Definition rngl_has_inv_and_1_or_divl_or_divr_comm T {ro : ring_like_op T}
-  {rp : ring_like_prop T} :=
-  (rngl_has_inv T && rngl_has_1 T ||
+Definition rngl_has_inv_and_1_comm_or_divl_or_divr_comm T
+  {ro : ring_like_op T} {rp : ring_like_prop T} :=
+  (rngl_has_inv T && rngl_has_1 T && rngl_mul_is_comm T ||
    rngl_has_divl T ||
    rngl_has_divr T && rngl_mul_is_comm T)%bool.
 
