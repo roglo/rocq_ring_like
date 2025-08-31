@@ -71,13 +71,6 @@ Definition rngl_is_ordered T {R : ring_like_op T} :=
 Definition rngl_has_eq_dec T {R : ring_like_op T} :=
   bool_of_option (rngl_opt_eq_dec T).
 
-Definition rngl_has_inv_and_1_or_quot T {R : ring_like_op T} :=
-  match rngl_opt_inv_or_quot T with
-  | Some (inl _) => rngl_has_1 T
-  | Some (inr _) => true
-  | None => false
-  end.
-
 Definition rngl_has_opp T {R : ring_like_op T} :=
   match rngl_opt_opp_or_subt T with
   | Some (inl _) => true
@@ -101,6 +94,9 @@ Definition rngl_has_quot T {R : ring_like_op T} :=
   | Some (inr _) => true
   | _ => false
   end.
+
+Definition rngl_has_inv_and_1_or_quot T {R : ring_like_op T} :=
+  (rngl_has_inv T && rngl_has_1 T || rngl_has_quot T)%bool.
 
 Definition rngl_is_integral_domain T {ro : ring_like_op T} :=
   match rngl_opt_is_zero_divisor T with
@@ -422,14 +418,17 @@ Theorem rngl_has_inv_and_1_or_quot_iff :
   rngl_has_inv_and_1_or_quot T = true
   ↔ rngl_has_inv T = true ∧ rngl_has_1 T = true ∨ rngl_has_quot T = true.
 Proof.
-progress unfold rngl_has_inv_and_1_or_quot, bool_of_option.
-progress unfold rngl_has_inv, rngl_has_quot.
-destruct rngl_opt_inv_or_quot as [inv_quot| ]. 2: {
-  split; [ now left | ].
-  now intros [|].
+progress unfold rngl_has_inv_and_1_or_quot.
+split; intros H. {
+  apply Bool.orb_true_iff in H.
+  destruct H as [H| H]; [ left | now right ].
+  now apply Bool.andb_true_iff in H.
+} {
+  apply Bool.orb_true_iff.
+  destruct H as [H| H]; [ left | now right ].
+  destruct H as (Hiv, Hon).
+  now rewrite Hiv, Hon.
 }
-split; [ | now intros H; destruct H, inv_quot ].
-now destruct inv_quot; [ left | right ].
 Qed.
 
 Theorem rngl_has_opp_has_opp_or_subt :
