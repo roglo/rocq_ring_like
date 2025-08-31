@@ -2757,8 +2757,6 @@ intros Hab.
 now apply (rngl_eq_mul_0_l Hon Hos Hiq) in Hab.
 Qed.
 
-...
-
 Theorem lap_norm_mul :
   rngl_has_1 T = true →
   rngl_has_inv T = true →

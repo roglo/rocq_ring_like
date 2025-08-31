@@ -306,13 +306,12 @@ now destruct Hii.
 Qed.
 
 Theorem rngl_eq_mul_0_r :
-  rngl_mul_is_comm T = true →
   rngl_has_1 T = true →
   rngl_has_opp_or_subt T = true →
   rngl_has_inv_or_quot T = true →
   ∀ a b, (a * b = 0)%L → a ≠ 0%L → b = 0%L.
 Proof.
-intros Hic Hon Hos Hiq.
+intros Hon Hos Hiq.
 specialize (rngl_has_1_has_inv_or_quot_has_inv_and_1_or_quot Hon Hiq) as Hii.
 intros * Hab Haz.
 remember (rngl_has_inv T) as iv eqn:Hiv; symmetry in Hiv.
@@ -325,10 +324,20 @@ destruct iv. {
 }
 remember (rngl_has_quot T) as qu eqn:Hqu; symmetry in Hqu.
 destruct qu. {
-  specialize (rngl_mul_div Hii b a Haz) as H1.
-  rewrite (rngl_mul_comm Hic) in H1.
-  rewrite Hab in H1.
-  now rewrite rngl_div_0_l in H1.
+  remember (rngl_mul_is_comm T) as ic eqn:Hic.
+  symmetry in Hic.
+  destruct ic. {
+    specialize (rngl_mul_div Hii b a Haz) as H1.
+    rewrite (rngl_mul_comm Hic) in H1.
+    rewrite Hab in H1.
+    now rewrite rngl_div_0_l in H1.
+  } {
+    specialize (rngl_opt_mul_quot_r) as H1.
+    rewrite Hqu, Hic in H1; cbn in H1.
+    specialize (H1 b a Haz).
+    rewrite Hab in H1.
+    now rewrite rngl_div_0_l in H1.
+  }
 }
 apply rngl_has_inv_and_1_or_quot_iff in Hii.
 rewrite Hiv, Hqu in Hii.

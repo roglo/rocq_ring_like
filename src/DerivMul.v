@@ -925,7 +925,7 @@ destruct is_left. {
     rewrite <- (rngl_div_mul Hon Hiv ε (3 * K))%L. 2: {
       progress unfold K.
       intros H.
-      apply (rngl_eq_mul_0_r Hic Hon Hos Hiq) in H. 2: {
+      apply (rngl_eq_mul_0_r Hon Hos Hiq) in H. 2: {
         intros H'.
         rewrite H' in Hz3.
         now apply (rngl_lt_irrefl Hor) in Hz3.
@@ -1217,7 +1217,7 @@ destruct is_left. {
     rewrite <- (rngl_div_mul Hon Hiv ε (3 * K))%L. 2: {
       progress unfold K.
       intros H.
-      apply (rngl_eq_mul_0_r Hic Hon Hos Hiq) in H. 2: {
+      apply (rngl_eq_mul_0_r Hon Hos Hiq) in H. 2: {
         intros H'.
         rewrite H' in Hz3.
         now apply (rngl_lt_irrefl Hor) in Hz3.
