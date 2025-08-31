@@ -119,7 +119,7 @@ now destruct Hiq as [|[|]].
 Qed.
 
 Theorem rngl_mul_div :
-  rngl_has_inv_and_1_or_pdiv T = true →
+  rngl_has_inv_and_1_or_divl_comm_or_divr T = true →
   ∀ a b : T, b ≠ 0%L → (a * b / b)%L = a.
 Proof.
 intros Hii a b Hbz.
@@ -127,10 +127,10 @@ remember (rngl_has_inv T) as iv eqn:Hiv; symmetry in Hiv.
 destruct iv. {
   specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
   assert (Hon : rngl_has_1 T = true). {
-    apply rngl_has_inv_and_1_or_pdiv_iff in Hii.
-    destruct Hii as [Hii| Hii]; [ easy | ].
-    apply rngl_has_pdiv_has_no_inv in Hii.
-    congruence.
+    progress unfold rngl_has_inv_and_1_or_divl_comm_or_divr in Hii.
+    progress unfold rngl_has_inv in Hiv.
+    destruct (rngl_opt_inv_or_pdiv T) as [ii| ]; [ | easy ].
+    now destruct ii.
   }
   progress unfold rngl_div.
   rewrite Hiv.
@@ -139,6 +139,62 @@ destruct iv. {
   rewrite (rngl_div_diag Hon Hiq); [ | easy ].
   apply (rngl_mul_1_r Hon).
 }
+remember (rngl_has_divr T) as dr eqn:Hdr; symmetry in Hdr.
+destruct dr. {
+  specialize rngl_opt_mul_div_r as H1.
+  rewrite Hdr in H1.
+  now apply H1.
+}
+remember (rngl_has_divl T) as dl eqn:Hdl; symmetry in Hdl.
+destruct dl. {
+  progress unfold rngl_has_inv_and_1_or_divl_comm_or_divr in Hii.
+  progress unfold rngl_has_inv in Hiv.
+  destruct (rngl_opt_inv_or_pdiv T) as [ii| ]; [ | easy ].
+  destruct ii as [| ii]; [ easy | clear Hiv ].
+...
+  destruct ii. {
+    rename Hii into Hic.
+    specialize rngl_opt_mul_div_l as H1.
+    rewrite Hdl in H1.
+    rewrite (rngl_mul_comm Hic).
+    now apply H1.
+  }
+  specialize rngl_opt_mul_div_l as H1.
+  specialize rngl_opt_mul_div_r as H2.
+  rewrite Hdr in H2.
+  rewrite Hdl in H1.
+...
+apply H1.
+...
+  rewrite Hdr in H1.
+    rewrite (rngl_mul_comm Hic).
+...
+
+ 2: {
+  apply rngl_has_inv_and_1_or_pdiv_iff in Hii.
+  rewrite Hiv, Hdr, Hdl in Hii.
+  destruct Hii as [| Hii]; [ easy | now destruct Hii].
+}
+specialize rngl_opt_mul_div_l as H1.
+rewrite Hdl in H1.
+specialize (H1 b a Hbz) as H2.
+...
+    now rewrite (rngl_mul_comm Hic).
+
+remember (rngl_mul_is_comm T) as ic eqn:Hic.
+symmetry in Hic.
+destruct ic. {
+  remember (rngl_has_divl T) as dl eqn:Hdl; symmetry in Hdl.
+  destruct dl. {
+    specialize rngl_opt_mul_div_l as H1.
+    rewrite Hdl in H1.
+    specialize (H1 b a Hbz) as H2.
+    now rewrite (rngl_mul_comm Hic).
+  } {
+    specialize rngl_opt_mul_div_r as H1.
+    rewrite Hdl in H1.
+    specialize (H1 b a Hbz) as H2.
+    now rewrite (rngl_mul_comm Hic).
 ...
 remember (rngl_has_pdiv T) as qu eqn:Hqu; symmetry in Hqu.
 destruct qu. {
