@@ -1003,7 +1003,9 @@ Theorem rlap_quot_prop :
   → rlap_quot_rem la lb = (lq, lr)
   → lq = [] ∨ List.hd 0%L lq ≠ 0%L.
 Proof.
-intros Hon Hiv * Ha Hb Hab.
+intros Hon Hiv.
+specialize (rngl_has_inv_has_inv_or_quot Hiv) as Hiq.
+intros * Ha Hb Hab.
 destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hch| Hch]. {
   specialize (rngl_characteristic_1 Hon Hos Hch) as H1.
   destruct lq as [| q]; [ now left | right; cbn ].
@@ -1043,16 +1045,12 @@ symmetry in Hab.
 injection Hab; clear Hab; intros H1 Hlq; subst lr'.
 rewrite Hlq; cbn.
 rewrite Hcq.
+right.
 unfold rngl_div.
 rewrite Hiv.
-right.
 intros Hq.
-...
-apply (rngl_eq_mul_0_l Hos) in Hq; [ easy | | ]. {
-  apply Bool.orb_true_iff; right.
-  now apply rngl_has_inv_and_1_or_quot_iff; left.
-}
-apply rngl_inv_neq_0; [ easy | easy | easy | easy ].
+apply (rngl_eq_mul_0_l Hon Hos Hiq) in Hq; [ easy | ].
+now apply (rngl_inv_neq_0 Hon Hos Hiv).
 Qed.
 
 Theorem lap_convol_mul_1_l :
@@ -2735,7 +2733,9 @@ Theorem lap_mul_has_polyn_prop :
   → has_polyn_prop lb = true
   → has_polyn_prop (la * lb)%lap = true.
 Proof.
-intros Hon Hiv * Ha Hb.
+intros Hon Hiv.
+specialize (rngl_has_inv_has_inv_or_quot Hiv) as Hiq.
+intros * Ha Hb.
 unfold has_polyn_prop in Ha, Hb |-*.
 apply Bool.orb_true_iff in Ha, Hb.
 apply Bool.orb_true_iff.
@@ -2754,11 +2754,10 @@ apply (rngl_neqb_neq Hed) in Ha, Hb.
 apply (rngl_neqb_neq Hed).
 rewrite last_lap_mul.
 intros Hab.
-apply (rngl_eq_mul_0_r Hos) in Hab; [ easy | |  easy].
-apply Bool.orb_true_iff; right.
-apply rngl_has_inv_and_1_or_quot_iff.
-now left; rewrite Hon, Hiv.
+now apply (rngl_eq_mul_0_l Hon Hos Hiq) in Hab.
 Qed.
+
+...
 
 Theorem lap_norm_mul :
   rngl_has_1 T = true →
