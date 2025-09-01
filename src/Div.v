@@ -544,23 +544,22 @@ Theorem rngl_inv_mul_distr :
 Proof.
 intros Hon Hos Hiv * Haz Hbz.
 specialize (rngl_has_inv_has_inv_or_quot Hiv) as Hiq.
-specialize (rngl_has_inv_and_1_has_inv_and_1_or_quot Hon Hiv) as Hi1.
-specialize (rngl_div_diag Hon Hiq) as div_diag.
-specialize (rngl_eq_mul_0_l Hon Hos Hiq) as integral.
-unfold rngl_div in div_diag.
-rewrite Hiv in div_diag.
+specialize (rngl_has_1_inv_has_inv_and_1_or_quot_and_comm Hon Hiv) as Hi1.
+specialize (rngl_div_diag Hon Hiq) as H1.
+specialize (rngl_eq_mul_0_l Hon Hos Hiq) as H2.
+unfold rngl_div in H1.
+rewrite Hiv in H1.
 assert (Habz : (a * b)%L ≠ 0%L). {
   intros H.
-  now specialize (integral a b H Hbz).
+  now specialize (H2 a b H Hbz).
 }
-...
 apply (rngl_mul_cancel_l Hi1 (a * b)%L _ _ Habz).
-rewrite (div_diag _ Habz).
+rewrite (H1 _ Habz).
 rewrite rngl_mul_assoc.
 rewrite <- (rngl_mul_assoc a).
-rewrite (div_diag _ Hbz).
+rewrite (H1 _ Hbz).
 rewrite (rngl_mul_1_r Hon).
-now symmetry; apply div_diag.
+now symmetry; apply H1.
 Qed.
 
 Theorem rngl_div_div :
@@ -603,7 +602,7 @@ Theorem rngl_opp_inv :
 Proof.
 intros Hon Hop Hiv * Haz.
 specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
-specialize (rngl_has_inv_and_1_has_inv_and_1_or_quot Hon Hiv) as Hi1.
+specialize (rngl_has_1_inv_has_inv_and_1_or_quot_and_comm Hon Hiv) as Hi1.
 remember (Nat.eqb (rngl_characteristic T) 1) as ch eqn:Hch; symmetry in Hch.
 destruct ch. {
   apply Nat.eqb_eq in Hch.

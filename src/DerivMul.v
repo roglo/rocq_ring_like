@@ -662,6 +662,7 @@ Proof.
 intros Hic Hon Hiv.
 specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
 specialize (rngl_has_inv_has_inv_or_quot Hiv) as Hiq.
+specialize (rngl_has_inv_has_inv_or_quot_and_comm Hiv) as Hi1.
 destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
   specialize (rngl_characteristic_1 Hon Hos Hc1) as H1.
   intros * Hlti * dist * Hf Hg * ε Hε.
@@ -925,7 +926,7 @@ destruct is_left. {
     rewrite <- (rngl_div_mul Hon Hiv ε (3 * K))%L. 2: {
       progress unfold K.
       intros H.
-      apply (rngl_eq_mul_0_r Hon Hos Hiq) in H. 2: {
+      apply (rngl_eq_mul_0_r Hon Hos Hi1) in H. 2: {
         intros H'.
         rewrite H' in Hz3.
         now apply (rngl_lt_irrefl Hor) in Hz3.
@@ -1217,7 +1218,7 @@ destruct is_left. {
     rewrite <- (rngl_div_mul Hon Hiv ε (3 * K))%L. 2: {
       progress unfold K.
       intros H.
-      apply (rngl_eq_mul_0_r Hon Hos Hiq) in H. 2: {
+      apply (rngl_eq_mul_0_r Hon Hos Hi1) in H. 2: {
         intros H'.
         rewrite H' in Hz3.
         now apply (rngl_lt_irrefl Hor) in Hz3.

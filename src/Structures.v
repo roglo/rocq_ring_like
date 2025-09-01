@@ -445,6 +445,14 @@ intros * Hop.
 now apply rngl_has_inv_or_quot_iff; left.
 Qed.
 
+Theorem rngl_has_inv_has_inv_or_quot_and_comm :
+  rngl_has_inv T = true → rngl_has_inv_or_quot_and_comm T = true.
+Proof.
+intros * Hop.
+apply Bool.orb_true_iff.
+now left.
+Qed.
+
 Theorem rngl_has_inv_and_1_has_inv_and_1_or_quot :
   rngl_has_1 T = true →
   rngl_has_inv T = true →
@@ -455,7 +463,6 @@ apply rngl_has_inv_and_1_or_quot_iff.
 now rewrite Hiv, Hon; left.
 Qed.
 
-(*
 Theorem rngl_int_dom_or_inv_1_quo_and_eq_dec :
   rngl_has_inv_and_1_or_quot T = true →
   rngl_has_eq_dec T = true →
@@ -478,7 +485,6 @@ apply Bool.orb_true_iff; right.
 apply rngl_has_inv_and_1_or_quot_iff; left.
 now rewrite Hiv, Hon.
 Qed.
-*)
 
 Theorem rngl_has_1_has_inv_or_quot_has_inv_and_1_or_quot :
   rngl_has_1 T = true →
@@ -492,7 +498,6 @@ apply rngl_has_inv_or_quot_iff in Hiq.
 destruct Hiq as [H| H]; rewrite H; [ now left | now right ].
 Qed.
 
-(*
 Theorem rngl_int_dom_or_inv_1_or_quot_r :
   rngl_has_1 T = true →
   rngl_has_inv_or_quot T = true →
@@ -502,7 +507,6 @@ intros Hon Hiq.
 apply Bool.orb_true_iff; right.
 now apply rngl_has_1_has_inv_or_quot_has_inv_and_1_or_quot.
 Qed.
-*)
 
 Theorem rngl_has_subt_has_no_opp :
   rngl_has_subt T = true
@@ -531,8 +535,17 @@ Theorem rngl_has_quot_has_inv_and_1_or_quot :
   → rngl_has_inv_and_1_or_quot T = true.
 Proof.
 intros * Hqu.
-progress unfold rngl_has_inv_and_1_or_quot.
 now apply Bool.orb_true_iff; right.
+Qed.
+
+Theorem rngl_has_1_inv_has_inv_and_1_or_quot_and_comm :
+  rngl_has_1 T = true
+  → rngl_has_inv T = true
+  → rngl_has_inv_and_1_or_quot_and_comm T = true.
+Proof.
+intros * Hon Hiv.
+apply Bool.orb_true_iff.
+now left; rewrite Hon, Hiv.
 Qed.
 
 Theorem rngl_has_quot_has_no_inv :
@@ -577,7 +590,6 @@ rewrite Hor.
 apply Bool.orb_true_r.
 Qed.
 
-(*
 Theorem rngl_integral_or_inv_1_quot_eq_dec_order :
   rngl_has_1 T = true →
   rngl_has_inv T = true →
@@ -591,7 +603,6 @@ apply Bool.orb_true_iff; right.
 rewrite (rngl_has_inv_and_1_has_inv_and_1_or_quot Hon Hiv); cbn.
 apply (rngl_has_eq_dec_or_is_ordered_r Hor).
 Qed.
-*)
 
 Theorem fold_rngl_squ : ∀ a : T, (a * a)%L = rngl_squ a.
 Proof. easy. Qed.

@@ -3294,19 +3294,6 @@ destruct (Sumbool.sumbool_of_bool true); [ | easy ].
 now apply polyn_mul_div.
 Qed.
 
-Theorem polyn_opt_mul_quot_r :
-  let _ := polyn_ring_like_op in
-  if (rngl_has_quot (polyn T) && negb (rngl_mul_is_comm T))%bool then
-    ∀ a b, b ≠ 0%L → (b * a / b)%L = a
-  else not_applicable.
-Proof.
-intros rop.
-unfold rngl_has_quot; cbn.
-unfold polyn_opt_inv_or_quot.
-destruct (Sumbool.sumbool_of_bool _) as [Hco| Hco]; rewrite Hco; [ | easy ].
-now rewrite Bool.andb_false_r.
-Qed.
-
 Theorem lap_polyn_rngl_of_nat_char_0 :
   let _ := polyn_ring_like_op in
   rngl_characteristic T = 0
@@ -3732,7 +3719,6 @@ Definition polyn_ring_like_prop : ring_like_prop (polyn T) :=
      rngl_opt_mul_inv_diag_l := polyn_opt_has_no_inv _;
      rngl_opt_mul_inv_diag_r := polyn_opt_has_no_inv_and _ _;
      rngl_opt_mul_div := polyn_opt_mul_div;
-     rngl_opt_mul_quot_r := polyn_opt_mul_quot_r;
      rngl_opt_integral := polyn_integral;
      rngl_opt_alg_closed := NA;
      rngl_opt_characteristic_prop := polyn_characteristic_prop;
