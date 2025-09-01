@@ -95,9 +95,6 @@ Definition rngl_has_quot T {R : ring_like_op T} :=
   | _ => false
   end.
 
-Definition rngl_has_inv_and_1_or_quot T {R : ring_like_op T} :=
-  (rngl_has_inv T && rngl_has_1 T || rngl_has_quot T)%bool.
-
 Definition rngl_is_integral_domain T {ro : ring_like_op T} :=
   match rngl_opt_is_zero_divisor T with
   | Some _ => false
@@ -321,15 +318,6 @@ Class ring_like_prop T {ro : ring_like_op T} :=
     rngl_opt_mul_div :
       if rngl_has_quot T then ∀ a b, b ≠ 0%L → (a * b / b)%L = a
       else not_applicable;
-    rngl_opt_mul_quot_r :
-      (* actually there is no algebra having at the same time
-         - no inverse (has_inv = false)
-         - a primitive division (has_quot = true)
-         - a non commutative multiplication (mul_comm = false);
-         this axiom is therefore useless *)
-      if (rngl_has_quot T && negb rngl_mul_is_comm)%bool then
-        ∀ a b, b ≠ 0%L → (b * a / b)%L = a
-      else not_applicable;
     (* zero divisors *)
     rngl_opt_integral :
       ∀ a b, (a * b = 0)%L
@@ -377,6 +365,18 @@ Arguments rngl_mul_is_comm T {ro ring_like_prop}.
 Arguments rngl_characteristic T {ro ring_like_prop}.
 Arguments rngl_is_archimedean T {ro ring_like_prop}.
 Arguments rngl_abs {T ro} a%_L.
+
+Definition rngl_has_inv_or_quot_and_comm T {ro : ring_like_op T}
+  {rp : ring_like_prop T} :=
+  (rngl_has_inv T || rngl_has_quot T && rngl_mul_is_comm T)%bool.
+
+Definition rngl_has_inv_and_1_or_quot T {ro : ring_like_op T} :=
+  (rngl_has_inv T && rngl_has_1 T || rngl_has_quot T)%bool.
+
+Definition rngl_has_inv_and_1_or_quot_and_comm T {ro : ring_like_op T}
+  {rp : ring_like_prop T} :=
+  (rngl_has_inv T && rngl_has_1 T ||
+   rngl_has_quot T && rngl_mul_is_comm T)%bool.
 
 Notation "∣ x ∣" := (rngl_abs x) (at level 35, x at level 30).
 
@@ -455,6 +455,7 @@ apply rngl_has_inv_and_1_or_quot_iff.
 now rewrite Hiv, Hon; left.
 Qed.
 
+(*
 Theorem rngl_int_dom_or_inv_1_quo_and_eq_dec :
   rngl_has_inv_and_1_or_quot T = true →
   rngl_has_eq_dec T = true →
@@ -477,6 +478,7 @@ apply Bool.orb_true_iff; right.
 apply rngl_has_inv_and_1_or_quot_iff; left.
 now rewrite Hiv, Hon.
 Qed.
+*)
 
 Theorem rngl_has_1_has_inv_or_quot_has_inv_and_1_or_quot :
   rngl_has_1 T = true →
@@ -490,6 +492,7 @@ apply rngl_has_inv_or_quot_iff in Hiq.
 destruct Hiq as [H| H]; rewrite H; [ now left | now right ].
 Qed.
 
+(*
 Theorem rngl_int_dom_or_inv_1_or_quot_r :
   rngl_has_1 T = true →
   rngl_has_inv_or_quot T = true →
@@ -499,6 +502,7 @@ intros Hon Hiq.
 apply Bool.orb_true_iff; right.
 now apply rngl_has_1_has_inv_or_quot_has_inv_and_1_or_quot.
 Qed.
+*)
 
 Theorem rngl_has_subt_has_no_opp :
   rngl_has_subt T = true
@@ -520,6 +524,15 @@ unfold rngl_has_opp in Hop.
 unfold rngl_has_subt.
 destruct rngl_opt_opp_or_subt as [os| ]; [ | easy ].
 now destruct os.
+Qed.
+
+Theorem rngl_has_quot_has_inv_and_1_or_quot :
+  rngl_has_quot T = true
+  → rngl_has_inv_and_1_or_quot T = true.
+Proof.
+intros * Hqu.
+progress unfold rngl_has_inv_and_1_or_quot.
+now apply Bool.orb_true_iff; right.
 Qed.
 
 Theorem rngl_has_quot_has_no_inv :
@@ -564,6 +577,7 @@ rewrite Hor.
 apply Bool.orb_true_r.
 Qed.
 
+(*
 Theorem rngl_integral_or_inv_1_quot_eq_dec_order :
   rngl_has_1 T = true →
   rngl_has_inv T = true →
@@ -577,6 +591,7 @@ apply Bool.orb_true_iff; right.
 rewrite (rngl_has_inv_and_1_has_inv_and_1_or_quot Hon Hiv); cbn.
 apply (rngl_has_eq_dec_or_is_ordered_r Hor).
 Qed.
+*)
 
 Theorem fold_rngl_squ : ∀ a : T, (a * a)%L = rngl_squ a.
 Proof. easy. Qed.
