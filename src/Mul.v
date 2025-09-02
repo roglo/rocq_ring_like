@@ -5,8 +5,8 @@ Theorems about multiplication in ring-like structures.
 Some of them require one or several properties:
 - [rngl_mul_is_comm T = true] : that the multiplication is commutative,
 - [rngl_has_opp T = true] : that there is an opposite
-- [rngl_has_subt T = true] : that there is a partial subtraction,
-- [rngl_has_opp_or_subt T = true] : that there is an opposite or
+- [rngl_has_psub T = true] : that there is a partial subtraction,
+- [rngl_has_opp_or_psub T = true] : that there is an opposite or
   a partial subtraction,
 - [rngl_has_1 T = true] : that [1] exists,
 
@@ -60,7 +60,7 @@ destruct ic. {
 Qed.
 
 Theorem rngl_mul_0_r :
-  rngl_has_opp_or_subt T = true →
+  rngl_has_opp_or_psub T = true →
   ∀ a, (a * 0 = 0)%L.
 Proof.
 intros Hos *.
@@ -78,13 +78,13 @@ Qed.
 (* a.0 = a.(b-b) = a.b - a.b = 0
    (any b can be chosen: a, 0, 1, ...) *)
 Theorem rngl_mul_0_r' :
-  rngl_has_subt T = true →
+  rngl_has_psub T = true →
   (∀ a b c, a * (b - c) = a * b - a * c)%L
   → ∀ a, (a * 0 = 0)%L.
 Proof.
 intros Hsu.
 generalize Hsu; intros Hop.
-apply rngl_has_subt_has_no_opp in Hop.
+apply rngl_has_psub_has_no_opp in Hop.
 intros rngl_mul_sub_distr_l a.
 specialize rngl_add_0_l as H1.
 specialize rngl_opt_add_sub as H2.
@@ -94,8 +94,8 @@ progress unfold rngl_sub in H3.
 rewrite Hsu, Hop in H2, H3.
 (*
   H1 : ∀ a : T, (0 + a)%L = a
-  H2 : ∀ a b : T, rngl_subt (a + b) b = a
-  H3 : ∀ a b c : T, (a * rngl_subt b c)%L = rngl_subt (a * b) (a * c)
+  H2 : ∀ a b : T, rngl_psub (a + b) b = a
+  H3 : ∀ a b c : T, (a * rngl_psub b c)%L = rngl_psub (a * b) (a * c)
 *)
 (* it seems that the theorem a-a=0 is sufficient, no need to have
    the full a+b-b=a for all a and b *)
@@ -116,12 +116,12 @@ Qed.
 (* a.0 = a.0 + a.b - a.b = a.(0+b) - a.b = a.b - a.b = 0
    (any b can be chosen: a, 0, 1, ...) *)
 Theorem rngl_mul_0_r'' :
-  rngl_has_subt T = true →
+  rngl_has_psub T = true →
   ∀ a, (a * 0 = 0)%L.
 Proof.
 intros Hsu.
 generalize Hsu; intros Hop.
-apply rngl_has_subt_has_no_opp in Hop.
+apply rngl_has_psub_has_no_opp in Hop.
 intros.
 specialize rngl_add_0_l as H1.
 specialize rngl_opt_add_sub as H2.
@@ -130,7 +130,7 @@ progress unfold rngl_sub in H2.
 rewrite Hsu, Hop in H2.
 (*
   H1 : ∀ a : T, (0 + a)%L = a
-  H2 : ∀ a b : T, rngl_subt (a + b) b = a
+  H2 : ∀ a b : T, rngl_psub (a + b) b = a
   H3 : ∀ a b c : T, (a * (b + c))%L = (a * b + a * c)%L
 *)
 set (b := 0%L).
@@ -153,7 +153,7 @@ easy.
 Qed.
 
 Theorem rngl_mul_0_l :
-  rngl_has_opp_or_subt T = true →
+  rngl_has_opp_or_psub T = true →
   ∀ a, (0 * a = 0)%L.
 Proof.
 intros Hos a.
@@ -220,8 +220,8 @@ Proof.
 intros Hro *.
 specialize (rngl_mul_add_distr_l a b (- b)%L) as H.
 rewrite rngl_add_opp_r in H; [ | easy ].
-rewrite rngl_sub_diag in H; [ | now apply rngl_has_opp_or_subt_iff; left ].
-rewrite rngl_mul_0_r in H; [ | now apply rngl_has_opp_or_subt_iff; left ].
+rewrite rngl_sub_diag in H; [ | now apply rngl_has_opp_or_psub_iff; left ].
+rewrite rngl_mul_0_r in H; [ | now apply rngl_has_opp_or_psub_iff; left ].
 symmetry in H.
 rewrite rngl_add_comm in H.
 now apply rngl_add_move_0_r in H.
@@ -301,7 +301,7 @@ intros Hro *.
 specialize (rngl_mul_add_distr_r (- a)%L a b) as H.
 rewrite rngl_add_opp_diag_l in H; [ | easy ].
 rewrite rngl_mul_0_l in H. 2: {
-  now apply rngl_has_opp_or_subt_iff; left.
+  now apply rngl_has_opp_or_psub_iff; left.
 }
 symmetry in H.
 now apply rngl_add_move_0_r in H.
@@ -345,8 +345,8 @@ Proof.
 intros Hon Hop *.
 rewrite (rngl_mul_sub_distr_l Hop).
 rewrite (rngl_mul_sub_distr_r Hop).
-rewrite rngl_mul_0_l; [ | now apply rngl_has_opp_or_subt_iff; left ].
-rewrite rngl_mul_0_r; [ | now apply rngl_has_opp_or_subt_iff; left ].
+rewrite rngl_mul_0_l; [ | now apply rngl_has_opp_or_psub_iff; left ].
+rewrite rngl_mul_0_r; [ | now apply rngl_has_opp_or_psub_iff; left ].
 now rewrite rngl_mul_1_l, rngl_mul_1_r.
 Qed.
 
@@ -357,7 +357,7 @@ Proof. now destruct x. Qed.
 
 Theorem rngl_characteristic_1 :
   rngl_has_1 T = true →
-  rngl_has_opp_or_subt T = true →
+  rngl_has_opp_or_psub T = true →
   rngl_characteristic T = 1 →
   ∀ x, x = 0%L.
 Proof.
@@ -373,7 +373,7 @@ Qed.
 
 Theorem rngl_1_eq_0_iff :
   rngl_has_1 T = true →
-  rngl_has_opp_or_subt T = true →
+  rngl_has_opp_or_psub T = true →
   rngl_characteristic T = 1 ↔ (1 = 0)%L.
 Proof.
 intros Hon Hos.
@@ -410,7 +410,7 @@ Qed.
 
 Theorem rngl_mul_nat_mul_nat_1 :
   rngl_has_1 T = true →
-  rngl_has_opp_or_subt T = true →
+  rngl_has_opp_or_psub T = true →
   ∀ a n, rngl_mul_nat a n = (a * rngl_of_nat n)%L.
 Proof.
 intros Hon Hos *.
@@ -424,7 +424,7 @@ Qed.
 
 Theorem rngl_mul_nat_comm :
   rngl_has_1 T = true →
-  rngl_has_opp_or_subt T = true →
+  rngl_has_opp_or_psub T = true →
   ∀ n a, (rngl_of_nat n * a = a * rngl_of_nat n)%L.
 Proof.
 intros Hon Hos *.
@@ -446,7 +446,7 @@ Proof. easy. Qed.
 
 Theorem rngl_of_nat_mul :
   rngl_has_1 T = true →
-  rngl_has_opp_or_subt T = true →
+  rngl_has_opp_or_psub T = true →
   ∀ m n : nat, rngl_of_nat (m * n) = (rngl_of_nat m * rngl_of_nat n)%L.
 Proof.
 intros Hon Hos *.
@@ -458,7 +458,7 @@ Qed.
 
 Theorem rngl_of_nat_pow :
   rngl_has_1 T = true →
-  rngl_has_opp_or_subt T = true →
+  rngl_has_opp_or_psub T = true →
   ∀ a n, rngl_of_nat (a ^ n) = (rngl_of_nat a ^ n)%L.
 Proof.
 intros Hon Hos *.
@@ -470,7 +470,7 @@ Qed.
 
 Theorem rngl_mul_nat_pow_comm :
   rngl_has_1 T = true →
-  rngl_has_opp_or_subt T = true →
+  rngl_has_opp_or_psub T = true →
   ∀ a b n, (rngl_of_nat a ^ n * b = b * rngl_of_nat a ^ n)%L.
 Proof.
 intros Hon Hos *.
@@ -479,7 +479,7 @@ apply (rngl_mul_nat_comm Hon Hos).
 Qed.
 
 Theorem rngl_pow_0_l :
-  rngl_has_opp_or_subt T = true →
+  rngl_has_opp_or_psub T = true →
   ∀ n, (0 ^ n)%L = match n with 0 => 1%L | _ => 0%L end.
 Proof.
 intros Hos *.
@@ -584,7 +584,7 @@ Theorem rngl_pow_succ_r : ∀ n a, (a ^ S n = a * a ^ n)%L.
 Proof. easy. Qed.
 
 Theorem rngl_squ_0 :
-  rngl_has_opp_or_subt T = true →
+  rngl_has_opp_or_psub T = true →
   (0² = 0)%L.
 Proof.
 intros Hos.
@@ -604,7 +604,7 @@ Theorem rngl_squ_sub_squ :
   ∀ a b, (a² - b² = (a + b) * (a - b) + a * b - b * a)%L.
 Proof.
 intros Hop.
-specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 intros.
 progress unfold rngl_squ.
 rewrite rngl_mul_add_distr_r.
@@ -624,7 +624,7 @@ Theorem rngl_squ_sub_squ' :
   ∀ a b, ((a + b) * (a - b) = a² - b² + b * a - a * b)%L.
 Proof.
 intros Hop.
-specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 intros.
 rewrite (rngl_squ_sub_squ Hop).
 rewrite (rngl_sub_add Hop).
@@ -753,7 +753,7 @@ Theorem Brahmagupta_Fibonacci_identity :
   ((a² + b²) * (c² + d²) = (a * c - b * d)² + (a * d + b * c)²)%L.
 Proof.
 intros Hic Hon Hop.
-specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 intros.
 rewrite rngl_mul_add_distr_l.
 do 2 rewrite rngl_mul_add_distr_r.

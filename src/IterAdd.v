@@ -54,7 +54,7 @@ Section a.
 Context {T : Type}.
 Context {ro : ring_like_op T}.
 Context {rp : ring_like_prop T}.
-Context (Hos : rngl_has_opp_or_subt T = true).
+Context (Hos : rngl_has_opp_or_psub T = true).
 
 Theorem fold_left_rngl_add_fun_from_0 : ∀ A a l (f : A → _),
   (List.fold_left (λ c i, c + f i) l a =
@@ -930,9 +930,9 @@ Theorem rngl_summation_power :
 Proof.
 clear Hos.
 intros Hic Hon Hop Hiv.
-specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
-specialize (rngl_has_inv_has_inv_or_quot Hiv) as Hiq.
-specialize (rngl_has_inv_and_1_has_inv_and_1_or_quot Hon Hiv) as Hi1.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
+specialize (rngl_has_inv_and_1_has_inv_and_1_or_pdiv Hon Hiv) as Hi1.
 intros * Hx1.
 assert (Hx1z : (x - 1)%L ≠ 0%L). {
   intros H; apply Hx1; clear Hx1.

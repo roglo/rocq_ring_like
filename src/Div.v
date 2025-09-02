@@ -14,9 +14,9 @@ Some of the theorems below require one or several properties:
 - [rngl_has_1 T = true] : that [1] exists,
 - [rngl_characteristic T = 0] : that the characteristics is [0],
 - [rngl_characteristic T ≠ 1] : that the characteristics [≠ 1],
-- [rngl_has_opp_or_subt T = true] : that opposite or partial subtraction
+- [rngl_has_opp_or_psub T = true] : that opposite or partial subtraction
   exists,
-- [rngl_has_inv_and_1_or_quot T = true] : that inversion or partial
+- [rngl_has_inv_and_1_or_pdiv T = true] : that inversion or partial
   division exists.
 
 See the module [[RingLike.Core]] for the general description
@@ -82,7 +82,7 @@ Qed.
 
 Theorem rngl_div_diag :
   rngl_has_1 T = true →
-  rngl_has_inv_or_quot T = true →
+  rngl_has_inv_or_pdiv T = true →
   ∀ a : T, a ≠ 0%L → (a / a = 1)%L.
 Proof.
 intros Hon Hiq * Haz.
@@ -99,28 +99,28 @@ destruct ai. {
   progress unfold rngl_div; rewrite Hai.
   now apply rngl_mul_inv_diag_r.
 }
-remember (rngl_has_quot T) as qu eqn:Hqu; symmetry in Hqu.
+remember (rngl_has_pdiv T) as qu eqn:Hqu; symmetry in Hqu.
 destruct qu. {
   specialize rngl_opt_mul_div as H1.
   rewrite Hqu in H1.
   specialize (H1 1%L a Haz).
   now rewrite rngl_mul_1_l in H1.
 }
-apply rngl_has_inv_or_quot_iff in Hiq.
+apply rngl_has_inv_or_pdiv_iff in Hiq.
 destruct Hiq; congruence.
 Qed.
 
 Theorem rngl_mul_div :
-  rngl_has_inv_and_1_or_quot T = true →
+  rngl_has_inv_and_1_or_pdiv T = true →
   ∀ a b : T, b ≠ 0%L → (a * b / b)%L = a.
 Proof.
 intros Hii a b Hbz.
-progress unfold rngl_has_inv_and_1_or_quot in Hii.
+progress unfold rngl_has_inv_and_1_or_pdiv in Hii.
 apply Bool.orb_true_iff in Hii.
 destruct Hii as [Hii| Hqu]. {
   apply Bool.andb_true_iff in Hii.
   destruct Hii as (Hiv, Hon).
-  specialize (rngl_has_inv_has_inv_or_quot Hiv) as Hiq.
+  specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
   progress unfold rngl_div.
   rewrite Hiv.
   rewrite <- rngl_mul_assoc.
@@ -135,13 +135,13 @@ destruct Hii as [Hii| Hqu]. {
 Qed.
 
 Theorem rngl_mul_cancel_l :
-  rngl_has_inv_and_1_or_quot_and_comm T = true →
+  rngl_has_inv_and_1_or_pdiv_and_comm T = true →
   ∀ a b c, a ≠ 0%L
   → (a * b = a * c)%L
   → b = c.
 Proof.
 intros Hii * Haz Habc.
-progress unfold rngl_has_inv_and_1_or_quot_and_comm in Hii.
+progress unfold rngl_has_inv_and_1_or_pdiv_and_comm in Hii.
 apply Bool.orb_true_iff in Hii.
 destruct Hii as [Hii| Hii]. {
   apply Bool.andb_true_iff in Hii.
@@ -164,7 +164,7 @@ destruct Hii as [Hii| Hii]. {
 Qed.
 
 Theorem rngl_mul_cancel_r :
-  rngl_has_inv_and_1_or_quot T = true →
+  rngl_has_inv_and_1_or_pdiv T = true →
   ∀ a b c, c ≠ 0%L
   → (a * c = b * c)%L
   → a = b.
@@ -189,7 +189,7 @@ Qed.
 
 Theorem rngl_mul_div_r :
   rngl_mul_is_comm T = true →
-  rngl_has_inv_and_1_or_quot T = true →
+  rngl_has_inv_and_1_or_pdiv T = true →
   ∀ a b : T, a ≠ 0%L → (a * b / a)%L = b.
 Proof.
 intros Hic Hii a b Hbz.
@@ -198,8 +198,8 @@ now apply (rngl_mul_div Hii).
 Qed.
 
 Theorem rngl_div_0_l :
-  rngl_has_opp_or_subt T = true →
-  rngl_has_inv_and_1_or_quot T = true →
+  rngl_has_opp_or_psub T = true →
+  rngl_has_inv_and_1_or_pdiv T = true →
   ∀ a, a ≠ 0%L → (0 / a)%L = 0%L.
 Proof.
 intros Hos Hiv * Haz.
@@ -256,7 +256,7 @@ split. {
 } {
   intros Habcd.
   apply (f_equal (λ x, rngl_div x d)) in Habcd.
-  specialize (rngl_has_inv_and_1_has_inv_and_1_or_quot Hon Hiv) as Hi1.
+  specialize (rngl_has_inv_and_1_has_inv_and_1_or_pdiv Hon Hiv) as Hi1.
   rewrite rngl_mul_div in Habcd; [ | easy | easy ].
   apply (f_equal (λ x, rngl_div x b)) in Habcd.
   rewrite rngl_div_div_swap in Habcd; [ | easy | easy ].
@@ -267,12 +267,12 @@ Qed.
 
 Theorem rngl_eq_mul_0_l :
   rngl_has_1 T = true →
-  rngl_has_opp_or_subt T = true →
-  rngl_has_inv_or_quot T = true →
+  rngl_has_opp_or_psub T = true →
+  rngl_has_inv_or_pdiv T = true →
   ∀ a b, (a * b = 0)%L → b ≠ 0%L → a = 0%L.
 Proof.
 intros Hon Hos Hiq.
-specialize (rngl_has_1_has_inv_or_quot_has_inv_and_1_or_quot Hon Hiq) as Hii.
+specialize (rngl_has_1_has_inv_or_pdiv_has_inv_and_1_or_pdiv Hon Hiq) as Hii.
 intros * Hab Hbz.
 remember (rngl_has_inv T) as iv eqn:Hiv; symmetry in Hiv.
 destruct iv. {
@@ -282,25 +282,25 @@ destruct iv. {
   rewrite (rngl_mul_1_r Hon) in Hab; rewrite Hab.
   apply (rngl_mul_0_l Hos).
 }
-remember (rngl_has_quot T) as qu eqn:Hqu; symmetry in Hqu.
+remember (rngl_has_pdiv T) as qu eqn:Hqu; symmetry in Hqu.
 destruct qu. {
   specialize (rngl_mul_div Hii a b Hbz) as H1.
   rewrite Hab in H1.
   now rewrite rngl_div_0_l in H1.
 }
-apply rngl_has_inv_and_1_or_quot_iff in Hii.
+apply rngl_has_inv_and_1_or_pdiv_iff in Hii.
 rewrite Hiv, Hqu in Hii.
 now destruct Hii.
 Qed.
 
 Theorem rngl_eq_mul_0_r :
   rngl_has_1 T = true →
-  rngl_has_opp_or_subt T = true →
-  rngl_has_inv_or_quot_and_comm T = true →
+  rngl_has_opp_or_psub T = true →
+  rngl_has_inv_or_pdiv_and_comm T = true →
   ∀ a b, (a * b = 0)%L → a ≠ 0%L → b = 0%L.
 Proof.
 intros Hon Hos Hiq * Hab Haz.
-progress unfold rngl_has_inv_or_quot_and_comm in Hiq.
+progress unfold rngl_has_inv_or_pdiv_and_comm in Hiq.
 apply Bool.orb_true_iff in Hiq.
 destruct Hiq as [Hiv | Hiq]. {
   apply (f_equal (λ x, (a⁻¹ * x)%L)) in Hab.
@@ -311,7 +311,7 @@ destruct Hiq as [Hiv | Hiq]. {
 } {
   apply Bool.andb_true_iff in Hiq.
   destruct Hiq as (Hqu, Hic).
-  specialize (rngl_has_quot_has_inv_and_1_or_quot Hqu) as Hii.
+  specialize (rngl_has_pdiv_has_inv_and_1_or_pdiv Hqu) as Hii.
   specialize (rngl_mul_div Hii b a Haz) as H1.
   rewrite (rngl_mul_comm Hic) in H1.
   rewrite Hab in H1.
@@ -347,7 +347,7 @@ Theorem rngl_inv_1 :
   (1⁻¹ = 1)%L.
 Proof.
 intros Hon Hiv H10.
-specialize (rngl_has_inv_has_inv_or_quot Hiv) as Hiq.
+specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
 specialize (rngl_div_diag Hon) as H.
 unfold rngl_div in H.
 rewrite Hiv in H.
@@ -372,14 +372,14 @@ Qed.
 
 Theorem rngl_div_1_r :
   rngl_has_1 T = true →
-  rngl_has_inv_or_quot T = true →
+  rngl_has_inv_or_pdiv T = true →
   rngl_characteristic T ≠ 1 →
   ∀ a, (a / 1 = a)%L.
 Proof.
 intros Hon Hiq H10 *.
-assert (Hi1 : rngl_has_inv_and_1_or_quot T = true). {
-  apply rngl_has_inv_or_quot_iff in Hiq.
-  apply rngl_has_inv_and_1_or_quot_iff.
+assert (Hi1 : rngl_has_inv_and_1_or_pdiv T = true). {
+  apply rngl_has_inv_or_pdiv_iff in Hiq.
+  apply rngl_has_inv_and_1_or_pdiv_iff.
   now destruct Hiq; [ left | right ].
 }
 specialize (rngl_mul_div Hi1 a 1%L) as H1.
@@ -389,8 +389,8 @@ Qed.
 
 Theorem rngl_div_1_r' :
   rngl_has_1 T = true →
-  rngl_has_opp_or_subt T = true →
-  rngl_has_inv_or_quot T = true →
+  rngl_has_opp_or_psub T = true →
+  rngl_has_inv_or_pdiv T = true →
   ∀ a, (a / 1 = a)%L.
 Proof.
 intros Hon Hos Hiq.
@@ -401,9 +401,9 @@ destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
   apply H1.
 }
 intros.
-assert (Hi1 : rngl_has_inv_and_1_or_quot T = true). {
-  apply rngl_has_inv_or_quot_iff in Hiq.
-  apply rngl_has_inv_and_1_or_quot_iff.
+assert (Hi1 : rngl_has_inv_and_1_or_pdiv T = true). {
+  apply rngl_has_inv_or_pdiv_iff in Hiq.
+  apply rngl_has_inv_and_1_or_pdiv_iff.
   now destruct Hiq; [ left | right ].
 }
 specialize (rngl_mul_div Hi1 a 1%L) as H1.
@@ -446,7 +446,7 @@ split; intros H. {
   rewrite <- rngl_mul_assoc in H.
   rewrite (rngl_mul_inv_r Hiv) in H.
   rewrite (rngl_div_diag Hon) in H; [ | | easy ]. 2: {
-    now apply rngl_has_inv_or_quot_iff; left.
+    now apply rngl_has_inv_or_pdiv_iff; left.
   }
   now rewrite rngl_mul_1_r, rngl_mul_1_l in H.
 } {
@@ -458,7 +458,7 @@ Qed.
 
 Theorem rngl_mul_move_l :
   rngl_mul_is_comm T = true →
-  rngl_has_inv_and_1_or_quot T = true →
+  rngl_has_inv_and_1_or_pdiv T = true →
   ∀ a b c, a ≠ 0%L → (a * b)%L = c → b = (c / a)%L.
 Proof.
 intros Hic Hi1 * Haz Hab.
@@ -468,7 +468,7 @@ now apply (rngl_mul_div Hi1).
 Qed.
 
 Theorem rngl_mul_move_r :
-  rngl_has_inv_and_1_or_quot T = true →
+  rngl_has_inv_and_1_or_pdiv T = true →
   ∀ a b c, b ≠ 0%L → (a * b)%L = c → a = (c / b)%L.
 Proof.
 intros Hi1 * Hcz Ha.
@@ -478,7 +478,7 @@ Qed.
 
 Theorem rngl_inv_neq_0 :
   rngl_has_1 T = true →
-  rngl_has_opp_or_subt T = true →
+  rngl_has_opp_or_psub T = true →
   rngl_has_inv T = true →
   ∀ a, a ≠ 0%L → (a⁻¹ ≠ 0)%L.
 Proof.
@@ -498,7 +498,7 @@ Qed.
 
 Theorem rngl_inv_involutive :
   rngl_has_1 T = true →
-  rngl_has_opp_or_subt T = true →
+  rngl_has_opp_or_psub T = true →
   rngl_has_inv T = true →
   ∀ x, x ≠ 0%L → (x⁻¹⁻¹)%L = x.
 Proof.
@@ -519,14 +519,14 @@ apply H1. 2: {
   rewrite rngl_mul_inv_r; [ | easy ].
   unfold rngl_div; rewrite Hiv.
   apply div_diag; [ | easy ].
-  now apply rngl_has_inv_or_quot_iff; left.
+  now apply rngl_has_inv_or_pdiv_iff; left.
 }
 now apply rngl_inv_neq_0.
 Qed.
 
 Theorem rngl_inv_inj :
   rngl_has_1 T = true →
-  rngl_has_opp_or_subt T = true →
+  rngl_has_opp_or_psub T = true →
   rngl_has_inv T = true →
   ∀ a b, a ≠ 0%L → b ≠ 0%L →(a⁻¹ = b⁻¹)%L → a = b.
 Proof.
@@ -538,13 +538,13 @@ Qed.
 
 Theorem rngl_inv_mul_distr :
   rngl_has_1 T = true →
-  rngl_has_opp_or_subt T = true →
+  rngl_has_opp_or_psub T = true →
   rngl_has_inv T = true →
   ∀ a b, a ≠ 0%L → b ≠ 0%L →((a * b)⁻¹ = b⁻¹ * a⁻¹)%L.
 Proof.
 intros Hon Hos Hiv * Haz Hbz.
-specialize (rngl_has_inv_has_inv_or_quot Hiv) as Hiq.
-specialize (rngl_has_1_inv_has_inv_and_1_or_quot_and_comm Hon Hiv) as Hi1.
+specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
+specialize (rngl_has_1_inv_has_inv_and_1_or_pdiv_and_comm Hon Hiv) as Hi1.
 specialize (rngl_div_diag Hon Hiq) as H1.
 specialize (rngl_eq_mul_0_l Hon Hos Hiq) as H2.
 unfold rngl_div in H1.
@@ -564,7 +564,7 @@ Qed.
 
 Theorem rngl_div_div :
   rngl_has_1 T = true →
-  rngl_has_opp_or_subt T = true →
+  rngl_has_opp_or_psub T = true →
   rngl_has_inv T = true →
   ∀ a b c, (b ≠ 0 → c ≠ 0 → a / b / c = a / (c * b))%L.
 Proof.
@@ -577,7 +577,7 @@ Qed.
 
 Theorem rngl_div_div_r :
   rngl_has_1 T = true →
-  rngl_has_opp_or_subt T = true →
+  rngl_has_opp_or_psub T = true →
   rngl_has_inv T = true →
   ∀ a b c,
   b ≠ 0%L
@@ -601,8 +601,8 @@ Theorem rngl_opp_inv :
   ∀ a, a ≠ 0%L → (- a⁻¹ = (- a)⁻¹)%L.
 Proof.
 intros Hon Hop Hiv * Haz.
-specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
-specialize (rngl_has_1_inv_has_inv_and_1_or_quot_and_comm Hon Hiv) as Hi1.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+specialize (rngl_has_1_inv_has_inv_and_1_or_pdiv_and_comm Hon Hiv) as Hi1.
 remember (Nat.eqb (rngl_characteristic T) 1) as ch eqn:Hch; symmetry in Hch.
 destruct ch. {
   apply Nat.eqb_eq in Hch.
@@ -648,7 +648,7 @@ Qed.
 
 Theorem eq_rngl_div_1 :
   rngl_has_1 T = true →
-  rngl_has_inv_or_quot T = true →
+  rngl_has_inv_or_pdiv T = true →
    ∀ a b, b ≠ 0%L → a = b → (a / b = 1)%L.
 Proof.
 intros Hon Hiv * Hbz Hab.
@@ -658,8 +658,8 @@ Qed.
 
 Theorem eq_rngl_add_same_0 :
   rngl_has_1 T = true →
-  rngl_has_opp_or_subt T = true →
-  rngl_has_inv_or_quot T = true →
+  rngl_has_opp_or_psub T = true →
+  rngl_has_inv_or_pdiv T = true →
   rngl_characteristic T = 0 →
   ∀ a,
   (a + a = 0)%L
@@ -676,8 +676,8 @@ Qed.
 Theorem rngl_pow_nonzero :
   rngl_has_1 T = true →
   rngl_characteristic T ≠ 1 →
-  rngl_has_opp_or_subt T = true →
-  rngl_has_inv_or_quot T = true →
+  rngl_has_opp_or_psub T = true →
+  rngl_has_inv_or_pdiv T = true →
   ∀ a n, (a ≠ 0 → a ^ n ≠ 0)%L.
 Proof.
 intros Hon Hc1 Hos Hiq * Haz.
@@ -688,7 +688,7 @@ Qed.
 
 Theorem rngl_squ_inv :
   rngl_has_1 T = true →
-  rngl_has_opp_or_subt T = true →
+  rngl_has_opp_or_psub T = true →
   rngl_has_inv T = true →
   ∀ a, (a ≠ 0 → (a⁻¹)² = (a²)⁻¹)%L.
 Proof.
@@ -700,7 +700,7 @@ Qed.
 Theorem rngl_squ_div :
   rngl_mul_is_comm T = true →
   rngl_has_1 T = true →
-  rngl_has_opp_or_subt T = true →
+  rngl_has_opp_or_psub T = true →
   rngl_has_inv T = true →
   ∀ a b, (b ≠ 0)%L → (a / b)²%L = (a² / b²)%L.
 Proof.
@@ -740,12 +740,12 @@ Qed.
 
 Theorem rngl_inv_pow :
   rngl_has_1 T = true →
-  rngl_has_opp_or_subt T = true →
+  rngl_has_opp_or_psub T = true →
   rngl_has_inv T = true →
   ∀ x n, x ≠ 0%L → ((x ^ n)⁻¹ = x⁻¹ ^ n)%L.
 Proof.
 intros Hon Hos Hiv.
-specialize (rngl_has_inv_has_inv_or_quot Hiv) as Hiq.
+specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
 destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
   specialize (rngl_characteristic_1 Hon Hos Hc1) as H1.
   intros.

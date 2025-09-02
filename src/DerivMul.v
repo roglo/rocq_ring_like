@@ -29,12 +29,12 @@ Context {Hor : rngl_is_ordered T = true}.
 
 Theorem rngl_dist_mul_distr_r :
   rngl_has_1 T = true →
-  rngl_has_inv_or_quot T = true →
+  rngl_has_inv_or_pdiv T = true →
   ∀ a b c,
   (0 ≤ c)%L → (rngl_dist a b * c = rngl_dist (a * c) (b * c))%L.
 Proof.
 intros Hon Hiq.
-specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 intros * Hzc.
 progress unfold rngl_dist.
 (*
@@ -98,8 +98,8 @@ Theorem is_limit_lt_is_limit_le_iff :
   ↔ is_limit_when_tending_to_neighbourhood_le is_left lt da db f x₀ L.
 Proof.
 intros Hon Hiv.
-specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
-specialize (rngl_has_inv_has_inv_or_quot Hiv) as Hiq.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
 destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
   specialize (rngl_characteristic_1 Hon Hos Hc1) as H1.
   intros.
@@ -144,8 +144,8 @@ Theorem left_or_right_derivable_continuous_when_derivative_eq_0 :
   → left_or_right_continuous_at is_left lt da rngl_dist f x.
 Proof.
 intros Hon Hiv.
-specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
-specialize (rngl_has_inv_has_inv_or_quot Hiv) as Hiq.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
 intros * Hlti * dist * Hd.
 rename x into x₀.
 intros ε Hε.
@@ -221,8 +221,8 @@ Theorem left_or_right_derivable_continuous :
   → left_or_right_continuous_at is_left lt da rngl_dist f x.
 Proof.
 intros Hic Hon Hiv.
-specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
-specialize (rngl_has_inv_has_inv_or_quot Hiv) as Hiq.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
 specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
 destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
   specialize (rngl_characteristic_1 Hon Hos Hc1) as H1.
@@ -660,9 +660,9 @@ Theorem left_or_right_derivative_mul_at :
        (λ x : A, (f x * g x)%L) x₀ (f x₀ * v + u * g x₀)%L.
 Proof.
 intros Hic Hon Hiv.
-specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
-specialize (rngl_has_inv_has_inv_or_quot Hiv) as Hiq.
-specialize (rngl_has_inv_has_inv_or_quot_and_comm Hiv) as Hi1.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
+specialize (rngl_has_inv_has_inv_or_pdiv_and_comm Hiv) as Hi1.
 destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
   specialize (rngl_characteristic_1 Hon Hos Hc1) as H1.
   intros * Hlti * dist * Hf Hg * ε Hε.
@@ -1279,8 +1279,8 @@ Theorem left_or_right_continuous_lower_bounded :
     → (rngl_abs (f x₀) / 2 < rngl_abs (f x))%L.
 Proof.
 intros Hon Hiv.
-specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
-specialize (rngl_has_inv_has_inv_or_quot Hiv) as Hiq.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
 destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
   specialize (rngl_characteristic_1 Hon Hos Hc1) as H1.
   intros * Hlfc Hfzz.
@@ -1324,7 +1324,7 @@ Qed.
 
 Theorem left_or_right_continuous_upper_bounded :
   rngl_has_1 T = true →
-  rngl_has_inv_or_quot T = true →
+  rngl_has_inv_or_pdiv T = true →
   rngl_characteristic T ≠ 1 →
   ∀ is_left {A} (da : A → A → T) le f x₀ u,
 (*
@@ -1338,7 +1338,7 @@ Theorem left_or_right_continuous_upper_bounded :
     → (rngl_abs (f x) < M)%L.
 Proof.
 intros Hon Hiq Hc1.
-specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 intros * Hlfc.
 specialize (Hlfc 1%L).
 specialize (rngl_0_lt_1 Hon Hos Hiq Hc1 Hor) as H.
@@ -1374,9 +1374,9 @@ Theorem left_or_right_continuous_mul_at :
        (λ x : A, (f x * g x)%L) x₀ (u * v)%L.
 Proof.
 intros Hic Hon Hiv * Hlfc Hlgc.
-specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
-specialize (rngl_has_inv_has_inv_or_quot Hiv) as Hiq.
-specialize (rngl_has_inv_and_1_has_inv_and_1_or_quot Hon Hiv) as Hi1.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
+specialize (rngl_has_inv_and_1_has_inv_and_1_or_pdiv Hon Hiv) as Hi1.
 destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
   specialize (rngl_characteristic_1 Hon Hos Hc1) as H1.
   intros ε Hε.
@@ -1524,10 +1524,10 @@ Theorem left_or_right_continuous_inv :
       (λ x, (f x)⁻¹) x₀.
 Proof.
 intros Hic Hon Hiv Hed.
-specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
-specialize (rngl_has_inv_has_inv_or_quot Hiv) as Hiq.
-specialize (rngl_has_inv_and_1_has_inv_and_1_or_quot Hon Hiv) as Hi1.
-specialize (rngl_integral_or_inv_1_quot_eq_dec_order Hon Hiv Hor) as Hio.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
+specialize (rngl_has_inv_and_1_has_inv_and_1_or_pdiv Hon Hiv) as Hi1.
+specialize (rngl_integral_or_inv_1_pdiv_eq_dec_order Hon Hiv Hor) as Hio.
 destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
   specialize (rngl_characteristic_1 Hon Hos Hc1) as H1.
   intros * Hfzz Hflc.
@@ -1623,8 +1623,8 @@ Theorem rngl_abs_inv :
   ∀ a, a ≠ 0%L → (rngl_abs a⁻¹ = (rngl_abs a)⁻¹)%L.
 Proof.
 intros Hon Hiv Hed.
-specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
-specialize (rngl_has_inv_has_inv_or_quot Hiv) as Hiq.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
 intros * Haz.
 do 2 rewrite <- (rngl_div_1_l Hon Hiv).
 rewrite (rngl_abs_div Hon Hop Hiv Hed Hor); [ | easy ].
@@ -1644,14 +1644,14 @@ Theorem left_or_right_derivative_inv :
       x₀ (- f' x₀ / (f x₀)²)%L.
 Proof.
 intros Hic Hon Hiv Hed.
-specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
-specialize (rngl_has_inv_has_inv_or_quot Hiv) as Hiq.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
 specialize (rngl_int_dom_or_inv_1_quo Hiv Hon) as Hii.
 specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
-specialize (rngl_has_inv_and_1_has_inv_and_1_or_quot Hon Hiv) as Hi1.
+specialize (rngl_has_inv_and_1_has_inv_and_1_or_pdiv Hon Hiv) as Hi1.
 assert (Hio :
   (rngl_is_integral_domain T ||
-     rngl_has_inv_and_1_or_quot T &&
+     rngl_has_inv_and_1_or_pdiv T &&
      rngl_has_eq_dec_or_order T)%bool = true). {
   apply Bool.orb_true_iff; right.
   rewrite Hi1; cbn.

@@ -60,7 +60,7 @@ Theorem rngl_dist_is_dist :
   is_dist rngl_dist.
 Proof.
 intros Hop Hor.
-specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 progress unfold rngl_dist.
 split. {
   intros.
@@ -172,8 +172,8 @@ Theorem dist_nonneg :
   ∀ {A} {da : A → A → T} (dist : is_dist da) a b, (0 ≤ da a b)%L.
 Proof.
 intros Hon Hop Hiv Hor * dist *.
-specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
-specialize (rngl_has_inv_has_inv_or_quot Hiv) as Hiq.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
 specialize (rngl_int_dom_or_inv_1_quo Hiv Hon) as Hii.
 destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
   specialize (rngl_characteristic_1 Hon Hos Hc1) as H1.
@@ -263,10 +263,10 @@ Theorem limit_unique :
   → lim1 = lim2.
 Proof.
 intros Hon Hop Hiv Hor * dist * Hu1 Hu2.
-specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
-specialize (rngl_has_inv_has_inv_or_quot Hiv) as Hiq.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
 specialize (rngl_int_dom_or_inv_1_quo Hiv Hon) as Hii.
-specialize (rngl_has_inv_and_1_has_inv_and_1_or_quot Hon Hiv) as Hi1.
+specialize (rngl_has_inv_and_1_has_inv_and_1_or_pdiv Hon Hiv) as Hi1.
 destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
   specialize (rngl_characteristic_1 Hon Hos Hc1) as H1.
   destruct dist as (Hdsym, Hdsep, Hdtri).
@@ -345,8 +345,8 @@ Theorem limit_add :
   → is_limit_when_seq_tends_to_inf dt (λ n, (u n + v n))%L (limu + limv)%L.
 Proof.
 intros Hon Hop Hiv Hor * dist * Hd * Hu Hv ε Hε.
-specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
-specialize (rngl_has_inv_has_inv_or_quot Hiv) as Hiq.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
 destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
   specialize (rngl_characteristic_1 Hon Hos Hc1) as H1.
   rewrite H1 in Hε.
@@ -389,7 +389,7 @@ Theorem rngl_dist_add_add_le :
   (rngl_dist (a + b) (c + d) ≤ rngl_dist a c + rngl_dist b d)%L.
 Proof.
 intros Hop Hor.
-specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 intros.
 progress unfold rngl_dist.
 rewrite (rngl_sub_add_distr Hos).

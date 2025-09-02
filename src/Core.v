@@ -68,23 +68,23 @@ The opposite and the inverse have three possible states:
 - or undefined but with a partially defined binary function (e.g 5-3, 12/3)
 - or undefined
 
-This is represented by [rngl_opt_opp_or_subt] and [rngl_opt_inv_or_quot].
+This is represented by [rngl_opt_opp_or_psub] and [rngl_opt_inv_or_pdiv].
 For a type [T], both are of type [option (sum (T → T) (T → T → T))]:
 
 - for a set holding an opposite [opp], we have
 <<
-    rngl_opt_opp_or_subt := Some (inl opp)
+    rngl_opt_opp_or_psub := Some (inl opp)
 >>
-- for a set holding a partial subtraction [subt], we have
+- for a set holding a partial subtraction [psub], we have
 <<
-    rngl_opt_opp_or_subt := Some (inr subt)
+    rngl_opt_opp_or_psub := Some (inr psub)
 >>
 - for a set holding neither opposite, not subtraction, we have
 <<
-    rngl_opt_opp_or_subt := None
+    rngl_opt_opp_or_psub := None
 >>
 
-Same for [rngl_opt_inv_or_quot] for inverse and partial division.
+Same for [rngl_opt_inv_or_pdiv] for inverse and partial division.
 
 There is a syntax, named [%L]:
 
@@ -97,24 +97,24 @@ No need to repeat the [%L] for each sub-expression. We can write
 We also have:
 <<
   rngl_opp a :=
-    | opp a         if rngl_opt_opp_or_subt = Some (inl opp)
+    | opp a         if rngl_opt_opp_or_psub = Some (inl opp)
     | 0             otherwise
 >>
 <<
   rngl_inv a :=
-    | inv a         if rngl_opt_inv_or_quot = Some (inl inv)
+    | inv a         if rngl_opt_inv_or_pdiv = Some (inl inv)
     | 0             otherwise
 >>
 <<
   rngl_sub a b :=
-    | a + opp b     if rngl_opt_opp_or_subt = Some (inl opp)
-    | subt a b      if rngl_opt_opp_or_subt = Some (inr subt)
+    | a + opp b     if rngl_opt_opp_or_psub = Some (inl opp)
+    | psub a b      if rngl_opt_opp_or_psub = Some (inr psub)
     | 0             otherwise
 >>
 <<
   rngl_div a b :=
-    | a * inv b     if rngl_opt_inv_or_quot = Some (inl inv)
-    | quot a b      if rngl_opt_inv_or_quot = Some (inr quot)
+    | a * inv b     if rngl_opt_inv_or_pdiv = Some (inl inv)
+    | pdiv a b      if rngl_opt_inv_or_pdiv = Some (inr pdiv)
     | 0             otherwise
 >>
 

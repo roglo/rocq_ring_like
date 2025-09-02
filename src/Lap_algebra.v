@@ -171,13 +171,13 @@ Qed.
 
 (* cannot define opposite or subtraction because [1]-[1] returns
    [0], instead of [] *)
-Definition lap_opt_opp_or_subt :
+Definition lap_opt_opp_or_psub :
   option ((list T → list T) + (list T → list T → list T)) :=
   None.
 
 (* lap quotient *)
 
-Definition lap_opt_inv_or_quot :
+Definition lap_opt_inv_or_pdiv :
   option ((list T → list T) + (list T → list T → list T)) :=
   None.
 
@@ -238,8 +238,8 @@ Definition lap_ring_like_op : ring_like_op (list T) :=
      rngl_add := lap_add;
      rngl_mul := lap_mul;
      rngl_opt_one := lap_opt_one;
-     rngl_opt_opp_or_subt := lap_opt_opp_or_subt;
-     rngl_opt_inv_or_quot := lap_opt_inv_or_quot;
+     rngl_opt_opp_or_psub := lap_opt_opp_or_psub;
+     rngl_opt_inv_or_pdiv := lap_opt_inv_or_pdiv;
      rngl_opt_is_zero_divisor := Some (λ _, True);
      rngl_opt_eq_dec := Some lap_eq_dec;
      rngl_opt_leb := None |}.
@@ -531,7 +531,7 @@ Theorem eq_lap_convol_mul_nil : ∀ la lb i len,
 Proof. now intros; induction len. Qed.
 
 Theorem list_nth_lap_convol_mul_aux :
-  rngl_has_opp_or_subt T = true →
+  rngl_has_opp_or_psub T = true →
   ∀ la lb n i len,
   List.length la + List.length lb - 1 = (i + len)%nat
   → (List.nth n (lap_convol_mul la lb i len) 0%L =
@@ -565,7 +565,7 @@ now rewrite Nat.add_succ_r, <- Nat.add_succ_l.
 Qed.
 
 Theorem list_nth_lap_convol_mul :
-  rngl_has_opp_or_subt T = true →
+  rngl_has_opp_or_psub T = true →
   ∀ la lb i len,
   len = length la + length lb - 1
   → (List.nth i (lap_convol_mul la lb 0 len) 0 =
@@ -578,7 +578,7 @@ now rewrite Nat.add_0_r.
 Qed.
 
 Theorem summation_mul_list_nth_lap_convol_mul_r :
-  rngl_has_opp_or_subt T = true →
+  rngl_has_opp_or_psub T = true →
   ∀ la lb lc k,
    (∑ (i = 0, k),
       List.nth i lc 0 *
@@ -599,7 +599,7 @@ now apply list_nth_lap_convol_mul.
 Qed.
 
 Theorem summation_mul_list_nth_lap_convol_mul_l :
-  rngl_has_opp_or_subt T = true →
+  rngl_has_opp_or_psub T = true →
   ∀ la lb lc k,
   ∑ (i = 0, k),
     List.nth i (lap_convol_mul la lb 0 (length la + length lb - 1)) 0 *
@@ -615,7 +615,7 @@ now rewrite list_nth_lap_convol_mul.
 Qed.
 
 Theorem lap_norm_mul_assoc :
-  rngl_has_opp_or_subt T = true →
+  rngl_has_opp_or_psub T = true →
   ∀ la lb lc, lap_norm (la * (lb * lc)) = lap_norm (la * lb * lc).
 Proof.
 intros Hos la lb lc.
@@ -727,7 +727,7 @@ easy.
 Qed.
 
 Theorem lap_mul_assoc :
-  rngl_has_opp_or_subt T = true →
+  rngl_has_opp_or_psub T = true →
   ∀ la lb lc, (la * (lb * lc))%lap = (la * lb * lc)%lap.
 Proof.
 intros Hos *.
@@ -750,7 +750,7 @@ Qed.
 (* multiplication by 1 *)
 
 Theorem lap_convol_mul_const_l :
-  rngl_has_opp_or_subt T = true →
+  rngl_has_opp_or_psub T = true →
   ∀ a la i len,
   length la = i + len
   → lap_convol_mul [a] la i len =
@@ -777,7 +777,7 @@ rewrite (List_skipn_is_cons 0%L); [ easy | flia Hlen ].
 Qed.
 
 Theorem lap_convol_mul_const_r :
-  rngl_has_opp_or_subt T = true →
+  rngl_has_opp_or_psub T = true →
   ∀ a la i len,
   length la = i + len
   → lap_convol_mul la [a] i len =
@@ -804,7 +804,7 @@ rewrite (List_skipn_is_cons 0%L); [ easy | flia Hlen ].
 Qed.
 
 Theorem lap_mul_const_l :
-  rngl_has_opp_or_subt T = true →
+  rngl_has_opp_or_psub T = true →
   ∀ a la, ([a] * la)%lap = List.map (λ b : T, (a * b)%L) la.
 Proof.
 intros Hos *.
@@ -814,7 +814,7 @@ now rewrite (lap_convol_mul_const_l Hos).
 Qed.
 
 Theorem lap_mul_const_r :
-  rngl_has_opp_or_subt T = true →
+  rngl_has_opp_or_psub T = true →
   ∀ a la, (la * [a])%lap = List.map (λ b : T, (b * a)%L) la.
 Proof.
 intros Hos *.
@@ -889,7 +889,7 @@ now rewrite IHla.
 Qed.
 
 Theorem lap_convol_mul_more :
-  rngl_has_opp_or_subt T = true →
+  rngl_has_opp_or_psub T = true →
   ∀ n la lb i len,
   length la + length lb - 1 ≤ i + len
   → lap_norm (lap_convol_mul la lb i len) =
@@ -1049,7 +1049,7 @@ now rewrite rngl_mul_add_distr_l.
 Qed.
 
 Theorem lap_norm_mul_add_distr_l :
-  rngl_has_opp_or_subt T = true →
+  rngl_has_opp_or_psub T = true →
   ∀ la lb lc, lap_norm (la * (lb + lc)) = lap_norm (la * lb + la * lc).
 Proof.
 intros Hos la lb lc.
@@ -1103,7 +1103,7 @@ now rewrite lap_add_lap_convol_mul_r.
 Qed.
 
 Theorem lap_mul_add_distr_l :
-  rngl_has_opp_or_subt T = true →
+  rngl_has_opp_or_psub T = true →
   ∀ la lb lc, (la * (lb + lc))%lap = (la * lb + la * lc)%lap.
 Proof.
 intros Hos la lb lc.
@@ -1174,7 +1174,7 @@ Qed.
 (* multiplication with 1 *)
 
 Theorem lap_opt_mul_1_l : let rol := lap_ring_like_op in
-  rngl_has_opp_or_subt T = true →
+  rngl_has_opp_or_psub T = true →
   if rngl_has_1 (list T) then ∀ la : list T, (1 * la)%L = la
   else not_applicable.
 Proof.
@@ -1201,7 +1201,7 @@ apply (rngl_mul_1_l Hon).
 Qed.
 
 Theorem lap_opt_mul_1_r : let rol := lap_ring_like_op in
-  rngl_has_opp_or_subt T = true →
+  rngl_has_opp_or_psub T = true →
   if rngl_mul_is_comm T then not_applicable
   else
    if rngl_has_1 (list T) then ∀ la : list T, (la * 1)%L = la
@@ -1259,7 +1259,7 @@ now rewrite rngl_mul_add_distr_r.
 Qed.
 
 Theorem lap_norm_mul_add_distr_r :
-  rngl_has_opp_or_subt T = true →
+  rngl_has_opp_or_psub T = true →
   ∀ la lb lc : list T,
   lap_norm ((la + lb) * lc) = lap_norm (la * lc + lb * lc).
 Proof.
@@ -1312,7 +1312,7 @@ now rewrite lap_add_lap_convol_mul_l.
 Qed.
 
 Theorem lap_mul_add_distr_r :
-  rngl_has_opp_or_subt T = true →
+  rngl_has_opp_or_psub T = true →
   ∀ la lb lc, ((la + lb) * lc)%lap = (la * lc + lb * lc)%lap.
 Proof.
 intros Hos la lb lc.
@@ -1340,7 +1340,7 @@ apply (lap_norm_mul_add_distr_r Hos).
 Qed.
 
 Theorem lap_opt_mul_add_distr_r :
-  rngl_has_opp_or_subt T = true →
+  rngl_has_opp_or_psub T = true →
   if rngl_mul_is_comm T then not_applicable
   else ∀ a b c, ((a + b) * c)%lap = (a * c + b * c)%lap.
 Proof.
@@ -1413,7 +1413,7 @@ Qed.
 
 (* lap ring-like properties *)
 
-Definition lap_ring_like_prop (Hos : rngl_has_opp_or_subt T = true) :
+Definition lap_ring_like_prop (Hos : rngl_has_opp_or_psub T = true) :
     ring_like_prop (list T) :=
   let rol := lap_ring_like_op in
   {| rngl_mul_is_comm := rngl_mul_is_comm T;

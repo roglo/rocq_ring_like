@@ -268,9 +268,9 @@ now rewrite Nat.add_1_r.
 Qed.
 
 Theorem rngl_product_list_integral :
-  rngl_has_opp_or_subt T = true →
+  rngl_has_opp_or_psub T = true →
   (rngl_is_integral_domain T ||
-   rngl_has_inv_and_1_or_quot T && rngl_has_eq_dec_or_order T)%bool = true →
+   rngl_has_inv_and_1_or_pdiv T && rngl_has_eq_dec_or_order T)%bool = true →
   rngl_characteristic T ≠ 1 →
   ∀ A (l : list A) f,
   (∏ (i ∈ l), f i)%L = 0%L
@@ -299,9 +299,9 @@ split; [ now right | easy ].
 Qed.
 
 Theorem rngl_product_integral :
-  rngl_has_opp_or_subt T = true →
+  rngl_has_opp_or_psub T = true →
   (rngl_is_integral_domain T ||
-     rngl_has_inv_and_1_or_quot T && rngl_has_eq_dec_or_order T)%bool = true →
+     rngl_has_inv_and_1_or_pdiv T && rngl_has_eq_dec_or_order T)%bool = true →
   rngl_characteristic T ≠ 1 →
   ∀ b e f,
   (∏ (i = b, e), f i = 0)%L
@@ -351,7 +351,7 @@ flia Hi.
 Qed.
 
 Theorem rngl_inv_product_list :
-  rngl_has_opp_or_subt T = true →
+  rngl_has_opp_or_psub T = true →
   rngl_has_inv T = true →
   rngl_characteristic T ≠ 1 →
   (rngl_is_integral_domain T || rngl_has_eq_dec_or_order T)%bool = true →
@@ -378,13 +378,13 @@ rewrite rngl_inv_mul_distr; [ | easy | easy | easy | | ]; cycle 1. {
   assert
     (Hit' :
        (rngl_is_integral_domain T ||
-          rngl_has_inv_and_1_or_quot T &&
+          rngl_has_inv_and_1_or_pdiv T &&
           rngl_has_eq_dec_or_order T)%bool = true). {
     apply Bool.orb_true_iff in Hit.
     apply Bool.orb_true_iff.
     destruct Hit as [Hit| Hit]; [ now left | right ].
     rewrite Hit, Bool.andb_true_iff; split; [ | easy ].
-    now apply rngl_has_inv_and_1_or_quot_iff; left.
+    now apply rngl_has_inv_and_1_or_pdiv_iff; left.
   }
   specialize (rngl_product_list_integral Hom Hit' H10) as H2.
   specialize (H2 A l f H1).
@@ -400,7 +400,7 @@ apply List.fold_left_app.
 Qed.
 
 Theorem rngl_inv_product :
-  rngl_has_opp_or_subt T = true →
+  rngl_has_opp_or_psub T = true →
   rngl_has_inv T = true →
   rngl_characteristic T ≠ 1 →
   (rngl_is_integral_domain T || rngl_has_eq_dec_or_order T)%bool = true →
@@ -452,7 +452,7 @@ Qed.
 
 Theorem rngl_inv_product_list_comm : ∀ A (eqb : A → A → bool),
   equality eqb →
-  rngl_has_opp_or_subt T = true →
+  rngl_has_opp_or_psub T = true →
   rngl_mul_is_comm T = true →
   rngl_has_inv T = true →
   rngl_characteristic T ≠ 1 →
@@ -468,7 +468,7 @@ now apply permutation_rev_l.
 Qed.
 
 Theorem rngl_inv_product_comm :
-  rngl_has_opp_or_subt T = true →
+  rngl_has_opp_or_psub T = true →
   rngl_mul_is_comm T = true →
   rngl_has_inv T = true →
   rngl_characteristic T ≠ 1 →
@@ -485,7 +485,7 @@ apply Hnz; flia Hi.
 Qed.
 
 Theorem rngl_product_div_distr :
-  rngl_has_opp_or_subt T = true →
+  rngl_has_opp_or_psub T = true →
   rngl_mul_is_comm T = true →
   rngl_has_inv T = true →
   rngl_characteristic T ≠ 1 →
@@ -587,7 +587,7 @@ Context {rp : ring_like_prop T}.
 Context (Hon : rngl_has_1 T = true).
 
 Theorem rngl_product_summation_distr_cart_prod :
-  rngl_has_opp_or_subt T = true →
+  rngl_has_opp_or_psub T = true →
   ∀ m n (f : nat → nat → T),
   m ≠ 0
   → ∏ (i = 1, m), (∑ (j = 1, n), f i j) =

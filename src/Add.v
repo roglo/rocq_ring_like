@@ -63,7 +63,7 @@ apply H.
 Qed.
 
 Theorem rngl_sub_diag :
-  rngl_has_opp_or_subt T = true →
+  rngl_has_opp_or_psub T = true →
   ∀ a, (a - a = 0)%L.
 Proof.
 intros Hos *.
@@ -75,7 +75,7 @@ destruct op. {
   rewrite rngl_add_comm.
   now apply rngl_add_opp_diag_l.
 }
-remember (rngl_has_subt T) as mo eqn:Hmo.
+remember (rngl_has_psub T) as mo eqn:Hmo.
 symmetry in Hmo.
 destruct mo. {
   specialize rngl_opt_add_sub as H1.
@@ -83,27 +83,27 @@ destruct mo. {
   specialize (H1 0%L a).
   now rewrite rngl_add_0_l in H1.
 }
-apply rngl_has_opp_or_subt_iff in Hos.
+apply rngl_has_opp_or_psub_iff in Hos.
 destruct Hos; congruence.
 Qed.
 
-Theorem rngl_subt_diag :
-  rngl_has_opp_or_subt T = true →
-  ∀ a, rngl_subt a a = 0%L.
+Theorem rngl_psub_diag :
+  rngl_has_opp_or_psub T = true →
+  ∀ a, rngl_psub a a = 0%L.
 Proof.
 intros Hos *.
 specialize (rngl_sub_diag Hos a) as H1.
 unfold rngl_sub in H1.
 remember (rngl_has_opp T) as op eqn:Hop; symmetry in Hop.
 destruct op. {
-  unfold rngl_subt.
+  unfold rngl_psub.
   unfold rngl_has_opp in Hop.
-  destruct rngl_opt_opp_or_subt; [ | easy ].
+  destruct rngl_opt_opp_or_psub; [ | easy ].
   now destruct s.
 }
-remember (rngl_has_subt T) as su eqn:Hsu; symmetry in Hsu.
+remember (rngl_has_psub T) as su eqn:Hsu; symmetry in Hsu.
 destruct su; [ easy | ].
-apply rngl_has_opp_or_subt_iff in Hos.
+apply rngl_has_opp_or_psub_iff in Hos.
 destruct Hos; congruence.
 Qed.
 
@@ -119,7 +119,7 @@ apply rngl_add_0_r.
 Qed.
 
 Theorem rngl_add_sub :
-  rngl_has_opp_or_subt T = true →
+  rngl_has_opp_or_psub T = true →
   ∀ a b, (a + b - b = a)%L.
 Proof.
 intros Hom *.
@@ -132,19 +132,19 @@ destruct op. {
   rewrite (rngl_add_comm b).
   now rewrite rngl_add_opp_diag_l, rngl_add_0_r.
 }
-remember (rngl_has_subt T) as mo eqn:Hmo.
+remember (rngl_has_psub T) as mo eqn:Hmo.
 symmetry in Hmo.
 destruct mo. {
   specialize rngl_opt_add_sub as H1.
   rewrite Hmo in H1.
   apply H1.
 }
-apply rngl_has_opp_or_subt_iff in Hom.
+apply rngl_has_opp_or_psub_iff in Hom.
 destruct Hom; congruence.
 Qed.
 
 Theorem rngl_add_cancel_l :
-  rngl_has_opp_or_subt T = true →
+  rngl_has_opp_or_psub T = true →
   ∀ a b c, (a + b = a + c)%L ↔ (b = c)%L.
 Proof.
 intros Hos *.
@@ -156,7 +156,7 @@ now rewrite (rngl_add_sub Hos) in H1.
 Qed.
 
 Theorem rngl_add_cancel_r :
-  rngl_has_opp_or_subt T = true →
+  rngl_has_opp_or_psub T = true →
   ∀ a b c, (a + c = b + c)%L ↔ (a = b)%L.
 Proof.
 intros Hos *.
@@ -169,7 +169,7 @@ Theorem rngl_add_move_l :
   ∀ a b c, (a + b)%L = c ↔ b = (c - a)%L.
 Proof.
 intros Hop *.
-specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 split; intros Hb. {
   subst c; symmetry.
   rewrite rngl_add_comm.
@@ -195,7 +195,7 @@ Theorem rngl_sub_move_l :
   ∀ a b c, (a - b)%L = c ↔ b = (a - c)%L.
 Proof.
 intros Hop *.
-specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 split; intros Hb. {
   apply (rngl_add_move_l Hop).
   subst c.
@@ -212,7 +212,7 @@ Theorem rngl_sub_move_r :
   ∀ a b c, (a - b)%L = c ↔ a = (c + b)%L.
 Proof.
 intros Hop *.
-specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 split; intros Ha. {
   subst c; symmetry.
   apply (rngl_sub_add Hop).
@@ -223,7 +223,7 @@ split; intros Ha. {
 Qed.
 
 Theorem rngl_add_sub_eq_l :
-  rngl_has_opp_or_subt T = true →
+  rngl_has_opp_or_psub T = true →
   ∀ a b c, (a + b = c → c - a = b)%L.
 Proof.
 intros Hom * Hab.
@@ -233,7 +233,7 @@ now apply rngl_add_sub.
 Qed.
 
 Theorem rngl_add_sub_eq_r :
-  rngl_has_opp_or_subt T = true →
+  rngl_has_opp_or_psub T = true →
    ∀ a b c, (a + b = c → c - b = a)%L.
 Proof.
 intros Hom * Hab.
@@ -253,7 +253,7 @@ Theorem rngl_add_move_0_l :
   ∀ a b, (a + b = 0)%L ↔ (b = - a)%L.
 Proof.
 intros Hop.
-specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 intros.
 split; intros H. {
   apply rngl_sub_compat_l with (c := a) in H.
@@ -302,7 +302,7 @@ split. {
   intros Hab.
   rewrite Hab.
   apply rngl_sub_diag.
-  now apply rngl_has_opp_or_subt_iff; left.
+  now apply rngl_has_opp_or_psub_iff; left.
 }
 Qed.
 
@@ -315,22 +315,22 @@ transitivity (0 + - 0)%L. {
 }
 rewrite rngl_add_opp_r; [ | easy ].
 apply rngl_sub_diag.
-now apply rngl_has_opp_or_subt_iff; left.
+now apply rngl_has_opp_or_psub_iff; left.
 Qed.
 
-Theorem rngl_subt_0_r :
-  rngl_has_subt T = true →
-  ∀ a, rngl_subt a 0%L = a.
+Theorem rngl_psub_0_r :
+  rngl_has_psub T = true →
+  ∀ a, rngl_psub a 0%L = a.
 Proof.
 intros Hsu *.
 specialize rngl_opt_add_sub as H1.
 rewrite Hsu in H1.
 unfold rngl_sub in H1.
 rewrite Hsu in H1.
-unfold rngl_has_subt in Hsu.
+unfold rngl_has_psub in Hsu.
 unfold rngl_has_opp in H1.
-destruct rngl_opt_opp_or_subt as [os| ]; [ | easy ].
-destruct os as [opp| subt ]; [ easy | ].
+destruct rngl_opt_opp_or_psub as [os| ]; [ | easy ].
+destruct os as [opp| psub ]; [ easy | ].
 specialize (H1 a 0%L).
 now rewrite rngl_add_0_r in H1.
 Qed.
@@ -346,7 +346,7 @@ apply rngl_add_0_l.
 Qed.
 
 Theorem rngl_sub_0_r :
-  rngl_has_opp_or_subt T = true →
+  rngl_has_opp_or_psub T = true →
   ∀ a, (a - 0 = a)%L.
 Proof.
 intros Hom *.
@@ -358,7 +358,7 @@ destruct op. {
   rewrite rngl_opp_0; [ | easy ].
   apply rngl_add_0_r.
 }
-remember (rngl_has_subt T) as mo eqn:Hmo.
+remember (rngl_has_psub T) as mo eqn:Hmo.
 symmetry in Hmo.
 destruct mo. {
   specialize rngl_opt_add_sub as H1.
@@ -366,7 +366,7 @@ destruct mo. {
   specialize (H1 a 0%L) as H2.
   now rewrite rngl_add_0_r in H2.
 }
-apply rngl_has_opp_or_subt_iff in Hom.
+apply rngl_has_opp_or_psub_iff in Hom.
 destruct Hom; congruence.
 Qed.
 
@@ -375,7 +375,7 @@ Theorem rngl_opp_add_distr :
   ∀ a b, (- (a + b) = - a - b)%L.
 Proof.
 intros Hop *.
-specialize (proj2 rngl_has_opp_or_subt_iff) as Hop'.
+specialize (proj2 rngl_has_opp_or_psub_iff) as Hop'.
 rewrite Hop in Hop'.
 apply rngl_add_cancel_l with (a := (a + b)%L); [ now apply Hop'; left | ].
 rewrite (rngl_add_opp_r Hop).
@@ -457,7 +457,7 @@ apply rngl_add_add_swap.
 Qed.
 
 Theorem rngl_add_sub_simpl_l :
-  rngl_has_opp_or_subt T = true →
+  rngl_has_opp_or_psub T = true →
   ∀ a b c : T, (a + b - (a + c) = b - c)%L.
 Proof.
 intros Hom *.
@@ -474,7 +474,7 @@ destruct op. {
   rewrite rngl_add_opp_r; [ | easy ].
   rewrite rngl_sub_diag, rngl_add_0_l; [ easy | easy ].
 }
-remember (rngl_has_subt T) as mo eqn:Hmo.
+remember (rngl_has_psub T) as mo eqn:Hmo.
 symmetry in Hmo.
 destruct mo. {
   specialize rngl_opt_sub_add_distr as H1.
@@ -483,7 +483,7 @@ destruct mo. {
   rewrite rngl_add_comm.
   rewrite rngl_add_sub; [ easy | easy ].
 }
-apply rngl_has_opp_or_subt_iff in Hom.
+apply rngl_has_opp_or_psub_iff in Hom.
 destruct Hom; congruence.
 Qed.
 
@@ -496,7 +496,7 @@ symmetry.
 apply (rngl_add_move_0_r Hro).
 rewrite (rngl_add_opp_r Hro).
 apply rngl_sub_diag.
-now apply rngl_has_opp_or_subt_iff; left.
+now apply rngl_has_opp_or_psub_iff; left.
 Qed.
 
 Theorem rngl_sub_opp_r :
@@ -525,7 +525,7 @@ Theorem rngl_sub_cancel_l :
   ∀ a b c, (a - b)%L = (a - c)%L ↔ b = c.
 Proof.
 intros Hop.
-specialize (rngl_has_opp_has_opp_or_subt Hop) as Hos.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 intros.
 split; intros H1; [ | now subst b ].
 do 2 rewrite <- (rngl_add_opp_r Hop) in H1.
@@ -546,7 +546,7 @@ apply (rngl_add_opp_l Hop).
 Qed.
 
 Theorem rngl_sub_add_distr :
-  rngl_has_opp_or_subt T = true →
+  rngl_has_opp_or_psub T = true →
   ∀ a b c, (a - (b + c) = a - b - c)%L.
 Proof.
 intros Hos *.
@@ -558,13 +558,13 @@ destruct op. {
   unfold rngl_sub; rewrite Hop.
   apply rngl_add_assoc.
 }
-remember (rngl_has_subt T) as mo eqn:Hmo.
+remember (rngl_has_psub T) as mo eqn:Hmo.
 symmetry in Hmo.
 destruct mo. {
   specialize rngl_opt_sub_add_distr as H1.
   now rewrite Hmo in H1.
 }
-apply rngl_has_opp_or_subt_iff in Hos.
+apply rngl_has_opp_or_psub_iff in Hos.
 now destruct Hos; congruence.
 Qed.
 
@@ -598,7 +598,7 @@ apply rngl_mul_nat_add_r.
 Qed.
 
 Theorem rngl_of_nat_sub :
-  rngl_has_opp_or_subt T = true →
+  rngl_has_opp_or_psub T = true →
   ∀ m n, n ≤ m → rngl_of_nat (m - n) = (rngl_of_nat m - rngl_of_nat n)%L.
 Proof.
 intros Hos * Hnm.
@@ -660,7 +660,7 @@ Proof.
 intros Hop *.
 rewrite (rngl_add_opp_r Hop).
 apply rngl_sub_diag.
-now apply rngl_has_opp_or_subt_iff; left.
+now apply rngl_has_opp_or_psub_iff; left.
 Qed.
 
 Arguments rngl_mul_nat {T ro} a%_L n%_nat.
@@ -739,7 +739,7 @@ Qed.
 
 Theorem rngl_of_nat_inj :
   rngl_has_1 T = true →
-  rngl_has_opp_or_subt T = true →
+  rngl_has_opp_or_psub T = true →
   rngl_characteristic T = 0 →
   ∀ i j,
   rngl_of_nat i = rngl_of_nat j
