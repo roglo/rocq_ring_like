@@ -20,7 +20,7 @@
 </div>
 
 <div class="doc">
-<a id="lab8"></a><h1 class="section">Core</h1>
+<a id="lab9"></a><h1 class="section">Core</h1>
 
 
 <div class="paragraph"> </div>
@@ -139,7 +139,7 @@ The opposite and the inverse have three possible states:
 
 <div class="paragraph"> </div>
 
-This is represented by <span class="inlinecode"><span class="id" title="var">rngl_opt_opp_or_subt</span></span> and <span class="inlinecode"><span class="id" title="var">rngl_opt_inv_or_quot</span></span>.
+This is represented by <span class="inlinecode"><span class="id" title="var">rngl_opt_opp_or_psub</span></span> and <span class="inlinecode"><span class="id" title="var">rngl_opt_inv_or_pdiv</span></span>.
 For a type <span class="inlinecode"><span class="id" title="var">T</span></span>, both are of type <span class="inlinecode"><span class="id" title="var">option</span></span> <span class="inlinecode">(<span class="id" title="var">sum</span></span> <span class="inlinecode">(<span class="id" title="var">T</span></span> <span class="inlinecode">→</span> <span class="inlinecode"><span class="id" title="var">T</span>)</span> <span class="inlinecode">(<span class="id" title="var">T</span></span> <span class="inlinecode">→</span> <span class="inlinecode"><span class="id" title="var">T</span></span> <span class="inlinecode">→</span> <span class="inlinecode"><span class="id" title="var">T</span>))</span>:
 
 <div class="paragraph"> </div>
@@ -147,19 +147,19 @@ For a type <span class="inlinecode"><span class="id" title="var">T</span></span>
 <ul class="doclist">
 <li> for a set holding an opposite <span class="inlinecode"><span class="id" title="var">opp</span></span>, we have
 <pre>
-    rngl_opt_opp_or_subt := Some (inl opp)
+    rngl_opt_opp_or_psub := Some (inl opp)
 </pre>
 
 </li>
-<li> for a set holding a partial subtraction <span class="inlinecode"><span class="id" title="var">subt</span></span>, we have
+<li> for a set holding a partial subtraction <span class="inlinecode"><span class="id" title="var">psub</span></span>, we have
 <pre>
-    rngl_opt_opp_or_subt := Some (inr subt)
+    rngl_opt_opp_or_psub := Some (inr psub)
 </pre>
 
 </li>
 <li> for a set holding neither opposite, not subtraction, we have
 <pre>
-    rngl_opt_opp_or_subt := None
+    rngl_opt_opp_or_psub := None
 </pre>
 
 </li>
@@ -167,7 +167,7 @@ For a type <span class="inlinecode"><span class="id" title="var">T</span></span>
 
 <div class="paragraph"> </div>
 
-Same for <span class="inlinecode"><span class="id" title="var">rngl_opt_inv_or_quot</span></span> for inverse and partial division.
+Same for <span class="inlinecode"><span class="id" title="var">rngl_opt_inv_or_pdiv</span></span> for inverse and partial division.
 
 <div class="paragraph"> </div>
 
@@ -194,24 +194,24 @@ No need to repeat the <span class="inlinecode">%<span class="id" title="var">L</
 We also have:
 <pre>
   rngl_opp a :=
-    | opp a         if rngl_opt_opp_or_subt = Some (inl opp)
+    | opp a         if rngl_opt_opp_or_psub = Some (inl opp)
     | 0             otherwise
 </pre>
 <pre>
   rngl_inv a :=
-    | inv a         if rngl_opt_inv_or_quot = Some (inl inv)
+    | inv a         if rngl_opt_inv_or_pdiv = Some (inl inv)
     | 0             otherwise
 </pre>
 <pre>
   rngl_sub a b :=
-    | a + opp b     if rngl_opt_opp_or_subt = Some (inl opp)
-    | subt a b      if rngl_opt_opp_or_subt = Some (inr subt)
+    | a + opp b     if rngl_opt_opp_or_psub = Some (inl opp)
+    | psub a b      if rngl_opt_opp_or_psub = Some (inr psub)
     | 0             otherwise
 </pre>
 <pre>
   rngl_div a b :=
-    | a * inv b     if rngl_opt_inv_or_quot = Some (inl inv)
-    | quot a b      if rngl_opt_inv_or_quot = Some (inr quot)
+    | a * inv b     if rngl_opt_inv_or_pdiv = Some (inl inv)
+    | pdiv a b      if rngl_opt_inv_or_pdiv = Some (inr pdiv)
     | 0             otherwise
 </pre>
 
@@ -413,6 +413,8 @@ induction, but it is not available in all semirings.
 
 </div>
 <div class="code">
+
+<br/>
 <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Export</span> <a class="idref" href="RingLike.Structures.html#"><span class="id" title="library">Structures</span></a>.<br/>
 <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Export</span> <a class="idref" href="RingLike.Order.html#"><span class="id" title="library">Order</span></a>.<br/>
 <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Export</span> <a class="idref" href="RingLike.Add.html#"><span class="id" title="library">Add</span></a>.<br/>
