@@ -667,19 +667,21 @@ Qed.
 
 Theorem rngl_pow_mul_r :
   rngl_has_1 T = true →
-  ∀ a m n, (a ^ (m * n) = (a ^ n) ^ m)%L.
+  ∀ a m n, (a ^ (m * n) = (a ^ m) ^ n)%L.
 Proof.
 intros Hon *.
-revert n.
-induction m; intros. {
-  rewrite Nat.mul_0_l.
+revert m.
+induction n; intros. {
+  rewrite Nat.mul_0_r.
   now do 2 rewrite rngl_pow_0_r.
 }
-rewrite rngl_pow_succ_r.
-cbn.
-rewrite (rngl_pow_add_r Hon).
+rewrite Nat.mul_succ_r.
+rewrite <- Nat.add_1_r.
+do 2 rewrite (rngl_pow_add_r Hon).
+rewrite IHn.
 progress f_equal.
-apply IHm.
+symmetry.
+apply (rngl_pow_1_r Hon).
 Qed.
 
 Theorem rngl_pow_opp_1_even :
@@ -688,7 +690,6 @@ Theorem rngl_pow_opp_1_even :
   ∀ n, ((-1) ^ (2 * n) = 1)%L.
 Proof.
 intros Hon Hop *.
-rewrite Nat.mul_comm.
 rewrite (rngl_pow_mul_r Hon).
 rewrite <- (rngl_squ_pow_2 Hon).
 progress unfold rngl_squ.
@@ -712,6 +713,7 @@ Theorem rngl_pow_squ :
   ∀ a n, ((a ^ n)² = a ^ (2 * n))%L.
 Proof.
 intros Hon *.
+rewrite Nat.mul_comm.
 rewrite (rngl_squ_pow_2 Hon).
 symmetry; apply (rngl_pow_mul_r Hon).
 Qed.
