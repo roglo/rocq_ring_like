@@ -666,32 +666,54 @@ apply (rngl_mul_comm Hic).
 Qed.
 
 Theorem rngl_pow_mul_r :
-  rngl_mul_is_comm T = true →
   rngl_has_1 T = true →
-  ∀ a m n, (a ^ (m * n) = (a ^ m) ^ n)%L.
+  ∀ a m n, (a ^ (m * n) = (a ^ n) ^ m)%L.
 Proof.
-intros Hic Hon *.
+intros Hon *.
 revert n.
 induction m; intros. {
-  symmetry; apply (rngl_pow_1_l Hon).
+  rewrite Nat.mul_0_l.
+  now do 2 rewrite rngl_pow_0_r.
 }
 rewrite rngl_pow_succ_r.
 cbn.
 rewrite (rngl_pow_add_r Hon).
-rewrite IHm.
-symmetry.
-apply (rngl_pow_mul_l Hic Hon).
+progress f_equal.
+apply IHm.
+Qed.
+
+Theorem rngl_pow_opp_1_even :
+  rngl_has_1 T = true →
+  rngl_has_opp T = true →
+  ∀ n, ((-1) ^ (2 * n) = 1)%L.
+Proof.
+intros Hon Hop *.
+rewrite Nat.mul_comm.
+rewrite (rngl_pow_mul_r Hon).
+rewrite <- (rngl_squ_pow_2 Hon).
+progress unfold rngl_squ.
+rewrite (rngl_squ_opp_1 Hon Hop).
+apply (rngl_pow_1_l Hon).
+Qed.
+
+Theorem rngl_pow_opp_1_odd :
+  rngl_has_1 T = true →
+  rngl_has_opp T = true →
+  ∀ n, ((-1) ^ S (2 * n) = -1)%L.
+Proof.
+intros Hon Hop *.
+rewrite rngl_pow_succ_r.
+rewrite (rngl_pow_opp_1_even Hon Hop).
+now apply (rngl_mul_1_r Hon).
 Qed.
 
 Theorem rngl_pow_squ :
-  rngl_mul_is_comm T = true →
   rngl_has_1 T = true →
   ∀ a n, ((a ^ n)² = a ^ (2 * n))%L.
 Proof.
-intros Hic Hon *.
+intros Hon *.
 rewrite (rngl_squ_pow_2 Hon).
-rewrite Nat.mul_comm.
-now rewrite (rngl_pow_mul_r Hic Hon).
+symmetry; apply (rngl_pow_mul_r Hon).
 Qed.
 
 (* (-1) ^ n *)
@@ -880,6 +902,6 @@ Arguments rngl_mul_mul_swap {T ro rp} Hic (a b c)%_L.
 Arguments rngl_mul_0_r {T ro rp} Hom a%_L.
 Arguments rngl_mul_1_r {T ro rp} Hon a%_L.
 Arguments rngl_mul_2_l {T ro rp} Hon a%_L.
-Arguments rngl_pow_squ {T ro rp} Hic Hon a%_L n%_nat.
+Arguments rngl_pow_squ {T ro rp} Hon a%_L n%_nat.
 
 Arguments charac_0_field T%_type {ro rp}.
