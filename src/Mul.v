@@ -860,15 +860,16 @@ A typical example (you must stay in this section):
 *)
 
 From Stdlib Require Import Ring_theory.
+From Stdlib Require Import Field.
 
 Section a.
 
 Context {T : Type}.
 Context {ro : ring_like_op T}.
 Context {rp : ring_like_prop T}.
-Context (Hic : @rngl_mul_is_comm T ro rp = true).
-Context (Hop : @rngl_has_opp T ro = true).
-Context (Hon : @rngl_has_1 T ro = true).
+Context (Hic : rngl_mul_is_comm T = true).
+Context (Hop : rngl_has_opp T = true).
+Context (Hon : rngl_has_1 T = true).
 
 Definition rngl_ring_theory
     : ring_theory 0%L 1%L rngl_add rngl_mul rngl_sub rngl_opp eq :=
@@ -881,6 +882,32 @@ Definition rngl_ring_theory
      Rdistr_l := rngl_mul_add_distr_r;
      Rsub_def x y := eq_sym (rngl_add_opp_r Hop x y);
      Ropp_def := rngl_add_opp_diag_r Hop |}.
+
+Context (Hiv : rngl_has_inv T = true).
+Context (Hc1 : rngl_characteristic T ≠ 1).
+
+Theorem rngl_Fdiv_neq_0 : ∀ a b, rngl_div a b = (a * rngl_inv b)%L.
+Proof.
+intros.
+progress unfold rngl_div.
+now rewrite Hiv.
+Qed.
+
+Theorem rngl_Finv_l : ∀ p : T, p ≠ 0%L → (p⁻¹ * p)%L = 1%L.
+Proof.
+intros * Hpz.
+specialize rngl_opt_mul_inv_diag_l as H1.
+rewrite Hiv, Hon in H1; cbn in H1.
+now apply H1.
+Qed.
+
+Definition rngl_field_theory :
+  field_theory 0%L 1%L rngl_add rngl_mul rngl_sub rngl_opp
+    rngl_div rngl_inv eq :=
+  {| F_R := rngl_ring_theory;
+     F_1_neq_0 := proj1 (rngl_1_neq_0_iff Hon) Hc1;
+     Fdiv_def := rngl_Fdiv_neq_0;
+     Finv_l := rngl_Finv_l |}.
 
 (** ** Commutative field
 
