@@ -860,7 +860,7 @@ A typical example (you must stay in this section):
 *)
 
 From Stdlib Require Import Ring_theory.
-From Stdlib Require Import Field.
+From Stdlib Require Import Field_theory.
 
 Section a.
 
@@ -905,7 +905,7 @@ Definition rngl_field_theory :
   field_theory 0%L 1%L rngl_add rngl_mul rngl_sub rngl_opp
     rngl_div rngl_inv eq :=
   {| F_R := rngl_ring_theory;
-     F_1_neq_0 := proj1 (rngl_1_neq_0_iff Hon) Hc1;
+     F_1_neq_0 := rngl_1_neq_0 Hon Hc1;
      Fdiv_def := rngl_Fdiv_neq_0;
      Finv_l := rngl_Finv_l |}.
 

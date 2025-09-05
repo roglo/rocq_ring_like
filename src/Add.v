@@ -694,35 +694,40 @@ apply Nat.eqb_neq in Hcz.
 now rewrite Hon, Hcz in H1.
 Qed.
 
+Theorem rngl_1_neq_0 :
+  rngl_has_1 T = true → rngl_characteristic T ≠ 1 → (1 ≠ 0)%L.
+Proof.
+intros Hon Hc1.
+specialize rngl_opt_characteristic_prop as H1.
+rewrite Hon in H1.
+remember (Nat.eqb (rngl_characteristic T) 0) as cz eqn:Hcz; symmetry in Hcz.
+destruct cz. {
+  specialize (H1 0); cbn in H1.
+  now rewrite rngl_add_0_r in H1.
+}
+destruct H1 as (Hbef, H1).
+destruct rngl_characteristic as [| n]; [ easy | ].
+destruct n; [ easy | ].
+specialize (Hbef 1).
+cbn in Hbef.
+rewrite rngl_add_0_r in Hbef.
+apply Hbef.
+unfold lt.
+split; [ easy | ].
+do 2 apply le_n_S.
+destruct n; [ easy | apply le_0_n ].
+Qed.
+
 Theorem rngl_1_neq_0_iff :
   rngl_has_1 T = true → rngl_characteristic T ≠ 1 ↔ (1 ≠ 0)%L.
 Proof.
 intros Hon.
+split; [ apply (rngl_1_neq_0 Hon) | ].
 specialize rngl_opt_characteristic_prop as H1.
 rewrite Hon in H1.
-split. {
-  intros Hc.
-  remember (Nat.eqb (rngl_characteristic T) 0) as cz eqn:Hcz; symmetry in Hcz.
-  destruct cz. {
-    specialize (H1 0); cbn in H1.
-    now rewrite rngl_add_0_r in H1.
-  }
-  destruct H1 as (Hbef, H1).
-  destruct rngl_characteristic as [| n]; [ easy | ].
-  destruct n; [ easy | ].
-  specialize (Hbef 1).
-  cbn in Hbef.
-  rewrite rngl_add_0_r in Hbef.
-  apply Hbef.
-  unfold lt.
-  split; [ easy | ].
-  do 2 apply le_n_S.
-  destruct n; [ easy | apply le_0_n ].
-} {
-  intros H10 Hc.
-  rewrite Hc in H1; cbn in H1.
-  now rewrite rngl_add_0_r in H1.
-}
+intros H10 Hc.
+rewrite Hc in H1; cbn in H1.
+now rewrite rngl_add_0_r in H1.
 Qed.
 
 Theorem eq_rngl_of_nat_0 :
