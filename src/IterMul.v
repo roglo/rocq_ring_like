@@ -353,15 +353,21 @@ Qed.
 Theorem rngl_inv_product_list :
   rngl_has_opp_or_psub T = true →
   rngl_has_inv T = true →
-  rngl_characteristic T ≠ 1 →
   (rngl_is_integral_domain T || rngl_has_eq_dec_or_order T)%bool = true →
   ∀ A (l : list A) f,
   (∀ i, i ∈ l → f i ≠ 0%L)
   → ((∏ (i ∈ l), f i)⁻¹ = ∏ (i ∈ List.rev l), ((f i)⁻¹))%L.
 Proof.
-intros Hom Hin H10 Hit * Hnz.
+intros Hos Hiv Hit.
+destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
+  specialize (rngl_characteristic_1 Hon Hos Hc1) as H1.
+  intros * Hnz.
+  rewrite (H1 (∏ (i ∈ List.rev _), _)).
+  apply H1.
+}
+intros * Hnz.
 unfold iter_list.
-induction l as [| a]; [ now apply rngl_inv_1 | cbn ].
+induction l as [| a]; [ now apply (rngl_inv_1 Hon Hiv); right | cbn ].
 rewrite (rngl_mul_1_l Hon).
 rewrite (fold_left_op_fun_from_d 1%L); cycle 1. {
   apply (rngl_mul_1_l Hon).
@@ -386,7 +392,7 @@ rewrite rngl_inv_mul_distr; [ | easy | easy | easy | | ]; cycle 1. {
     rewrite Hit, Bool.andb_true_iff; split; [ | easy ].
     now apply rngl_has_inv_and_1_or_pdiv_iff; left.
   }
-  specialize (rngl_product_list_integral Hom Hit' H10) as H2.
+  specialize (rngl_product_list_integral Hos Hit' Hc1) as H2.
   specialize (H2 A l f H1).
   destruct H2 as (i & Hil & Hfi).
   now revert Hfi; apply Hnz; right.
@@ -402,15 +408,14 @@ Qed.
 Theorem rngl_inv_product :
   rngl_has_opp_or_psub T = true →
   rngl_has_inv T = true →
-  rngl_characteristic T ≠ 1 →
   (rngl_is_integral_domain T || rngl_has_eq_dec_or_order T)%bool = true →
   ∀ b e f,
   (∀ i, b ≤ i ≤ e → f i ≠ 0%L)
   → ((∏ (i = b, e), f i)⁻¹ = ∏ (i = b, e), ((f (b + e - i)%nat)⁻¹))%L.
 Proof.
-intros Hom Hin H10 Hit * Hnz.
+intros Hom Hin Hit * Hnz.
 unfold iter_seq.
-rewrite rngl_inv_product_list; [ | easy | easy | easy | easy | ]. 2: {
+rewrite rngl_inv_product_list; [ | easy | easy | easy | ]. 2: {
   intros i Hi.
   apply List.in_seq in Hi.
   apply Hnz; flia Hi.
@@ -455,14 +460,13 @@ Theorem rngl_inv_product_list_comm : ∀ A (eqb : A → A → bool),
   rngl_has_opp_or_psub T = true →
   rngl_mul_is_comm T = true →
   rngl_has_inv T = true →
-  rngl_characteristic T ≠ 1 →
   (rngl_is_integral_domain T || rngl_has_eq_dec_or_order T)%bool = true →
   ∀ (l : list A) f,
   (∀ i, i ∈ l → f i ≠ 0%L)
   → ((∏ (i ∈ l), f i)⁻¹ = ∏ (i ∈ l), (( f i)⁻¹))%L.
 Proof.
-intros * Heqb Hom Hic Hin H10 Hit * Hnz.
-rewrite rngl_inv_product_list; [ | easy | easy | easy | easy | easy ].
+intros * Heqb Hom Hic Hin Hit * Hnz.
+rewrite rngl_inv_product_list; [ | easy | easy | easy | easy ].
 apply (rngl_product_list_permut Heqb Hic).
 now apply permutation_rev_l.
 Qed.

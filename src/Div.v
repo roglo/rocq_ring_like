@@ -343,10 +343,16 @@ Qed.
 Theorem rngl_inv_1 :
   rngl_has_1 T = true →
   rngl_has_inv T = true →
-  rngl_characteristic T ≠ 1 →
+  rngl_has_opp_or_psub T = true ∨ rngl_characteristic T ≠ 1 →
   (1⁻¹ = 1)%L.
 Proof.
-intros Hon Hiv H10.
+intros Hon Hiv Hosc1.
+destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
+  destruct Hosc1 as [Hos| ]; [ | easy ].
+  specialize (rngl_characteristic_1 Hon Hos Hc1) as H1.
+  rewrite (H1 1%L).
+  apply H1.
+}
 specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
 specialize (rngl_div_diag Hon) as H.
 unfold rngl_div in H.
@@ -373,34 +379,16 @@ Qed.
 Theorem rngl_div_1_r :
   rngl_has_1 T = true →
   rngl_has_inv_or_pdiv T = true →
-  rngl_characteristic T ≠ 1 →
+  rngl_has_opp_or_psub T = true ∨ rngl_characteristic T ≠ 1 →
   ∀ a, (a / 1 = a)%L.
 Proof.
-intros Hon Hiq H10 *.
-assert (Hi1 : rngl_has_inv_and_1_or_pdiv T = true). {
-  apply rngl_has_inv_or_pdiv_iff in Hiq.
-  apply rngl_has_inv_and_1_or_pdiv_iff.
-  now destruct Hiq; [ left | right ].
-}
-specialize (rngl_mul_div Hi1 a 1%L) as H1.
-rewrite (rngl_mul_1_r Hon) in H1.
-now apply H1, rngl_1_neq_0_iff.
-Qed.
-
-Theorem rngl_div_1_r' :
-  rngl_has_1 T = true →
-  rngl_has_opp_or_psub T = true →
-  rngl_has_inv_or_pdiv T = true →
-  ∀ a, (a / 1 = a)%L.
-Proof.
-intros Hon Hos Hiq.
+intros Hon Hiq Hosc1 *.
 destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
+  destruct Hosc1 as [Hos| ]; [ | easy ].
   specialize (rngl_characteristic_1 Hon Hos Hc1) as H1.
-  intros.
   rewrite (H1 a).
   apply H1.
 }
-intros.
 assert (Hi1 : rngl_has_inv_and_1_or_pdiv T = true). {
   apply rngl_has_inv_or_pdiv_iff in Hiq.
   apply rngl_has_inv_and_1_or_pdiv_iff.
@@ -675,12 +663,15 @@ Qed.
 
 Theorem rngl_pow_nonzero :
   rngl_has_1 T = true →
-  rngl_characteristic T ≠ 1 →
   rngl_has_opp_or_psub T = true →
   rngl_has_inv_or_pdiv T = true →
   ∀ a n, (a ≠ 0 → a ^ n ≠ 0)%L.
 Proof.
-intros Hon Hc1 Hos Hiq * Haz.
+intros Hon Hos Hiq * Haz.
+destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
+  specialize (rngl_characteristic_1 Hon Hos Hc1) as H1.
+  now rewrite (H1 a) in Haz.
+}
 induction n; [ now apply (rngl_1_neq_0_iff Hon) | cbn ].
 intros H1; apply IHn.
 now apply (rngl_eq_mul_0_l Hon Hos Hiq) in H1.
@@ -707,8 +698,9 @@ Proof.
 intros Hic Hon Hos Hiv * Hbz.
 progress unfold rngl_div.
 rewrite Hiv.
-rewrite <- (rngl_squ_inv Hon Hos Hiv); [ | easy ].
-apply (rngl_squ_mul Hic).
+rewrite (rngl_squ_mul Hic).
+progress f_equal.
+now apply (rngl_squ_inv Hon Hos Hiv).
 Qed.
 
 Theorem rngl_div_opp_l :
@@ -746,17 +738,12 @@ Theorem rngl_inv_pow :
 Proof.
 intros Hon Hos Hiv.
 specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
-destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
-  specialize (rngl_characteristic_1 Hon Hos Hc1) as H1.
-  intros.
-  rewrite H1; apply H1.
-}
 intros * Hxz.
-induction n; [ apply (rngl_inv_1 Hon Hiv Hc1) | ].
+induction n; [ now apply (rngl_inv_1 Hon Hiv); left | ].
 rewrite rngl_pow_succ_r.
 rewrite (rngl_pow_succ_l Hon).
 rewrite (rngl_inv_mul_distr Hon Hos Hiv); [ | easy | ]. 2: {
-  now apply (rngl_pow_nonzero Hon Hc1 Hos Hiq).
+  now apply (rngl_pow_nonzero Hon Hos Hiq).
 }
 now progress f_equal.
 Qed.

@@ -1198,13 +1198,18 @@ Theorem rngl_pow_pos_pos :
   rngl_has_1 T = true →
   rngl_has_opp T = true →
   rngl_has_inv T = true →
-  rngl_characteristic T ≠ 1 →
   rngl_is_ordered T = true →
   ∀ a n, (0 < a → 0 < a ^ n)%L.
 Proof.
-intros Hon Hop Hiv Hc1 Hor.
+intros Hon Hop Hiv Hor.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
+destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
+  specialize (rngl_characteristic_1 Hon Hos Hc1) as H1.
+  intros * Hza.
+  rewrite H1 in Hza.
+  now apply (rngl_lt_irrefl Hor) in Hza.
+}
 intros * Hza.
 induction n; cbn; [ apply (rngl_0_lt_1 Hon Hos Hiq Hc1 Hor) | ].
 now apply (rngl_mul_pos_pos Hon Hop Hiq Hor).
@@ -1440,23 +1445,17 @@ Proof.
 intros Hon Hos Hiv.
 specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
 specialize (rngl_has_inv_and_1_has_inv_and_1_or_pdiv Hon Hiv) as Hi1.
-destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
-  specialize (rngl_characteristic_1 Hon Hos Hc1) as H1.
-  intros.
-  rewrite (H1 (_ ^ (_ - _)))%L.
-  apply H1.
-}
 intros * Haz Hnm.
 revert m Hnm.
 induction n; intros. {
-  rewrite (rngl_div_1_r Hon Hiq Hc1).
+  rewrite (rngl_div_1_r Hon Hiq); [ | now left ].
   now rewrite Nat.sub_0_r.
 }
 destruct m; [ easy | ].
 apply Nat.succ_le_mono in Hnm.
 do 2 rewrite (rngl_pow_succ_l Hon).
 rewrite <- (rngl_div_div Hon Hos Hiv); [ | easy | ]. 2: {
-  now apply (rngl_pow_nonzero Hon Hc1 Hos Hiq).
+  now apply (rngl_pow_nonzero Hon Hos Hiq).
 }
 rewrite (rngl_mul_div Hi1); [ | easy ].
 now apply IHn.
