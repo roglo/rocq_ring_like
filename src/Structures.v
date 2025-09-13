@@ -36,7 +36,6 @@ Arguments rngl_opt_one T {ring_like_op}.
 Arguments rngl_opt_opp_or_psub T {ring_like_op}.
 Arguments rngl_opt_inv_or_pdiv T {ring_like_op}.
 Arguments rngl_opt_is_zero_divisor T {ring_like_op}.
-Arguments rngl_opt_eq_dec T {ring_like_op}.
 
 Declare Scope ring_like_scope.
 Delimit Scope ring_like_scope with L.
@@ -68,9 +67,6 @@ Definition rngl_has_inv_or_pdiv T {R : ring_like_op T} :=
 Definition rngl_is_ordered T {R : ring_like_op T} :=
   bool_of_option rngl_opt_leb.
 
-Definition rngl_has_eq_dec T {R : ring_like_op T} :=
-  bool_of_option (rngl_opt_eq_dec T).
-
 Definition rngl_has_opp T {R : ring_like_op T} :=
   match rngl_opt_opp_or_psub T with
   | Some (inl _) => true
@@ -93,12 +89,6 @@ Definition rngl_has_pdiv T {R : ring_like_op T} :=
   match rngl_opt_inv_or_pdiv T with
   | Some (inr _) => true
   | _ => false
-  end.
-
-Definition rngl_is_integral_domain T {ro : ring_like_op T} :=
-  match rngl_opt_is_zero_divisor T with
-  | Some _ => false
-  | None => true
   end.
 
 Definition rngl_is_zero_divisor {T} {ro : ring_like_op T} a :=
@@ -162,91 +152,27 @@ Definition mul_nat {T} (zero : T) (add : T → T → T) a n :=
 Definition rngl_mul_nat {T} {ro : ring_like_op T} :=
   mul_nat rngl_zero rngl_add.
 
-Definition rngl_squ {T} {ro : ring_like_op T} a := rngl_mul a a.
-
-Fixpoint rngl_power {T} {ro : ring_like_op T} a n :=
-  match n with
-  | O => rngl_one
-  | S m => rngl_mul a (rngl_power a m)
-  end.
-
 Definition rngl_of_nat {T} {ro : ring_like_op T} a := rngl_mul_nat rngl_one a.
-
-Definition rngl_eqb {T} {ro : ring_like_op T} a b :=
-  match rngl_opt_eq_dec T with
-  | Some rngl_eq_dec =>
-      match rngl_eq_dec a b with left _ => true | right _ => false end
-  | None => false
-  end.
-
-Definition rngl_leb {T} {ro : ring_like_op T} a b :=
-  match rngl_opt_leb with
-  | Some rngl_leb => rngl_leb a b
-  | None => false
-  end.
-
-Definition rngl_ltb {T} {ro : ring_like_op T} a b :=
-  match rngl_opt_leb with
-  | Some rngl_leb => negb (rngl_leb b a)
-  | None => false
-  end.
 
 Arguments rngl_add {T ro} (a b)%_L : rename.
 Arguments rngl_sub {T ro} (a b)%_L.
 Arguments rngl_mul {T ro} (a b)%_L : rename.
 Arguments rngl_div {T ro} (a b)%_L.
-Arguments rngl_opp {T ro} a%_L.
 Arguments rngl_inv {T ro} a%_L.
-Arguments rngl_squ {T ro} a%_L.
-Arguments rngl_power {T ro} a%_L n%_nat.
-Arguments rngl_le {T ro} (a b)%_L.
-Arguments rngl_lt {T ro} (a b)%_L.
-Arguments rngl_eqb {T ro} (a b)%_L.
-Arguments rngl_leb {T ro} (a b)%_L.
-Arguments rngl_ltb {T ro} (a b)%_L.
-
-Arguments rngl_psub {T ro} (a b)%_L.
-Arguments rngl_pdiv {T ro} (a b)%_L.
 
 Notation "0" := rngl_zero : ring_like_scope.
 Notation "1" := rngl_one : ring_like_scope.
-Notation "2" := (rngl_add 1 1) : ring_like_scope.
-Notation "3" := (rngl_add 2 1) : ring_like_scope.
-Notation "4" := (rngl_add 3 1) : ring_like_scope.
 Notation "a + b" := (rngl_add a b) : ring_like_scope.
 Notation "a - b" := (rngl_sub a b) : ring_like_scope.
 Notation "a * b" := (rngl_mul a b) : ring_like_scope.
 Notation "a / b" := (rngl_div a b) : ring_like_scope.
 Notation "- a" := (rngl_opp a) : ring_like_scope.
-Notation "- 1" := (rngl_opp rngl_one) : ring_like_scope.
-Notation "- 2" := (rngl_opp (rngl_add rngl_one rngl_one)) : ring_like_scope.
 Notation "a '⁻¹'" := (rngl_inv a) (at level 1, format "a ⁻¹").
-Notation "a '²'" := (rngl_squ a) (at level 1, format "a ²").
-Notation "a ^ b" := (rngl_power a b) : ring_like_scope.
 
 Notation "a ≤ b" := (rngl_le a b) : ring_like_scope.
 Notation "a < b" := (rngl_lt a b) : ring_like_scope.
 Notation "a ≤ b ≤ c" := (a ≤ b ∧ b ≤ c)%L (at level 70, b at next level) :
   ring_like_scope.
-Notation "a < b < c" := (a < b ∧ b < c)%L (at level 70, b at next level) :
-  ring_like_scope.
-Notation "a ≤ b < c" := (a ≤ b ∧ b < c)%L (at level 70, b at next level) :
-  ring_like_scope.
-Notation "a < b ≤ c" := (a < b ∧ b ≤ c)%L (at level 70, b at next level) :
-  ring_like_scope.
-Notation "a ≤ b ≤ c ≤ d" :=
-  (a ≤ b ∧ b ≤ c ∧ c ≤ d)%L (at level 70, b at next level, c at next level) :
-  ring_like_scope.
-Notation "a ≤ b < c ≤ d" :=
-  (a ≤ b ∧ b < c ∧ c ≤ d)%L (at level 70, b at next level, c at next level) :
-  ring_like_scope.
-
-Notation "a =? b" := (rngl_eqb a b) (at level 70) : ring_like_scope.
-Notation "a ≠? b" := (negb (rngl_eqb a b)) (at level 70) : ring_like_scope.
-Notation "a ≤? b" := (rngl_leb a b) (at level 70) : ring_like_scope.
-Notation "a <? b" := (rngl_ltb a b) (at level 70) : ring_like_scope.
-
-Notation "l .[ i ]" := (List.nth i l 0%L) (at level 1, format "l .[ i ]").
 
 Inductive not_applicable := NA.
 
@@ -347,6 +273,36 @@ Class ring_like_prop T {ro : ring_like_op T} :=
       if (rngl_is_archimedean && rngl_is_ordered T)%bool then
         ∀ a b, (0 < a)%L → ∃ₜ n, (b < rngl_mul_nat a n)%L
       else not_applicable }.
+
+Arguments rngl_opt_eq_dec T {ring_like_op}.
+
+Definition rngl_has_eq_dec T {R : ring_like_op T} :=
+  bool_of_option (rngl_opt_eq_dec T).
+
+Definition rngl_is_integral_domain T {ro : ring_like_op T} :=
+  match rngl_opt_is_zero_divisor T with
+  | Some _ => false
+  | None => true
+  end.
+
+Definition rngl_squ {T} {ro : ring_like_op T} a := rngl_mul a a.
+
+Definition rngl_eqb {T} {ro : ring_like_op T} a b :=
+  match rngl_opt_eq_dec T with
+  | Some rngl_eq_dec =>
+      match rngl_eq_dec a b with left _ => true | right _ => false end
+  | None => false
+  end.
+
+Definition rngl_leb {T} {ro : ring_like_op T} a b :=
+  match rngl_opt_leb with
+  | Some rngl_leb => rngl_leb a b
+  | None => false
+  end.
+
+Notation "a =? b" := (rngl_eqb a b) (at level 70) : ring_like_scope.
+Notation "a ≠? b" := (negb (rngl_eqb a b)) (at level 70) : ring_like_scope.
+Notation "a ≤? b" := (rngl_leb a b) (at level 70) : ring_like_scope.
 
 Definition rngl_abs {T} {ro : ring_like_op T} a :=
   if (a ≤? 0)%L then (- a)%L else a.
@@ -673,6 +629,62 @@ destruct ab. {
 Qed.
 
 End a.
+
+Fixpoint rngl_power {T} {ro : ring_like_op T} a n :=
+  match n with
+  | O => rngl_one
+  | S m => rngl_mul a (rngl_power a m)
+  end.
+
+Definition rngl_ltb {T} {ro : ring_like_op T} a b :=
+  match rngl_opt_leb with
+  | Some rngl_leb => negb (rngl_leb b a)
+  | None => false
+  end.
+
+(*
+Arguments rngl_opp {T ro} a%_L.
+*)
+Arguments rngl_squ {T ro} a%_L.
+Arguments rngl_power {T ro} a%_L n%_nat.
+(*
+Arguments rngl_le {T ro} (a b)%_L.
+Arguments rngl_lt {T ro} (a b)%_L.
+Arguments rngl_eqb {T ro} (a b)%_L.
+Arguments rngl_leb {T ro} (a b)%_L.
+Arguments rngl_ltb {T ro} (a b)%_L.
+
+Arguments rngl_psub {T ro} (a b)%_L.
+Arguments rngl_pdiv {T ro} (a b)%_L.
+*)
+
+Notation "2" := (rngl_add 1 1) : ring_like_scope.
+Notation "3" := (rngl_add 2 1) : ring_like_scope.
+Notation "4" := (rngl_add 3 1) : ring_like_scope.
+Notation "- 1" := (rngl_opp rngl_one) : ring_like_scope.
+(*
+Notation "- 2" := (rngl_opp (rngl_add rngl_one rngl_one)) : ring_like_scope.
+*)
+Notation "a '²'" := (rngl_squ a) (at level 1, format "a ²").
+Notation "a ^ b" := (rngl_power a b) : ring_like_scope.
+Notation "a < b < c" := (a < b ∧ b < c)%L (at level 70, b at next level) :
+  ring_like_scope.
+Notation "a ≤ b < c" := (a ≤ b ∧ b < c)%L (at level 70, b at next level) :
+  ring_like_scope.
+Notation "a < b ≤ c" := (a < b ∧ b ≤ c)%L (at level 70, b at next level) :
+  ring_like_scope.
+Notation "a ≤ b ≤ c ≤ d" :=
+  (a ≤ b ∧ b ≤ c ∧ c ≤ d)%L (at level 70, b at next level, c at next level) :
+  ring_like_scope.
+(*
+Notation "a ≤ b < c ≤ d" :=
+  (a ≤ b ∧ b < c ∧ c ≤ d)%L (at level 70, b at next level, c at next level) :
+  ring_like_scope.
+*)
+
+Notation "a <? b" := (rngl_ltb a b) (at level 70) : ring_like_scope.
+
+Notation "l .[ i ]" := (List.nth i l 0%L) (at level 1, format "l .[ i ]").
 
 Arguments rngl_add_assoc {T ro rp} (a b c)%_L : rename.
 Arguments rngl_add_comm {T ro ring_like_prop} (a b)%_L.
