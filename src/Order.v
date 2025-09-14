@@ -902,6 +902,22 @@ destruct ab. {
 }
 Qed.
 
+Theorem rngl_compare_le_iff :
+  rngl_is_ordered T = true →
+  rngl_has_eq_dec T = true →
+  ∀ a b, rngl_compare a b ≠ Gt ↔ (a ≤ b)%L.
+Proof.
+intros Hor Hed *.
+split; intros H. {
+  apply (rngl_nlt_ge_iff Hor).
+  now intros H1; apply (rngl_compare_gt_iff Hor Hed) in H1.
+} {
+  apply rngl_nlt_ge in H.
+  intros H1.
+  now apply (rngl_compare_gt_iff Hor Hed) in H1.
+}
+Qed.
+
 Theorem rngl_compare_refl :
   rngl_has_eq_dec T = true →
   ∀ a, rngl_compare a a = Eq.
