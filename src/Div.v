@@ -693,7 +693,7 @@ Theorem rngl_squ_div :
   rngl_has_1 T = true →
   rngl_has_opp_or_psub T = true →
   rngl_has_inv T = true →
-  ∀ a b, (b ≠ 0)%L → (a / b)²%L = (a² / b²)%L.
+  ∀ a b, b ≠ 0%L → (a / b)²%L = (a² / b²)%L.
 Proof.
 intros Hic Hon Hos Hiv * Hbz.
 progress unfold rngl_div.

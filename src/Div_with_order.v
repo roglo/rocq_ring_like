@@ -1466,14 +1466,31 @@ Theorem rngl_squ_inv' :
   rngl_has_opp_or_psub T = true →
   rngl_has_inv T = true →
   rngl_has_eq_dec_or_order T = true →
-  ∀ a, (0⁻¹)² = 0⁻¹ → (a⁻¹)² = (a²)⁻¹.
+  ∀ a, a ≠ 0%L ∨ (0⁻¹)² = 0⁻¹ → (a⁻¹)² = (a²)⁻¹.
 Proof.
 intros Hon Hos Hiv Heo * Hzi.
 destruct (rngl_eq_dec Heo a 0) as [Haz| Haz]. {
+  destruct Hzi as [| Hzi]; [ easy | ].
   now subst a; rewrite (rngl_squ_0 Hos).
 }
 progress unfold rngl_squ.
 now rewrite (rngl_inv_mul_distr Hon Hos Hiv).
+Qed.
+
+Theorem rngl_squ_div' :
+  rngl_mul_is_comm T = true →
+  rngl_has_1 T = true →
+  rngl_has_opp_or_psub T = true →
+  rngl_has_inv T = true →
+  rngl_has_eq_dec_or_order T = true →
+  ∀ a b, b ≠ 0%L ∨ (0⁻¹)² = 0⁻¹ → (a / b)²%L = (a² / b²)%L.
+Proof.
+intros Hic Hon Hos Hiv Hed * Hbz.
+progress unfold rngl_div.
+rewrite Hiv.
+rewrite (rngl_squ_mul Hic).
+progress f_equal.
+now apply (rngl_squ_inv' Hon Hos Hiv Hed).
 Qed.
 
 End a.
