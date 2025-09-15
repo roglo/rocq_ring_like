@@ -1461,6 +1461,21 @@ rewrite (rngl_mul_div Hi1); [ | easy ].
 now apply IHn.
 Qed.
 
+Theorem rngl_squ_inv' :
+  rngl_has_1 T = true →
+  rngl_has_opp_or_psub T = true →
+  rngl_has_inv T = true →
+  rngl_has_eq_dec_or_order T = true →
+  ∀ a, (0⁻¹)² = 0⁻¹ → (a⁻¹)² = (a²)⁻¹.
+Proof.
+intros Hon Hos Hiv Heo * Hzi.
+destruct (rngl_eq_dec Heo a 0) as [Haz| Haz]. {
+  now subst a; rewrite (rngl_squ_0 Hos).
+}
+progress unfold rngl_squ.
+now rewrite (rngl_inv_mul_distr Hon Hos Hiv).
+Qed.
+
 End a.
 
 Arguments rngl_div_le_mono_pos_l {T ro rp} Hop Hiv Hor Hii (a b c)%_L.
