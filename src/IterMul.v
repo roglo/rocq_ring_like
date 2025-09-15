@@ -475,13 +475,12 @@ Theorem rngl_inv_product_comm :
   rngl_has_opp_or_psub T = true →
   rngl_mul_is_comm T = true →
   rngl_has_inv T = true →
-  rngl_characteristic T ≠ 1 →
   (rngl_is_integral_domain T || rngl_has_eq_dec_or_order T)%bool = true →
   ∀ b e f,
   (∀ i, b ≤ i ≤ e → f i ≠ 0%L)
   → ((∏ (i = b, e), f i)⁻¹ = ∏ (i = b, e), ((f i)⁻¹))%L.
 Proof.
-intros Hom Hic Hin H10 Hit * Hnz.
+intros Hom Hic Hin Hit * Hnz.
 apply (rngl_inv_product_list_comm _ _ Nat.eqb_eq); try easy.
 intros i Hi.
 apply List.in_seq in Hi.
@@ -492,14 +491,13 @@ Theorem rngl_product_div_distr :
   rngl_has_opp_or_psub T = true →
   rngl_mul_is_comm T = true →
   rngl_has_inv T = true →
-  rngl_characteristic T ≠ 1 →
   (rngl_is_integral_domain T || rngl_has_eq_dec_or_order T)%bool = true →
   ∀ b e f g,
   (∀ i, b ≤ i ≤ e → g i ≠ 0%L)
   → (∏ (i = b, e), (f i / g i))%L =
     ((∏ (i = b, e), f i) / (∏ (i = b, e), g i))%L.
 Proof.
-intros Hom Hic Hin H10 Hit * Hg.
+intros Hom Hic Hin Hit * Hg.
 unfold rngl_div.
 rewrite Hin.
 rewrite rngl_product_mul_distr; [ | easy ].

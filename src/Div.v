@@ -76,8 +76,8 @@ Theorem rngl_mul_inv_r :
   rngl_has_inv T = true →
   ∀ a b, (a * b⁻¹)%L = (a / b)%L.
 Proof.
-intros Hin *.
-now unfold rngl_div; rewrite Hin.
+intros Hiv *.
+now unfold rngl_div; rewrite Hiv.
 Qed.
 
 Theorem rngl_div_diag :
@@ -230,9 +230,9 @@ Theorem rngl_div_div_swap :
   ∀ a b c,
   (a / b / c = a / c / b)%L.
 Proof.
-intros Hic Hin *.
+intros Hic Hiv *.
 progress unfold rngl_div.
-now rewrite Hin, rngl_mul_mul_swap.
+now rewrite Hiv, rngl_mul_mul_swap.
 Qed.
 
 Theorem rngl_div_div_mul_mul :
@@ -413,7 +413,7 @@ Theorem rngl_div_compat_l :
   rngl_has_inv T = true →
   ∀ a b c, c ≠ 0%L → (a = b)%L → (a / c = b / c)%L.
 Proof.
-intros Hin a b c Hcz Hab.
+intros Hiv a b c Hcz Hab.
 now rewrite Hab.
 Qed.
 
@@ -470,16 +470,16 @@ Theorem rngl_inv_neq_0 :
   rngl_has_inv T = true →
   ∀ a, a ≠ 0%L → (a⁻¹ ≠ 0)%L.
 Proof.
-intros Hon Hom Hiv * Haz H1.
+intros Hon Hos Hiv * Haz H1.
 remember (Nat.eqb (rngl_characteristic T) 1) as ch eqn:Hch; symmetry in Hch.
 destruct ch. {
   apply Nat.eqb_eq in Hch.
-  now specialize (rngl_characteristic_1 Hon Hom Hch a).
+  now specialize (rngl_characteristic_1 Hon Hos Hch a).
 }
 apply Nat.eqb_neq in Hch.
 symmetry in H1.
 apply (rngl_mul_move_1_r Hon Hiv _ _ Haz) in H1.
-rewrite (rngl_mul_0_l Hom) in H1.
+rewrite (rngl_mul_0_l Hos) in H1.
 symmetry in H1.
 now apply rngl_1_neq_0_iff in H1.
 Qed.
@@ -518,8 +518,8 @@ Theorem rngl_inv_inj :
   rngl_has_inv T = true →
   ∀ a b, a ≠ 0%L → b ≠ 0%L →(a⁻¹ = b⁻¹)%L → a = b.
 Proof.
-intros Hon Hom Hiv * Haz Hbz H.
-rewrite <- (rngl_inv_involutive Hon Hom Hiv a); [ | easy ].
+intros Hon Hos Hiv * Haz Hbz H.
+rewrite <- (rngl_inv_involutive Hon Hos Hiv a); [ | easy ].
 rewrite H.
 now apply rngl_inv_involutive.
 Qed.
