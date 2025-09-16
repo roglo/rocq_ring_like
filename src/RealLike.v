@@ -376,38 +376,6 @@ rewrite (rngl_abs_nonneg_eq Hop Hor) in H1. 2: {
 now rewrite (rngl_abs_1 Hon Hos Hiq Hor) in H1.
 Qed.
 
-Theorem rngl_squ_le_1 :
-  rngl_has_1 T = true →
-  rngl_has_opp T = true →
-  rngl_has_inv_or_pdiv T = true →
-  rngl_is_ordered T = true →
-  ∀ a, (-1 ≤ a ≤ 1)%L → (a² ≤ 1)%L.
-Proof.
-intros Hon Hop Hiq Hor.
-specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
-intros * Ha.
-rewrite <- (rngl_squ_1 Hon).
-apply (rngl_abs_le_squ_le Hon Hop Hiq Hor).
-rewrite (rngl_abs_1 Hon Hos Hiq Hor).
-now apply -> (rngl_abs_le Hop Hor).
-Qed.
-
-Theorem rngl_squ_le_1_if :
-  rngl_has_1 T = true →
-  rngl_has_opp T = true →
-  rngl_has_inv_or_pdiv T = true →
-  rngl_is_ordered T = true →
-  ∀ a, (a² ≤ 1)%L → (-1 ≤ a ≤ 1)%L.
-Proof.
-intros Hon Hop Hiq Hor.
-specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
-intros * Ha.
-rewrite <- (rngl_squ_1 Hon) in Ha.
-apply (rngl_squ_le_abs_le Hon Hop Hiq Hor) in Ha.
-rewrite (rngl_abs_1 Hon Hos Hiq Hor) in Ha.
-now apply (rngl_abs_le Hop Hor).
-Qed.
-
 End a.
 
 Arguments rl_modl {T ro rp rl} (x y)%_L.

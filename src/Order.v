@@ -437,6 +437,8 @@ subst.
 apply (rngl_le_refl Hor).
 Qed.
 
+(* min & max *)
+
 Theorem rngl_min_id :
   rngl_is_ordered T = true →
   ∀ a, rngl_min a a = a.
