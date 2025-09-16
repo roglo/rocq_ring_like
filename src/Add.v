@@ -619,6 +619,9 @@ Proof. apply rngl_add_0_r. Qed.
 Theorem rngl_of_nat_2 : rngl_of_nat 2 = 2%L.
 Proof. now cbn; rewrite rngl_add_0_r. Qed.
 
+Theorem rngl_of_nat_3 : rngl_of_nat 3 = 3%L.
+Proof. now cbn; rewrite rngl_add_0_r, rngl_add_comm. Qed.
+
 Theorem rngl_mul_nat_succ :
   ∀ a n, rngl_mul_nat a (S n) = (a + rngl_mul_nat a n)%L.
 Proof.
