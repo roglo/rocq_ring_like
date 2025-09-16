@@ -661,7 +661,7 @@ cbn in H1.
 now rewrite rngl_add_0_r in H1.
 Qed.
 
-Theorem rngl_pow_nonzero :
+Theorem rngl_pow_neq_0 :
   rngl_has_1 T = true →
   rngl_has_opp_or_psub T = true →
   rngl_has_inv_or_pdiv T = true →
@@ -743,7 +743,7 @@ induction n; [ now apply (rngl_inv_1 Hon Hiv); left | ].
 rewrite rngl_pow_succ_r.
 rewrite (rngl_pow_succ_l Hon).
 rewrite (rngl_inv_mul_distr Hon Hos Hiv); [ | easy | ]. 2: {
-  now apply (rngl_pow_nonzero Hon Hos Hiq).
+  now apply (rngl_pow_neq_0 Hon Hos Hiq).
 }
 now progress f_equal.
 Qed.

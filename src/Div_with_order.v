@@ -1478,7 +1478,7 @@ destruct m; [ easy | ].
 apply Nat.succ_le_mono in Hnm.
 do 2 rewrite (rngl_pow_succ_l Hon).
 rewrite <- (rngl_div_div Hon Hos Hiv); [ | easy | ]. 2: {
-  now apply (rngl_pow_nonzero Hon Hos Hiq).
+  now apply (rngl_pow_neq_0 Hon Hos Hiq).
 }
 rewrite (rngl_mul_div Hi1); [ | easy ].
 now apply IHn.
