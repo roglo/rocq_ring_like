@@ -265,6 +265,35 @@ intros H; rewrite H in H5.
 now apply (rngl_lt_irrefl Hor) in H5.
 Qed.
 
+Theorem rngl_0_lt_3 :
+  rngl_has_1 T = true →
+  rngl_has_opp_or_psub T = true →
+  rngl_has_inv_or_pdiv T = true →
+  rngl_characteristic T ≠ 1 →
+  rngl_is_ordered T = true →
+ (0 < 3)%L.
+Proof.
+intros Hon Hos Hiq Hc1 Hor.
+apply (rngl_lt_le_trans Hor _ 1).
+apply (rngl_0_lt_1 Hon Hos Hiq Hc1 Hor).
+apply (rngl_le_add_l Hos Hor).
+apply (rngl_0_le_2 Hon Hos Hiq Hor).
+Qed.
+
+Theorem rngl_3_neq_0 :
+  rngl_has_1 T = true →
+  rngl_has_opp_or_psub T = true →
+  rngl_has_inv_or_pdiv T = true →
+  rngl_characteristic T ≠ 1 →
+  rngl_is_ordered T = true →
+  (3 ≠ 0)%L.
+Proof.
+intros Hon Hos Hiq Hc1 Hor.
+specialize (rngl_0_lt_3 Hon Hos Hiq Hc1 Hor) as H.
+intros H1; rewrite H1 in H.
+now apply (rngl_lt_irrefl Hor) in H.
+Qed.
+
 Theorem rngl_opp_1_le_0 :
   rngl_has_1 T = true →
   rngl_has_opp T = true →
