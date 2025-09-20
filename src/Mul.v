@@ -718,6 +718,15 @@ rewrite (rngl_squ_pow_2 Hon).
 symmetry; apply (rngl_pow_mul_r Hon).
 Qed.
 
+Theorem rngl_div_eq_inv_r :
+  rngl_has_inv T = true →
+  ∀ a b, (a / b)%L = (a * b⁻¹)%L.
+Proof.
+intros Hiv *.
+progress unfold rngl_div.
+now rewrite Hiv.
+Qed.
+
 (* (-1) ^ n *)
 
 Definition minus_one_pow n :=
@@ -886,13 +895,6 @@ Definition rngl_ring_theory
 Context (Hiv : rngl_has_inv T = true).
 Context (Hc1 : rngl_characteristic T ≠ 1).
 
-Theorem rngl_Fdiv_neq_0 : ∀ a b, rngl_div a b = (a * rngl_inv b)%L.
-Proof.
-intros.
-progress unfold rngl_div.
-now rewrite Hiv.
-Qed.
-
 Theorem rngl_Finv_l : ∀ p : T, p ≠ 0%L → (p⁻¹ * p)%L = 1%L.
 Proof.
 intros * Hpz.
@@ -906,7 +908,7 @@ Definition rngl_field_theory :
     rngl_div rngl_inv eq :=
   {| F_R := rngl_ring_theory;
      F_1_neq_0 := rngl_1_neq_0 Hon Hc1;
-     Fdiv_def := rngl_Fdiv_neq_0;
+     Fdiv_def := rngl_div_eq_inv_r Hiv;
      Finv_l := rngl_Finv_l |}.
 
 (** ** Commutative field
