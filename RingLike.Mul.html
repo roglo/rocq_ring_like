@@ -20,7 +20,7 @@
 </div>
 
 <div class="doc">
-<a id="lab27"></a><h1 class="section">Mul</h1>
+<a id="lab28"></a><h1 class="section">Mul</h1>
 
 
 <div class="paragraph"> </div>
@@ -420,45 +420,6 @@ which imports the present module and some other ones.
 
 <br/>
 <span class="id" title="keyword">End</span> <a class="idref" href="RingLike.Mul.html#a"><span class="id" title="section">a</span></a>.<br/>
-
-<br/>
-</div>
-
-<div class="doc">
-<a id="lab28"></a><h2 class="section">For the Rocq tactic "ring"</h2>
-
-
-<div class="paragraph"> </div>
-
-The Rocq tactics "ring" and "ring_simplify" help to directly simplify
-some kinds of expressions in the "ring" world. It can be applied to
-ring-like structures, providing the following code is added:
-<pre>
-  From Stdlib Require Import Ring.
-  Section a.
-  Context {T : Type}.
-  Context {ro : ring_like_op T}.
-  Context {rp : ring_like_prop T}.
-  Context {Hic : rngl_mul_is_comm T = true}.
-  Context {Hon : rngl_has_1 T = true}.
-  Context {Hop : rngl_has_opp T = true}.
-  Add Ring rngl_ring : (rngl_ring_theory Hic Hop Hon).
-</pre>
-
-<div class="paragraph"> </div>
-
-A typical example (you must stay in this section):
-<pre>
-  Example a2_b2 : ∀ a b, ((a + b) * (a - b) = a * a - b * b)%L.
-  Proof.
-  intros.
-  ring_simplify. (* just to see what happens *)
-  easy.
-  Qed.
-</pre>
-
-</div>
-<div class="code">
 
 <br/>
 <span class="id" title="keyword">Arguments</span> <a class="idref" href="RingLike.Mul.html#rngl_characteristic_1"><span class="id" title="lemma">rngl_characteristic_1</span></a> {<span class="id" title="var">T</span> <span class="id" title="var">ro</span> <span class="id" title="var">rp</span>} <span class="id" title="var">Hon</span> <span class="id" title="var">Hos</span> <span class="id" title="var">Hch</span> <span class="id" title="var">x</span>%<span class="id" title="var">_L</span>.<br/>
