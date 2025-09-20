@@ -750,6 +750,56 @@ Qed.
 
 End a.
 
+From Stdlib Require Import Ring_theory.
+From Stdlib Require Import Field_theory.
+
+Section a.
+
+Context {T : Type}.
+Context {ro : ring_like_op T}.
+Context {rp : ring_like_prop T}.
+Context (Hic : rngl_mul_is_comm T = true).
+Context (Hop : rngl_has_opp T = true).
+Context (Hon : rngl_has_1 T = true).
+
+Definition rngl_ring_theory
+    : ring_theory 0%L 1%L rngl_add rngl_mul rngl_sub rngl_opp eq :=
+  {| Radd_0_l := rngl_add_0_l;
+     Radd_comm := rngl_add_comm;
+     Radd_assoc := rngl_add_assoc;
+     Rmul_1_l := rngl_mul_1_l Hon;
+     Rmul_comm := rngl_mul_comm Hic;
+     Rmul_assoc := rngl_mul_assoc;
+     Rdistr_l := rngl_mul_add_distr_r;
+     Rsub_def x y := eq_sym (rngl_add_opp_r Hop x y);
+     Ropp_def := rngl_add_opp_diag_r Hop |}.
+
+Context (Hiv : rngl_has_inv T = true).
+Context (Hc1 : rngl_characteristic T ≠ 1).
+
+Definition rngl_field_theory :
+  field_theory 0%L 1%L rngl_add rngl_mul rngl_sub rngl_opp
+    rngl_div rngl_inv eq :=
+  {| F_R := rngl_ring_theory;
+     F_1_neq_0 := rngl_1_neq_0 Hon Hc1;
+     Fdiv_def := rngl_div_eq_inv_r Hiv;
+     Finv_l := rngl_mul_inv_diag_l Hon Hiv |}.
+
+(** ** Commutative field
+
+Define the typical properties of what a commutative field
+in mathematics is. *)
+
+Record charac_0_field :=
+  { cf_has_1 : rngl_has_1 T = true;
+    cf_mul_is_comm : rngl_mul_is_comm T = true;
+    cf_has_opp : rngl_has_opp T = true;
+    cf_has_inv : rngl_has_inv T = true;
+    cf_has_eq_dec : rngl_has_eq_dec T = true;
+    cf_characteristic : rngl_characteristic T = 0 }.
+
+End a.
+
 Arguments rngl_div_add_distr_r {T ro rp} Hiv (a b c)%_L.
 Arguments rngl_div_diag {T ro rp} Hon Hiq a%_L.
 Arguments rngl_div_mul {T ro rp} Hon Hiv (a b)%_L.
@@ -758,3 +808,5 @@ Arguments rngl_div_1_l {T ro rp} Hon Hiv a%_L.
 Arguments rngl_mul_cancel_r {T ro rp} Hi1 (a b c)%_L.
 Arguments rngl_mul_div {T ro rp} Hiv (a b)%_L.
 Arguments rngl_mul_inv_r {T ro} Hiv (a b)%_L.
+
+Arguments charac_0_field T%_type {ro rp}.
