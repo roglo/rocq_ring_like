@@ -840,34 +840,6 @@ Qed.
 
 End a.
 
-(** ** For the Rocq tactic "ring"
-
-The Rocq tactics "ring" and "ring_simplify" help to directly simplify
-some kinds of expressions in the "ring" world. It can be applied to
-ring-like structures, providing the following code is added:
-<<
-  From Stdlib Require Import Ring.
-  Section a.
-  Context {T : Type}.
-  Context {ro : ring_like_op T}.
-  Context {rp : ring_like_prop T}.
-  Context {Hic : rngl_mul_is_comm T = true}.
-  Context {Hon : rngl_has_1 T = true}.
-  Context {Hop : rngl_has_opp T = true}.
-  Add Ring rngl_ring : (rngl_ring_theory Hic Hop Hon).
->>
-
-A typical example (you must stay in this section):
-<<
-  Example a2_b2 : ∀ a b, ((a + b) * (a - b) = a * a - b * b)%L.
-  Proof.
-  intros.
-  ring_simplify. (* just to see what happens *)
-  easy.
-  Qed.
->>
-*)
-
 Arguments rngl_characteristic_1 {T ro rp} Hon Hos Hch x%_L.
 Arguments rngl_mul_assoc {T ro rp} (a b c)%_L : rename.
 Arguments rngl_mul_comm {T ro rp} Hic (a b)%_L.
