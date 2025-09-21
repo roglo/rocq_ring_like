@@ -1,5 +1,5 @@
-(* Upper bound property and
-   intermediate values theorem *) 
+(** Upper bound property and
+    intermediate values theorem *)
 
 Set Nested Proofs Allowed.
 From Stdlib Require Import Utf8 Arith.
