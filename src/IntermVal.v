@@ -61,11 +61,17 @@ Arguments is_bound le P c%_L.
 Definition is_upper_bound := is_bound (λ a b, (a ≤ b)%L).
 Definition is_lower_bound := is_bound (λ a b, (b ≤ a)%L).
 
+(*
 Definition is_extremum le (Q : T → Type) c :=
   match is_bound le Q c with
   | left _ => ∀ c', if is_bound le Q c' then le c c' else True
   | right _ => False
   end.
+*)
+
+Definition is_extremum le (Q : T → Type) c :=
+  bool_of_sumbool (is_bound le Q c) = true ∧
+  ∀ c', if is_bound le Q c' then le c c' else True.
 
 Definition is_supremum := is_extremum (λ a b, (a ≤ b)%L).
 Definition is_infimum := is_extremum (λ a b, (b ≤ a)%L).
@@ -1013,11 +1019,13 @@ destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
     progress unfold is_supremum.
     progress unfold is_extremum.
     destruct (is_bound _ P 0%L) as [H1| H1]. {
+      split; [ easy | ].
       intros.
       rewrite (H c').
       destruct (is_bound _ P 0%L); [ | easy ].
       apply (rngl_le_refl Hor).
     } {
+      exfalso.
       destruct H1 as (x, Hx); apply Hx.
       intros Hpx.
       rewrite (H x).
@@ -1111,6 +1119,7 @@ progress unfold is_supremum.
 progress unfold is_extremum.
 destruct (is_bound _ P lim) as [H1| H1]. {
   split. {
+    split; [ easy | ].
     intros c.
     move c before b.
     destruct (is_bound _ P c) as [H2| H2]; [ | easy ].
@@ -1388,6 +1397,7 @@ assert
     }
     clear Hx; rename Hx' into Hx.
     set (x := ((c - rngl_min3 η1 η2 η3 / 2)%L)).
+    destruct Hc as (_, Hc).
     specialize (Hc x) as H2.
     destruct (is_bound _ P x) as [Hpx| Hpx]. 2: {
       destruct Hpx as (y & Hy); clear H2.
@@ -1431,6 +1441,7 @@ assert
     }
     clear Hx; rename Hx' into Hx.
     set (x := ((c + rngl_min3 η1 η2 η3 / 2)%L)).
+    destruct Hc as (_, Hc).
     specialize (Hc x) as H2.
     destruct (is_bound _ P x) as [Hpx| Hpx]. 2: {
       destruct Hpx as (y & Hy); clear H2.
@@ -1565,8 +1576,10 @@ progress unfold is_extremum in Hp.
 progress unfold is_extremum.
 destruct (is_bound _ P c) as [Hpc| Hpc]; [ | easy ].
 destruct (is_bound _ _ (- c)) as [Hqc| Hqc]. {
+  split; [ easy | ].
   intros c'.
   destruct (is_bound _ _ c') as [Hqc'| Hqc']; [ | easy ].
+  destruct Hp as (_, Hp).
   specialize (Hp (- c')%L) as H1.
   destruct (is_bound _ P (- c')) as [Hpoc'| Hpoc']. {
     apply (rngl_opp_le_compat Hop Hor).
@@ -1582,6 +1595,7 @@ destruct (is_bound _ _ (- c)) as [Hqc| Hqc]. {
   now apply Hpq.
 }
 destruct Hqc as (x, Hx).
+exfalso.
 apply Hx; clear Hx.
 intros Hqx.
 apply (rngl_opp_le_compat Hop Hor).
