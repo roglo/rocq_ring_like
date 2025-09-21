@@ -1619,7 +1619,7 @@ Theorem lower_bound_property :
   → ∃ c, is_infimum P c ∧ (a ≤ c)%L.
 Proof.
 intros Hon Hiv Har Hco * Ha Hs.
-specialize (upper_bound_property Hon Hiv Har Hco (λ x, P (- x)%L)) as H1.
+specialize (exists_supremum Hon Hiv Har Hco (λ x, P (- x)%L)) as H1.
 specialize (H1 (- b) (- a))%L.
 cbn in H1.
 rewrite (rngl_opp_involutive Hop) in H1.
