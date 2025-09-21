@@ -1731,3 +1731,4 @@ End a.
 
 Arguments is_infimum {T ro em} Q c%_L.
 Arguments is_lower_bound {T ro em} P c%_L.
+Arguments upper_bound_property {T ro rp} _ Hop Hor Hon Hiv Har Hco P (a b)%_L.
