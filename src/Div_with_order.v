@@ -881,7 +881,8 @@ specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
 destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
   apply (rngl_characteristic_1 Hon Hos Hc1).
 }
-destruct (rngl_lt_dec Hor a 0%L) as [H12| H12]. {
+destruct (rngl_ltb_dec a 0%L) as [H12| H12]. {
+  apply rngl_ltb_lt in H12.
   specialize (H1 (- a / 2))%L.
   assert (H : (0 < - a / 2)%L). {
     progress unfold rngl_div.
@@ -912,7 +913,8 @@ destruct (rngl_lt_dec Hor a 0%L) as [H12| H12]. {
   rewrite <- (rngl_opp_0 Hop).
   now apply -> (rngl_opp_lt_compat Hop Hor).
 }
-destruct (rngl_lt_dec Hor 0%L a) as [H21| H21]. {
+destruct (rngl_ltb_dec 0 a) as [H21| H21]. {
+  apply rngl_ltb_lt in H21.
   specialize (H1 (a / 2))%L.
   assert (H : (0 < a / 2)%L). {
     progress unfold rngl_div.
@@ -934,7 +936,7 @@ destruct (rngl_lt_dec Hor 0%L a) as [H21| H21]. {
   rewrite (rngl_mul_1_r Hon).
   now apply (rngl_lt_add_r Hos Hor).
 }
-apply (rngl_nlt_ge_iff Hor) in H12, H21.
+apply (rngl_ltb_ge_iff Hor) in H12, H21.
 now apply (rngl_le_antisymm Hor).
 Qed.
 
@@ -1225,16 +1227,17 @@ Proof.
 intros Hon Hop Hiq Hor * Hab.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 destruct (rngl_le_dec Hor 0 a)%L as [Hza| Hza]. {
-  destruct (rngl_lt_dec Hor 0 a)%L as [Hlza| Hlza]. 2: {
-    apply (rngl_nlt_ge_iff Hor) in Hlza.
-    apply (rngl_le_antisymm Hor) in Hza; [ | easy ].
-    subst a.
-    destruct (rngl_le_dec Hor 0 b)%L as [Hzb| Hzb]; [ now left | ].
-    apply (rngl_nle_gt_iff Hor), (rngl_lt_le_incl Hor) in Hzb.
-    now right.
+  destruct (rngl_ltb_dec 0 a) as [Hlza| Hlza]. {
+    apply rngl_ltb_lt in Hlza.
+    rewrite <- (rngl_mul_0_r Hos a) in Hab.
+    now left; apply (rngl_mul_le_mono_pos_l Hon Hop Hiq Hor) in Hab.
   }
-  rewrite <- (rngl_mul_0_r Hos a) in Hab.
-  now left; apply (rngl_mul_le_mono_pos_l Hon Hop Hiq Hor) in Hab.
+  apply (rngl_ltb_ge_iff Hor) in Hlza.
+  apply (rngl_le_antisymm Hor) in Hza; [ | easy ].
+  subst a.
+  destruct (rngl_le_dec Hor 0 b)%L as [Hzb| Hzb]; [ now left | ].
+  apply (rngl_nle_gt_iff Hor), (rngl_lt_le_incl Hor) in Hzb.
+  now right.
 } {
   apply (rngl_nle_gt_iff Hor) in Hza.
   right.

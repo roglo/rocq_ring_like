@@ -724,11 +724,12 @@ assert (Heo : rngl_has_eq_dec_or_order T = true). {
   apply Bool.orb_true_r.
 }
 intros a.
-destruct (rngl_lt_dec Hor 1 (rngl_abs a))%L as [Hx1| Hx1]. {
+destruct (rngl_ltb_dec 1 (rngl_abs a))%L as [Hx1| Hx1]. {
+  apply rngl_ltb_lt in Hx1.
   apply (rngl_archimedean_ub Har Hor).
   split; [ apply (rngl_0_lt_1 Hon Hos Hiq Hc1 Hor) | easy ].
 }
-apply (rngl_nlt_ge_iff Hor) in Hx1.
+apply (rngl_ltb_ge_iff Hor) in Hx1.
 destruct (rngl_eq_dec Heo (rngl_abs a) 1) as [Ha1| Ha1]. {
   exists 1.
   rewrite Ha1; cbn.

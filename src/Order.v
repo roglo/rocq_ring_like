@@ -293,29 +293,7 @@ split. {
 }
 Qed.
 
-Theorem rngl_lt_dec :
-  rngl_is_ordered T = true →
-  ∀ a b : T, ({a < b} + {¬ a < b})%L.
-Proof.
-intros Hor *.
-specialize rngl_opt_ord as rr.
-rewrite Hor in rr.
-move rr after rp.
-specialize rngl_ord_le_dec as H1.
-destruct (H1 b a) as [H2| H2]; [ right | left ]. {
-  intros H3.
-  apply (rngl_le_neq Hor) in H3.
-  destruct H3 as (H3, H4).
-  now apply (rngl_le_antisymm Hor) in H2.
-} {
-  specialize rngl_ord_not_le as H3.
-  apply H3 in H2.
-  apply (rngl_le_neq Hor).
-  split; [ easy | ].
-  destruct H2 as (H2, _).
-  now apply not_eq_sym.
-}
-Qed.
+Definition rngl_ltb_dec a b := sumbool_of_bool (a <? b)%L.
 
 Theorem rngl_lt_irrefl :
   rngl_is_ordered T = true → ∀ a : T, ¬ (a < a)%L.
@@ -938,6 +916,6 @@ Arguments rngl_le_trans {T ro rp} Hor (a b c)%_L.
 Arguments rngl_le_lt_trans {T ro rp} Hor (a b c)%_L.
 Arguments rngl_lt_le_trans {T ro rp} Hor (a b c)%_L.
 Arguments rngl_lt_trans {T ro rp} Hor (a b c)%_L.
-Arguments rngl_lt_dec {T ro rp} Hor (a b)%_L.
+Arguments rngl_ltb_dec {T ro} (a b)%_L.
 Arguments rngl_min {T ro} (a b)%_L.
 Arguments rngl_max {T ro} (a b)%_L.

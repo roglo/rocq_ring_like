@@ -61,14 +61,6 @@ Arguments is_bound le P c%_L.
 Definition is_upper_bound := is_bound (λ a b, (a ≤ b)%L).
 Definition is_lower_bound := is_bound (λ a b, (b ≤ a)%L).
 
-(*
-Definition is_extremum le (Q : T → Type) c :=
-  match is_bound le Q c with
-  | left _ => ∀ c', if is_bound le Q c' then le c c' else True
-  | right _ => False
-  end.
-*)
-
 Definition is_extremum le (Q : T → Type) c :=
   bool_of_sumbool (is_bound le Q c) = true ∧
   ∀ c', if is_bound le Q c' then le c c' else True.
