@@ -714,6 +714,21 @@ rewrite Hiv.
 apply (rngl_mul_opp_l Hop).
 Qed.
 
+Theorem rngl_div_opp_r :
+  rngl_has_1 T = true →
+  rngl_has_opp T = true →
+  rngl_has_inv T = true →
+  ∀ a b, b ≠ 0%L → (a / - b = - (a / b))%L.
+Proof.
+intros Hon Hop Hiv * Hbz.
+progress unfold rngl_div.
+rewrite Hiv.
+rewrite <- (rngl_mul_opp_r Hop).
+progress f_equal.
+symmetry.
+now apply (rngl_opp_inv Hon Hop Hiv).
+Qed.
+
 Theorem rngl_div_opp_opp :
   rngl_has_1 T = true →
   rngl_has_opp T = true →
