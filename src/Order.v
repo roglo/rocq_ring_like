@@ -29,6 +29,9 @@ Context {T : Type}.
 Context {ro : ring_like_op T}.
 Context {rp : ring_like_prop T}.
 
+Definition rngl_leb_dec a b := sumbool_of_bool (a ≤? b)%L.
+Definition rngl_ltb_dec a b := sumbool_of_bool (a <? b)%L.
+
 Theorem rngl_leb_le :
   ∀ a b, (a ≤? b)%L = true ↔ (a ≤ b)%L.
 Proof.
@@ -85,16 +88,6 @@ split; intros Hab. {
   apply Bool.not_false_iff_true in Hab.
   easy.
 }
-Qed.
-
-Theorem rngl_le_dec :
-  rngl_is_ordered T = true →
-  ∀ a b : T, ({a ≤ b} + {¬ a ≤ b})%L.
-Proof.
-intros Hor *.
-specialize rngl_opt_ord as H.
-rewrite Hor in H.
-apply H.
 Qed.
 
 Theorem rngl_le_refl :
@@ -293,8 +286,6 @@ split. {
 }
 Qed.
 
-Definition rngl_ltb_dec a b := sumbool_of_bool (a <? b)%L.
-
 Theorem rngl_lt_irrefl :
   rngl_is_ordered T = true → ∀ a : T, ¬ (a < a)%L.
 Proof.
@@ -350,8 +341,10 @@ Theorem rngl_nlt_ge_iff :
 Proof.
 intros Hor *.
 split; intros Hab. {
-  destruct (rngl_le_dec Hor b a) as [H1| H1]; [ easy | ].
-  exfalso; apply Hab.
+  apply rngl_leb_le.
+  destruct (rngl_leb_dec b a) as [H1| H1]; [ easy | ].
+  exfalso; apply Hab; clear Hab.
+  apply rngl_leb_nle in H1.
   now apply (rngl_nle_gt_iff Hor).
 } {
   intros H1.
@@ -362,6 +355,15 @@ split; intros Hab. {
 Qed.
 
 Theorem rngl_leb_gt :
+  ∀ a b, (b < a → ¬ (a ≤ b))%L.
+Proof.
+intros * Hab H1.
+progress unfold rngl_lt in Hab.
+progress unfold rngl_le in H1.
+destruct rngl_opt_leb as [leb| ]; [ congruence | easy ].
+Qed.
+
+Theorem rngl_leb_gt_iff :
   rngl_is_ordered T = true →
   ∀ a b, ((a ≤? b) = false ↔ b < a)%L.
 Proof.
@@ -450,7 +452,7 @@ destruct ab. {
   now apply (rngl_le_antisymm Hor).
 } {
   destruct ba; [ easy | ].
-  apply (rngl_leb_gt Hor) in Hab, Hba.
+  apply (rngl_leb_gt_iff Hor) in Hab, Hba.
   now apply (rngl_lt_asymm Hor) in Hba.
 }
 Qed.
@@ -486,10 +488,10 @@ destruct ab. {
 }
 rewrite Hbc.
 destruct bc; [ now rewrite Hab | ].
-apply (rngl_leb_gt Hor) in Hab, Hbc.
+apply (rngl_leb_gt_iff Hor) in Hab, Hbc.
 apply (rngl_lt_le_incl Hor) in Hbc.
 apply (rngl_le_lt_trans Hor c) in Hab; [ | easy ].
-apply (rngl_leb_gt Hor) in Hab.
+apply (rngl_leb_gt_iff Hor) in Hab.
 now rewrite Hab.
 Qed.
 
@@ -530,7 +532,7 @@ symmetry in Hab, Hba.
 split; intros H1. {
   destruct ab; [ now apply rngl_leb_le in Hab | ].
   destruct ba; [ subst b; apply (rngl_le_refl Hor) | ].
-  apply (rngl_leb_gt Hor) in Hab, Hba.
+  apply (rngl_leb_gt_iff Hor) in Hab, Hba.
   apply (rngl_lt_le_incl Hor) in Hba.
   now apply rngl_nlt_ge in Hba.
 } {
@@ -565,7 +567,7 @@ destruct ab. {
   intros Hba.
   apply (rngl_le_antisymm Hor _ _ Hba Hab).
 } {
-  apply (rngl_leb_gt Hor) in Hab.
+  apply (rngl_leb_gt_iff Hor) in Hab.
   apply (rngl_lt_le_incl Hor) in Hab.
   easy.
 }
@@ -594,7 +596,7 @@ destruct ab. {
   split; [ easy | ].
   now apply (rngl_lt_le_trans Hor _ a).
 }
-apply (rngl_leb_gt Hor) in Hab.
+apply (rngl_leb_gt_iff Hor) in Hab.
 split; [ | easy ].
 now apply (rngl_lt_trans Hor _ b).
 Qed.
@@ -616,7 +618,7 @@ destruct ab. {
   now apply (rngl_le_trans Hor _ b).
 }
 destruct Hcab as [Hac| Hbc]; [ | easy ].
-apply (rngl_leb_gt Hor) in Hab.
+apply (rngl_leb_gt_iff Hor) in Hab.
 apply (rngl_le_trans Hor _ a); [ | easy ].
 now apply (rngl_lt_le_incl Hor) in Hab.
 Qed.
@@ -638,7 +640,7 @@ destruct ab. {
   now apply (rngl_le_lt_trans Hor _ b).
 }
 destruct Hcab as [Hac| Hbc]; [ | easy ].
-apply (rngl_leb_gt Hor) in Hab.
+apply (rngl_leb_gt_iff Hor) in Hab.
 now apply (rngl_lt_trans Hor _ a).
 Qed.
 
@@ -659,7 +661,7 @@ destruct bc. {
 } {
   split; intros Ha; [ now left | ].
   destruct Ha as [Ha| Ha]; [ easy | ].
-  apply (rngl_leb_gt Hor) in Hbc.
+  apply (rngl_leb_gt_iff Hor) in Hbc.
   now apply (rngl_lt_trans Hor _ c).
 }
 Qed.
@@ -672,7 +674,7 @@ intros Hor *.
 progress unfold rngl_min.
 remember (a ≤? b)%L as c eqn:Hc; symmetry in Hc.
 destruct c; [ apply (rngl_le_refl Hor) | ].
-apply (rngl_leb_gt Hor) in Hc.
+apply (rngl_leb_gt_iff Hor) in Hc.
 now apply (rngl_lt_le_incl Hor).
 Qed.
 
@@ -702,7 +704,7 @@ destruct ab. {
   now apply (rngl_le_trans Hor _ b).
 } {
   destruct ac; [ | easy ].
-  apply (rngl_leb_gt Hor) in Hab.
+  apply (rngl_leb_gt_iff Hor) in Hab.
   now apply (rngl_lt_le_incl Hor) in Hab.
 }
 Qed.
@@ -726,7 +728,7 @@ intros Hor *.
 progress unfold rngl_max.
 remember (a ≤? b)%L as c eqn:Hc; symmetry in Hc.
 destruct c; [ apply (rngl_le_refl Hor) | ].
-apply (rngl_leb_gt Hor) in Hc.
+apply (rngl_leb_gt_iff Hor) in Hc.
 now apply (rngl_lt_le_incl Hor).
 Qed.
 
@@ -779,17 +781,19 @@ destruct ed. {
 }
 cbn in Heo.
 rename Heo into Hor.
-destruct (rngl_le_dec Hor a b) as [Hab| Hab]. {
-  destruct (rngl_le_dec Hor b a) as [Hba| Hba]. {
+destruct (rngl_leb_dec a b) as [Hab| Hab]. {
+  apply rngl_leb_le in Hab.
+  destruct (rngl_leb_dec b a) as [Hba| Hba]. {
+    apply rngl_leb_le in Hba.
     left.
     now apply (rngl_le_antisymm Hor).
   }
-  apply (rngl_nle_gt_iff Hor) in Hba.
+  apply (rngl_leb_gt_iff Hor) in Hba.
   right.
   intros H; subst b.
   now apply (rngl_lt_irrefl Hor) in Hba.
 }
-apply (rngl_nle_gt_iff Hor) in Hab.
+apply (rngl_leb_gt_iff Hor) in Hab.
 right.
 intros H; subst b.
 now apply (rngl_lt_irrefl Hor) in Hab.
@@ -847,7 +851,7 @@ destruct ab. {
     now apply (rngl_le_neq Hor).
   } {
     split; [ easy | ].
-    apply (rngl_leb_gt Hor) in Halb.
+    apply (rngl_leb_gt_iff Hor) in Halb.
     intros H.
     now apply (rngl_lt_asymm Hor) in H.
   }
@@ -877,7 +881,7 @@ destruct ab. {
     intros H.
     now apply rngl_nle_gt in H.
   } {
-    now apply (rngl_leb_gt Hor) in Halb.
+    now apply (rngl_leb_gt_iff Hor) in Halb.
   }
 }
 Qed.
@@ -911,9 +915,9 @@ End a.
 Notation "x ?= y" := (rngl_compare x y) : ring_like_scope.
 
 Arguments rngl_eq_dec {T ro rp} Heo (a b)%_L.
-Arguments rngl_le_dec {T ro rp} Hor (a b)%_L.
 Arguments rngl_le_trans {T ro rp} Hor (a b c)%_L.
 Arguments rngl_le_lt_trans {T ro rp} Hor (a b c)%_L.
+Arguments rngl_leb_dec {T ro} (a b)%_L.
 Arguments rngl_lt_le_trans {T ro rp} Hor (a b c)%_L.
 Arguments rngl_lt_trans {T ro rp} Hor (a b c)%_L.
 Arguments rngl_ltb_dec {T ro} (a b)%_L.

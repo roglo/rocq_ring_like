@@ -721,7 +721,8 @@ induction n; intros; cbn in Habn. {
 destruct (is_upper_bound _ _) as [H1| H1]. {
   apply (IHn a ((a + b) / 2)%L x H1 Hab Hx _ _ Habn).
 }
-destruct (rngl_le_dec Hor ((a + b) / 2) x) as [Habx| Habx]. {
+destruct (rngl_leb_dec ((a + b) / 2) x) as [Habx| Habx]. {
+  apply rngl_leb_le in Habx.
   apply (IHn ((a + b) / 2)%L b x Hs Habx Hx _ _ Habn).
 }
 destruct H1 as (z & Hz).
@@ -824,7 +825,8 @@ assert (Hfu : ∀ x, (a ≤ x < rngl_min (a + η) b → f x < u)%L). {
   }
   destruct Hx as (Hax, Hx).
   specialize (H2 x Hax H); clear H.
-  destruct (rngl_le_dec Hor (f x) (f a)) as [Hfxa| Hfxa]. {
+  destruct (rngl_leb_dec (f x) (f a)) as [Hfxa| Hfxa]. {
+    apply rngl_leb_le in Hfxa.
     cbn in H2.
     progress unfold rngl_dist in H2.
     rewrite (rngl_abs_nonpos_eq Hop Hor) in H2. 2: {
@@ -832,7 +834,7 @@ assert (Hfu : ∀ x, (a ≤ x < rngl_min (a + η) b → f x < u)%L). {
     }
     now apply (rngl_le_lt_trans Hor _ (f a)).
   }
-  apply (rngl_nle_gt_iff Hor) in Hfxa.
+  apply (rngl_leb_gt_iff Hor) in Hfxa.
   cbn in H2.
   progress unfold rngl_dist in H2.
   rewrite (rngl_abs_nonneg_eq Hop Hor) in H2. 2: {
@@ -923,7 +925,8 @@ assert (Hfu : ∀ x, (rngl_max a (b - η) < x ≤ b → u < f x)%L). {
   }
   destruct Hx as (Hx, Hxb).
   specialize (H2 x Hxb H); clear H.
-  destruct (rngl_le_dec Hor (f x) (f b)) as [Hfxb| Hfxb]. {
+  destruct (rngl_leb_dec (f x) (f b)) as [Hfxb| Hfxb]. {
+    apply rngl_leb_le in Hfxb.
     cbn in H2.
     progress unfold rngl_dist in H2.
     rewrite (rngl_abs_nonpos_eq Hop Hor) in H2. 2: {
@@ -932,7 +935,7 @@ assert (Hfu : ∀ x, (rngl_max a (b - η) < x ≤ b → u < f x)%L). {
     rewrite (rngl_opp_sub_distr Hop) in H2.
     now apply (rngl_sub_lt_mono_l Hop Hor) in H2.
   }
-  apply (rngl_nle_gt_iff Hor) in Hfxb.
+  apply (rngl_leb_gt_iff Hor) in Hfxb.
   now apply (rngl_lt_trans Hor _ (f b)).
 }
 intros H.
@@ -1363,7 +1366,8 @@ assert
   }
   split. {
     intros x Hx.
-    destruct (rngl_le_dec Hor x c) as [Hxc| Hxc]. {
+    destruct (rngl_leb_dec x c) as [Hxc| Hxc]. {
+      apply rngl_leb_le in Hxc.
       apply (Hη1 _ Hxc).
       eapply (rngl_lt_le_trans Hor); [ apply Hx | ].
       progress unfold rngl_min3.
@@ -1371,7 +1375,7 @@ assert
       apply (rngl_le_min_l Hor).
       apply (rngl_le_min_l Hor).
     } {
-      apply (rngl_nle_gt_iff Hor) in Hxc.
+      apply (rngl_leb_gt_iff Hor) in Hxc.
       apply (rngl_lt_le_incl Hor) in Hxc.
       apply (Hη3 _ Hxc).
       eapply (rngl_lt_le_trans Hor); [ apply Hx | ].
@@ -1395,7 +1399,8 @@ assert
       destruct Hpx as (y & Hy); clear H2.
       apply Hy; clear Hy; intros Hpy.
       apply (rngl_nlt_ge_iff Hor); intros Hxy.
-      destruct (rngl_le_dec Hor y c) as [Hyc| Hyc]. {
+      destruct (rngl_leb_dec y c) as [Hyc| Hyc]. {
+        apply rngl_leb_le in Hyc.
         specialize (Hx y) as H2; apply H2; [ | easy ]; clear H2.
         split; [ | easy ].
         eapply (rngl_le_lt_trans Hor _ x); [ | easy ].
@@ -1408,6 +1413,7 @@ assert
         apply (rngl_le_add_l Hos Hor).
         now apply (rngl_lt_le_incl Hor).
       } {
+        apply rngl_leb_nle in Hyc.
         now apply Hyc, Hub1.
       }
     }
@@ -1684,12 +1690,13 @@ assert
     rewrite (rngl_sub_opp_r Hop).
     rewrite rngl_add_comm.
     rewrite (rngl_add_opp_r Hop).
-    destruct (rngl_le_dec Hor x y) as [Hxy| Hxy]. {
+    destruct (rngl_leb_dec x y) as [Hxy| Hxy]. {
+      apply rngl_leb_le in Hxy.
       apply (Hη' y Hxy).
       eapply (rngl_lt_le_trans Hor); [ apply Hy | ].
       apply (rngl_le_min_r Hor).
     } {
-      apply (rngl_nle_gt_iff Hor) in Hxy.
+      apply (rngl_leb_gt_iff Hor) in Hxy.
       apply (rngl_lt_le_incl Hor) in Hxy.
       apply (Hη y Hxy).
       eapply (rngl_lt_le_trans Hor); [ apply Hy | ].
@@ -1709,12 +1716,13 @@ assert
     rewrite (rngl_sub_opp_r Hop).
     rewrite rngl_add_comm.
     rewrite (rngl_add_opp_r Hop).
-    destruct (rngl_le_dec Hor x y) as [Hxy| Hxy]. {
+    destruct (rngl_leb_dec x y) as [Hxy| Hxy]. {
+      apply rngl_leb_le in Hxy.
       apply (Hη' y Hxy).
       eapply (rngl_lt_le_trans Hor); [ apply Hy | ].
       apply (rngl_le_min_r Hor).
     } {
-      apply (rngl_nle_gt_iff Hor) in Hxy.
+      apply (rngl_leb_gt_iff Hor) in Hxy.
       apply (rngl_lt_le_incl Hor) in Hxy.
       apply (Hη y Hxy).
       eapply (rngl_lt_le_trans Hor); [ apply Hy | ].

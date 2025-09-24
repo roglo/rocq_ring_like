@@ -174,7 +174,8 @@ Theorem rngl_0_le_1 :
   (0 ≤ 1)%L.
 Proof.
 intros Hon Hos Hiq Hor.
-destruct (rngl_le_dec Hor 0%L 1%L) as [| H1]; [ easy | ].
+destruct (rngl_leb_dec 0 1) as [| H1]; [ now apply rngl_leb_le | ].
+apply rngl_leb_nle in H1.
 apply (rngl_not_le Hor) in H1.
 destruct H1 as (H1, H2).
 specialize (rngl_mul_nonpos_nonpos Hon Hos Hiq Hor) as H3.
@@ -359,9 +360,11 @@ Theorem rngl_mul_diag_nonneg :
 Proof.
 intros Hon Hos Hiq Hor.
 intros.
-destruct (rngl_le_dec Hor 0 a) as [Hap| Han]. {
+destruct (rngl_leb_dec 0 a) as [Hap| Han]. {
+  apply rngl_leb_le in Hap.
   now apply (rngl_mul_nonneg_nonneg Hon Hos Hiq Hor).
 } {
+  apply rngl_leb_nle in Han.
   apply (rngl_not_le Hor) in Han.
   now apply (rngl_mul_nonpos_nonpos Hon Hos Hiq Hor).
 }
@@ -683,7 +686,7 @@ destruct az. {
     apply (rngl_opp_le_compat Hop Hor) in Hab.
     now apply (rngl_mul_le_compat_nonpos Hon Hiq Hor).
   } {
-    apply (rngl_leb_gt Hor) in Hbz.
+    apply (rngl_leb_gt_iff Hor) in Hbz.
     apply (rngl_opp_le_compat Hop Hor) in Haz.
     rewrite (rngl_opp_0 Hop) in Haz.
     rewrite <- (rngl_mul_opp_opp Hop).
@@ -691,7 +694,7 @@ destruct az. {
     now apply (rngl_mul_le_compat_nonneg Hon Hiq Hor).
   }
 } {
-  apply (rngl_leb_gt Hor) in Haz.
+  apply (rngl_leb_gt_iff Hor) in Haz.
   destruct bz. {
     apply rngl_leb_le in Hbz.
     apply (rngl_opp_le_compat Hop Hor) in Hbz.
@@ -700,7 +703,7 @@ destruct az. {
     apply (rngl_lt_le_incl Hor) in Haz.
     now apply (rngl_mul_le_compat_nonneg Hon Hiq Hor).
   } {
-    apply (rngl_leb_gt Hor) in Hbz.
+    apply (rngl_leb_gt_iff Hor) in Hbz.
     apply (rngl_lt_le_incl Hor) in Haz, Hbz.
     now apply (rngl_mul_le_compat_nonneg Hon Hiq Hor).
   }

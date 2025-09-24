@@ -269,7 +269,7 @@ progress unfold rngl_max in Hmz.
 remember (f a ≤? m)%L as am eqn:Ham.
 symmetry in Ham.
 destruct am; [ congruence | ].
-apply (rngl_leb_gt Hor) in Ham.
+apply (rngl_leb_gt_iff Hor) in Ham.
 rewrite Hmz in Ham.
 rewrite Hm in Ham.
 exfalso.

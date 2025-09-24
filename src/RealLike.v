@@ -118,7 +118,7 @@ destruct az. {
   rewrite (rngl_squ_pow_2 Hon).
   now apply rl_nth_root_pow.
 } {
-  apply (rngl_leb_gt Hor) in Haz.
+  apply (rngl_leb_gt_iff Hor) in Haz.
   apply (rngl_lt_le_incl Hor) in Haz.
   rewrite rl_nth_root_mul; [ | easy | easy ].
   rewrite fold_rngl_squ.
