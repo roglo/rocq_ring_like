@@ -32,6 +32,27 @@ Context {rp : ring_like_prop T}.
 Definition rngl_leb_dec a b := sumbool_of_bool (a ≤? b)%L.
 Definition rngl_ltb_dec a b := sumbool_of_bool (a <? b)%L.
 
+Theorem rngl_leb_neg_ltb :
+  rngl_is_ordered T = true →
+  ∀ a b, (a ≤? b = negb (b <? a))%L.
+Proof.
+intros Hor *.
+progress unfold rngl_leb.
+progress unfold rngl_ltb.
+progress unfold rngl_is_ordered in Hor.
+destruct rngl_opt_leb; [ | easy ].
+symmetry; apply Bool.negb_involutive.
+Qed.
+
+Theorem rngl_ltb_neg_leb :
+  rngl_is_ordered T = true →
+  ∀ a b, (a <? b = negb (b ≤? a))%L.
+Proof.
+intros Hor *.
+rewrite (rngl_leb_neg_ltb Hor).
+symmetry; apply Bool.negb_involutive.
+Qed.
+
 Theorem rngl_leb_le :
   ∀ a b, (a ≤? b)%L = true ↔ (a ≤ b)%L.
 Proof.
