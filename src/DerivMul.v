@@ -234,11 +234,13 @@ specialize (rngl_0_lt_2 Hon Hos Hiq Hc1 Hor) as Hz2.
 specialize (rngl_2_neq_0 Hon Hos Hiq Hc1 Hor) as H2z.
 intros * Hlti * dist * Hd.
 rename x into x₀.
-destruct (rngl_eq_dec Heo a 0) as [Hfz| Hfz]. {
+destruct (rngl_eqb_dec a 0) as [Hfz| Hfz]. {
+  apply (rngl_eqb_eq Heo) in Hfz.
   subst a.
   specialize left_or_right_derivable_continuous_when_derivative_eq_0 as H1.
   now apply (H1 Hon Hiv _ _ lt Hlti _ dist f).
 }
+apply (rngl_eqb_neq Heo) in Hfz.
 progress unfold left_or_right_derivative_at in Hd.
 progress unfold is_limit_when_tending_to_neighbourhood in Hd.
 specialize (Hd (rngl_abs a))%L.
@@ -1830,7 +1832,8 @@ rewrite fold_rngl_squ.
 rewrite rngl_mul_assoc.
 rewrite (rngl_abs_mul Hon Hop Hiq Hor).
 rewrite (rngl_abs_sub_comm Hop Hor).
-destruct (rngl_eq_dec Heo (f' x₀) 0) as [Hf'z| Hf'z]. {
+destruct (rngl_eqb_dec (f' x₀) 0) as [Hf'z| Hf'z]. {
+  apply (rngl_eqb_eq Heo) in Hf'z.
   rewrite Hf'z.
   rewrite (rngl_mul_0_r Hos).
   rewrite (rngl_mul_0_l Hos).
@@ -1839,6 +1842,7 @@ destruct (rngl_eq_dec Heo (f' x₀) 0) as [Hf'z| Hf'z]. {
   apply (rngl_div_pos Hon Hop Hiv Hor); [ easy | ].
   apply (rngl_0_lt_2 Hon Hos Hiq Hc1 Hor).
 }
+apply (rngl_eqb_neq Heo) in Hf'z.
 eapply (rngl_le_lt_trans Hor). {
   apply (rngl_mul_le_mono_pos_l Hon Hop Hiq Hor). 2: {
     now apply (rngl_lt_le_incl Hor), H4.

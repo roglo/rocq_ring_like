@@ -786,43 +786,6 @@ progress unfold rngl_max.
 now destruct (a ≤? b)%L.
 Qed.
 
-(* equality *)
-
-(**)
-Theorem rngl_eq_dec :
-  rngl_has_eq_dec_or_order T = true →
-  ∀ a b : T, {a = b} + {a ≠ b}.
-Proof.
-intros Heo *.
-progress unfold rngl_has_eq_dec_or_order in Heo.
-remember (rngl_has_eq_dec T) as ed eqn:Hed.
-symmetry in Hed.
-destruct ed. {
-  progress unfold rngl_has_eq_dec in Hed.
-  destruct rngl_opt_eq_dec as [rngl_eq_dec| ]; [ | easy ].
-  apply rngl_eq_dec.
-}
-cbn in Heo.
-rename Heo into Hor.
-destruct (rngl_leb_dec a b) as [Hab| Hab]. {
-  apply rngl_leb_le in Hab.
-  destruct (rngl_leb_dec b a) as [Hba| Hba]. {
-    apply rngl_leb_le in Hba.
-    left.
-    now apply (rngl_le_antisymm Hor).
-  }
-  apply (rngl_leb_gt_iff Hor) in Hba.
-  right.
-  intros H; subst b.
-  now apply (rngl_lt_irrefl Hor) in Hba.
-}
-apply (rngl_leb_gt_iff Hor) in Hab.
-right.
-intros H; subst b.
-now apply (rngl_lt_irrefl Hor) in Hab.
-Qed.
-(**)
-
 (* comparison *)
 
 Definition rngl_compare a b :=
@@ -939,9 +902,6 @@ End a.
 
 Notation "x ?= y" := (rngl_compare x y) : ring_like_scope.
 
-(**)
-Arguments rngl_eq_dec {T ro rp} Heo (a b)%_L.
-(**)
 Arguments rngl_eqb_dec {T ro} (a b)%_L.
 Arguments rngl_le_trans {T ro rp} Hor (a b c)%_L.
 Arguments rngl_le_lt_trans {T ro rp} Hor (a b c)%_L.

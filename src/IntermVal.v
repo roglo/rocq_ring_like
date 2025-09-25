@@ -1263,16 +1263,19 @@ destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
   rewrite (H1 (f a)), (H1 a), (H1 b), (H1 u).
   split; [ split; apply (rngl_le_refl Hor) | easy ].
 }
-destruct (rngl_eq_dec Heo (f a) u) as [Hau| Hau]. {
+destruct (rngl_eqb_dec (f a) u) as [Hau| Hau]. {
+  apply (rngl_eqb_eq Heo) in Hau.
   exists a.
   split; [ | easy ].
   split; [ apply (rngl_le_refl Hor) | easy ].
 }
-destruct (rngl_eq_dec Heo (f b) u) as [Hbu| Hbu]. {
+destruct (rngl_eqb_dec (f b) u) as [Hbu| Hbu]. {
+  apply (rngl_eqb_eq Heo) in Hbu.
   exists b.
   split; [ | easy ].
   split; [ easy | apply (rngl_le_refl Hor) ].
 }
+apply (rngl_eqb_neq Heo) in Hau, Hbu.
 assert (H : (f a < u < f b)%L). {
   apply not_eq_sym in Hbu.
   now split; apply (rngl_le_neq Hor).

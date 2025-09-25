@@ -190,7 +190,9 @@ destruct iv. {
   assert (H : (a⁻¹ * a * b = a⁻¹ * 0)%L). {
     now rewrite <- rngl_mul_assoc, Hab.
   }
-  destruct (rngl_eq_dec Heo a 0) as [Haz| Haz]; [ now left | right ].
+  destruct (rngl_eqb_dec a 0) as [Haz| Haz]; [ left | right ].
+  now apply (rngl_eqb_eq Heo) in Haz.
+  apply (rngl_eqb_neq Heo) in Haz.
   rewrite rngl_mul_inv_diag_l in H; [ | easy | easy | easy ].
   rewrite (rngl_mul_1_l Hon) in H; rewrite H.
   apply (rngl_mul_0_r Hmo).
@@ -200,7 +202,9 @@ destruct iv. {
   specialize rngl_mul_div as H1.
   rewrite Hdi in H1.
   specialize (H1 eq_refl).
-  destruct (rngl_eq_dec Heo b 0) as [Hbz| Hbz]; [ now right | left ].
+  destruct (rngl_eqb_dec b 0) as [Hbz| Hbz]; [ right | left ].
+  now apply (rngl_eqb_eq Heo) in Hbz.
+  apply (rngl_eqb_neq Heo) in Hbz.
   specialize (H1 a b Hbz) as H4.
   rewrite Hab in H4.
   rewrite <- H4.
@@ -1149,11 +1153,13 @@ intros Hon Hop Hiq Hor.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
 intros * Hza.
-destruct (rngl_eq_dec Heo a 0%L) as [Haz| Haz]. {
+destruct (rngl_eqb_dec a 0%L) as [Haz| Haz]. {
+  apply (rngl_eqb_eq Heo) in Haz.
   subst a.
   do 3 rewrite (rngl_mul_0_l Hos).
   apply (rngl_min_id Hor).
 }
+apply (rngl_eqb_neq Heo) in Haz.
 assert (H : (0 < a)%L). {
   apply (rngl_le_neq Hor).
   split; [ easy | ].
@@ -1503,10 +1509,12 @@ Theorem rngl_squ_inv' :
   ∀ a, a ≠ 0%L ∨ (0⁻¹)² = 0⁻¹ → (a⁻¹)² = (a²)⁻¹.
 Proof.
 intros Hon Hos Hiv Heo * Hzi.
-destruct (rngl_eq_dec Heo a 0) as [Haz| Haz]. {
+destruct (rngl_eqb_dec a 0) as [Haz| Haz]. {
+  apply (rngl_eqb_eq Heo) in Haz.
   destruct Hzi as [| Hzi]; [ easy | ].
   now subst a; rewrite (rngl_squ_0 Hos).
 }
+apply (rngl_eqb_neq Heo) in Haz.
 progress unfold rngl_squ.
 now rewrite (rngl_inv_mul_distr Hon Hos Hiv).
 Qed.

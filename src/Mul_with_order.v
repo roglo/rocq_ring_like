@@ -733,7 +733,8 @@ destruct (rngl_ltb_dec 1 (rngl_abs a))%L as [Hx1| Hx1]. {
   split; [ apply (rngl_0_lt_1 Hon Hos Hiq Hc1 Hor) | easy ].
 }
 apply (rngl_ltb_ge_iff Hor) in Hx1.
-destruct (rngl_eq_dec Heo (rngl_abs a) 1) as [Ha1| Ha1]. {
+destruct (rngl_eqb_dec (rngl_abs a) 1) as [Ha1| Ha1]. {
+  apply (rngl_eqb_eq Heo) in Ha1.
   exists 1.
   rewrite Ha1; cbn.
   rewrite rngl_add_0_r.
@@ -747,6 +748,7 @@ destruct (rngl_eq_dec Heo (rngl_abs a) 1) as [Ha1| Ha1]. {
   symmetry in H12; revert H12.
   apply (rngl_1_neq_0_iff Hon), Hc1.
 }
+apply (rngl_eqb_neq Heo) in Ha1.
 exists 0; cbn.
 rewrite rngl_add_0_r.
 split; [ apply (rngl_abs_nonneg Hop Hor) | ].
