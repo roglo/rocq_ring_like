@@ -121,7 +121,7 @@ Section a.
 Context {T : Type}.
 Context {ro : ring_like_op T}.
 Context {rp : ring_like_prop T}.
-Context (Hed : rngl_has_eq_dec T = true).
+Context (Heo : rngl_has_eq_dec_or_order T = true).
 
 Theorem lap_add_0_l : ∀ la, (0 + la)%lap = la.
 Proof.
@@ -215,7 +215,7 @@ destruct x. {
   remember (a =? b)%L as ab eqn:Hab.
   symmetry in Hab.
   destruct ab; [ | easy ].
-  apply (rngl_eqb_eq Hed) in Hab.
+  apply (rngl_eqb_eq Heo) in Hab.
   subst b.
   specialize (IHla _ Hx).
   destruct IHla as [IHla| IHla]; [ now subst lb; left | ].
@@ -226,7 +226,7 @@ destruct x. {
   intros H; subst lb.
   induction la as [| a]; [ easy | ].
   cbn in Hx.
-  rewrite (rngl_eqb_refl Hed) in Hx.
+  rewrite (rngl_eqb_refl Heo) in Hx.
   congruence.
 }
 Qed.
@@ -341,9 +341,9 @@ cbn in Hll, Hlen.
 apply Nat.succ_inj in Hlen.
 do 2 rewrite if_bool_if_dec in Hll.
 destruct (Sumbool.sumbool_of_bool _) as [Haz| Haz]. {
-  apply (rngl_eqb_eq Hed) in Haz; subst a.
+  apply (rngl_eqb_eq Heo) in Haz; subst a.
   destruct (Sumbool.sumbool_of_bool _) as [Hbz| Hbz]. {
-    apply (rngl_eqb_eq Hed) in Hbz; subst b.
+    apply (rngl_eqb_eq Heo) in Hbz; subst b.
     f_equal.
     now apply IHlb.
   }
@@ -403,7 +403,7 @@ induction la as [| a]; intros. {
   subst b; cbn.
   rewrite strip_0s_app; cbn.
   remember (strip_0s (List.rev lb)) as lc eqn:Hlc; symmetry in Hlc.
-  rewrite (rngl_eqb_refl Hed).
+  rewrite (rngl_eqb_refl Heo).
   destruct lc as [| c]; [ easy | ].
   assert (H : lap_norm [] = lap_norm lb). {
     unfold lap_norm; cbn.
@@ -427,7 +427,7 @@ induction la as [| a]; intros. {
   destruct lc as [| c]. {
     assert (Hla : ∀ i, List.nth i la 0%L = 0%L). {
       intros i.
-      clear - ro rp Hed Hlc.
+      clear - ro rp Heo Hlc.
       revert i.
       induction la as [| a]; intros; cbn. {
         now rewrite Tauto_match_nat_same.
@@ -439,7 +439,7 @@ induction la as [| a]; intros. {
         destruct lb as [| b]; [ | easy ].
         rewrite if_bool_if_dec in Hlc.
         destruct (Sumbool.sumbool_of_bool _) as [Haz| Haz]; [ | easy ].
-        now apply (rngl_eqb_eq Hed) in Haz.
+        now apply (rngl_eqb_eq Heo) in Haz.
       }
       apply IHla.
       cbn in Hlc.
@@ -450,30 +450,30 @@ induction la as [| a]; intros. {
     cbn.
     rewrite if_bool_if_dec.
     destruct (Sumbool.sumbool_of_bool _) as [Haz| Haz]. {
-      apply (rngl_eqb_eq Hed) in Haz.
+      apply (rngl_eqb_eq Heo) in Haz.
       assert (Hlb : ∀ i, List.nth i lb 0%L = 0%L). {
         intros.
         rewrite <- Hi; cbn.
         destruct i; [ easy | ].
         apply Hla.
       }
-      clear - ro rp Hed Hlb.
+      clear - ro rp Heo Hlb.
       induction lb as [| b]; [ easy | cbn ].
       specialize (Hlb 0) as H1; cbn in H1; subst b.
       rewrite strip_0s_app; cbn.
-      rewrite (rngl_eqb_refl Hed).
+      rewrite (rngl_eqb_refl Heo).
       rewrite <- IHlb; [ easy | ].
       intros i.
       now specialize (Hlb (S i)).
     }
-    apply (rngl_eqb_neq Hed) in Haz.
+    apply (rngl_eqb_neq Heo) in Haz.
     destruct lb as [| b]; [ now specialize (Hi 0); cbn in Hi | cbn ].
     rewrite strip_0s_app; cbn.
     remember (strip_0s (List.rev lb)) as ld eqn:Hld; symmetry in Hld.
     destruct ld as [| d]. {
       rewrite if_bool_if_dec.
       destruct (Sumbool.sumbool_of_bool _) as [Hbz| Hbz]. {
-        apply (rngl_eqb_eq Hed) in Hbz; subst b.
+        apply (rngl_eqb_eq Heo) in Hbz; subst b.
         now specialize (Hi 0).
       }
       f_equal.
@@ -501,7 +501,7 @@ induction la as [| a]; intros. {
   destruct ld as [| d]. {
     rewrite if_bool_if_dec.
     destruct (Sumbool.sumbool_of_bool _) as [Hbz| Hbz]. {
-      apply (rngl_eqb_eq Hed) in Hbz; subst b.
+      apply (rngl_eqb_eq Heo) in Hbz; subst b.
       specialize (IHla lb).
       assert (H : ∀ i : nat, List.nth i la 0%L = List.nth i lb 0%L). {
         intros i.
@@ -956,9 +956,9 @@ induction lb as [| b]; intros. {
   induction la as [| a]; [ easy | cbn ].
   rewrite if_bool_if_dec.
   destruct (Sumbool.sumbool_of_bool _) as [Haz| Haz]; [ | easy ].
-  apply (rngl_eqb_eq Hed) in Haz; subst a.
+  apply (rngl_eqb_eq Heo) in Haz; subst a.
   rewrite Hf.
-  rewrite (rngl_eqb_refl Hed).
+  rewrite (rngl_eqb_refl Heo).
   apply IHla.
 }
 destruct la as [| a]; [ easy | cbn ].
@@ -969,7 +969,7 @@ destruct lc as [| c]. {
   cbn.
   rewrite if_bool_if_dec.
   destruct (Sumbool.sumbool_of_bool _) as [Haz| Haz]. {
-    apply (rngl_eqb_eq Hed) in Haz.
+    apply (rngl_eqb_eq Heo) in Haz.
     subst a; cbn.
     rewrite List.app_nil_r, Nat.sub_0_r.
     now rewrite strip_0s_app.
@@ -990,6 +990,15 @@ Proof.
 intros.
 apply lap_norm_List_map2_app_app_idemp_l.
 apply rngl_add_0_r.
+Qed.
+
+Theorem lap_add_norm_idemp_r : ∀ la lb,
+  lap_norm (la + lap_norm lb) = lap_norm (la + lb).
+Proof.
+intros.
+rewrite lap_add_comm.
+rewrite lap_add_norm_idemp_l.
+f_equal; apply lap_add_comm.
 Qed.
 
 (* *)

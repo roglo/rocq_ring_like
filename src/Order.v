@@ -787,6 +787,9 @@ Qed.
 
 (* equality *)
 
+Definition rngl_eqb_dec a b := sumbool_of_bool (a =? b)%L.
+
+(**)
 Theorem rngl_eq_dec :
   rngl_has_eq_dec_or_order T = true →
   ∀ a b : T, {a = b} + {a ≠ b}.
@@ -819,6 +822,7 @@ right.
 intros H; subst b.
 now apply (rngl_lt_irrefl Hor) in Hab.
 Qed.
+(**)
 
 (* comparison *)
 
@@ -827,44 +831,45 @@ Definition rngl_compare a b :=
   else if (a ≤? b)%L then Lt else Gt.
 
 Theorem rngl_compare_eq_iff :
-  rngl_has_eq_dec T = true →
+  rngl_has_eq_dec_or_order T = true →
   ∀ a b, rngl_compare a b = Eq ↔ a = b.
 Proof.
-intros Hed *.
+intros Heo *.
 progress unfold rngl_compare.
 remember (a =? b)%L as ab eqn:Hab.
 symmetry in Hab.
 destruct ab. {
   split; [ | easy ].
-  now apply (rngl_eqb_eq Hed) in Hab.
+  now apply (rngl_eqb_eq Heo) in Hab.
 } {
   destruct (a ≤? b)%L. {
     split; [ easy | ].
-    now apply (rngl_eqb_neq Hed) in Hab.
+    now apply (rngl_eqb_neq Heo) in Hab.
   } {
     split; [ easy | ].
-    now apply (rngl_eqb_neq Hed) in Hab.
+    now apply (rngl_eqb_neq Heo) in Hab.
   }
 }
 Qed.
 
 Theorem rngl_compare_lt_iff :
   rngl_is_ordered T = true →
-  rngl_has_eq_dec T = true →
   ∀ a b, rngl_compare a b = Lt ↔ (a < b)%L.
 Proof.
-intros Hor Hed *.
+intros Hor.
+specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
+intros.
 progress unfold rngl_compare.
 remember (a =? b)%L as ab eqn:Hab.
 remember (a ≤? b)%L as alb eqn:Halb.
 symmetry in Hab, Halb.
 destruct ab. {
   split; [ easy | intros H ].
-  apply (rngl_eqb_eq Hed) in Hab.
+  apply (rngl_eqb_eq Heo) in Hab.
   subst b.
   now apply (rngl_lt_irrefl Hor) in H.
 } {
-  apply (rngl_eqb_neq Hed) in Hab.
+  apply (rngl_eqb_neq Heo) in Hab.
   destruct alb. {
     apply rngl_leb_le in Halb.
     split; [ | easy ].
@@ -881,21 +886,22 @@ Qed.
 
 Theorem rngl_compare_gt_iff :
   rngl_is_ordered T = true →
-  rngl_has_eq_dec T = true →
   ∀ a b, rngl_compare a b = Gt ↔ (b < a)%L.
 Proof.
-intros Hor Hed *.
+intros Hor.
+specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
+intros.
 progress unfold rngl_compare.
 remember (a =? b)%L as ab eqn:Hab.
 remember (a ≤? b)%L as alb eqn:Halb.
 symmetry in Hab, Halb.
 destruct ab. {
   split; [ easy | intros H ].
-  apply (rngl_eqb_eq Hed) in Hab.
+  apply (rngl_eqb_eq Heo) in Hab.
   subst b.
   now apply (rngl_lt_irrefl Hor) in H.
 } {
-  apply (rngl_eqb_neq Hed) in Hab.
+  apply (rngl_eqb_neq Heo) in Hab.
   destruct alb. {
     apply rngl_leb_le in Halb.
     split; [ easy | ].
@@ -909,33 +915,35 @@ Qed.
 
 Theorem rngl_compare_le_iff :
   rngl_is_ordered T = true →
-  rngl_has_eq_dec T = true →
   ∀ a b, rngl_compare a b ≠ Gt ↔ (a ≤ b)%L.
 Proof.
-intros Hor Hed *.
+intros Hor *.
 split; intros H. {
   apply (rngl_nlt_ge_iff Hor).
-  now intros H1; apply (rngl_compare_gt_iff Hor Hed) in H1.
+  now intros H1; apply (rngl_compare_gt_iff Hor) in H1.
 } {
   apply rngl_nlt_ge in H.
   intros H1.
-  now apply (rngl_compare_gt_iff Hor Hed) in H1.
+  now apply (rngl_compare_gt_iff Hor) in H1.
 }
 Qed.
 
 Theorem rngl_compare_refl :
-  rngl_has_eq_dec T = true →
+  rngl_has_eq_dec_or_order T = true →
   ∀ a, rngl_compare a a = Eq.
 Proof.
-intros Hed *.
-now apply (rngl_compare_eq_iff Hed).
+intros Heo *.
+now apply (rngl_compare_eq_iff Heo).
 Qed.
 
 End a.
 
 Notation "x ?= y" := (rngl_compare x y) : ring_like_scope.
 
+(**)
 Arguments rngl_eq_dec {T ro rp} Heo (a b)%_L.
+(**)
+Arguments rngl_eqb_dec {T ro} (a b)%_L.
 Arguments rngl_le_trans {T ro rp} Hor (a b c)%_L.
 Arguments rngl_le_lt_trans {T ro rp} Hor (a b c)%_L.
 Arguments rngl_leb_dec {T ro} (a b)%_L.

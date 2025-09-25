@@ -287,17 +287,18 @@ Definition rngl_is_integral_domain T {ro : ring_like_op T} :=
 
 Definition rngl_squ {T} {ro : ring_like_op T} a := rngl_mul a a.
 
-Definition rngl_eqb {T} {ro : ring_like_op T} a b :=
-  match rngl_opt_eq_dec T with
-  | Some rngl_eq_dec =>
-      match rngl_eq_dec a b with left _ => true | right _ => false end
-  | None => false
-  end.
-
 Definition rngl_leb {T} {ro : ring_like_op T} a b :=
   match rngl_opt_leb with
   | Some rngl_leb => rngl_leb a b
   | None => false
+  end.
+
+Definition rngl_eqb {T} {ro : ring_like_op T} a b :=
+  match rngl_opt_eq_dec T with
+  | Some rngl_eq_dec =>
+      match rngl_eq_dec a b with left _ => true | right _ => false end
+  | None =>
+      (rngl_leb a b && rngl_leb b a)%bool
   end.
 
 Notation "a =? b" := (rngl_eqb a b) (at level 70) : ring_like_scope.
@@ -564,51 +565,80 @@ Theorem fold_rngl_squ : ∀ a : T, (a * a)%L = rngl_squ a.
 Proof. easy. Qed.
 
 Theorem rngl_eqb_eq :
-  rngl_has_eq_dec T = true →
+  rngl_has_eq_dec_or_order T = true →
   ∀ a b : T, (a =? b)%L = true ↔ a = b.
 Proof.
-intros Hed *.
-progress unfold rngl_has_eq_dec in Hed.
+intros Heo *.
+progress unfold rngl_has_eq_dec_or_order in Heo.
+progress unfold rngl_has_eq_dec in Heo.
 progress unfold rngl_eqb.
-destruct rngl_opt_eq_dec as [rngl_eq_dec| ]; [ | easy ].
-clear Hed.
-now destruct (rngl_eq_dec a b).
+destruct rngl_opt_eq_dec as [rngl_eq_dec| ]. {
+  clear Heo.
+  now destruct (rngl_eq_dec a b).
+}
+cbn in Heo.
+rename Heo into Hor.
+specialize rngl_opt_ord as rd.
+rewrite Hor in rd.
+move rd before rp.
+split; intros Hab. {
+  apply Bool.andb_true_iff in Hab.
+  progress unfold rngl_leb in Hab.
+  apply rngl_ord_le_antisymm.
+  progress unfold rngl_le.
+  now destruct rngl_opt_leb.
+  progress unfold rngl_le.
+  now destruct rngl_opt_leb.
+}
+subst b.
+specialize (rngl_ord_le_refl a) as H.
+progress unfold rngl_is_ordered in Hor.
+progress unfold rngl_le in H.
+progress unfold rngl_leb.
+destruct rngl_opt_leb; [ | easy ].
+now rewrite H.
 Qed.
 
 Theorem rngl_eqb_neq :
-  rngl_has_eq_dec T = true →
+  rngl_has_eq_dec_or_order T = true →
   ∀ a b : T, (a =? b)%L = false ↔ a ≠ b.
 Proof.
-intros Hed *.
-progress unfold rngl_has_eq_dec in Hed.
-progress unfold rngl_eqb.
-destruct rngl_opt_eq_dec as [rngl_eq_dec| ]; [ | easy ].
-clear Hed.
-now destruct (rngl_eq_dec a b).
+intros Heo *.
+split; intros Hab. {
+  apply Bool.not_true_iff_false in Hab.
+  intros H; apply Hab; clear Hab.
+  now apply (rngl_eqb_eq Heo).
+} {
+  apply Bool.not_true_iff_false.
+  intros H; apply Hab; clear Hab.
+  now apply (rngl_eqb_eq Heo).
+}
 Qed.
 
 Theorem rngl_neqb_neq :
-  rngl_has_eq_dec T = true →
+  rngl_has_eq_dec_or_order T = true →
   ∀ a b : T, (a ≠? b)%L = true ↔ a ≠ b.
 Proof.
-intros Hed *.
-progress unfold rngl_has_eq_dec in Hed.
-progress unfold rngl_eqb.
-destruct rngl_opt_eq_dec as [rngl_eq_dec| ]; [ | easy ].
-clear Hed.
-now destruct (rngl_eq_dec a b).
+intros Heo *.
+split; intros Hab. {
+  apply Bool.negb_true_iff in Hab.
+  now apply (rngl_eqb_neq Heo).
+} {
+  apply Bool.negb_true_iff.
+  now apply (rngl_eqb_neq Heo).
+}
 Qed.
 
 Theorem rngl_eqb_refl :
-  rngl_has_eq_dec T = true →
+  rngl_has_eq_dec_or_order T = true →
   ∀ a, (a =? a)%L = true.
 Proof.
-intros Heqb *.
-now apply (rngl_eqb_eq Heqb).
+intros Heo *.
+now apply (rngl_eqb_eq Heo).
 Qed.
 
 Theorem rngl_eqb_sym :
-  rngl_has_eq_dec T = true →
+  rngl_has_eq_dec_or_order T = true →
   ∀ a b, ((a =? b) = (b =? a))%L.
 Proof.
 intros Hed *.
