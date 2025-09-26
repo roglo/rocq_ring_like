@@ -29,25 +29,37 @@ foundation.
 
 ## Available Modules
 
-- [Add](RingLike.Add.html)
-- [Add_with_order](RingLike.Add_with_order.html)
+###
+
 - [Core](RingLike.Core.html)
-- [DerivMul](RingLike.DerivMul.html)
-- [Distances](RingLike.Distances.html)
+
+###
+
+- [Structures](RingLike.Structures.html)
+- [Order](RingLike.Order.html)
+- [Add](RingLike.Add.html)
+- [Mul](RingLike.Mul.html)
 - [Div](RingLike.Div.html)
+- [Add_with_order](RingLike.Add_with_order.html)
+- [Mul_with_order](RingLike.Mul_with_order.html)
 - [Div_with_order](RingLike.Div_with_order.html)
+- [Distances](RingLike.Distances.html)
+
+###
+
 - [IterAdd](RingLike.IterAdd.html)
+- [IterMul](RingLike.IterMul.html)
 - [IterAnd](RingLike.IterAnd.html)
 - [IterMax](RingLike.IterMax.html)
-- [IterMul](RingLike.IterMul.html)
-- [Misc](RingLike.Misc.html)
-- [Mul](RingLike.Mul.html)
-- [Mul_with_order](RingLike.Mul_with_order.html)
-- [Order](RingLike.Order.html)
-- [PermutationFun](RingLike.PermutationFun.html)
+
+###
+
 - [RealLike](RingLike.RealLike.html)
-- [Structures](RingLike.Structures.html)
+- [IntermVal](RingLike.IntermVal.html)
+- [PermutationFun](RingLike.PermutationFun.html)
+- [DerivMul](RingLike.DerivMul.html)
 - [Utils](RingLike.Utils.html)
+- [Misc](RingLike.Misc.html)
 
 Algebras
 
