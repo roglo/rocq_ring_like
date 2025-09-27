@@ -47,17 +47,17 @@ foundation.
 
 ###
 
-- [Iter_Add](RingLike.Iter_Add.html)
-- [Iter_Mul](RingLike.Iter_Mul.html)
-- [Iter_And](RingLike.Iter_And.html)
-- [Iter_Max](RingLike.Iter_Max.html)
+- [IterAdd](RingLike.IterAdd.html)
+- [IterMul](RingLike.IterMul.html)
+- [IterAnd](RingLike.IterAnd.html)
+- [IterMax](RingLike.IterMax.html)
 
 ###
 
-- [Real_Like](RingLike.Real_Like.html)
-- [Interm_Val](RingLike.Interm_Val.html)
-- [Permutation_Fun](RingLike.Permutation_Fun.html)
-- [Deriv_Mul](RingLike.Deriv_Mul.html)
+- [RealLike](RingLike.RealLike.html)
+- [IntermVal](RingLike.IntermVal.html)
+- [PermutationFun](RingLike.PermutationFun.html)
+- [DerivMul](RingLike.DerivMul.html)
 - [Utils](RingLike.Utils.html)
 - [Misc](RingLike.Misc.html)
 
