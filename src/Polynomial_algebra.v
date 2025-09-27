@@ -23,7 +23,7 @@ From Stdlib Require Import Utf8 Arith.
 Import List.ListNotations Init.Nat.
 
 Require Import Core Misc Utils.
-Require Import Iter_Add.
+Require Import IterAdd.
 Require Import Lap_algebra.
 
 Section a.
