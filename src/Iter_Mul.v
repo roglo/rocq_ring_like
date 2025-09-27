@@ -33,7 +33,7 @@ From Stdlib Require Import Utf8 Arith.
 Import List.ListNotations.
 
 Require Import Core Misc Utils.
-Require Import PermutationFun.
+Require Import Permutation_Fun.
 
 Notation "'∏' ( i = b , e ) , g" :=
   (iter_seq b e (λ c i, (c * g)%L) 1%L)
@@ -579,7 +579,7 @@ Qed.
 
 End a.
 
-Require Import IterAdd.
+Require Import Iter_Add.
 
 Section a.
 

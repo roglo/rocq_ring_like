@@ -1,24 +1,24 @@
 Add.vo Add.glob Add.v.beautified Add.required_vo: Add.v Structures.vo
 Add_with_order.vo Add_with_order.glob Add_with_order.v.beautified Add_with_order.required_vo: Add_with_order.v Add.vo Order.vo Structures.vo
 Core.vo Core.glob Core.v.beautified Core.required_vo: Core.v Add.vo Add_with_order.vo Distances.vo Div.vo Div_with_order.vo Mul.vo Mul_with_order.vo Order.vo Structures.vo
-DerivMul.vo DerivMul.glob DerivMul.v.beautified DerivMul.required_vo: DerivMul.v Core.vo RealLike.vo
+Deriv_Mul.vo Deriv_Mul.glob Deriv_Mul.v.beautified Deriv_Mul.required_vo: Deriv_Mul.v Core.vo Real_Like.vo
 Distances.vo Distances.glob Distances.v.beautified Distances.required_vo: Distances.v Add.vo Add_with_order.vo Div.vo Div_with_order.vo Mul.vo Mul_with_order.vo Order.vo Structures.vo
 Div.vo Div.glob Div.v.beautified Div.required_vo: Div.v Add.vo Mul.vo Structures.vo
 Div_with_order.vo Div_with_order.glob Div_with_order.v.beautified Div_with_order.required_vo: Div_with_order.v Add.vo Add_with_order.vo Div.vo Mul.vo Mul_with_order.vo Order.vo Structures.vo
-IntermVal.vo IntermVal.glob IntermVal.v.beautified IntermVal.required_vo: IntermVal.v Core.vo Misc.vo
-IterAdd.vo IterAdd.glob IterAdd.v.beautified IterAdd.required_vo: IterAdd.v Core.vo Misc.vo PermutationFun.vo Utils.vo
-IterAnd.vo IterAnd.glob IterAnd.v.beautified IterAnd.required_vo: IterAnd.v Misc.vo Utils.vo
-IterMax.vo IterMax.glob IterMax.v.beautified IterMax.required_vo: IterMax.v Core.vo Misc.vo Utils.vo
-IterMul.vo IterMul.glob IterMul.v.beautified IterMul.required_vo: IterMul.v Core.vo IterAdd.vo Misc.vo PermutationFun.vo Utils.vo
-Lap_algebra.vo Lap_algebra.glob Lap_algebra.v.beautified Lap_algebra.required_vo: Lap_algebra.v Core.vo IterAdd.vo Misc.vo Utils.vo
+Interm_Val.vo Interm_Val.glob Interm_Val.v.beautified Interm_Val.required_vo: Interm_Val.v Core.vo Misc.vo
+Iter_Add.vo Iter_Add.glob Iter_Add.v.beautified Iter_Add.required_vo: Iter_Add.v Core.vo Misc.vo Permutation_Fun.vo Utils.vo
+Iter_And.vo Iter_And.glob Iter_And.v.beautified Iter_And.required_vo: Iter_And.v Misc.vo Utils.vo
+Iter_Max.vo Iter_Max.glob Iter_Max.v.beautified Iter_Max.required_vo: Iter_Max.v Core.vo Misc.vo Utils.vo
+Iter_Mul.vo Iter_Mul.glob Iter_Mul.v.beautified Iter_Mul.required_vo: Iter_Mul.v Core.vo Iter_Add.vo Misc.vo Permutation_Fun.vo Utils.vo
+Lap_algebra.vo Lap_algebra.glob Lap_algebra.v.beautified Lap_algebra.required_vo: Lap_algebra.v Core.vo Iter_Add.vo Misc.vo Utils.vo
 Misc.vo Misc.glob Misc.v.beautified Misc.required_vo: Misc.v
 Mul.vo Mul.glob Mul.v.beautified Mul.required_vo: Mul.v Add.vo Structures.vo
 Mul_with_order.vo Mul_with_order.glob Mul_with_order.v.beautified Mul_with_order.required_vo: Mul_with_order.v Add.vo Add_with_order.vo Mul.vo Order.vo Structures.vo
 Nat_algebra.vo Nat_algebra.glob Nat_algebra.v.beautified Nat_algebra.required_vo: Nat_algebra.v Core.vo
 Order.vo Order.glob Order.v.beautified Order.required_vo: Order.v Structures.vo
-PermutationFun.vo PermutationFun.glob PermutationFun.v.beautified PermutationFun.required_vo: PermutationFun.v Misc.vo Utils.vo
-Polynomial_algebra.vo Polynomial_algebra.glob Polynomial_algebra.v.beautified Polynomial_algebra.required_vo: Polynomial_algebra.v Core.vo IterAdd.vo Lap_algebra.vo Misc.vo Utils.vo
-RealLike.vo RealLike.glob RealLike.v.beautified RealLike.required_vo: RealLike.v Core.vo
+Permutation_Fun.vo Permutation_Fun.glob Permutation_Fun.v.beautified Permutation_Fun.required_vo: Permutation_Fun.v Misc.vo Utils.vo
+Polynomial_algebra.vo Polynomial_algebra.glob Polynomial_algebra.v.beautified Polynomial_algebra.required_vo: Polynomial_algebra.v Core.vo Iter_Add.vo Lap_algebra.vo Misc.vo Utils.vo
+Real_Like.vo Real_Like.glob Real_Like.v.beautified Real_Like.required_vo: Real_Like.v Core.vo
 Structures.vo Structures.glob Structures.v.beautified Structures.required_vo: Structures.v
 Utils.vo Utils.glob Utils.v.beautified Utils.required_vo: Utils.v Misc.vo
 Z_algebra.vo Z_algebra.glob Z_algebra.v.beautified Z_algebra.required_vo: Z_algebra.v Core.vo

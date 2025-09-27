@@ -35,7 +35,7 @@ Import List.ListNotations.
 Open Scope list.
 
 Require Import Core Misc Utils.
-Require Import PermutationFun.
+Require Import Permutation_Fun.
 
 Notation "'∑' ( i = b , e ) , g" :=
   (iter_seq b e (λ c i, (c + g)%L) 0%L)
