@@ -170,9 +170,9 @@ Theorem rngl_mul_cancel_r :
   → a = b.
 Proof.
 intros Hii * Hcz Hab.
-assert (H : (a * c / c = b * c / c)%L) by now rewrite Hab.
-rewrite (rngl_mul_div Hii) in H; [ | easy ].
-rewrite (rngl_mul_div Hii) in H; [ | easy ].
+apply (f_equal (λ x, (x / c)))%L in Hab.
+rewrite (rngl_mul_div Hii) in Hab; [ | easy ].
+rewrite (rngl_mul_div Hii) in Hab; [ | easy ].
 easy.
 Qed.
 
@@ -317,6 +317,16 @@ destruct Hiq as [Hiv | Hiq]. {
   rewrite Hab in H1.
   now rewrite rngl_div_0_l in H1.
 }
+Qed.
+
+Theorem rngl_neq_mul_0 :
+  rngl_has_1 T = true →
+  rngl_has_opp_or_psub T = true →
+  rngl_has_inv_or_pdiv T = true →
+  ∀ a b, (a ≠ 0 → b ≠ 0 → a * b ≠ 0)%L.
+Proof.
+intros Hon Hos Hiq * Haz Hbz H.
+now apply (rngl_eq_mul_0_l Hon Hos Hiq) in H.
 Qed.
 
 Theorem rngl_div_add_distr_r:
