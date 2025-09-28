@@ -216,11 +216,10 @@ Theorem rngl_abs_div :
   rngl_has_1 T = true →
   rngl_has_opp T = true →
   rngl_has_inv T = true →
-  rngl_has_eq_dec T = true →
   rngl_is_ordered T = true →
   ∀ x y, y ≠ 0%L → rngl_abs (x / y)%L = (rngl_abs x / rngl_abs y)%L.
 Proof.
-intros * Hon Hop Hiv Heb Hor.
+intros * Hon Hop Hiv Hor.
 specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
 specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
 intros * Hyz.

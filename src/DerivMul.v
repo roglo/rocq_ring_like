@@ -1523,14 +1523,13 @@ Theorem left_or_right_continuous_inv :
   rngl_mul_is_comm T = true →
   rngl_has_1 T = true →
   rngl_has_inv T = true →
-  rngl_has_eq_dec T = true →
   ∀ is_left A le (da : A → A → T) f x₀,
   f x₀ ≠ 0%L
   → left_or_right_continuous_at is_left le da rngl_dist f x₀
   → left_or_right_continuous_at is_left le da rngl_dist
       (λ x, (f x)⁻¹) x₀.
 Proof.
-intros Hic Hon Hiv Hed.
+intros Hic Hon Hiv.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
 specialize (rngl_has_inv_and_1_has_inv_and_1_or_pdiv Hon Hiv) as Hi1.
@@ -1590,7 +1589,7 @@ rewrite (rngl_div_div Hon Hos Hiv); [ | easy | easy ].
 rewrite (rngl_div_div Hon Hos Hiv); [ | easy | easy ].
 rewrite (rngl_mul_comm Hic).
 rewrite <- (rngl_div_sub_distr_r Hop Hiv).
-rewrite (rngl_abs_div Hon Hop Hiv Hed Hor). 2: {
+rewrite (rngl_abs_div Hon Hop Hiv Hor). 2: {
   intros H.
   apply (rngl_integral Hos Hio) in H.
   now destruct H.
@@ -1626,15 +1625,14 @@ Qed.
 Theorem rngl_abs_inv :
   rngl_has_1 T = true →
   rngl_has_inv T = true →
-  rngl_has_eq_dec T = true →
   ∀ a, a ≠ 0%L → (rngl_abs a⁻¹ = (rngl_abs a)⁻¹)%L.
 Proof.
-intros Hon Hiv Hed.
+intros Hon Hiv.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
 intros * Haz.
 do 2 rewrite <- (rngl_div_1_l Hon Hiv).
-rewrite (rngl_abs_div Hon Hop Hiv Hed Hor); [ | easy ].
+rewrite (rngl_abs_div Hon Hop Hiv Hor); [ | easy ].
 now rewrite (rngl_abs_1 Hon Hos Hiq Hor).
 Qed.
 
@@ -1642,7 +1640,6 @@ Theorem left_or_right_derivative_inv :
   rngl_mul_is_comm T = true →
   rngl_has_1 T = true →
   rngl_has_inv T = true →
-  rngl_has_eq_dec T = true →
   ∀ {A} lt is_left (da : A → A → T) f f' x₀,
   f x₀ ≠ 0%L
   → left_or_right_continuous_at is_left lt da rngl_dist f x₀
@@ -1650,7 +1647,7 @@ Theorem left_or_right_derivative_inv :
   → left_or_right_derivative_at is_left lt da rngl_dist (λ x : A, (f x)⁻¹)
       x₀ (- f' x₀ / (f x₀)²)%L.
 Proof.
-intros Hic Hon Hiv Hed.
+intros Hic Hon Hiv.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
 specialize (rngl_int_dom_or_inv_1_quo Hiv Hon) as Hii.
@@ -1764,7 +1761,7 @@ rewrite <- (rngl_add_sub_assoc Hop).
 eapply (rngl_le_lt_trans Hor). {
   apply (rngl_abs_triangle Hop Hor).
 }
-rewrite (rngl_abs_div Hon Hop Hiv Hed Hor). 2: {
+rewrite (rngl_abs_div Hon Hop Hiv Hor). 2: {
   intros H.
   apply (rngl_integral Hos Hio) in H.
   now destruct H.
@@ -1900,7 +1897,7 @@ rewrite (rngl_mul_comm Hic).
 rewrite (rngl_mul_comm Hic (rngl_abs (f x)⁻¹)).
 do 2 rewrite <- rngl_mul_assoc.
 assert (H : (rngl_abs (f x)⁻¹ * M < 1)%L). {
-  rewrite (rngl_abs_inv Hon Hiv Hed); [ | apply Hfz ].
+  rewrite (rngl_abs_inv Hon Hiv); [ | apply Hfz ].
   rewrite (rngl_mul_comm Hic).
   rewrite (rngl_mul_inv_r Hiv).
   apply (rngl_lt_div_l Hon Hop Hiv Hor). {
@@ -1972,7 +1969,6 @@ Theorem derivative_inv_at :
   rngl_mul_is_comm T = true →
   rngl_has_1 T = true →
   rngl_has_inv T = true →
-  rngl_has_eq_dec T = true →
   ∀ A lt, (∀ x, ¬ (lt x x)) →
   ∀ da (f : A → T) f' x₀,
   f x₀ ≠ 0%L
@@ -1980,17 +1976,17 @@ Theorem derivative_inv_at :
   → is_derivative_at lt da rngl_dist (λ x : A, (f x)⁻¹)
        (λ x, (- f' x / rngl_squ (f x))%L) x₀.
 Proof.
-intros Hic Hon Hiv Hed.
+intros Hic Hon Hiv.
 intros * Hlt * Hfz Hf.
 destruct Hf as (Hlfc & Hrfc & Hlfr & Hrfr).
-split; [ now apply (left_or_right_continuous_inv Hic Hon Hiv Hed) | ].
-split; [ now apply (left_or_right_continuous_inv Hic Hon Hiv Hed) | ].
+split; [ now apply (left_or_right_continuous_inv Hic Hon Hiv) | ].
+split; [ now apply (left_or_right_continuous_inv Hic Hon Hiv) | ].
 split. {
-  apply (left_or_right_derivative_inv Hic Hon Hiv Hed lt); [ easy | | easy ].
+  apply (left_or_right_derivative_inv Hic Hon Hiv lt); [ easy | | easy ].
   eapply (is_limit_neighbourhood_eq_compat _ f); [ easy | | apply Hlfc ].
   now intros; left.
 } {
-  apply (left_or_right_derivative_inv Hic Hon Hiv Hed lt); [ easy | | easy ].
+  apply (left_or_right_derivative_inv Hic Hon Hiv lt); [ easy | | easy ].
   eapply (is_limit_neighbourhood_eq_compat _ f); [ easy | | apply Hrfc ].
   now intros; left.
 }
