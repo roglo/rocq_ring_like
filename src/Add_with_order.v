@@ -167,23 +167,94 @@ split; [ apply roc_dual_2 | apply roc_dual_1 | | | | | ]. {
 }
 Qed.
 
-Theorem rngl_add_le_mono_l :
+Theorem rngl_ord_sub :
   rngl_has_opp_or_psub T = true →
   rngl_is_ordered T = true →
-  ∀ a b c, (b ≤ c ↔ a + b ≤ a + c)%L.
+  ∀ a b, (a ≤ b → a + (b - a) = b ∧ 0 ≤ b - a)%L.
+Proof.
+intros Hos Hor.
+specialize rngl_opt_ord as rr.
+rewrite Hor in rr.
+move rr before rp.
+intros * Hab.
+remember (rngl_has_opp T) as op eqn:Hop.
+symmetry in Hop.
+destruct op. {
+  rewrite (rngl_add_sub_assoc Hop).
+  rewrite rngl_add_comm.
+  split; [ apply (rngl_add_sub Hos) | ].
+  specialize (rngl_ord_add_le_mono_l (-a) a b Hab)%L as H1.
+  rewrite (rngl_add_opp_diag_l Hop) in H1.
+  now rewrite (rngl_add_opp_l Hop) in H1.
+}
+remember (rngl_has_psub T) as su eqn:Hsu.
+symmetry in Hsu.
+destruct su. {
+  specialize rngl_ord_psub as H1.
+  rewrite Hsu in H1.
+  now apply H1.
+}
+apply rngl_has_opp_or_psub_iff in Hos.
+rewrite Hop, Hsu in Hos.
+now destruct Hos.
+Qed.
+
+Theorem rngl_add_le_mono_l :
+  rngl_is_ordered T = true →
+  ∀ a b c, (b ≤ c → a + b ≤ a + c)%L.
+Proof.
+intros Hor.
+specialize rngl_opt_ord as rr.
+rewrite Hor in rr.
+move rr before rp.
+apply rngl_ord_add_le_mono_l.
+Qed.
+
+Theorem rngl_add_lt_mono_l :
+  rngl_is_ordered T = true →
+  ∀ a b c, (b < c → a + b < a + c)%L.
+Proof.
+intros Hor.
+specialize rngl_opt_ord as rr.
+rewrite Hor in rr.
+move rr before rp.
+intros * Hbc.
+specialize rngl_ord_add_le_mono_l as H1.
+apply (rngl_le_neq Hor).
+split; [ now apply H1, (rngl_lt_le_incl Hor) | ].
+intros H.
+Search (_ + _ = _ + _)%L.
+...
+apply (rngl_add_cancel_l Hos) in H.
+  subst.
+  now apply (rngl_lt_irrefl Hor) in Hbc.
+...
+
+Theorem rngl_add_le_cancel_l :
+  rngl_has_opp_or_psub T = true →
+  rngl_is_ordered T = true →
+  ∀ a b c, (a + b ≤ a + c → b ≤ c)%L.
 Proof.
 intros Hos Hor.
 specialize rngl_opt_ord as rr.
 rewrite Hor in rr.
 move rr before rp.
 specialize rngl_ord_add_le_mono_l as H1.
-now rewrite Hos in H1.
+intros * Hbc.
+specialize (rngl_ord_sub Hos Hor) as H2.
+specialize (H2 _ _ Hbc) as H3.
+destruct H3 as (H3, H4).
+rewrite <- rngl_add_assoc in H3.
+apply (rngl_add_cancel_l Hos) in H3.
+rewrite <- H3.
+rewrite <- (rngl_add_0_r b) at 1.
+now apply (rngl_add_le_mono_l Hor).
 Qed.
 
-Theorem rngl_add_lt_mono_l :
+Theorem rngl_add_lt_cancel_l :
   rngl_has_opp_or_psub T = true →
   rngl_is_ordered T = true →
-  ∀ a b c, (b < c ↔ a + b < a + c)%L.
+  ∀ a b c, (a + b < a + c → b < c)%L.
 Proof.
 intros Hos Hor.
 specialize rngl_opt_ord as rr.

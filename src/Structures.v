@@ -181,9 +181,16 @@ Class ring_like_ord T {ro : ring_like_op T} :=
     rngl_ord_le_refl : ∀ a, (a ≤ a)%L;
     rngl_ord_le_antisymm : ∀ a b, (a ≤ b → b ≤ a → a = b)%L;
     rngl_ord_le_trans : ∀ a b c, (a ≤ b → b ≤ c → a ≤ c)%L;
-    rngl_ord_add_le_mono_l :
-      if rngl_has_opp_or_psub T then ∀ a b c, (b ≤ c ↔ a + b ≤ a + c)%L
+(*
+    rngl_ord_gen_by_add :
+      if rngl_has_psub T then ∀ a b, (a ≤ b → a + (b - a) = b)%L
       else not_applicable;
+*)
+    rngl_ord_psub :
+      if rngl_has_psub T then ∀ a b, (a ≤ b → a + (b - a) = b ∧ 0 ≤ b - a)%L
+      else not_applicable;
+(**)
+    rngl_ord_add_le_mono_l : ∀ a b c, (b ≤ c → a + b ≤ a + c)%L;
     rngl_ord_mul_le_compat_nonneg :
       if (rngl_has_1 T && rngl_has_inv_or_pdiv T)%bool then
         ∀ a b c d, (0 ≤ a ≤ c)%L → (0 ≤ b ≤ d)%L → (a * b ≤ c * d)%L
