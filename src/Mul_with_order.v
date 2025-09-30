@@ -295,65 +295,57 @@ apply (rngl_opp_neg_pos Hop Hor).
 apply (rngl_0_lt_1 Hon Hos Hc1 Hor).
 Qed.
 
-...
-
 Theorem rngl_opp_1_lt_1 :
   rngl_has_1 T = true →
   rngl_has_opp T = true →
-  rngl_has_inv_or_pdiv T = true →
   rngl_is_ordered T = true →
   rngl_characteristic T ≠ 1 →
   (-1 < 1)%L.
 Proof.
-intros Hon Hop Hiq Hor Hc1.
+intros Hon Hop Hor Hc1.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 apply (rngl_lt_le_trans Hor _ 0).
-apply (rngl_opp_1_lt_0 Hon Hop Hiq Hor Hc1).
-apply (rngl_0_le_1 Hon Hos Hiq Hor).
+apply (rngl_opp_1_lt_0 Hon Hop Hor Hc1).
+apply (rngl_0_le_1 Hon Hos Hor).
 Qed.
 
 Theorem rngl_opp_1_le_1 :
   rngl_has_1 T = true →
   rngl_has_opp T = true →
-  rngl_has_inv_or_pdiv T = true →
   rngl_is_ordered T = true →
   (-1 ≤ 1)%L.
 Proof.
-intros Hon Hop Hiq Hor.
+intros Hon Hop Hor.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 apply (rngl_le_trans Hor _ 0).
-apply (rngl_opp_1_le_0 Hon Hop Hiq Hor).
-apply (rngl_0_le_1 Hon Hos Hiq Hor).
+apply (rngl_opp_1_le_0 Hon Hop Hor).
+apply (rngl_0_le_1 Hon Hos Hor).
 Qed.
 
 Theorem rngl_mul_diag_nonneg :
-  rngl_has_1 T = true →
   rngl_has_opp_or_psub T = true →
-  rngl_has_inv_or_pdiv T = true →
   rngl_is_ordered T = true →
   ∀ a, (0 ≤ a * a)%L.
 Proof.
-intros Hon Hos Hiq Hor.
+intros Hos Hor.
 intros.
 destruct (rngl_leb_dec 0 a) as [Hap| Han]. {
   apply rngl_leb_le in Hap.
-  now apply (rngl_mul_nonneg_nonneg Hon Hos Hiq Hor).
+  now apply (rngl_mul_nonneg_nonneg Hos Hor).
 } {
   apply rngl_leb_nle in Han.
   apply (rngl_not_le Hor) in Han.
-  now apply (rngl_mul_nonpos_nonpos Hon Hos Hiq Hor).
+  now apply (rngl_mul_nonpos_nonpos Hos Hor).
 }
 Qed.
 
 Theorem rngl_squ_nonneg :
-  rngl_has_1 T = true →
   rngl_has_opp_or_psub T = true →
-  rngl_has_inv_or_pdiv T = true →
   rngl_is_ordered T = true →
   ∀ a, (0 ≤ a²)%L.
 Proof.
-intros Hon Hos Hiq Hor *.
-apply (rngl_mul_diag_nonneg Hon Hos Hiq Hor).
+intros Hos Hor *.
+apply (rngl_mul_diag_nonneg Hos Hor).
 Qed.
 
 Theorem rngl_squ_abs :
@@ -369,17 +361,16 @@ Qed.
 Theorem rngl_of_nat_nonneg :
   rngl_has_1 T = true →
   rngl_has_opp_or_psub T = true →
-  rngl_has_inv_or_pdiv T = true →
   rngl_is_ordered T = true →
   ∀ n, (0 ≤ rngl_of_nat n)%L.
 Proof.
-intros Hon Hos Hiq Hor.
+intros Hon Hos Hor.
 intros.
 induction n; [ pauto | ].
 rewrite rngl_of_nat_succ.
 eapply (rngl_le_trans Hor); [ apply IHn | ].
-apply (rngl_le_add_l Hos Hor).
-apply (rngl_0_le_1 Hon Hos Hiq Hor).
+apply (rngl_le_add_l Hor).
+apply (rngl_0_le_1 Hon Hos Hor).
 Qed.
 
 (******)
@@ -387,37 +378,34 @@ Qed.
 Theorem rngl_of_nat_inj_le :
   rngl_has_1 T = true →
   rngl_has_opp_or_psub T = true →
-  rngl_has_inv_or_pdiv T = true →
   rngl_characteristic T ≠ 1 →
   rngl_is_ordered T = true →
   ∀ i j, i ≤ j ↔ (rngl_of_nat i ≤ rngl_of_nat j)%L.
 Proof.
-intros Hon Hos Hiq Hc1 Hor *.
-apply (rngl_mul_nat_inj_le Hos Hor).
-apply (rngl_0_lt_1 Hon Hos Hiq Hc1 Hor).
+intros Hon Hos Hc1 Hor *.
+apply (rngl_mul_nat_inj_le Hor).
+apply (rngl_0_lt_1 Hon Hos Hc1 Hor).
 Qed.
 
 Theorem rngl_of_nat_inj_lt :
   rngl_has_1 T = true →
   rngl_has_opp_or_psub T = true →
-  rngl_has_inv_or_pdiv T = true →
   rngl_characteristic T ≠ 1 →
   rngl_is_ordered T = true →
   ∀ i j, i < j ↔ (rngl_of_nat i < rngl_of_nat j)%L.
 Proof.
-intros Hon Hos Hiq Hc1 Hor *.
+intros Hon Hos Hc1 Hor *.
 apply (rngl_mul_nat_inj_lt Hos Hor).
-apply (rngl_0_lt_1 Hon Hos Hiq Hc1 Hor).
+apply (rngl_0_lt_1 Hon Hos Hc1 Hor).
 Qed.
 
 Theorem rngl_abs_1 :
   rngl_has_1 T = true →
   rngl_has_opp_or_psub T = true →
-  rngl_has_inv_or_pdiv T = true →
   rngl_is_ordered T = true →
   (rngl_abs 1 = 1)%L.
 Proof.
-intros Hon Hos Hiq Hor.
+intros Hon Hos Hor.
 destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
   specialize (rngl_characteristic_1 Hon Hos Hc1) as H1.
   now rewrite (H1 (rngl_abs 1)%L), (H1 1%L).
@@ -428,8 +416,10 @@ destruct c; [ | easy ].
 apply rngl_leb_le in Hc.
 apply rngl_nlt_ge in Hc.
 exfalso; apply Hc.
-apply (rngl_0_lt_1 Hon Hos Hiq Hc1 Hor).
+apply (rngl_0_lt_1 Hon Hos Hc1 Hor).
 Qed.
+
+...
 
 Theorem rngl_abs_2 :
   rngl_has_1 T = true →
