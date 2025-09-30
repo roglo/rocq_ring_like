@@ -159,6 +159,8 @@ apply Nat.le_0_r in Hac, Hbd.
 now subst a b.
 Qed.
 
+...
+
 Definition nat_ring_like_ord :=
   {| rngl_ord_le_dec := Nat_opt_le_dec;
      rngl_ord_le_refl := Nat.leb_refl;

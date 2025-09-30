@@ -116,13 +116,13 @@ split. {
   rewrite (rngl_div_mul Hon Hiv); [ | easy ].
   rewrite rngl_mul_add_distr_l.
   rewrite (rngl_mul_1_r Hon).
-  apply (rngl_add_le_mono Hos Hor); [ apply (rngl_le_refl Hor) | easy ].
+  apply (rngl_add_le_mono Hor); [ apply (rngl_le_refl Hor) | easy ].
 } {
   apply (rngl_mul_le_mono_pos_r Hon Hop Hiq Hor) with (c := 2%L); [ easy | ].
   rewrite (rngl_div_mul Hon Hiv); [ | easy ].
   rewrite rngl_mul_add_distr_l.
   rewrite (rngl_mul_1_r Hon).
-  apply (rngl_add_le_mono Hos Hor); [ easy | apply (rngl_le_refl Hor) ].
+  apply (rngl_add_le_mono Hor); [ easy | apply (rngl_le_refl Hor) ].
 }
 Qed.
 
@@ -858,7 +858,7 @@ assert (Haηb : (a < (a + rngl_min (a + η) b) / 2 ≤ b)%L). {
       apply (rngl_0_lt_2 Hon Hos Hiq Hc1 Hor).
     }
     rewrite (rngl_mul_2_r Hon).
-    apply (rngl_add_le_mono Hos Hor). {
+    apply (rngl_add_le_mono Hor). {
       now apply (rngl_lt_le_incl Hor).
     }
     apply (rngl_le_min_r Hor).
@@ -960,7 +960,7 @@ destruct (is_upper_bound P x) as [Hux| Hux]. 2: {
       apply (rngl_0_lt_2 Hon Hos Hiq Hc1 Hor).
     }
     rewrite (rngl_mul_2_r Hon).
-    apply (rngl_add_le_mono_l Hos Hor).
+    apply (rngl_add_le_mono_l Hor).
     apply rngl_max_lub; [ now apply (rngl_lt_le_incl Hor)| ].
     apply (rngl_le_sub_l Hop Hor).
     now apply (rngl_lt_le_incl Hor).
@@ -1209,7 +1209,7 @@ destruct (is_bound _ P lim) as [H1| H1]. {
   destruct (Hi n _ _ Habn) as (Haabb & Hbn).
   rewrite Hbn.
   apply (rngl_le_lt_trans Hor _ (lim + (b - a) / 2 ^ n)%L). {
-    apply (rngl_add_le_mono Hos Hor); [ | apply (rngl_le_refl Hor) ].
+    apply (rngl_add_le_mono Hor); [ | apply (rngl_le_refl Hor) ].
     apply (Hl n _ _ Habn).
   }
   apply (rngl_lt_add_lt_sub_l Hop Hor).
@@ -1521,7 +1521,7 @@ assert (H3 : ∀ ε, (0 < ε → u - ε < f c < u + ε)%L). {
           apply (rngl_le_trans Hor _ (c + η)). {
             now apply (rngl_lt_le_incl Hor).
           }
-          now apply (rngl_add_le_mono_l Hos Hor).
+          now apply (rngl_add_le_mono_l Hor).
         }
         rewrite rngl_add_comm.
         apply (rngl_le_add_le_sub_r Hop Hor).
