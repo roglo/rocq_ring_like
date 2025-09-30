@@ -211,10 +211,11 @@ apply rngl_ord_add_le_mono_l.
 Qed.
 
 Theorem rngl_add_lt_mono_l :
+  rngl_has_opp_or_psub T = true →
   rngl_is_ordered T = true →
   ∀ a b c, (b < c → a + b < a + c)%L.
 Proof.
-intros Hor.
+intros Hos Hor.
 specialize rngl_opt_ord as rr.
 rewrite Hor in rr.
 move rr before rp.
@@ -223,12 +224,10 @@ specialize rngl_ord_add_le_mono_l as H1.
 apply (rngl_le_neq Hor).
 split; [ now apply H1, (rngl_lt_le_incl Hor) | ].
 intros H.
-Search (_ + _ = _ + _)%L.
-...
 apply (rngl_add_cancel_l Hos) in H.
-  subst.
-  now apply (rngl_lt_irrefl Hor) in Hbc.
-...
+subst.
+now apply (rngl_lt_irrefl Hor) in Hbc.
+Qed.
 
 Theorem rngl_add_le_cancel_l :
   rngl_has_opp_or_psub T = true →
@@ -236,17 +235,13 @@ Theorem rngl_add_le_cancel_l :
   ∀ a b c, (a + b ≤ a + c → b ≤ c)%L.
 Proof.
 intros Hos Hor.
-specialize rngl_opt_ord as rr.
-rewrite Hor in rr.
-move rr before rp.
-specialize rngl_ord_add_le_mono_l as H1.
 intros * Hbc.
-specialize (rngl_ord_sub Hos Hor) as H2.
-specialize (H2 _ _ Hbc) as H3.
-destruct H3 as (H3, H4).
-rewrite <- rngl_add_assoc in H3.
-apply (rngl_add_cancel_l Hos) in H3.
-rewrite <- H3.
+specialize (rngl_ord_sub Hos Hor) as H1.
+specialize (H1 _ _ Hbc).
+destruct H1 as (H1, H2).
+rewrite <- rngl_add_assoc in H1.
+apply (rngl_add_cancel_l Hos) in H1.
+rewrite <- H1.
 rewrite <- (rngl_add_0_r b) at 1.
 now apply (rngl_add_le_mono_l Hor).
 Qed.
@@ -257,42 +252,26 @@ Theorem rngl_add_lt_cancel_l :
   ∀ a b c, (a + b < a + c → b < c)%L.
 Proof.
 intros Hos Hor.
-specialize rngl_opt_ord as rr.
-rewrite Hor in rr.
-move rr before rp.
-specialize rngl_ord_add_le_mono_l as H1.
-rewrite Hos in H1.
-intros.
-split; intros Hbc. {
-  apply (rngl_le_neq Hor).
-  split; [ now apply H1, (rngl_lt_le_incl Hor) | ].
-  intros H.
-  apply (rngl_add_cancel_l Hos) in H.
-  subst.
-  now apply (rngl_lt_irrefl Hor) in Hbc.
-} {
-  apply (rngl_le_neq Hor).
-  split; [ now apply (H1 a), (rngl_lt_le_incl Hor) | ].
-  intros H.
-  subst.
-  now apply (rngl_lt_irrefl Hor) in Hbc.
+intros * Hbc.
+apply (rngl_le_neq Hor).
+split. {
+  apply (rngl_add_le_cancel_l Hos Hor a).
+  now apply (rngl_lt_le_incl Hor).
 }
+intros H; subst c.
+now apply (rngl_lt_irrefl Hor) in Hbc.
 Qed.
 
 Theorem rngl_add_le_mono :
-  rngl_has_opp_or_psub T = true →
   rngl_is_ordered T = true →
   ∀ a b c d, (a ≤ b → c ≤ d → a + c ≤ b + d)%L.
 Proof.
-intros Hos Hor.
-specialize rngl_opt_ord as rr.
-rewrite Hor in rr.
-move rr before rp.
+intros Hor.
 intros * Hab Hcd.
 apply (rngl_le_trans Hor _ (a + d)).
-now apply (rngl_add_le_mono_l Hos Hor).
+now apply (rngl_add_le_mono_l Hor).
 do 2 rewrite (rngl_add_comm _ d).
-now apply (rngl_add_le_mono_l Hos Hor).
+now apply (rngl_add_le_mono_l Hor).
 Qed.
 
 (** *** rngl_order_compatibility works for pair (≤, <) *)
@@ -323,7 +302,9 @@ split. {
   remember (rngl_has_opp_or_psub T) as os eqn:Hos.
   symmetry in Hos.
   destruct os; [ | easy ].
-  apply (rngl_add_le_mono_l Hos Hor).
+  intros.
+  split; [ apply (rngl_add_le_mono_l Hor) | ].
+  apply (rngl_add_le_cancel_l Hos Hor).
 }
 Qed.
 
@@ -355,7 +336,9 @@ split. {
   remember (rngl_has_opp_or_psub T) as os eqn:Hos.
   symmetry in Hos.
   destruct os; [ | easy ].
-  apply (rngl_add_lt_mono_l Hos Hor).
+  intros.
+  split; [ apply (rngl_add_lt_mono_l Hos Hor) | ].
+  apply (rngl_add_lt_cancel_l Hos Hor).
 }
 Qed.
 
@@ -370,7 +353,7 @@ Proof.
 intros Hroc Hos Hor * Hab Hbc.
 apply (roc_mono_l _ (b + c))%L. {
   do 2 rewrite (rngl_add_comm _ c).
-  now apply (rngl_add_le_mono_l Hos Hor).
+  now apply (rngl_add_le_mono_l Hor).
 } {
   now apply (roc_add_ord_compat Hos).
 }
@@ -1111,7 +1094,7 @@ split. {
   rewrite <- Hab.
   remember (a + b)%L as ab.
   rewrite <- (rngl_add_0_r a); subst ab.
-  now apply (rngl_add_le_mono_l Hos Hor).
+  now apply (rngl_add_le_mono_l Hor).
 } {
   apply (rngl_le_antisymm Hor) in Hbz; [ easy | ].
   rewrite <- Hab.
@@ -1152,11 +1135,11 @@ destruct j. {
 cbn.
 split; intros Hij. {
   apply Nat.succ_le_mono in Hij.
-  apply (rngl_add_le_mono_l Hos Hor).
+  apply (rngl_add_le_mono_l Hor).
   now apply IHi.
 } {
   apply -> Nat.succ_le_mono.
-  apply (rngl_add_le_mono_l Hos Hor) in Hij.
+  apply (rngl_add_le_cancel_l Hos Hor) in Hij.
   now apply IHi.
 }
 Qed.
@@ -1201,7 +1184,7 @@ split; intros Hij. {
   now apply IHi.
 } {
   apply -> Nat.succ_lt_mono.
-  apply (rngl_add_lt_mono_l Hos Hor) in Hij.
+  apply (rngl_add_lt_cancel_l Hos Hor) in Hij.
   now apply IHi.
 }
 Qed.
@@ -1217,14 +1200,13 @@ now apply (rngl_lt_0_add Hos Hor).
 Qed.
 
 Theorem rngl_add_nonpos_nonpos :
-  rngl_has_opp_or_psub T = true →
   rngl_is_ordered T = true →
   ∀ a b, (a ≤ 0 → b ≤ 0 → a + b ≤ 0)%L.
 Proof.
-intros Hos Hor * Ha Hb.
+intros Hor * Ha Hb.
 apply (rngl_le_trans Hor _ a); [ | easy ].
 rewrite <- rngl_add_0_r.
-now apply (rngl_add_le_mono_l Hos Hor).
+now apply (rngl_add_le_mono_l Hor).
 Qed.
 
 Theorem rngl_add_neg_nonpos :
@@ -1302,7 +1284,6 @@ Theorem rngl_le_abs_diag :
   ∀ a, (a ≤ rngl_abs a)%L.
 Proof.
 intros Hop Hor.
-specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 intros.
 progress unfold rngl_abs.
 remember (a ≤? 0)%L as c eqn:Hc; symmetry in Hc.
@@ -1311,7 +1292,7 @@ apply rngl_leb_le in Hc.
 apply (rngl_le_sub_0 Hop Hor).
 rewrite (rngl_sub_opp_r Hop).
 rewrite <- (rngl_add_0_l 0%L).
-now apply (rngl_add_le_mono Hos Hor).
+now apply (rngl_add_le_mono Hor).
 Qed.
 
 Theorem rngl_abs_nonneg_eq :
@@ -1492,7 +1473,7 @@ destruct abz. {
     rewrite (rngl_opp_add_distr Hop).
     progress unfold rngl_sub.
     rewrite Hop.
-    apply (rngl_add_le_mono_l Hos Hor).
+    apply (rngl_add_le_mono_l Hor).
     destruct bz; [ pauto | ].
     apply (rngl_leb_gt_iff Hor) in Hbz.
     apply (rngl_lt_le_incl Hor).
@@ -1528,7 +1509,7 @@ destruct az. {
     apply rngl_nle_gt in Habz.
     exfalso; apply Habz; clear Habz.
     rewrite <- rngl_add_0_r.
-    now apply (rngl_add_le_mono Hos Hor).
+    now apply (rngl_add_le_mono Hor).
   }
   apply (rngl_add_le_mono_r Hos Hor).
   apply (rngl_le_trans Hor _ 0)%L; [ easy | ].
@@ -1537,7 +1518,7 @@ destruct az. {
   now rewrite (rngl_opp_0 Hop).
 }
 apply (rngl_leb_gt_iff Hor) in Haz.
-apply (rngl_add_le_mono_l Hos Hor).
+apply (rngl_add_le_mono_l Hor).
 destruct bz; [ | pauto ].
 apply rngl_leb_le in Hbz.
 apply (rngl_le_trans Hor _ 0)%L; [ easy | ].
@@ -1690,6 +1671,6 @@ Qed.
 End a.
 
 Arguments rngl_abs_nonneg_eq {T ro rp} Hop Hor a%_L.
-Arguments rngl_add_le_mono_l {T ro rp} Hop Hor (a b c)%_L.
+Arguments rngl_add_le_mono_l {T ro rp} Hor (a b c)%_L.
 Arguments rngl_add_lt_mono_l {T ro rp} Hop Hor (a b c)%_L.
 Arguments rngl_le_add_r {T ro rp} Hos Hor (a b)%_L.
