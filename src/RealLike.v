@@ -180,26 +180,26 @@ progress unfold rl_modl.
 rewrite <- (rngl_abs_nonneg_eq Hop Hor). 2: {
   apply (rngl_le_0_add Hos Hor). {
     apply rl_sqrt_nonneg.
-    apply (rngl_add_squ_nonneg Hon Hos Hiq Hor).
+    apply (rngl_add_squ_nonneg Hos Hor).
   } {
     apply rl_sqrt_nonneg.
-    apply (rngl_add_squ_nonneg Hon Hos Hiq Hor).
+    apply (rngl_add_squ_nonneg Hos Hor).
   }
 }
 rewrite <- (rngl_abs_nonneg_eq Hop Hor (√_))%L. 2: {
   apply rl_sqrt_nonneg.
-  apply (rngl_add_squ_nonneg Hon Hos Hiq Hor).
+  apply (rngl_add_squ_nonneg Hos Hor).
 }
 apply (rngl_squ_le_abs_le Hon Hop Hiq Hor).
 rewrite (rngl_squ_sqrt Hon). 2: {
-  apply (rngl_add_squ_nonneg Hon Hos Hiq Hor).
+  apply (rngl_add_squ_nonneg Hos Hor).
 }
 rewrite (rngl_squ_add Hic Hon (√_))%L.
 rewrite (rngl_squ_sqrt Hon). 2: {
-  apply (rngl_add_squ_nonneg Hon Hos Hiq Hor).
+  apply (rngl_add_squ_nonneg Hos Hor).
 }
 rewrite (rngl_squ_sqrt Hon). 2: {
-  apply (rngl_add_squ_nonneg Hon Hos Hiq Hor).
+  apply (rngl_add_squ_nonneg Hos Hor).
 }
 apply (rngl_le_sub_le_add_r Hop Hor).
 apply -> (rngl_le_sub_le_add_l Hop Hor).
@@ -221,30 +221,30 @@ rewrite (rngl_sub_diag Hos).
 rewrite rngl_add_0_l.
 do 3 rewrite <- rngl_mul_assoc.
 rewrite <- rngl_mul_add_distr_l.
-apply (rngl_mul_le_mono_nonneg_l Hon Hop Hiq Hor). {
-  apply (rngl_0_le_2 Hon Hos Hiq Hor).
+apply (rngl_mul_le_mono_nonneg_l Hop Hor). {
+  apply (rngl_0_le_2 Hon Hos Hor).
 }
 eapply (rngl_le_trans Hor); [ apply (rngl_le_abs_diag Hop Hor) | ].
 rewrite <- (rngl_abs_nonneg_eq Hop Hor). 2: {
-  apply (rngl_mul_nonneg_nonneg Hon Hos Hiq Hor). {
+  apply (rngl_mul_nonneg_nonneg Hos Hor). {
     apply rl_sqrt_nonneg.
-    apply (rngl_add_squ_nonneg Hon Hos Hiq Hor).
+    apply (rngl_add_squ_nonneg Hos Hor).
   } {
     apply rl_sqrt_nonneg.
-    apply (rngl_add_squ_nonneg Hon Hos Hiq Hor).
+    apply (rngl_add_squ_nonneg Hos Hor).
   }
 }
 apply (rngl_squ_le_abs_le Hon Hop Hiq Hor).
 rewrite (rngl_squ_mul Hic).
 rewrite (rngl_squ_sqrt Hon). 2: {
-  apply (rngl_add_squ_nonneg Hon Hos Hiq Hor).
+  apply (rngl_add_squ_nonneg Hos Hor).
 }
 rewrite (rngl_squ_sqrt Hon). 2: {
-  apply (rngl_add_squ_nonneg Hon Hos Hiq Hor).
+  apply (rngl_add_squ_nonneg Hos Hor).
 }
 rewrite (Brahmagupta_Fibonacci_identity_2 Hic Hon Hop).
-apply (rngl_le_add_r Hos Hor).
-apply (rngl_squ_nonneg Hon Hos Hiq Hor).
+apply (rngl_le_add_r Hor).
+apply (rngl_squ_nonneg Hos Hor).
 Qed.
 
 Theorem euclidean_distance_triangular :
@@ -304,17 +304,16 @@ Qed.
 
 Theorem rl_sqrt_lt_rl_sqrt :
   rngl_has_1 T = true →
-  rngl_has_inv_or_pdiv T = true →
   rngl_is_ordered T = true →
   ∀ a b,
   (0 ≤ a)%L
   → (a < b)%L
   → (√ a < √ b)%L.
 Proof.
-intros Hon Hiq Hor * Ha Hab.
+intros Hon Hor * Ha Hab.
 apply (rngl_nle_gt_iff Hor).
 intros H1.
-specialize (rngl_mul_le_compat_nonneg Hon Hiq Hor) as H2.
+specialize (rngl_mul_le_compat_nonneg Hor) as H2.
 specialize (H2 (√b) (√b) (√a) (√a))%L.
 assert (H : (0 ≤ √b ≤ √a)%L). {
   split; [ | easy ].
@@ -361,7 +360,7 @@ Proof.
 intros Hon Hop Hiq Hor.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 specialize (rngl_int_dom_or_inv_1_or_pdiv_r Hon Hiq) as Hii.
-specialize (rngl_0_le_1 Hon Hos Hiq Hor) as Hz1.
+specialize (rngl_0_le_1 Hon Hos Hor) as Hz1.
 progress unfold rl_sqrt.
 specialize (rl_nth_root_pow 2 1%L Hz1) as H1.
 rewrite <- (rngl_squ_1 Hon) in H1 at 2.
@@ -373,7 +372,7 @@ apply (eq_rngl_squ_rngl_abs Hop Hor Hii) in H1. 2: {
 rewrite (rngl_abs_nonneg_eq Hop Hor) in H1. 2: {
   now apply rl_sqrt_nonneg.
 }
-now rewrite (rngl_abs_1 Hon Hos Hiq Hor) in H1.
+now rewrite (rngl_abs_1 Hon Hos Hor) in H1.
 Qed.
 
 End a.
