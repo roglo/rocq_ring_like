@@ -456,6 +456,89 @@ rewrite rngl_of_nat_add, rngl_mul_add_distr_r.
 now rewrite (rngl_mul_1_l Hon); f_equal.
 Qed.
 
+Theorem rngl_of_nat_inj :
+  rngl_has_1 T = true →
+  rngl_has_opp_or_psub T = true →
+  ∀ i j,
+  rngl_of_nat i = rngl_of_nat j
+  → if Nat.eq_dec (rngl_characteristic T) 0 then i = j
+    else i mod rngl_characteristic T = j mod rngl_characteristic T.
+Proof.
+intros * Hon Hos.
+destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
+  now intros * Hij; rewrite Hc1.
+}
+intros * Hij.
+destruct (Nat.eq_dec _ _) as [Hch| Hch]. {
+  revert i Hij.
+  induction j; intros. {
+    cbn in Hij.
+    now apply (eq_rngl_of_nat_0 Hon Hch) in Hij.
+  }
+  destruct i. {
+    exfalso.
+    symmetry in Hij.
+    now apply eq_rngl_of_nat_0 in Hij.
+  }
+  f_equal.
+  cbn in Hij.
+  apply rngl_add_cancel_l in Hij; [ | easy ].
+  now apply IHj.
+}
+specialize (rngl_characteristic_non_0 Hon Hch) as (H1, H2).
+remember (rngl_characteristic T) as n eqn:Hn.
+destruct Hn.
+destruct n; [ easy | clear Hch ].
+destruct n; [ easy | clear Hc1 ].
+specialize (H1 1) as H10.
+assert (H : 0 < 1 < S (S n)). {
+  split; [ apply Nat.lt_0_1 | ].
+  apply -> Nat.succ_lt_mono.
+  apply Nat.lt_0_succ.
+}
+specialize (H10 H); clear H.
+rewrite rngl_of_nat_1 in H10.
+revert i Hij.
+induction j; intros. {
+  rewrite Nat.Div0.mod_0_l; cbn in Hij.
+  specialize (Nat.div_mod i (S (S n)) (Nat.neq_succ_0 _)) as H3.
+  destruct (Nat.eq_dec (i mod S (S n)) 0) as [H4| H4]; [ easy | exfalso ].
+  rewrite H3 in Hij.
+  rewrite rngl_of_nat_add, (rngl_of_nat_mul Hon Hos) in Hij.
+  rewrite H2, (rngl_mul_0_l Hos), rngl_add_0_l in Hij.
+  revert Hij.
+  apply H1.
+  split; [ now apply Nat.neq_0_lt_0 | ].
+  apply Nat.mod_upper_bound.
+  apply Nat.neq_succ_0.
+}
+destruct i; intros. {
+  symmetry in Hij; symmetry.
+  rewrite rngl_of_nat_0 in Hij.
+  rewrite Nat.Div0.mod_0_l.
+  specialize (Nat.div_mod (S j) (S (S n)) (Nat.neq_succ_0 _)) as H3.
+  destruct (Nat.eq_dec (S j mod S (S n)) 0) as [H4| H4]; [ easy | exfalso ].
+  rewrite H3 in Hij.
+  rewrite rngl_of_nat_add, (rngl_of_nat_mul Hon Hos) in Hij.
+  rewrite H2, (rngl_mul_0_l Hos), rngl_add_0_l in Hij.
+  revert Hij.
+  apply H1.
+  split; [ now apply Nat.neq_0_lt_0 | ].
+  apply Nat.mod_upper_bound.
+  apply Nat.neq_succ_0.
+}
+do 2 rewrite rngl_of_nat_succ in Hij.
+apply (rngl_add_cancel_l Hos) in Hij.
+specialize (IHj _ Hij) as H3.
+rewrite <- Nat.add_1_r.
+rewrite <- Nat.Div0.add_mod_idemp_l.
+symmetry.
+rewrite <- Nat.add_1_r.
+rewrite <- Nat.Div0.add_mod_idemp_l.
+rewrite <- H3.
+now rewrite Nat.Div0.add_mod_idemp_l.
+Qed.
+
 Theorem rngl_of_nat_pow :
   rngl_has_1 T = true →
   rngl_has_opp_or_psub T = true →

@@ -745,31 +745,6 @@ specialize (rngl_characteristic_0 Hon Hch) as H1.
 now specialize (H1 i) as H.
 Qed.
 
-Theorem rngl_of_nat_inj :
-  rngl_has_1 T = true →
-  rngl_has_opp_or_psub T = true →
-  rngl_characteristic T = 0 →
-  ∀ i j,
-  rngl_of_nat i = rngl_of_nat j
-  → i = j.
-Proof.
-intros Hon Hom Hch * Hij.
-revert i Hij.
-induction j; intros. {
-  cbn in Hij.
-  now apply eq_rngl_of_nat_0 in Hij.
-}
-destruct i. {
-  exfalso.
-  symmetry in Hij.
-  now apply eq_rngl_of_nat_0 in Hij.
-}
-f_equal.
-cbn in Hij.
-apply rngl_add_cancel_l in Hij; [ | easy ].
-now apply IHj.
-Qed.
-
 End a.
 
 Arguments rngl_abs {T ro} a%_L.
