@@ -32,11 +32,15 @@ Require Import Misc Utils.
 
 Notation "'⋀' ( i = b , e ) , g" :=
   (iter_seq b e (λ c i, (c && g)%bool) true)
-  (at level 45, i at level 0, b at level 60, e at level 60).
+  (at level 36, i at level 0, b at level 60, e at level 60,
+   right associativity,
+   format "'[hv  ' ⋀  ( i  =  b ,  e ) ,  '/' '[' g ']' ']'").
 
 Notation "'⋀' ( i ∈ l ) , g" :=
   (iter_list l (λ c i, (c && g)%bool) true)
-  (at level 45, i at level 0, l at level 60).
+  (at level 36, i at level 0, l at level 60,
+   right associativity,
+   format "'[hv  ' ⋀  ( i  ∈  l ) ,  '/' '[' g ']' ']'").
 
 Theorem all_true_and_list_true_iff : ∀ A (l : list A) f,
   (∀ a, a ∈ l → f a = true)
