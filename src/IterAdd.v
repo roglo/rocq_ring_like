@@ -706,8 +706,7 @@ Theorem rngl_summation_list_map :
 Proof.
 intros.
 unfold iter_list.
-rewrite List_fold_left_map.
-now apply rngl_summation_list_eq_compat.
+now rewrite List_fold_left_map.
 Qed.
 
 Theorem rngl_summation_list_change_var : ∀ A B (l : list A) f g (h : _ → B),

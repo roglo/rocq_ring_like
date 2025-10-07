@@ -102,3 +102,11 @@ rewrite iter_list_app.
 unfold iter_list.
 apply fold_left_rngl_and_fun_from_true.
 Qed.
+
+Theorem rngl_and_list_map : ∀ A B (f : A → B) (g : B → _) l,
+  ⋀ (j ∈ ListDef.map f l), g j = ⋀ (i ∈ l), g (f i).
+Proof.
+intros.
+unfold iter_list.
+now rewrite List_fold_left_map.
+Qed.
