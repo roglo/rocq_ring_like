@@ -48,13 +48,10 @@ Theorem all_true_rngl_and_list_true_iff : ∀ A (l : list A) f,
 Proof.
 intros.
 induction l as [| b]; [ easy | ].
-rewrite iter_list_cons; cycle 1. {
-  apply Bool.andb_true_l.
-} {
-  apply Bool.andb_true_r.
-} {
-  apply Bool.andb_assoc.
-}
+rewrite iter_list_cons; cycle 1.
+apply Bool.andb_true_l.
+apply Bool.andb_true_r.
+apply Bool.andb_assoc.
 rewrite Bool.andb_true_iff.
 split. {
   intros Hb.
@@ -73,13 +70,10 @@ Theorem rngl_and_list_cons : ∀ A (a : A) la f,
   ⋀ (i ∈ a :: la), f i = (f a && ⋀ (i ∈ la), f i)%bool.
 Proof.
 intros.
-apply iter_list_cons. {
-  apply Bool.andb_true_l.
-} {
-  apply Bool.andb_true_r.
-} {
-  apply Bool.andb_assoc.
-}
+apply iter_list_cons.
+apply Bool.andb_true_l.
+apply Bool.andb_true_r.
+apply Bool.andb_assoc.
 Qed.
 
 Theorem rngl_and_list_empty : ∀ A g (l : list A),
@@ -87,4 +81,24 @@ Theorem rngl_and_list_empty : ∀ A g (l : list A),
 Proof.
 intros * Hl.
 now apply iter_list_empty.
+Qed.
+
+Theorem fold_left_rngl_and_fun_from_true : ∀ A a l (f : A → _),
+  (List.fold_left (λ c i, c && f i) l a =
+   a && List.fold_left (λ c i, c && f i) l true)%bool.
+Proof.
+intros.
+apply fold_left_op_fun_from_d.
+apply Bool.andb_true_l.
+apply Bool.andb_true_r.
+apply Bool.andb_assoc.
+Qed.
+
+Theorem rngl_and_list_app : ∀ A (la lb : list A) f,
+  ⋀ (i ∈ la ++ lb), f i = (⋀ (i ∈ la), f i && ⋀ (i ∈ lb), f i)%bool.
+Proof.
+intros.
+rewrite iter_list_app.
+unfold iter_list.
+apply fold_left_rngl_and_fun_from_true.
 Qed.

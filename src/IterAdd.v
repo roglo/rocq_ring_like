@@ -61,13 +61,10 @@ Theorem fold_left_rngl_add_fun_from_0 : ∀ A a l (f : A → _),
    a + List.fold_left (λ c i, c + f i) l 0)%L.
 Proof.
 intros.
-apply fold_left_op_fun_from_d. {
-  apply rngl_add_0_l.
-} {
-  apply rngl_add_0_r.
-} {
-  apply rngl_add_assoc.
-}
+apply fold_left_op_fun_from_d.
+apply rngl_add_0_l.
+apply rngl_add_0_r.
+apply rngl_add_assoc.
 Qed.
 
 Theorem all_0_rngl_summation_list_0 : ∀ A l (f : A → T),
@@ -75,13 +72,10 @@ Theorem all_0_rngl_summation_list_0 : ∀ A l (f : A → T),
   → ∑ (i ∈ l), f i = 0%L.
 Proof.
 intros * Hz.
-apply iter_list_all_d; [ | | | easy ]. {
-  apply rngl_add_0_l.
-} {
-  apply rngl_add_0_r.
-} {
-  apply rngl_add_assoc.
-}
+apply iter_list_all_d; [ | | | easy ].
+apply rngl_add_0_l.
+apply rngl_add_0_r.
+apply rngl_add_assoc.
 Qed.
 
 Theorem all_0_rngl_summation_0 : ∀ b e f,
@@ -89,13 +83,10 @@ Theorem all_0_rngl_summation_0 : ∀ b e f,
   → ∑ (i = b, e), f i = 0%L.
 Proof.
 intros * Hz.
-apply iter_seq_all_d; [ | | | easy ]. {
-  apply rngl_add_0_l.
-} {
-  apply rngl_add_0_r.
-} {
-  apply rngl_add_assoc.
-}
+apply iter_seq_all_d; [ | | | easy ].
+apply rngl_add_0_l.
+apply rngl_add_0_r.
+apply rngl_add_assoc.
 Qed.
 
 Theorem rngl_summation_list_split_first : ∀ A (l : list A) d f,
@@ -103,13 +94,10 @@ Theorem rngl_summation_list_split_first : ∀ A (l : list A) d f,
   → ∑ (i ∈ l), f i = (f (List.hd d l) + ∑ (i ∈ List.tl l), f i)%L.
 Proof.
 intros * Hlz.
-apply iter_list_split_first; [ | | | easy ]. {
-  apply rngl_add_0_l.
-} {
-  apply rngl_add_0_r.
-} {
-  apply rngl_add_assoc.
-}
+apply iter_list_split_first; [ | | | easy ].
+apply rngl_add_0_l.
+apply rngl_add_0_r.
+apply rngl_add_assoc.
 Qed.
 
 Theorem rngl_summation_list_split_last : ∀ A (l : list A) d f,
@@ -136,13 +124,10 @@ Theorem rngl_summation_split_first : ∀ b k g,
   → ∑ (i = b, k), g i = (g b + ∑ (i = S b, k), g i)%L.
 Proof.
 intros * Hbk.
-apply iter_seq_split_first; [ | | | easy ]. {
-  apply rngl_add_0_l.
-} {
-  apply rngl_add_0_r.
-} {
-  apply rngl_add_assoc.
-}
+apply iter_seq_split_first; [ | | | easy ].
+apply rngl_add_0_l.
+apply rngl_add_0_r.
+apply rngl_add_assoc.
 Qed.
 
 Theorem rngl_summation_split_last : ∀ b k g,
@@ -158,13 +143,10 @@ Theorem rngl_summation_split : ∀ j g b k,
   → (∑ (i = b, k), g i = ∑ (i = b, j), g i + ∑ (i = j+1, k), g i)%L.
 Proof.
 intros * Hbjk.
-apply iter_seq_split; [ | | | easy ]. {
-  apply rngl_add_0_l.
-} {
-  apply rngl_add_0_r.
-} {
-  apply rngl_add_assoc.
-}
+apply iter_seq_split; [ | | | easy ].
+apply rngl_add_0_l.
+apply rngl_add_0_r.
+apply rngl_add_assoc.
 Qed.
 
 Theorem rngl_summation_split3 : ∀ j g b k,
@@ -173,13 +155,10 @@ Theorem rngl_summation_split3 : ∀ j g b k,
        (∑ (i = S b, j), g (i - 1)%nat + g j + ∑ (i = j + 1, k), g i)%L.
 Proof.
 intros * Hj.
-apply iter_seq_split3; [ | | | easy ]. {
-  apply rngl_add_0_l.
-} {
-  apply rngl_add_0_r.
-} {
-  apply rngl_add_assoc.
-}
+apply iter_seq_split3; [ | | | easy ].
+apply rngl_add_0_l.
+apply rngl_add_0_r.
+apply rngl_add_assoc.
 Qed.
 
 Theorem rngl_summation_eq_compat : ∀ g h b k,
@@ -225,13 +204,10 @@ Theorem rngl_summation_list_add_distr :
   (∑ (i ∈ l), g i) + ∑ (i ∈ l), h i)%L.
 Proof.
 intros Hic *.
-apply iter_list_distr. {
-  apply rngl_add_0_l.
-} {
-  apply rngl_add_comm.
-} {
-  apply rngl_add_assoc.
-}
+apply iter_list_distr.
+apply rngl_add_0_l.
+apply rngl_add_comm.
+apply rngl_add_assoc.
 Qed.
 
 Theorem rngl_summation_add_distr : ∀ g h b k,
@@ -239,13 +215,10 @@ Theorem rngl_summation_add_distr : ∀ g h b k,
    ∑ (i = b, k), g i + ∑ (i = b, k), h i)%L.
 Proof.
 intros g h b k.
-apply iter_seq_distr. {
-  apply rngl_add_0_l.
-} {
-  apply rngl_add_comm.
-} {
-  apply rngl_add_assoc.
-}
+apply iter_seq_distr.
+apply rngl_add_0_l.
+apply rngl_add_comm.
+apply rngl_add_assoc.
 Qed.
 
 Theorem rngl_opp_summation_list :
@@ -307,15 +280,11 @@ Theorem rngl_summation_rtl : ∀ g b k,
   (∑ (i = b, k), g i = ∑ (i = b, k), g (k + b - i)%nat)%L.
 Proof.
 intros g b k.
-apply iter_seq_rtl. {
-  apply rngl_add_0_l.
-} {
-  apply rngl_add_0_r.
-} {
-  apply rngl_add_comm.
-} {
-  apply rngl_add_assoc.
-}
+apply iter_seq_rtl.
+apply rngl_add_0_l.
+apply rngl_add_0_r.
+apply rngl_add_comm.
+apply rngl_add_assoc.
 Qed.
 
 Theorem mul_iter_list_distr_l_test : ∀ A B d
@@ -426,13 +395,10 @@ Theorem rngl_summation_list_cons : ∀ A (a : A) la f,
   (∑ (i ∈ a :: la), f i = f a + ∑ (i ∈ la), f i)%L.
 Proof.
 intros.
-apply iter_list_cons. {
-  apply rngl_add_0_l.
-} {
-  apply rngl_add_0_r.
-} {
-  apply rngl_add_assoc.
-}
+apply iter_list_cons.
+apply rngl_add_0_l.
+apply rngl_add_0_r.
+apply rngl_add_assoc.
 Qed.
 
 Theorem rngl_summation_list_app : ∀ A (la lb : list A) f,
@@ -694,15 +660,11 @@ Theorem rngl_summation_list_permut : ∀ {A} {eqb : A → _},
   → (∑ (i ∈ la), f i = ∑ (i ∈ lb), f i)%L.
 Proof.
 intros * Heqb * Hl.
-apply (iter_list_permut Heqb); [ | | | | easy ]. {
-  apply rngl_add_0_l.
-} {
-  apply rngl_add_0_r.
-} {
-  apply rngl_add_comm.
-} {
-  apply rngl_add_assoc.
-}
+apply (iter_list_permut Heqb); [ | | | | easy ].
+apply rngl_add_0_l.
+apply rngl_add_0_r.
+apply rngl_add_comm.
+apply rngl_add_assoc.
 Qed.
 
 Theorem rngl_summation_seq_summation : ∀ b len f,
