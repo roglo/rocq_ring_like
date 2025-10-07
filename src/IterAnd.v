@@ -118,3 +118,11 @@ Proof.
 intros * Hgh.
 now apply iter_seq_eq_compat.
 Qed.
+
+Theorem rngl_and_list_eq_compat : ∀ A g h (l : list A),
+  (∀ i, i ∈ l → g i = h i)
+  → ⋀ (i ∈ l), g i = ⋀ (i ∈ l), h i.
+Proof.
+intros * Hgh.
+now apply iter_list_eq_compat.
+Qed.
