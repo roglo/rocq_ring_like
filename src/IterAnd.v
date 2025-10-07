@@ -110,3 +110,11 @@ intros.
 unfold iter_list.
 now rewrite List_fold_left_map.
 Qed.
+
+Theorem rngl_and_eq_compat : ∀ g h b k,
+  (∀ i, b ≤ i ≤ k → g i = h i)
+  → ⋀ (i = b, k), g i = ⋀ (i = b, k), h i.
+Proof.
+intros * Hgh.
+now apply iter_seq_eq_compat.
+Qed.
