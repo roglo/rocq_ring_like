@@ -42,7 +42,7 @@ Notation "'⋀' ( i ∈ l ) , g" :=
    right associativity,
    format "'[hv  ' ⋀  ( i  ∈  l ) ,  '/' '[' g ']' ']'").
 
-Theorem all_true_and_list_true_iff : ∀ A (l : list A) f,
+Theorem all_true_rngl_and_list_true_iff : ∀ A (l : list A) f,
   (∀ a, a ∈ l → f a = true)
   ↔ ⋀ (a ∈ l), f a = true.
 Proof.
@@ -69,7 +69,7 @@ split. {
 }
 Qed.
 
-Theorem and_list_cons : ∀ A (a : A) la f,
+Theorem rngl_and_list_cons : ∀ A (a : A) la f,
   ⋀ (i ∈ a :: la), f i = (f a && ⋀ (i ∈ la), f i)%bool.
 Proof.
 intros.
@@ -80,4 +80,11 @@ apply iter_list_cons. {
 } {
   apply Bool.andb_assoc.
 }
+Qed.
+
+Theorem rngl_and_list_empty : ∀ A g (l : list A),
+  l = [] → ⋀ (i ∈ l), g i = true.
+Proof.
+intros * Hl.
+now apply iter_list_empty.
 Qed.
