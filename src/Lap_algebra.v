@@ -93,14 +93,6 @@ Definition lap_mul la lb :=
       end
   end.
 
-(* *)
-
-Definition lap_opt_one :=
-  match rngl_opt_one T with
-  | Some one => Some [one]
-  | None => None
-  end.
-
 End a.
 
 Declare Scope lap_scope.
@@ -235,9 +227,9 @@ Qed.
 
 Definition lap_ring_like_op : ring_like_op (list T) :=
   {| rngl_zero := [];
+     rngl_one := [1]%L;
      rngl_add := lap_add;
      rngl_mul := lap_mul;
-     rngl_opt_one := lap_opt_one;
      rngl_opt_opp_or_psub := lap_opt_opp_or_psub;
      rngl_opt_inv_or_pdiv := lap_opt_inv_or_pdiv;
      rngl_opt_is_zero_divisor := Some (λ _, True);
@@ -1182,62 +1174,34 @@ Qed.
 
 (* multiplication with 1 *)
 
-Theorem lap_opt_mul_1_l : let rol := lap_ring_like_op in
+Theorem lap_mul_1_l : let rol := lap_ring_like_op in
   rngl_has_opp_or_psub T = true →
-  if rngl_has_1 (list T) then ∀ la : list T, (1 * la)%L = la
-  else not_applicable.
+  ∀ la : list T, (1 * la)%L = la.
 Proof.
-intros * Hos *.
-remember (rngl_has_1 (list T)) as onl eqn:Honl; symmetry in Honl.
-destruct onl; [ | easy ].
-assert (Hon : rngl_has_1 T = true). {
-  progress unfold rngl_has_1 in Honl |-*.
-  progress unfold rol in Honl; cbn in Honl.
-  progress unfold lap_opt_one in Honl.
-  now destruct rngl_opt_one.
-}
-intros; cbn.
-replace (@rngl_one (list T) rol) with [@rngl_one T ro]. 2: {
-  progress unfold rngl_one; cbn.
-  progress unfold lap_opt_one; cbn.
-  progress unfold rngl_has_1 in Hon.
-  now destruct rngl_opt_one.
-}
-rewrite (lap_mul_const_l Hos).
-induction la as [| a]; [ easy | cbn ].
-f_equal; [ | apply IHla ].
-apply (rngl_mul_1_l Hon).
+intros * Hos *; cbn.
+destruct la as [| a]; [ easy | cbn ].
+rewrite rngl_summation_only_one.
+f_equal; [ apply rngl_mul_1_l | ].
+rewrite (lap_convol_mul_const_l Hos); [ cbn | easy ].
+induction la; [ easy | cbn ].
+rewrite rngl_mul_1_l.
+f_equal.
+apply IHla.
 Qed.
 
 Theorem lap_opt_mul_1_r : let rol := lap_ring_like_op in
   rngl_has_opp_or_psub T = true →
   if rngl_mul_is_comm T then not_applicable
-  else
-   if rngl_has_1 (list T) then ∀ la : list T, (la * 1)%L = la
-   else not_applicable.
+  else ∀ la : list T, (la * 1)%L = la.
 Proof.
 intros * Hos.
 remember (rngl_mul_is_comm T) as ic eqn:Hic; symmetry in Hic.
 destruct ic; [ easy | ].
-remember (rngl_has_1 (list T)) as onl eqn:Honl; symmetry in Honl.
-destruct onl; [ | easy ].
-assert (Hon : rngl_has_1 T = true). {
-  progress unfold rngl_has_1 in Honl |-*.
-  progress unfold rol in Honl; cbn in Honl.
-  progress unfold lap_opt_one in Honl.
-  now destruct rngl_opt_one.
-}
 intros; cbn.
-replace (@rngl_one (list T) rol) with [@rngl_one T ro]. 2: {
-  progress unfold rngl_one; cbn.
-  progress unfold lap_opt_one; cbn.
-  progress unfold rngl_has_1 in Hon.
-  now destruct rngl_opt_one.
-}
 rewrite (lap_mul_const_r Hos).
 induction la as [| a]; [ easy | cbn ].
 f_equal; [ | apply IHla ].
-apply (rngl_mul_1_r Hon).
+apply rngl_mul_1_r.
 Qed.
 
 (* *)
@@ -1374,38 +1338,22 @@ Qed.
 
 Theorem lap_characteristic_prop :
   let rol := lap_ring_like_op in
-  if rngl_has_1 (list T) then ∀ i : nat, rngl_of_nat (S i) ≠ 0%L
-  else not_applicable.
+  ∀ i : nat, rngl_of_nat (S i) ≠ 0%L.
 Proof.
 intros.
-remember (rngl_has_1 (list T)) as onl eqn:Honl; symmetry in Honl.
-destruct onl; [ | easy ].
-assert (Hon : rngl_has_1 T = true). {
-  progress unfold rngl_has_1 in Honl |-*.
-  progress unfold rol in Honl; cbn in Honl.
-  progress unfold lap_opt_one in Honl.
-  now destruct (rngl_opt_one T).
-}
 specialize rngl_opt_characteristic_prop as H1.
-intros i.
 remember (S i) as j eqn:Hj.
-rewrite Hon in H1.
 progress unfold rol.
 progress unfold lap_ring_like_op.
-progress unfold lap_opt_one.
-progress unfold rngl_has_1 in Hon.
-progress unfold rngl_has_1 in Honl; cbn in Honl.
-progress unfold lap_opt_one in Honl.
 rewrite if_bool_if_dec in H1.
 destruct (Sumbool.sumbool_of_bool _) as [Hcz| Hcz]. {
   apply Nat.eqb_eq in Hcz.
   intros.
   specialize (H1 i) as H2.
   rewrite <- Hj in H2.
-  destruct (rngl_opt_one T) as [one| ]; [ | easy ].
   intros H3; apply H2; clear H2.
   destruct j; [ easy | ].
-  remember [one] as x; cbn in H3; subst x.
+  remember [1]%L as x; cbn in H3; subst x.
   unfold lap_add in H3.
   cbn - [ List_map2 "-" ] in H3.
   apply List_eq_map2_nil in H3.
@@ -1415,9 +1363,8 @@ destruct (Sumbool.sumbool_of_bool _) as [Hcz| Hcz]. {
   now rewrite H2 in H3.
 }
 destruct H1 as (H1, H2).
-destruct (rngl_opt_one T); [ | easy ].
 subst j; cbn.
-now destruct (List.fold_right lap_add [] (List.repeat [t] i)).
+now destruct (List.fold_right lap_add [] (List.repeat [1%L] i)).
 Qed.
 
 (* lap ring-like properties *)
@@ -1433,7 +1380,7 @@ Definition lap_ring_like_prop (Hos : rngl_has_opp_or_psub T = true) :
      rngl_add_assoc := lap_add_assoc;
      rngl_add_0_l := lap_add_0_l;
      rngl_mul_assoc := lap_mul_assoc Hos;
-     rngl_opt_mul_1_l := lap_opt_mul_1_l Hos;
+     rngl_mul_1_l := lap_mul_1_l Hos;
      rngl_mul_add_distr_l := lap_mul_add_distr_l Hos;
      rngl_opt_mul_comm := lap_opt_mul_comm;
      rngl_opt_mul_1_r := lap_opt_mul_1_r Hos;

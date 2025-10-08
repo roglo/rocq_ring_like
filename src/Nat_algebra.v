@@ -23,9 +23,9 @@ Require Import Core.
 
 Instance nat_ring_like_op : ring_like_op nat :=
   {| rngl_zero := 0;
+     rngl_one := 1;
      rngl_add := Nat.add;
      rngl_mul := Nat.mul;
-     rngl_opt_one := Some 1;
      rngl_opt_opp_or_psub := Some (inr Nat.sub);
      rngl_opt_inv_or_pdiv := Some (inr Nat.div);
      rngl_opt_is_zero_divisor := None;
@@ -178,7 +178,7 @@ Canonical Structure nat_ring_like_prop : ring_like_prop nat :=
      rngl_add_assoc := Nat.add_assoc;
      rngl_add_0_l := Nat.add_0_l;
      rngl_mul_assoc := Nat.mul_assoc;
-     rngl_opt_mul_1_l := Nat.mul_1_l;
+     rngl_mul_1_l := Nat.mul_1_l;
      rngl_mul_add_distr_l := Nat.mul_add_distr_l;
      rngl_opt_mul_comm := Nat.mul_comm;
      rngl_opt_mul_1_r := NA;
@@ -224,9 +224,9 @@ Compute (15 / 3)%nat.
 
 Instance lcm_ring_like_op : ring_like_op nat :=
   {| rngl_zero := 1;
+     rngl_one := 1;
      rngl_add := Nat.lcm;
      rngl_mul := Nat.mul;
-     rngl_opt_one := Some 1;
      rngl_opt_opp_or_psub := None;
      rngl_opt_inv_or_pdiv := None; (* perhaps an eucledian division? *)
      rngl_opt_is_zero_divisor := None;
@@ -280,7 +280,7 @@ Definition lcm_ring_like_prop :=
      rngl_add_assoc := Nat.lcm_assoc;
      rngl_add_0_l := Nat.lcm_1_l;
      rngl_mul_assoc := Nat.mul_assoc;
-     rngl_opt_mul_1_l := Nat.mul_1_l;
+     rngl_mul_1_l := Nat.mul_1_l;
      rngl_mul_add_distr_l := lcm_mul_add_distr_l;
      rngl_opt_mul_comm := Nat.mul_comm;
      rngl_opt_mul_1_r := NA;

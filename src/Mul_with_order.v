@@ -151,175 +151,162 @@ now rewrite (rngl_opp_0 Hop) in H1.
 Qed.
 
 Theorem rngl_0_le_1 :
-  rngl_has_1 T = true →
   rngl_has_opp_or_psub T = true →
   rngl_is_ordered T = true →
   (0 ≤ 1)%L.
 Proof.
-intros Hon Hos Hor.
+intros Hos Hor.
 destruct (rngl_leb_dec 0 1) as [| H1]; [ now apply rngl_leb_le | ].
 apply rngl_leb_nle in H1.
 apply (rngl_not_le Hor) in H1.
 destruct H1 as (H1, H2).
 specialize (rngl_mul_nonpos_nonpos Hos Hor) as H3.
 specialize (H3 1 1 H2 H2)%L.
-now rewrite (rngl_mul_1_l Hon) in H3.
+now rewrite rngl_mul_1_l in H3.
 Qed.
 
 Theorem rngl_0_lt_1 :
-  rngl_has_1 T = true →
   rngl_has_opp_or_psub T = true →
   rngl_characteristic T ≠ 1 →
   rngl_is_ordered T = true →
   (0 < 1)%L.
 Proof.
-intros Hon Hos Hc1 Hor.
+intros Hos Hc1 Hor.
 apply (rngl_le_neq Hor).
-split; [ apply (rngl_0_le_1 Hon Hos Hor) | ].
+split; [ apply (rngl_0_le_1 Hos Hor) | ].
 apply not_eq_sym.
-now apply (rngl_1_neq_0_iff Hon).
+now apply (rngl_1_neq_0_iff).
 Qed.
 
 Theorem rngl_0_leb_1 :
-  rngl_has_1 T = true →
   rngl_has_opp_or_psub T = true →
   rngl_is_ordered T = true →
   (0 ≤? 1)%L = true.
 Proof.
-intros * Hon Hos Hor.
+intros * Hos Hor.
 apply rngl_leb_le.
-apply (rngl_0_le_1 Hon Hos Hor).
+apply (rngl_0_le_1 Hos Hor).
 Qed.
 
 Theorem rngl_1_le_2 :
-  rngl_has_1 T = true →
   rngl_has_opp_or_psub T = true →
   rngl_is_ordered T = true →
   (1 ≤ 2)%L.
 Proof.
-intros Hon Hos Hor.
+intros Hos Hor.
 apply (rngl_le_add_l Hor).
-apply (rngl_0_le_1 Hon Hos Hor).
+apply (rngl_0_le_1 Hos Hor).
 Qed.
 
 Theorem rngl_0_le_2 :
-  rngl_has_1 T = true →
   rngl_has_opp_or_psub T = true →
   rngl_is_ordered T = true →
   (0 ≤ 2)%L.
 Proof.
-intros Hon Hos Hor.
+intros Hos Hor.
 apply (rngl_le_trans Hor _ 1)%L. {
-  apply (rngl_0_le_1 Hon Hos Hor).
+  apply (rngl_0_le_1 Hos Hor).
 }
-apply (rngl_1_le_2 Hon Hos Hor).
+apply (rngl_1_le_2 Hos Hor).
 Qed.
 
 Theorem rngl_0_lt_2 :
-  rngl_has_1 T = true →
   rngl_has_opp_or_psub T = true →
   rngl_characteristic T ≠ 1 →
   rngl_is_ordered T = true →
   (0 < 2)%L.
 Proof.
-intros Hon Hos Hc1 Hor.
+intros Hos Hc1 Hor.
 apply (rngl_le_lt_trans Hor _ 1)%L. {
-  apply (rngl_0_le_1 Hon Hos Hor).
+  apply (rngl_0_le_1 Hos Hor).
 }
 apply (rngl_lt_add_r Hos Hor).
-apply (rngl_0_lt_1 Hon Hos Hc1 Hor).
+apply (rngl_0_lt_1 Hos Hc1 Hor).
 Qed.
 
 Theorem rngl_2_neq_0 :
-  rngl_has_1 T = true →
   rngl_has_opp_or_psub T = true →
   rngl_characteristic T ≠ 1 →
   rngl_is_ordered T = true →
   (2 ≠ 0)%L.
 Proof.
-intros Hon Hos Hc1 Hor.
-specialize (rngl_0_lt_2 Hon Hos Hc1 Hor) as H5.
+intros Hos Hc1 Hor.
+specialize (rngl_0_lt_2 Hos Hc1 Hor) as H5.
 intros H; rewrite H in H5.
 now apply (rngl_lt_irrefl Hor) in H5.
 Qed.
 
 Theorem rngl_0_lt_3 :
-  rngl_has_1 T = true →
   rngl_has_opp_or_psub T = true →
   rngl_characteristic T ≠ 1 →
   rngl_is_ordered T = true →
  (0 < 3)%L.
 Proof.
-intros Hon Hos Hc1 Hor.
+intros Hos Hc1 Hor.
 apply (rngl_lt_le_trans Hor _ 1).
-apply (rngl_0_lt_1 Hon Hos Hc1 Hor).
+apply (rngl_0_lt_1 Hos Hc1 Hor).
 apply (rngl_le_add_l Hor).
-apply (rngl_0_le_2 Hon Hos Hor).
+apply (rngl_0_le_2 Hos Hor).
 Qed.
 
 Theorem rngl_3_neq_0 :
-  rngl_has_1 T = true →
   rngl_has_opp_or_psub T = true →
   rngl_characteristic T ≠ 1 →
   rngl_is_ordered T = true →
   (3 ≠ 0)%L.
 Proof.
-intros Hon Hos Hc1 Hor.
-specialize (rngl_0_lt_3 Hon Hos Hc1 Hor) as H.
+intros Hos Hc1 Hor.
+specialize (rngl_0_lt_3 Hos Hc1 Hor) as H.
 intros H1; rewrite H1 in H.
 now apply (rngl_lt_irrefl Hor) in H.
 Qed.
 
 Theorem rngl_opp_1_le_0 :
-  rngl_has_1 T = true →
   rngl_has_opp T = true →
   rngl_is_ordered T = true →
   (-1 ≤ 0)%L.
 Proof.
-intros Hon Hop Hor.
+intros Hop Hor.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 apply (rngl_opp_nonpos_nonneg Hop Hor).
-apply (rngl_0_le_1 Hon Hos Hor).
+apply (rngl_0_le_1 Hos Hor).
 Qed.
 
 Theorem rngl_opp_1_lt_0 :
-  rngl_has_1 T = true →
   rngl_has_opp T = true →
   rngl_is_ordered T = true →
   rngl_characteristic T ≠ 1 →
   (-1 < 0)%L.
 Proof.
-intros Hon Hop Hor Hc1.
+intros Hop Hor Hc1.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 apply (rngl_opp_neg_pos Hop Hor).
-apply (rngl_0_lt_1 Hon Hos Hc1 Hor).
+apply (rngl_0_lt_1 Hos Hc1 Hor).
 Qed.
 
 Theorem rngl_opp_1_lt_1 :
-  rngl_has_1 T = true →
   rngl_has_opp T = true →
   rngl_is_ordered T = true →
   rngl_characteristic T ≠ 1 →
   (-1 < 1)%L.
 Proof.
-intros Hon Hop Hor Hc1.
+intros Hop Hor Hc1.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 apply (rngl_lt_le_trans Hor _ 0).
-apply (rngl_opp_1_lt_0 Hon Hop Hor Hc1).
-apply (rngl_0_le_1 Hon Hos Hor).
+apply (rngl_opp_1_lt_0 Hop Hor Hc1).
+apply (rngl_0_le_1 Hos Hor).
 Qed.
 
 Theorem rngl_opp_1_le_1 :
-  rngl_has_1 T = true →
   rngl_has_opp T = true →
   rngl_is_ordered T = true →
   (-1 ≤ 1)%L.
 Proof.
-intros Hon Hop Hor.
+intros Hop Hor.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 apply (rngl_le_trans Hor _ 0).
-apply (rngl_opp_1_le_0 Hon Hop Hor).
-apply (rngl_0_le_1 Hon Hos Hor).
+apply (rngl_opp_1_le_0 Hop Hor).
+apply (rngl_0_le_1 Hos Hor).
 Qed.
 
 Theorem rngl_mul_diag_nonneg :
@@ -359,55 +346,51 @@ apply (rngl_squ_opp Hop).
 Qed.
 
 Theorem rngl_of_nat_nonneg :
-  rngl_has_1 T = true →
   rngl_has_opp_or_psub T = true →
   rngl_is_ordered T = true →
   ∀ n, (0 ≤ rngl_of_nat n)%L.
 Proof.
-intros Hon Hos Hor.
+intros Hos Hor.
 intros.
 induction n; [ pauto | ].
 rewrite rngl_of_nat_succ.
 eapply (rngl_le_trans Hor); [ apply IHn | ].
 apply (rngl_le_add_l Hor).
-apply (rngl_0_le_1 Hon Hos Hor).
+apply (rngl_0_le_1 Hos Hor).
 Qed.
 
 (******)
 
 Theorem rngl_of_nat_inj_le :
-  rngl_has_1 T = true →
   rngl_has_opp_or_psub T = true →
   rngl_characteristic T ≠ 1 →
   rngl_is_ordered T = true →
   ∀ i j, i ≤ j ↔ (rngl_of_nat i ≤ rngl_of_nat j)%L.
 Proof.
-intros Hon Hos Hc1 Hor *.
+intros Hos Hc1 Hor *.
 apply (rngl_mul_nat_inj_le Hor).
-apply (rngl_0_lt_1 Hon Hos Hc1 Hor).
+apply (rngl_0_lt_1 Hos Hc1 Hor).
 Qed.
 
 Theorem rngl_of_nat_inj_lt :
-  rngl_has_1 T = true →
   rngl_has_opp_or_psub T = true →
   rngl_characteristic T ≠ 1 →
   rngl_is_ordered T = true →
   ∀ i j, i < j ↔ (rngl_of_nat i < rngl_of_nat j)%L.
 Proof.
-intros Hon Hos Hc1 Hor *.
+intros Hos Hc1 Hor *.
 apply (rngl_mul_nat_inj_lt Hos Hor).
-apply (rngl_0_lt_1 Hon Hos Hc1 Hor).
+apply (rngl_0_lt_1 Hos Hc1 Hor).
 Qed.
 
 Theorem rngl_abs_1 :
-  rngl_has_1 T = true →
   rngl_has_opp_or_psub T = true →
   rngl_is_ordered T = true →
   (rngl_abs 1 = 1)%L.
 Proof.
-intros Hon Hos Hor.
+intros Hos Hor.
 destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
-  specialize (rngl_characteristic_1 Hon Hos Hc1) as H1.
+  specialize (rngl_characteristic_1 Hos Hc1) as H1.
   now rewrite (H1 (rngl_abs 1)%L), (H1 1%L).
 }
 progress unfold rngl_abs.
@@ -416,18 +399,17 @@ destruct c; [ | easy ].
 apply rngl_leb_le in Hc.
 apply rngl_nlt_ge in Hc.
 exfalso; apply Hc.
-apply (rngl_0_lt_1 Hon Hos Hc1 Hor).
+apply (rngl_0_lt_1 Hos Hc1 Hor).
 Qed.
 
 Theorem rngl_abs_2 :
-  rngl_has_1 T = true →
   rngl_has_opp_or_psub T = true →
   rngl_is_ordered T = true →
   (rngl_abs 2 = 2)%L.
 Proof.
-intros Hon Hos Hor.
+intros Hos Hor.
 destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
-  specialize (rngl_characteristic_1 Hon Hos Hc1) as H1.
+  specialize (rngl_characteristic_1 Hos Hc1) as H1.
   rewrite H1; apply H1.
 }
 progress unfold rngl_abs.
@@ -437,7 +419,7 @@ destruct tz; [ | easy ].
 apply rngl_leb_le in Htz.
 apply rngl_nlt_ge in Htz.
 exfalso; apply Htz.
-apply (rngl_0_lt_2 Hon Hos Hc1 Hor).
+apply (rngl_0_lt_2 Hos Hc1 Hor).
 Qed.
 
 Theorem rngl_add_squ_nonneg :
@@ -557,57 +539,54 @@ now apply (rngl_mul_nonneg_nonneg Hos Hor).
 Qed.
 
 Theorem rngl_pow_ge_1 :
-  rngl_has_1 T = true →
   rngl_has_opp_or_psub T = true →
   rngl_is_ordered T = true →
   ∀ a n, (1 ≤ a → 1 ≤ a ^ n)%L.
 Proof.
-intros Hon Hos Hor * Hza.
+intros Hos Hor * Hza.
 induction n; [ pauto | cbn ].
-rewrite <- (rngl_mul_1_l Hon 1%L).
+rewrite <- (rngl_mul_1_l 1%L).
 apply (rngl_mul_le_compat_nonneg Hor). {
   split; [ | easy ].
-  apply (rngl_0_le_1 Hon Hos Hor).
+  apply (rngl_0_le_1 Hos Hor).
 } {
   split; [ | easy ].
-  apply (rngl_0_le_1 Hon Hos Hor).
+  apply (rngl_0_le_1 Hos Hor).
 }
 Qed.
 
 Theorem rngl_pow_le_mono_l :
-  rngl_has_1 T = true →
   rngl_has_opp_or_psub T = true →
   rngl_is_ordered T = true →
   ∀ a b n, (0 ≤ a)%L → (a ≤ b)%L → (a ^ n ≤ b ^ n)%L.
 Proof.
-intros Hon Hos Hor.
+intros Hos Hor.
 intros * H1a Hmn.
 induction n; [ pauto | cbn ].
 apply (rngl_mul_le_compat_nonneg Hor); [ easy | ].
 split; [ | easy ].
 clear IHn.
-induction n; cbn; [ apply (rngl_0_le_1 Hon Hos Hor) | ].
+induction n; cbn; [ apply (rngl_0_le_1 Hos Hor) | ].
 now apply (rngl_mul_nonneg_nonneg Hos Hor).
 Qed.
 
 Theorem rngl_pow_le_mono_r :
-  rngl_has_1 T = true →
   rngl_has_opp T = true →
   rngl_is_ordered T = true →
   ∀ a m n, (1 ≤ a)%L → m ≤ n → (a ^ m ≤ a ^ n)%L.
 Proof.
-intros Hon Hop Hor.
+intros Hop Hor.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 intros * H1a Hmn.
 revert n Hmn.
 induction m; intros; cbn. {
-  now apply (rngl_pow_ge_1 Hon Hos Hor).
+  now apply (rngl_pow_ge_1 Hos Hor).
 }
 destruct n; [ easy | cbn ].
 apply Nat.succ_le_mono in Hmn.
 apply (rngl_mul_le_mono_nonneg_l Hop Hor). {
   apply (rngl_le_trans Hor _ 1%L); [ | easy ].
-  apply (rngl_0_le_1 Hon Hos Hor).
+  apply (rngl_0_le_1 Hos Hor).
 }
 now apply IHm.
 Qed.
@@ -656,14 +635,13 @@ destruct az. {
 Qed.
 
 Theorem int_part :
-  rngl_has_1 T = true →
   rngl_has_opp T = true →
   rngl_characteristic T ≠ 1 →
   rngl_is_ordered T = true →
   rngl_is_archimedean T = true →
   ∀ a, ∃ₜ n, (rngl_of_nat n ≤ rngl_abs a < rngl_of_nat (n + 1))%L.
 Proof.
-intros Hon Hop Hc1 Hor Har.
+intros Hop Hc1 Hor Har.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 assert (Heo : rngl_has_eq_dec_or_order T = true). {
   progress unfold rngl_has_eq_dec_or_order.
@@ -674,7 +652,7 @@ intros a.
 destruct (rngl_ltb_dec 1 (rngl_abs a))%L as [Hx1| Hx1]. {
   apply rngl_ltb_lt in Hx1.
   apply (rngl_archimedean_ub Har Hor).
-  split; [ apply (rngl_0_lt_1 Hon Hos Hc1 Hor) | easy ].
+  split; [ apply (rngl_0_lt_1 Hos Hc1 Hor) | easy ].
 }
 apply (rngl_ltb_ge_iff Hor) in Hx1.
 destruct (rngl_eqb_dec (rngl_abs a) 1) as [Ha1| Ha1]. {
@@ -684,13 +662,13 @@ destruct (rngl_eqb_dec (rngl_abs a) 1) as [Ha1| Ha1]. {
   rewrite rngl_add_0_r.
   split; [ pauto | ].
   apply (rngl_le_neq Hor).
-  split; [ apply (rngl_1_le_2 Hon Hos Hor) | ].
+  split; [ apply (rngl_1_le_2 Hos Hor) | ].
   intros H12.
   apply (f_equal (λ b, rngl_sub b 1))%L in H12.
   rewrite (rngl_sub_diag Hos) in H12.
   rewrite (rngl_add_sub Hos) in H12.
   symmetry in H12; revert H12.
-  apply (rngl_1_neq_0_iff Hon), Hc1.
+  apply (rngl_1_neq_0_iff), Hc1.
 }
 apply (rngl_eqb_neq Heo) in Ha1.
 exists 0; cbn.

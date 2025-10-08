@@ -173,13 +173,11 @@ follow.
 
     Theorem rngl_squ_opp_1 :
       ∀ T (ro : ring_like_op T) (rp : ring_like_prop T),
-      rngl_has_1 T = true →
-      rngl_has_opp T = true →
       (-1 * -1)%L = 1%L.
     Proof.
-    intros T ro rp Hon Hop.
+    intros T ro rp Hop.
     rewrite (rngl_mul_opp_opp Hop).
-    apply (rngl_mul_1_l Hon).
+    apply rngl_mul_1_l.
     Qed.
 >>
 
@@ -190,11 +188,11 @@ RingLike, but the code of this library uses it everywhere.
 The second says that we use RingLike. The module [RingLike.Core] includes
  all its main definitions and theorems.
 
-This theorem applies to any type [T] where [1] is defined
-([rngl_has_1 = true]) and the opposite exists ([rngl_has_opp T = true]).
-This second condition shows that it cannot be applied for example to
-the ℕ algebra, since ℕ as no opposite. But it can be used for the algebras
-of ℤ, ℝ, polynomials, square matrices, and so on.
+This theorem applies to any type [T] where the opposite exists
+([rngl_has_opp T = true]).  This condition shows that it cannot
+be applied for example to the ℕ algebra, since ℕ as no opposite. But
+it can be used for the algebras of ℤ, ℝ, polynomials, square matrices,
+and so on.
 
 ## MATHEMATICAL PROPERTIES OF SUBTRACTION
 

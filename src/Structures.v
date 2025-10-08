@@ -23,16 +23,15 @@ From Stdlib Require Import Utf8 Arith.
 
 Class ring_like_op T :=
   { rngl_zero : T;
+    rngl_one : T;
     rngl_add : T → T → T;
     rngl_mul : T → T → T;
-    rngl_opt_one : option T;
     rngl_opt_opp_or_psub : option (sum (T → T) (T → T → T));
     rngl_opt_inv_or_pdiv : option (sum (T → T) (T → T → T));
     rngl_opt_is_zero_divisor : option (T → Prop);
     rngl_opt_eq_dec : option (∀ a b : T, {a = b} + {a ≠ b});
     rngl_opt_leb : option (T → T → bool) }.
 
-Arguments rngl_opt_one T {ring_like_op}.
 Arguments rngl_opt_opp_or_psub T {ring_like_op}.
 Arguments rngl_opt_inv_or_pdiv T {ring_like_op}.
 Arguments rngl_opt_is_zero_divisor T {ring_like_op}.
@@ -48,15 +47,6 @@ Definition bool_of_option {T} (x : option T) :=
   | Some _ => true
   | None => false
   end.
-
-Definition rngl_one {T} {ro : ring_like_op T} :=
-  match rngl_opt_one T with
-  | Some a => a
-  | None => rngl_zero
-  end.
-
-Definition rngl_has_1 T {ro : ring_like_op T} :=
-  bool_of_option (rngl_opt_one T).
 
 Definition rngl_has_opp_or_psub T {R : ring_like_op T} :=
   bool_of_option (rngl_opt_opp_or_psub T).
@@ -197,18 +187,14 @@ Class ring_like_prop T {ro : ring_like_op T} :=
     rngl_add_assoc : ∀ a b c : T, (a + (b + c) = (a + b) + c)%L;
     rngl_add_0_l : ∀ a : T, (0 + a)%L = a;
     rngl_mul_assoc : ∀ a b c : T, (a * (b * c) = (a * b) * c)%L;
-    (* when has 1 *)
-    rngl_opt_mul_1_l :
-      if rngl_has_1 T then ∀ a : T, (rngl_one * a)%L = a else not_applicable;
+    rngl_mul_1_l : ∀ a : T, (rngl_one * a)%L = a;
     rngl_mul_add_distr_l : ∀ a b c : T, (a * (b + c) = a * b + a * c)%L;
     (* when multiplication is commutative *)
     rngl_opt_mul_comm :
       if rngl_mul_is_comm then ∀ a b, (a * b = b * a)%L else not_applicable;
     (* when multiplication is not commutative *)
     rngl_opt_mul_1_r :
-      if rngl_mul_is_comm then not_applicable
-      else if rngl_has_1 T then ∀ a, (a * 1 = a)%L
-      else not_applicable;
+      if rngl_mul_is_comm then not_applicable else ∀ a, (a * 1 = a)%L;
     rngl_opt_mul_add_distr_r :
       if rngl_mul_is_comm then not_applicable else
        ∀ a b c, ((a + b) * c = a * c + b * c)%L;
@@ -227,11 +213,10 @@ Class ring_like_prop T {ro : ring_like_op T} :=
       else not_applicable;
     (* when has inverse *)
     rngl_opt_mul_inv_diag_l :
-      if (rngl_has_inv T && rngl_has_1 T)%bool then
-        ∀ a : T, a ≠ 0%L → (a⁻¹ * a = 1)%L
+      if rngl_has_inv T then ∀ a : T, a ≠ 0%L → (a⁻¹ * a = 1)%L
       else not_applicable;
     rngl_opt_mul_inv_diag_r :
-      if (rngl_has_inv T && rngl_has_1 T && negb rngl_mul_is_comm)%bool then
+      if (rngl_has_inv T && negb rngl_mul_is_comm)%bool then
         ∀ a : T, a ≠ 0%L → (a * a⁻¹ = 1)%L
       else not_applicable;
     (* when has division (pdiv) *)
@@ -250,14 +235,11 @@ Class ring_like_prop T {ro : ring_like_op T} :=
       else not_applicable;
     (* characteristic *)
     rngl_opt_characteristic_prop :
-      if rngl_has_1 T then
-        if Nat.eqb (rngl_characteristic) 0 then
-          ∀ i, rngl_of_nat (S i) ≠ 0%L
-        else
-          (∀ i, 0 < i < rngl_characteristic → rngl_of_nat i ≠ 0%L) ∧
-          rngl_of_nat rngl_characteristic = 0%L
+      if Nat.eqb (rngl_characteristic) 0 then
+        ∀ i, rngl_of_nat (S i) ≠ 0%L
       else
-        not_applicable;
+        (∀ i, 0 < i < rngl_characteristic → rngl_of_nat i ≠ 0%L) ∧
+        rngl_of_nat rngl_characteristic = 0%L;
     (* when ordered *)
     rngl_opt_ord :
       if rngl_is_ordered T then ring_like_ord T
@@ -321,14 +303,6 @@ Definition rngl_has_inv_or_pdiv_and_comm T {ro : ring_like_op T}
   {rp : ring_like_prop T} :=
   (rngl_has_inv T || rngl_has_pdiv T && rngl_mul_is_comm T)%bool.
 
-Definition rngl_has_inv_and_1_or_pdiv T {ro : ring_like_op T} :=
-  (rngl_has_inv T && rngl_has_1 T || rngl_has_pdiv T)%bool.
-
-Definition rngl_has_inv_and_1_or_pdiv_and_comm T {ro : ring_like_op T}
-  {rp : ring_like_prop T} :=
-  (rngl_has_inv T && rngl_has_1 T ||
-   rngl_has_pdiv T && rngl_mul_is_comm T)%bool.
-
 Notation "∣ x ∣" := (rngl_abs x) (at level 35, x at level 30).
 
 Section a.
@@ -365,23 +339,6 @@ split; [ intros _ | easy ].
 now destruct inv_pdiv; [ left | right ].
 Qed.
 
-Theorem rngl_has_inv_and_1_or_pdiv_iff :
-  rngl_has_inv_and_1_or_pdiv T = true
-  ↔ rngl_has_inv T = true ∧ rngl_has_1 T = true ∨ rngl_has_pdiv T = true.
-Proof.
-progress unfold rngl_has_inv_and_1_or_pdiv.
-split; intros H. {
-  apply Bool.orb_true_iff in H.
-  destruct H as [H| H]; [ left | now right ].
-  now apply Bool.andb_true_iff in H.
-} {
-  apply Bool.orb_true_iff.
-  destruct H as [H| H]; [ left | now right ].
-  destruct H as (Hiv, Hon).
-  now rewrite Hiv, Hon.
-}
-Qed.
-
 Theorem rngl_has_opp_has_opp_or_psub :
   rngl_has_opp T = true → rngl_has_opp_or_psub T = true.
 Proof.
@@ -404,59 +361,32 @@ apply Bool.orb_true_iff.
 now left.
 Qed.
 
-Theorem rngl_has_inv_and_1_has_inv_and_1_or_pdiv :
-  rngl_has_1 T = true →
-  rngl_has_inv T = true →
-  rngl_has_inv_and_1_or_pdiv T = true.
-Proof.
-intros * Hon Hiv.
-apply rngl_has_inv_and_1_or_pdiv_iff.
-now rewrite Hiv, Hon; left.
-Qed.
-
-Theorem rngl_int_dom_or_inv_1_quo_and_eq_dec :
-  rngl_has_inv_and_1_or_pdiv T = true →
+Theorem rngl_int_dom_or_pdiv_and_eq_dec :
+  rngl_has_inv_or_pdiv T = true →
   rngl_has_eq_dec T = true →
   (rngl_is_integral_domain T ||
-     rngl_has_inv_and_1_or_pdiv T && rngl_has_eq_dec T)%bool = true.
+     rngl_has_inv_or_pdiv T && rngl_has_eq_dec T)%bool = true.
 Proof.
 intros * Hi1 Hed.
 apply Bool.orb_true_iff; right.
 now rewrite Hi1, Hed.
 Qed.
 
-Theorem rngl_int_dom_or_inv_1_quo :
+Theorem rngl_int_dom_or_inv_pdiv :
   rngl_has_inv T = true →
-  rngl_has_1 T = true →
-  (rngl_is_integral_domain T ||
-   rngl_has_inv_and_1_or_pdiv T)%bool = true.
+  (rngl_is_integral_domain T || rngl_has_inv_or_pdiv T)%bool = true.
 Proof.
-intros * Hiv Hon.
+intros * Hiv.
 apply Bool.orb_true_iff; right.
-apply rngl_has_inv_and_1_or_pdiv_iff; left.
-now rewrite Hiv, Hon.
+now apply rngl_has_inv_or_pdiv_iff; left.
 Qed.
 
-Theorem rngl_has_1_has_inv_or_pdiv_has_inv_and_1_or_pdiv :
-  rngl_has_1 T = true →
+Theorem rngl_int_dom_or_inv_or_pdiv_r :
   rngl_has_inv_or_pdiv T = true →
-  rngl_has_inv_and_1_or_pdiv T = true.
+  (rngl_is_integral_domain T || rngl_has_inv_or_pdiv T)%bool = true.
 Proof.
-intros Hon Hiq.
-apply rngl_has_inv_and_1_or_pdiv_iff.
-rewrite Hon.
-apply rngl_has_inv_or_pdiv_iff in Hiq.
-destruct Hiq as [H| H]; rewrite H; [ now left | now right ].
-Qed.
-
-Theorem rngl_int_dom_or_inv_1_or_pdiv_r :
-  rngl_has_1 T = true →
-  rngl_has_inv_or_pdiv T = true →
-  (rngl_is_integral_domain T || rngl_has_inv_and_1_or_pdiv T)%bool = true.
-Proof.
-intros Hon Hiq.
-apply Bool.orb_true_iff; right.
-now apply rngl_has_1_has_inv_or_pdiv_has_inv_and_1_or_pdiv.
+intros Hiq.
+now apply Bool.orb_true_iff; right.
 Qed.
 
 Theorem rngl_has_psub_has_no_opp :
@@ -481,22 +411,15 @@ destruct rngl_opt_opp_or_psub as [os| ]; [ | easy ].
 now destruct os.
 Qed.
 
-Theorem rngl_has_pdiv_has_inv_and_1_or_pdiv :
+Theorem rngl_has_pdiv_has_inv_or_pdiv :
   rngl_has_pdiv T = true
-  → rngl_has_inv_and_1_or_pdiv T = true.
+  → rngl_has_inv_or_pdiv T = true.
 Proof.
-intros * Hqu.
-now apply Bool.orb_true_iff; right.
-Qed.
-
-Theorem rngl_has_1_inv_has_inv_and_1_or_pdiv_and_comm :
-  rngl_has_1 T = true
-  → rngl_has_inv T = true
-  → rngl_has_inv_and_1_or_pdiv_and_comm T = true.
-Proof.
-intros * Hon Hiv.
-apply Bool.orb_true_iff.
-now left; rewrite Hon, Hiv.
+intros * Hiv.
+unfold rngl_has_inv in Hiv.
+unfold rngl_has_pdiv in Hiv.
+progress unfold rngl_has_inv_or_pdiv.
+now destruct (rngl_opt_inv_or_pdiv T).
 Qed.
 
 Theorem rngl_has_pdiv_has_no_inv :
@@ -541,17 +464,16 @@ rewrite Hor.
 apply Bool.orb_true_r.
 Qed.
 
-Theorem rngl_integral_or_inv_1_pdiv_eq_dec_order :
-  rngl_has_1 T = true →
+Theorem rngl_integral_or_inv_pdiv_eq_dec_order :
   rngl_has_inv T = true →
   rngl_is_ordered T = true →
   (rngl_is_integral_domain T ||
-     rngl_has_inv_and_1_or_pdiv T &&
+     rngl_has_inv_or_pdiv T &&
      rngl_has_eq_dec_or_order T)%bool = true.
 Proof.
-intros Hon Hiv Hor.
+intros Hiv Hor.
 apply Bool.orb_true_iff; right.
-rewrite (rngl_has_inv_and_1_has_inv_and_1_or_pdiv Hon Hiv); cbn.
+rewrite (rngl_has_inv_has_inv_or_pdiv Hiv); cbn.
 apply (rngl_has_eq_dec_or_is_ordered_r Hor).
 Qed.
 

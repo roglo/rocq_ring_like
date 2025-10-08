@@ -24,9 +24,9 @@ Notation "x ≤ y ≤ z" := (x <= y ∧ y <= z)%Z (at level 70, y at next level)
 
 Instance Z_ring_like_op : ring_like_op Z :=
   {| rngl_zero := 0%Z;
+     rngl_one := 1%Z;
      rngl_add := Z.add;
      rngl_mul := Z.mul;
-     rngl_opt_one := Some 1%Z;
      rngl_opt_opp_or_psub := Some (inl Z.opp);
      rngl_opt_inv_or_pdiv := Some (inr Z.quot);
      rngl_opt_is_zero_divisor := None;
@@ -276,7 +276,7 @@ Definition Z_ring_like_prop : ring_like_prop Z :=
      rngl_add_assoc := Z.add_assoc;
      rngl_add_0_l := Z.add_0_l;
      rngl_mul_assoc := Z.mul_assoc;
-     rngl_opt_mul_1_l := Z.mul_1_l;
+     rngl_mul_1_l := Z.mul_1_l;
      rngl_mul_add_distr_l := Z.mul_add_distr_l;
      rngl_opt_mul_comm := Z.mul_comm;
      rngl_opt_mul_1_r := NA;

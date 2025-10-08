@@ -676,33 +676,29 @@ Theorem fold_rngl_mul_nat :
 Proof. easy. Qed.
 
 Theorem rngl_characteristic_0 :
-  rngl_has_1 T = true →
   rngl_characteristic T = 0 →
   ∀ i : nat, rngl_of_nat (S i) ≠ 0%L.
 Proof.
-intros Hon Hcz.
+intros Hcz.
 specialize (rngl_opt_characteristic_prop) as H1.
-now rewrite Hon, Hcz in H1.
+now rewrite Hcz in H1.
 Qed.
 
 Theorem rngl_characteristic_non_0 :
-  rngl_has_1 T = true →
   rngl_characteristic T ≠ 0 →
   (∀ i : nat, 0 < i < rngl_characteristic T → rngl_of_nat i ≠ 0%L) ∧
   rngl_of_nat (rngl_characteristic T) = 0%L.
 Proof.
-intros Hon Hcz.
+intros Hcz.
 specialize (rngl_opt_characteristic_prop) as H1.
 apply Nat.eqb_neq in Hcz.
-now rewrite Hon, Hcz in H1.
+now rewrite  Hcz in H1.
 Qed.
 
-Theorem rngl_1_neq_0 :
-  rngl_has_1 T = true → rngl_characteristic T ≠ 1 → (1 ≠ 0)%L.
+Theorem rngl_1_neq_0 : rngl_characteristic T ≠ 1 → (1 ≠ 0)%L.
 Proof.
-intros Hon Hc1.
+intros Hc1.
 specialize rngl_opt_characteristic_prop as H1.
-rewrite Hon in H1.
 remember (Nat.eqb (rngl_characteristic T) 0) as cz eqn:Hcz; symmetry in Hcz.
 destruct cz. {
   specialize (H1 0); cbn in H1.
@@ -721,27 +717,23 @@ do 2 apply le_n_S.
 destruct n; [ easy | apply le_0_n ].
 Qed.
 
-Theorem rngl_1_neq_0_iff :
-  rngl_has_1 T = true → rngl_characteristic T ≠ 1 ↔ (1 ≠ 0)%L.
+Theorem rngl_1_neq_0_iff : rngl_characteristic T ≠ 1 ↔ (1 ≠ 0)%L.
 Proof.
-intros Hon.
-split; [ apply (rngl_1_neq_0 Hon) | ].
+split; [ apply (rngl_1_neq_0) | ].
 specialize rngl_opt_characteristic_prop as H1.
-rewrite Hon in H1.
 intros H10 Hc.
 rewrite Hc in H1; cbn in H1.
 now rewrite rngl_add_0_r in H1.
 Qed.
 
 Theorem eq_rngl_of_nat_0 :
-  rngl_has_1 T = true →
   rngl_characteristic T = 0 →
   ∀ i, rngl_of_nat i = 0%L → i = 0.
 Proof.
-intros Hon Hch * Hi.
+intros Hch * Hi.
 destruct i; [ easy | exfalso ].
 cbn in Hi.
-specialize (rngl_characteristic_0 Hon Hch) as H1.
+specialize (rngl_characteristic_0 Hch) as H1.
 now specialize (H1 i) as H.
 Qed.
 

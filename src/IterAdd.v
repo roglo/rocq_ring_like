@@ -816,11 +816,10 @@ apply IHn.
 Qed.
 
 Theorem rngl_summation_const :
-  rngl_has_1 T = true →
   ∀ b e c,
   (∑ (i = b, e), c = rngl_of_nat (S e - b) * c)%L.
 Proof.
-intros Hon *.
+intros *.
 remember (S e - b) as n eqn:Hn.
 progress unfold iter_seq.
 rewrite <- Hn; clear e Hn.
@@ -832,16 +831,15 @@ induction n; intros; cbn. {
 rewrite rngl_summation_list_cons.
 rewrite rngl_mul_add_distr_r.
 f_equal; [ | apply IHn ].
-symmetry; apply (rngl_mul_1_l Hon).
+symmetry; apply rngl_mul_1_l.
 Qed.
 
 Theorem rngl_eval_polyn_is_summation :
-  rngl_has_1 T = true →
   (0 + 0 * 1)%L = 0%L →
   ∀ (la : list T) x,
   (rngl_eval_polyn la x = ∑ (i = 0, length la - 1), la.[i] * x ^ i)%L.
 Proof.
-intros Hon glop.
+intros glop.
 intros.
 progress unfold rngl_eval_polyn.
 induction la as [| a]. {
@@ -857,7 +855,7 @@ rewrite Nat.sub_0_r.
 symmetry.
 rewrite rngl_summation_split_first; [ | easy ].
 cbn.
-rewrite (rngl_mul_1_r Hon).
+rewrite rngl_mul_1_r.
 rewrite rngl_add_comm.
 f_equal.
 remember (length la) as len eqn:Hlen.
@@ -878,22 +876,21 @@ apply rngl_summation_eq_compat.
 intros i (_, Hi).
 rewrite <- rngl_mul_assoc; f_equal.
 rewrite <- Nat.add_1_r.
-rewrite (rngl_pow_add_r Hon).
-now rewrite (rngl_pow_1_r Hon).
+rewrite (rngl_pow_add_r).
+now rewrite (rngl_pow_1_r).
 Qed.
 
 Theorem rngl_summation_power :
   rngl_mul_is_comm T = true →
-  rngl_has_1 T = true →
   rngl_has_opp T = true →
   rngl_has_inv T = true →
   ∀ n x, x ≠ 1%L → ∑ (i = 0, n), x ^ i = ((x ^ S n - 1) / (x - 1))%L.
 Proof.
 clear Hos.
-intros Hic Hon Hop Hiv.
+intros Hic Hop Hiv.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
-specialize (rngl_has_inv_and_1_has_inv_and_1_or_pdiv Hon Hiv) as Hi1.
+specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hi1.
 intros * Hx1.
 assert (Hx1z : (x - 1)%L ≠ 0%L). {
   intros H; apply Hx1; clear Hx1.
@@ -904,9 +901,9 @@ assert (Hx1z : (x - 1)%L ≠ 0%L). {
 induction n. {
   rewrite rngl_summation_only_one.
   rewrite rngl_pow_0_r.
-  rewrite (rngl_pow_1_r Hon).
+  rewrite (rngl_pow_1_r).
   symmetry.
-  now apply (rngl_div_diag Hon Hiq).
+  now apply (rngl_div_diag Hiq).
 }
 rewrite rngl_summation_split_last; [ | easy ].
 rewrite rngl_summation_succ_succ.
@@ -917,10 +914,10 @@ erewrite rngl_summation_eq_compat. 2: {
 rewrite IHn.
 apply (rngl_mul_cancel_r Hi1 _ _ (x - 1)); [ easy | ].
 rewrite rngl_mul_add_distr_r.
-rewrite (rngl_div_mul Hon Hiv); [ | easy ].
-rewrite (rngl_div_mul Hon Hiv); [ | easy ].
+rewrite (rngl_div_mul Hiv); [ | easy ].
+rewrite (rngl_div_mul Hiv); [ | easy ].
 rewrite (rngl_mul_sub_distr_l Hop).
-rewrite (rngl_mul_1_r Hon).
+rewrite rngl_mul_1_r.
 rewrite (rngl_add_sub_assoc Hop).
 rewrite (rngl_add_sub_swap Hop).
 rewrite (rngl_sub_sub_swap Hop).

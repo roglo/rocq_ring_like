@@ -8,7 +8,6 @@ Some of them require one or several properties:
 - [rngl_has_psub T = true] : that there is a partial subtraction,
 - [rngl_has_opp_or_psub T = true] : that there is an opposite or
   a partial subtraction,
-- [rngl_has_1 T = true] : that [1] exists,
 
 See the module [[RingLike.Core]] for the general description
 of the ring-like library.
@@ -162,45 +161,28 @@ rewrite <- rngl_mul_add_distr_r.
 now do 2 rewrite rngl_add_0_l.
 Qed.
 
-Theorem rngl_mul_1_l :
-  rngl_has_1 T = true →
-  ∀ a, (1 * a = a)%L.
+Theorem rngl_mul_1_r : ∀ a, (a * 1 = a)%L.
 Proof.
-intros Hon *.
-specialize rngl_opt_mul_1_l as H1.
-rewrite Hon in H1.
-apply H1.
-Qed.
-
-Theorem rngl_mul_1_r :
-  rngl_has_1 T = true →
-  ∀ a, (a * 1 = a)%L.
-Proof.
-intros Hon *.
-specialize rngl_opt_mul_1_l as H1.
+intros.
+specialize rngl_mul_1_l as H1.
 specialize rngl_opt_mul_1_r as H2.
-rewrite Hon in H1, H2.
 remember (rngl_mul_is_comm T) as ic eqn:Hic; symmetry in Hic.
 destruct ic; [ | easy ].
 now rewrite rngl_mul_comm, rngl_mul_1_l.
 Qed.
 
-Theorem rngl_mul_2_l :
-  rngl_has_1 T = true →
-  ∀ a, (2 * a = a + a)%L.
+Theorem rngl_mul_2_l : ∀ a, (2 * a = a + a)%L.
 Proof.
-intros Hon *.
+intros.
 rewrite rngl_mul_add_distr_r.
-now rewrite (rngl_mul_1_l Hon).
+now rewrite rngl_mul_1_l.
 Qed.
 
-Theorem rngl_mul_2_r :
-  rngl_has_1 T = true →
-  ∀ a, (a * 2 = a + a)%L.
+Theorem rngl_mul_2_r : ∀ a, (a * 2 = a + a)%L.
 Proof.
-intros Hon *.
+intros *.
 rewrite rngl_mul_add_distr_l.
-now rewrite (rngl_mul_1_r Hon).
+now rewrite rngl_mul_1_r.
 Qed.
 
 Theorem rngl_mul_mul_swap :
@@ -237,60 +219,50 @@ rewrite rngl_mul_add_distr_l.
 now rewrite rngl_mul_opp_r.
 Qed.
 
-Theorem rngl_add_mul_r_diag_l :
-  rngl_has_1 T = true →
-  ∀ a b, (a + a * b = a * (1 + b))%L.
+Theorem rngl_add_mul_r_diag_l : ∀ a b, (a + a * b = a * (1 + b))%L.
 Proof.
-intros Hon *.
+intros.
 rewrite rngl_mul_add_distr_l.
-now rewrite (rngl_mul_1_r Hon).
+now rewrite rngl_mul_1_r.
 Qed.
 
-Theorem rngl_add_mul_r_diag_r :
-  rngl_has_1 T = true →
-  ∀ a b, (a + b * a = (1 + b) * a)%L.
+Theorem rngl_add_mul_r_diag_r : ∀ a b, (a + b * a = (1 + b) * a)%L.
 Proof.
-intros Hon *.
+intros.
 rewrite rngl_mul_add_distr_r.
-now rewrite (rngl_mul_1_l Hon).
+now rewrite rngl_mul_1_l.
 Qed.
 
-Theorem rngl_add_mul_l_diag_l :
-  rngl_has_1 T = true →
-  ∀ a b, (a * b + a = a * (b + 1))%L.
+Theorem rngl_add_mul_l_diag_l : ∀ a b, (a * b + a = a * (b + 1))%L.
 Proof.
-intros Hon *.
+intros.
 rewrite rngl_mul_add_distr_l.
-now rewrite (rngl_mul_1_r Hon).
+now rewrite rngl_mul_1_r.
 Qed.
 
-Theorem rngl_add_mul_l_diag_r :
-  rngl_has_1 T = true →
-  ∀ a b, (a * b + b = (a + 1) * b)%L.
+Theorem rngl_add_mul_l_diag_r : ∀ a b, (a * b + b = (a + 1) * b)%L.
 Proof.
-intros Hon *.
+intros.
 rewrite rngl_mul_add_distr_r.
-now rewrite (rngl_mul_1_l Hon).
+now rewrite rngl_mul_1_l.
 Qed.
 
 Theorem rngl_sub_mul_r_diag_l :
-  rngl_has_1 T = true →
   rngl_has_opp T = true →
   ∀ a b, (a - a * b = a * (1 - b))%L.
 Proof.
-intros Hon Hop *.
+intros Hop *.
 rewrite (rngl_mul_sub_distr_l Hop).
-now rewrite (rngl_mul_1_r Hon).
+now rewrite rngl_mul_1_r.
 Qed.
 
 Theorem rngl_sub_mul_l_diag_l :
-  rngl_has_1 T = true →
   rngl_has_opp T = true →
   ∀ a b : T, (a * b - a)%L = (a * (b - 1))%L.
 Proof.
-intros Hon Hop *.
+intros Hop *.
 rewrite (rngl_mul_sub_distr_l Hop).
-now rewrite (rngl_mul_1_r Hon).
+now rewrite rngl_mul_1_r.
 Qed.
 
 Theorem rngl_mul_opp_l :
@@ -318,31 +290,28 @@ now rewrite rngl_mul_opp_l.
 Qed.
 
 Theorem rngl_sub_mul_l_diag_r :
-  rngl_has_1 T = true →
   rngl_has_opp T = true →
   ∀ a b : T, (a * b - b)%L = ((a - 1) * b)%L.
 Proof.
-intros Hon Hop *.
+intros Hop *.
 rewrite (rngl_mul_sub_distr_r Hop).
-now rewrite (rngl_mul_1_l Hon).
+now rewrite rngl_mul_1_l.
 Qed.
 
 Theorem rngl_sub_mul_r_diag_r :
-  rngl_has_1 T = true →
   rngl_has_opp T = true →
   ∀ a b, (a - b * a = (1 - b) * a)%L.
 Proof.
-intros Hon Hop *.
+intros Hop *.
 rewrite (rngl_mul_sub_distr_r Hop).
-now rewrite (rngl_mul_1_l Hon).
+now rewrite rngl_mul_1_l.
 Qed.
 
 Theorem rngl_mul_0_sub_1_comm :
-  rngl_has_1 T = true →
   rngl_has_opp T = true →
   ∀ a, ((0 - 1) * a = a * (0 - 1))%L.
 Proof.
-intros Hon Hop *.
+intros Hop *.
 rewrite (rngl_mul_sub_distr_l Hop).
 rewrite (rngl_mul_sub_distr_r Hop).
 rewrite rngl_mul_0_l; [ | now apply rngl_has_opp_or_psub_iff; left ].
@@ -356,35 +325,33 @@ Theorem rngl_mul_if_then_else_distr : ∀ (x : bool) a b c d,
 Proof. now destruct x. Qed.
 
 Theorem rngl_characteristic_1 :
-  rngl_has_1 T = true →
   rngl_has_opp_or_psub T = true →
   rngl_characteristic T = 1 →
   ∀ x, x = 0%L.
 Proof.
-intros Hon Hos Hch *.
+intros Hos Hch *.
 specialize (rngl_opt_characteristic_prop) as H1.
-rewrite Hon, Hch in H1; cbn in H1.
+rewrite  Hch in H1; cbn in H1.
 destruct H1 as (_, H1).
 rewrite rngl_add_0_r in H1.
-rewrite <- (rngl_mul_1_r Hon x).
+rewrite <- (rngl_mul_1_r x).
 rewrite H1.
 apply (rngl_mul_0_r Hos).
 Qed.
 
 Theorem rngl_1_eq_0_iff :
-  rngl_has_1 T = true →
   rngl_has_opp_or_psub T = true →
   rngl_characteristic T = 1 ↔ (1 = 0)%L.
 Proof.
-intros Hon Hos.
+intros Hos.
 split. {
   intros Hc.
-  specialize (rngl_characteristic_1 Hon Hos Hc) as H1.
+  specialize (rngl_characteristic_1 Hos Hc) as H1.
   apply H1.
 } {
   intros H10.
   destruct (Nat.eq_dec (rngl_characteristic T) 1) as [H1| H1]; [ easy | ].
-  now apply (rngl_1_neq_0_iff Hon) in H1.
+  now apply (rngl_1_neq_0_iff) in H1.
 }
 Qed.
 
@@ -399,43 +366,40 @@ now apply rngl_opp_involutive.
 Qed.
 
 Theorem rngl_squ_opp_1 :
-  rngl_has_1 T = true →
   rngl_has_opp T = true →
   (-1 * -1)%L = 1%L.
 Proof.
-intros Hon Hop.
+intros Hop.
 rewrite (rngl_mul_opp_opp Hop).
-apply (rngl_mul_1_l Hon).
+apply rngl_mul_1_l.
 Qed.
 
 Theorem rngl_mul_nat_mul_nat_1 :
-  rngl_has_1 T = true →
   rngl_has_opp_or_psub T = true →
   ∀ a n, rngl_mul_nat a n = (a * rngl_of_nat n)%L.
 Proof.
-intros Hon Hos *.
+intros Hos *.
 induction n; cbn. {
   symmetry; apply (rngl_mul_0_r Hos).
 }
-rewrite rngl_mul_add_distr_l, (rngl_mul_1_r Hon).
+rewrite rngl_mul_add_distr_l, rngl_mul_1_r.
 f_equal.
 apply IHn.
 Qed.
 
 Theorem rngl_mul_nat_comm :
-  rngl_has_1 T = true →
   rngl_has_opp_or_psub T = true →
   ∀ n a, (rngl_of_nat n * a = a * rngl_of_nat n)%L.
 Proof.
-intros Hon Hos *.
+intros Hos *.
 induction n; cbn. {
   rewrite (rngl_mul_0_r Hos).
   apply (rngl_mul_0_l Hos).
 }
 rewrite rngl_mul_add_distr_l.
 rewrite rngl_mul_add_distr_r.
-rewrite (rngl_mul_1_l Hon).
-rewrite (rngl_mul_1_r Hon).
+rewrite rngl_mul_1_l.
+rewrite rngl_mul_1_r.
 f_equal.
 apply IHn.
 Qed.
@@ -445,26 +409,24 @@ Theorem fold_rngl_of_nat :
 Proof. easy. Qed.
 
 Theorem rngl_of_nat_mul :
-  rngl_has_1 T = true →
   rngl_has_opp_or_psub T = true →
   ∀ m n : nat, rngl_of_nat (m * n) = (rngl_of_nat m * rngl_of_nat n)%L.
 Proof.
-intros Hon Hos *.
+intros Hos *.
 induction m; cbn; [ symmetry; apply (rngl_mul_0_l Hos) | ].
 do 2 rewrite fold_rngl_of_nat.
 rewrite rngl_of_nat_add, rngl_mul_add_distr_r.
-now rewrite (rngl_mul_1_l Hon); f_equal.
+now rewrite rngl_mul_1_l; f_equal.
 Qed.
 
 Theorem rngl_of_nat_inj :
-  rngl_has_1 T = true →
   rngl_has_opp_or_psub T = true →
   ∀ i j,
   rngl_of_nat i = rngl_of_nat j
   → if Nat.eq_dec (rngl_characteristic T) 0 then i = j
     else i mod rngl_characteristic T = j mod rngl_characteristic T.
 Proof.
-intros * Hon Hos.
+intros * Hos.
 destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
   now intros * Hij; rewrite Hc1.
 }
@@ -473,7 +435,7 @@ destruct (Nat.eq_dec _ _) as [Hch| Hch]. {
   revert i Hij.
   induction j; intros. {
     cbn in Hij.
-    now apply (eq_rngl_of_nat_0 Hon Hch) in Hij.
+    now apply (eq_rngl_of_nat_0 Hch) in Hij.
   }
   destruct i. {
     exfalso.
@@ -485,7 +447,7 @@ destruct (Nat.eq_dec _ _) as [Hch| Hch]. {
   apply rngl_add_cancel_l in Hij; [ | easy ].
   now apply IHj.
 }
-specialize (rngl_characteristic_non_0 Hon Hch) as (H1, H2).
+specialize (rngl_characteristic_non_0 Hch) as (H1, H2).
 remember (rngl_characteristic T) as n eqn:Hn.
 destruct Hn.
 destruct n; [ easy | clear Hch ].
@@ -504,7 +466,7 @@ induction j; intros. {
   specialize (Nat.div_mod i (S (S n)) (Nat.neq_succ_0 _)) as H3.
   destruct (Nat.eq_dec (i mod S (S n)) 0) as [H4| H4]; [ easy | exfalso ].
   rewrite H3 in Hij.
-  rewrite rngl_of_nat_add, (rngl_of_nat_mul Hon Hos) in Hij.
+  rewrite rngl_of_nat_add, (rngl_of_nat_mul Hos) in Hij.
   rewrite H2, (rngl_mul_0_l Hos), rngl_add_0_l in Hij.
   revert Hij.
   apply H1.
@@ -519,7 +481,7 @@ destruct i; intros. {
   specialize (Nat.div_mod (S j) (S (S n)) (Nat.neq_succ_0 _)) as H3.
   destruct (Nat.eq_dec (S j mod S (S n)) 0) as [H4| H4]; [ easy | exfalso ].
   rewrite H3 in Hij.
-  rewrite rngl_of_nat_add, (rngl_of_nat_mul Hon Hos) in Hij.
+  rewrite rngl_of_nat_add, (rngl_of_nat_mul Hos) in Hij.
   rewrite H2, (rngl_mul_0_l Hos), rngl_add_0_l in Hij.
   revert Hij.
   apply H1.
@@ -540,25 +502,23 @@ now rewrite Nat.Div0.add_mod_idemp_l.
 Qed.
 
 Theorem rngl_of_nat_pow :
-  rngl_has_1 T = true →
   rngl_has_opp_or_psub T = true →
   ∀ a n, rngl_of_nat (a ^ n) = (rngl_of_nat a ^ n)%L.
 Proof.
-intros Hon Hos *.
+intros Hos *.
 induction n; cbn; [ apply rngl_add_0_r | ].
 rewrite fold_rngl_of_nat.
-rewrite (rngl_of_nat_mul Hon Hos).
+rewrite (rngl_of_nat_mul Hos).
 now f_equal.
 Qed.
 
 Theorem rngl_mul_nat_pow_comm :
-  rngl_has_1 T = true →
   rngl_has_opp_or_psub T = true →
   ∀ a b n, (rngl_of_nat a ^ n * b = b * rngl_of_nat a ^ n)%L.
 Proof.
-intros Hon Hos *.
-rewrite <- (rngl_of_nat_pow Hon Hos).
-apply (rngl_mul_nat_comm Hon Hos).
+intros Hos *.
+rewrite <- (rngl_of_nat_pow Hos).
+apply (rngl_mul_nat_comm Hos).
 Qed.
 
 Theorem rngl_pow_0_l :
@@ -573,12 +533,10 @@ Qed.
 Theorem rngl_pow_0_r : ∀ a, (a ^ 0 = 1)%L.
 Proof. easy. Qed.
 
-Theorem rngl_pow_add_r :
-  rngl_has_1 T = true →
-  ∀ a i j, (a ^ (i + j) = a ^ i * a ^ j)%L.
+Theorem rngl_pow_add_r : ∀ a i j, (a ^ (i + j) = a ^ i * a ^ j)%L.
 Proof.
-intros Hon *.
-induction i; [ symmetry; apply (rngl_mul_1_l Hon) | ].
+intros *.
+induction i; [ symmetry; apply rngl_mul_1_l | ].
 cbn in IHi |-*.
 rewrite IHi.
 now rewrite <- rngl_mul_assoc.
@@ -595,30 +553,28 @@ Qed.
 
 Theorem rngl_squ_add :
   rngl_mul_is_comm T = true →
-  rngl_has_1 T = true →
   ∀ a b, (rngl_squ (a + b) = rngl_squ a + 2 * a * b + rngl_squ b)%L.
 Proof.
-intros Hic Hon *.
+intros Hic *.
 progress unfold rngl_squ.
 rewrite rngl_mul_add_distr_l.
 do 2 rewrite rngl_mul_add_distr_r.
 rewrite rngl_add_assoc; f_equal.
 rewrite <- rngl_add_assoc; f_equal.
 rewrite <- rngl_mul_assoc.
-rewrite (rngl_mul_2_l Hon); f_equal.
+rewrite (rngl_mul_2_l); f_equal.
 apply (rngl_mul_comm Hic).
 Qed.
 
 Theorem rngl_squ_sub :
   rngl_has_opp T = true →
   rngl_mul_is_comm T = true →
-  rngl_has_1 T = true →
   ∀ a b, (rngl_squ (a - b) = rngl_squ a - 2 * a * b + rngl_squ b)%L.
 Proof.
-intros Hop Hic Hon *.
+intros Hop Hic *.
 progress unfold rngl_sub.
 rewrite Hop.
-rewrite (rngl_squ_add Hic Hon).
+rewrite (rngl_squ_add Hic).
 rewrite (rngl_squ_opp Hop).
 f_equal; f_equal.
 apply (rngl_mul_opp_r Hop).
@@ -645,22 +601,18 @@ f_equal.
 apply (rngl_mul_mul_swap Hic).
 Qed.
 
-Theorem rngl_pow_1_r :
-  rngl_has_1 T = true →
-  ∀ a, (a ^ 1)%L = a.
+Theorem rngl_pow_1_r : ∀ a, (a ^ 1)%L = a.
 Proof.
-intros Hon *; cbn.
-apply (rngl_mul_1_r Hon).
+intros *; cbn.
+apply rngl_mul_1_r.
 Qed.
 
-Theorem rngl_pow_succ_l :
-  rngl_has_1 T = true →
-  ∀ n a, (a ^ S n = a ^ n * a)%L.
+Theorem rngl_pow_succ_l : ∀ n a, (a ^ S n = a ^ n * a)%L.
 Proof.
-intros Hon *.
+intros *.
 rewrite <- Nat.add_1_r.
-rewrite (rngl_pow_add_r Hon).
-now rewrite (rngl_pow_1_r Hon).
+rewrite (rngl_pow_add_r).
+now rewrite (rngl_pow_1_r).
 Qed.
 
 Theorem rngl_pow_succ_r : ∀ n a, (a ^ S n = a * a ^ n)%L.
@@ -674,13 +626,8 @@ intros Hos.
 apply (rngl_mul_0_l Hos).
 Qed.
 
-Theorem rngl_squ_1 :
-  rngl_has_1 T = true →
-  (1² = 1)%L.
-Proof.
-intros Hon.
-apply (rngl_mul_1_l Hon).
-Qed.
+Theorem rngl_squ_1 : (1² = 1)%L.
+Proof. apply rngl_mul_1_l. Qed.
 
 Theorem rngl_squ_sub_squ :
   rngl_has_opp T = true →
@@ -714,30 +661,27 @@ rewrite (rngl_sub_add Hop).
 now rewrite (rngl_add_sub Hos).
 Qed.
 
-Theorem rngl_squ_pow_2 :
-  rngl_has_1 T = true →
-  ∀ a, (a² = a ^ 2)%L.
+Theorem rngl_squ_pow_2 : ∀ a, (a² = a ^ 2)%L.
 Proof.
-intros Hon *; cbn.
+intros *; cbn.
 now rewrite rngl_mul_1_r.
 Qed.
 
-Theorem rngl_pow_1_l : rngl_has_1 T = true → ∀ n, (1 ^ n = 1)%L.
+Theorem rngl_pow_1_l : ∀ n, (1 ^ n = 1)%L.
 Proof.
-intros Hon *.
+intros *.
 induction n; [ easy | cbn ].
 rewrite IHn.
-apply (rngl_mul_1_l Hon).
+apply rngl_mul_1_l.
 Qed.
 
 Theorem rngl_pow_mul_l :
   rngl_mul_is_comm T = true →
-  rngl_has_1 T = true →
   ∀ a b n, ((a * b) ^ n = a ^ n * b ^ n)%L.
 Proof.
-intros Hic Hon *.
+intros Hic *.
 induction n; cbn. {
-  symmetry; apply (rngl_mul_1_l Hon).
+  symmetry; apply rngl_mul_1_l.
 }
 do 2 rewrite <- rngl_mul_assoc.
 f_equal.
@@ -748,11 +692,9 @@ f_equal.
 apply (rngl_mul_comm Hic).
 Qed.
 
-Theorem rngl_pow_mul_r :
-  rngl_has_1 T = true →
-  ∀ a m n, (a ^ (m * n) = (a ^ m) ^ n)%L.
+Theorem rngl_pow_mul_r : ∀ a m n, (a ^ (m * n) = (a ^ m) ^ n)%L.
 Proof.
-intros Hon *.
+intros *.
 revert m.
 induction n; intros. {
   rewrite Nat.mul_0_r.
@@ -760,45 +702,41 @@ induction n; intros. {
 }
 rewrite Nat.mul_succ_r.
 rewrite <- Nat.add_1_r.
-do 2 rewrite (rngl_pow_add_r Hon).
+do 2 rewrite (rngl_pow_add_r).
 rewrite IHn.
 progress f_equal.
 symmetry.
-apply (rngl_pow_1_r Hon).
+apply (rngl_pow_1_r).
 Qed.
 
 Theorem rngl_pow_opp_1_even :
-  rngl_has_1 T = true →
   rngl_has_opp T = true →
   ∀ n, ((-1) ^ (2 * n) = 1)%L.
 Proof.
-intros Hon Hop *.
-rewrite (rngl_pow_mul_r Hon).
-rewrite <- (rngl_squ_pow_2 Hon).
+intros Hop *.
+rewrite (rngl_pow_mul_r).
+rewrite <- (rngl_squ_pow_2).
 progress unfold rngl_squ.
-rewrite (rngl_squ_opp_1 Hon Hop).
-apply (rngl_pow_1_l Hon).
+rewrite (rngl_squ_opp_1 Hop).
+apply (rngl_pow_1_l).
 Qed.
 
 Theorem rngl_pow_opp_1_odd :
-  rngl_has_1 T = true →
   rngl_has_opp T = true →
   ∀ n, ((-1) ^ S (2 * n) = -1)%L.
 Proof.
-intros Hon Hop *.
+intros Hop *.
 rewrite rngl_pow_succ_r.
-rewrite (rngl_pow_opp_1_even Hon Hop).
-now apply (rngl_mul_1_r Hon).
+rewrite (rngl_pow_opp_1_even Hop).
+now apply rngl_mul_1_r.
 Qed.
 
-Theorem rngl_pow_squ :
-  rngl_has_1 T = true →
-  ∀ a n, ((a ^ n)² = a ^ (2 * n))%L.
+Theorem rngl_pow_squ : ∀ a n, ((a ^ n)² = a ^ (2 * n))%L.
 Proof.
-intros Hon *.
+intros *.
 rewrite Nat.mul_comm.
-rewrite (rngl_squ_pow_2 Hon).
-symmetry; apply (rngl_pow_mul_r Hon).
+rewrite (rngl_squ_pow_2).
+symmetry; apply (rngl_pow_mul_r).
 Qed.
 
 Theorem rngl_div_eq_inv_r :
@@ -847,11 +785,10 @@ easy.
 Qed.
 
 Theorem minus_one_pow_add :
-  rngl_has_1 T = true →
   rngl_has_opp T = true →
   ∀ a b, minus_one_pow (a + b) = (minus_one_pow a * minus_one_pow b)%L.
 Proof.
-intros Hon Hop *.
+intros Hop *.
 induction a; cbn; [ now rewrite rngl_mul_1_l | ].
 rewrite (minus_one_pow_succ Hop).
 rewrite (minus_one_pow_succ Hop).
@@ -863,17 +800,16 @@ Qed.
 
 Theorem Brahmagupta_Fibonacci_identity :
   rngl_mul_is_comm T = true →
-  rngl_has_1 T = true →
   rngl_has_opp T = true →
   ∀ a b c d,
   ((a² + b²) * (c² + d²) = (a * c - b * d)² + (a * d + b * c)²)%L.
 Proof.
-intros Hic Hon Hop.
+intros Hic Hop.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 intros.
 rewrite rngl_mul_add_distr_l.
 do 2 rewrite rngl_mul_add_distr_r.
-rewrite (rngl_squ_sub Hop Hic Hon).
+rewrite (rngl_squ_sub Hop Hic).
 rewrite (rngl_squ_mul Hic).
 rewrite <- (rngl_add_sub_swap Hop).
 rewrite <- (rngl_add_sub_assoc Hop).
@@ -885,7 +821,7 @@ rewrite (rngl_squ_mul Hic).
 rewrite <- (rngl_add_sub_swap Hop).
 rewrite <- (rngl_add_sub_assoc Hop).
 f_equal.
-rewrite (rngl_squ_add Hic Hon).
+rewrite (rngl_squ_add Hic).
 rewrite (rngl_squ_mul Hic).
 rewrite rngl_add_comm.
 rewrite <- (rngl_add_sub_assoc Hop).
@@ -909,13 +845,12 @@ Qed.
 
 Theorem Brahmagupta_Fibonacci_identity_2 :
   rngl_mul_is_comm T = true →
-  rngl_has_1 T = true →
   rngl_has_opp T = true →
   ∀ a b c d,
   ((a² + b²) * (c² + d²) = (a * c + b * d)² + (a * d - b * c)²)%L.
 Proof.
-intros Hic Hon Hop *.
-specialize (Brahmagupta_Fibonacci_identity Hic Hon Hop a b d c) as H1.
+intros Hic Hop *.
+specialize (Brahmagupta_Fibonacci_identity Hic Hop a b d c) as H1.
 rewrite (rngl_add_comm ((_ - _)²))%L in H1.
 rewrite (rngl_add_comm d²)%L in H1.
 easy.
@@ -923,11 +858,11 @@ Qed.
 
 End a.
 
-Arguments rngl_characteristic_1 {T ro rp} Hon Hos Hch x%_L.
+Arguments rngl_characteristic_1 {T ro rp} Hos Hch x%_L.
 Arguments rngl_mul_assoc {T ro rp} (a b c)%_L : rename.
 Arguments rngl_mul_comm {T ro rp} Hic (a b)%_L.
 Arguments rngl_mul_mul_swap {T ro rp} Hic (a b c)%_L.
 Arguments rngl_mul_0_r {T ro rp} Hom a%_L.
-Arguments rngl_mul_1_r {T ro rp} Hon a%_L.
-Arguments rngl_mul_2_l {T ro rp} Hon a%_L.
-Arguments rngl_pow_squ {T ro rp} Hon a%_L n%_nat.
+Arguments rngl_mul_1_r {T ro rp} a%_L.
+Arguments rngl_mul_2_l {T ro rp} a%_L.
+Arguments rngl_pow_squ {T ro rp} a%_L n%_nat.

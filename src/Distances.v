@@ -165,18 +165,16 @@ now apply dist_separation.
 Qed.
 
 Theorem dist_nonneg :
-  rngl_has_1 T = true →
   rngl_has_opp T = true →
   rngl_has_inv T = true →
   rngl_is_ordered T = true →
   ∀ {A} {da : A → A → T} (dist : is_dist da) a b, (0 ≤ da a b)%L.
 Proof.
-intros Hon Hop Hiv Hor * dist *.
+intros Hop Hiv Hor * dist *.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
-specialize (rngl_int_dom_or_inv_1_quo Hiv Hon) as Hii.
 destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
-  specialize (rngl_characteristic_1 Hon Hos Hc1) as H1.
+  specialize (rngl_characteristic_1 Hos Hc1) as H1.
   rewrite H1.
   apply (rngl_le_refl Hor).
 }
@@ -184,14 +182,13 @@ destruct dist as (Hdsym, Hdsep, Hdtri).
 specialize (proj2 (Hdsep a a) eq_refl) as H1.
 specialize (Hdtri a b a) as H2.
 rewrite H1, (Hdsym b a) in H2.
-rewrite <- (rngl_mul_2_l Hon) in H2.
+rewrite <- (rngl_mul_2_l) in H2.
 replace 0%L with (2 * 0)%L in H2 by apply (rngl_mul_0_r Hos).
-apply (rngl_mul_le_mono_pos_l Hon Hop Hiq Hor) in H2; [ easy | ].
-apply (rngl_0_lt_2 Hon Hos Hc1 Hor).
+apply (rngl_mul_le_mono_pos_l Hop Hiq Hor) in H2; [ easy | ].
+apply (rngl_0_lt_2 Hos Hc1 Hor).
 Qed.
 
 Theorem rngl_limit_interv :
-  rngl_has_1 T = true →
   rngl_has_opp T = true →
   rngl_has_inv T = true →
   rngl_is_ordered T = true →
@@ -203,7 +200,7 @@ Theorem rngl_limit_interv :
   → is_limit_when_seq_tends_to_inf dt u c
   → (a ≤ c ≤ b)%L.
 Proof.
-intros Hon Hop Hiv Hor.
+intros Hop Hiv Hor.
 intros * dist mono_1 mono_2 * Hi Hlim.
 progress unfold is_limit_when_seq_tends_to_inf in Hlim.
 split. {
@@ -212,7 +209,7 @@ split. {
   specialize (Hlim (dt a c))%L.
   assert (H : (0 < dt a c)%L). {
     apply (rngl_le_neq Hor).
-    split; [ apply (dist_nonneg Hon Hop Hiv Hor dist) | ].
+    split; [ apply (dist_nonneg Hop Hiv Hor dist) | ].
     intros H; symmetry in H.
     apply -> (dist_separation dist) in H.
     subst c.
@@ -234,7 +231,7 @@ split. {
   specialize (Hlim (dt b c))%L.
   assert (H : (0 < dt b c)%L). {
     apply (rngl_le_neq Hor).
-    split; [ apply (dist_nonneg Hon Hop Hiv Hor dist) | ].
+    split; [ apply (dist_nonneg Hop Hiv Hor dist) | ].
     intros H; symmetry in H.
     apply -> (dist_separation dist) in H.
     subst c.
@@ -253,7 +250,6 @@ split. {
 Qed.
 
 Theorem limit_unique :
-  rngl_has_1 T = true →
   rngl_has_opp T = true →
   rngl_has_inv T = true →
   rngl_is_ordered T = true →
@@ -262,27 +258,26 @@ Theorem limit_unique :
   → is_limit_when_seq_tends_to_inf da u lim2
   → lim1 = lim2.
 Proof.
-intros Hon Hop Hiv Hor * dist * Hu1 Hu2.
+intros Hop Hiv Hor * dist * Hu1 Hu2.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
-specialize (rngl_int_dom_or_inv_1_quo Hiv Hon) as Hii.
-specialize (rngl_has_inv_and_1_has_inv_and_1_or_pdiv Hon Hiv) as Hi1.
+specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hi1.
 destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
-  specialize (rngl_characteristic_1 Hon Hos Hc1) as H1.
+  specialize (rngl_characteristic_1 Hos Hc1) as H1.
   destruct dist as (Hdsym, Hdsep, Hdtri).
   assert (H : ∀ a b : A, a = b) by now intros; apply Hdsep, H1.
   apply H.
 }
-specialize (dist_nonneg Hon Hop Hiv Hor dist) as Hdpos.
+specialize (dist_nonneg Hop Hiv Hor dist) as Hdpos.
 assert (Hu : is_limit_when_seq_tends_to_inf da (λ _, lim1) lim2). {
   intros ε Hε.
   assert (Hε2 : (0 < ε / 2)%L). {
-    apply (rngl_mul_lt_mono_pos_r Hon Hop Hiq Hor) with (a := 2%L). {
-      apply (rngl_0_lt_2 Hon Hos Hc1 Hor).
+    apply (rngl_mul_lt_mono_pos_r Hop Hiq Hor) with (a := 2%L). {
+      apply (rngl_0_lt_2 Hos Hc1 Hor).
     }
     rewrite (rngl_mul_0_l Hos).
-    rewrite (rngl_div_mul Hon Hiv); [ easy | ].
-    apply (rngl_2_neq_0 Hon Hos Hc1 Hor).
+    rewrite (rngl_div_mul Hiv); [ easy | ].
+    apply (rngl_2_neq_0 Hos Hc1 Hor).
   }
   specialize (Hu1 (ε / 2) Hε2)%L.
   specialize (Hu2 (ε / 2) Hε2)%L.
@@ -295,14 +290,14 @@ assert (Hu : is_limit_when_seq_tends_to_inf da (λ _, lim1) lim2). {
   rewrite Hdsym.
   replace ε with (ε / 2 + ε / 2)%L. 2: {
     apply (rngl_mul_cancel_r Hi1 _ _ 2%L). {
-      apply (rngl_2_neq_0 Hon Hos Hc1 Hor).
+      apply (rngl_2_neq_0 Hos Hc1 Hor).
     }
     rewrite rngl_mul_add_distr_r.
-    rewrite (rngl_div_mul Hon Hiv). 2: {
-      apply (rngl_2_neq_0 Hon Hos Hc1 Hor).
+    rewrite (rngl_div_mul Hiv). 2: {
+      apply (rngl_2_neq_0 Hos Hc1 Hor).
     }
     symmetry.
-    apply (rngl_mul_2_r Hon).
+    apply (rngl_mul_2_r).
   }
   apply (rngl_add_lt_compat Hos Hor). {
     apply Hu1.
@@ -323,7 +318,7 @@ assert (H : ∀ ε : T, (0 < ε)%L → (da lim1 lim2 < ε)%L). {
 clear Hu; rename H into Hu.
 destruct dist as (Hdsym, Hdsep, Hdtri).
 apply Hdsep.
-apply (rngl_abs_le_ε Hon Hop Hiv Hor).
+apply (rngl_abs_le_ε Hop Hiv Hor).
 intros ε Hε.
 specialize (Hu ε Hε).
 rewrite (rngl_abs_nonneg_eq Hop Hor); [ | apply Hdpos ].
@@ -333,7 +328,6 @@ apply (rngl_le_refl Hor).
 Qed.
 
 Theorem limit_add :
-  rngl_has_1 T = true →
   rngl_has_opp T = true →
   rngl_has_inv T = true →
   rngl_is_ordered T = true →
@@ -344,18 +338,18 @@ Theorem limit_add :
   → is_limit_when_seq_tends_to_inf dt v limv
   → is_limit_when_seq_tends_to_inf dt (λ n, (u n + v n))%L (limu + limv)%L.
 Proof.
-intros Hon Hop Hiv Hor * dist * Hd * Hu Hv ε Hε.
+intros Hop Hiv Hor * dist * Hd * Hu Hv ε Hε.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
 destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
-  specialize (rngl_characteristic_1 Hon Hos Hc1) as H1.
+  specialize (rngl_characteristic_1 Hos Hc1) as H1.
   rewrite H1 in Hε.
   now apply (rngl_lt_irrefl Hor) in Hε.
 }
 assert (Hε2 : (0 < ε / 2)%L). {
-  apply (rngl_mul_lt_mono_pos_r Hon Hop Hiq Hor 2⁻¹%L) in Hε. 2: {
-    apply (rngl_inv_pos Hon Hop Hiv Hor).
-    apply (rngl_0_lt_2 Hon Hos Hc1 Hor).
+  apply (rngl_mul_lt_mono_pos_r Hop Hiq Hor 2⁻¹%L) in Hε. 2: {
+    apply (rngl_inv_pos Hop Hiv Hor).
+    apply (rngl_0_lt_2 Hos Hc1 Hor).
   }
   rewrite (rngl_mul_0_l Hos) in Hε.
   now rewrite (rngl_mul_inv_r Hiv) in Hε.
@@ -370,9 +364,9 @@ destruct H as (Hnun, Hnvn).
 specialize (Hun _ Hnun).
 specialize (Hvn _ Hnvn).
 apply (rngl_lt_le_trans Hor _ (ε / 2 + ε / 2)%L). 2: {
-  rewrite <- (rngl_mul_2_r Hon).
-  rewrite (rngl_div_mul Hon Hiv). 2: {
-    apply (rngl_2_neq_0 Hon Hos Hc1 Hor).
+  rewrite <- (rngl_mul_2_r).
+  rewrite (rngl_div_mul Hiv). 2: {
+    apply (rngl_2_neq_0 Hos Hc1 Hor).
   }
   apply (rngl_le_refl Hor).
 }
