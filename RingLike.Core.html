@@ -302,13 +302,11 @@ follow.
 
     Theorem rngl_squ_opp_1 :
       ∀ T (ro : ring_like_op T) (rp : ring_like_prop T),
-      rngl_has_1 T = true →
-      rngl_has_opp T = true →
       (-1 * -1)%L = 1%L.
     Proof.
-    intros T ro rp Hon Hop.
+    intros T ro rp Hop.
     rewrite (rngl_mul_opp_opp Hop).
-    apply (rngl_mul_1_l Hon).
+    apply rngl_mul_1_l.
     Qed.
 </pre>
 
@@ -325,11 +323,11 @@ The second says that we use RingLike. The module <span class="inlinecode"><span 
 
 <div class="paragraph"> </div>
 
-This theorem applies to any type <span class="inlinecode"><span class="id" title="var">T</span></span> where <span class="inlinecode">1</span> is defined
-(<span class="inlinecode"><span class="id" title="var">rngl_has_1</span></span> <span class="inlinecode">=</span> <span class="inlinecode"><span class="id" title="var">true</span></span>) and the opposite exists (<span class="inlinecode"><span class="id" title="var">rngl_has_opp</span></span> <span class="inlinecode"><span class="id" title="var">T</span></span> <span class="inlinecode">=</span> <span class="inlinecode"><span class="id" title="var">true</span></span>).
-This second condition shows that it cannot be applied for example to
-the ℕ algebra, since ℕ as no opposite. But it can be used for the algebras
-of ℤ, ℝ, polynomials, square matrices, and so on.
+This theorem applies to any type <span class="inlinecode"><span class="id" title="var">T</span></span> where the opposite exists
+(<span class="inlinecode"><span class="id" title="var">rngl_has_opp</span></span> <span class="inlinecode"><span class="id" title="var">T</span></span> <span class="inlinecode">=</span> <span class="inlinecode"><span class="id" title="var">true</span></span>).  This condition shows that it cannot
+be applied for example to the ℕ algebra, since ℕ as no opposite. But
+it can be used for the algebras of ℤ, ℝ, polynomials, square matrices,
+and so on.
 
 <div class="paragraph"> </div>
 
