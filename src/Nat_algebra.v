@@ -222,7 +222,7 @@ Compute (15 / 3)%nat.
    5/ the natural 0 (which is not the 0) is absorbing for + and x
  *)
 
-Instance lcm_ring_like_op : ring_like_op nat :=
+Definition lcm_ring_like_op : ring_like_op nat :=
   {| rngl_zero := 1;
      rngl_one := 1;
      rngl_add := Nat.lcm;
@@ -235,8 +235,8 @@ Instance lcm_ring_like_op : ring_like_op nat :=
 
 Section a.
 
-Context (ro := lcm_ring_like_op).
 (*
+Context (ro := lcm_ring_like_op).
 Existing Instance ro.
 *)
 
@@ -249,11 +249,13 @@ apply Nat.lcm_mul_mono_l.
 Qed.
 
 Theorem lcm_opt_integral :
+  let rol := lcm_ring_like_op in
   ∀ a b : nat,
   (a * b)%L = 0%L
   → a = 0%L ∨ b = 0%L ∨ rngl_is_zero_divisor a ∨ rngl_is_zero_divisor b.
 Proof.
 intros * Hab.
+cbn.
 apply Nat.eq_mul_1 in Hab.
 destruct Hab as (Hab, _).
 now left.
