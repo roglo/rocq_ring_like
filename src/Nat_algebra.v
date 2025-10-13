@@ -49,18 +49,8 @@ apply Nat.eq_mul_0 in Hab.
 destruct Hab as [Hab| Hab]; [ now left | now right; left ].
 Qed.
 
-Theorem nat_opt_characteristic_prop :
-  let ro := nat_ring_like_op in
-  ∀ i, rngl_mul_nat 1 (S i) ≠ 0.
+Theorem nat_opt_characteristic_prop : ∀ i, rngl_mul_nat 1 (S i) ≠ 0.
 Proof. easy. Qed.
-
-Theorem Nat_mul_div :
-  let ro := nat_ring_like_op in
-  ∀ a b, b ≠ 0%L → (a * b / b)%L = a.
-Proof.
-intros * Hbz.
-now apply Nat.div_mul.
-Qed.
 
 Theorem Nat_not_le :
   ∀ a b : nat, (a <=? b) ≠ true → a ≠ b ∧ (b <=? a) = true.
@@ -169,7 +159,7 @@ Definition nat_ring_like_ord :=
      rngl_ord_mul_le_compat_nonpos := Nat_mul_le_compat_nonpos;
      rngl_ord_not_le := Nat_not_le |}.
 
-Canonical Structure nat_ring_like_prop : ring_like_prop nat :=
+Instance nat_ring_like_prop : ring_like_prop nat :=
   {| rngl_mul_is_comm := true;
      rngl_is_archimedean := true;
      rngl_is_alg_closed := false;
@@ -189,7 +179,7 @@ Canonical Structure nat_ring_like_prop : ring_like_prop nat :=
      rngl_opt_sub_0_l := Nat.sub_0_l;
      rngl_opt_mul_inv_diag_l := NA;
      rngl_opt_mul_inv_diag_r := NA;
-     rngl_opt_mul_div := Nat_mul_div;
+     rngl_opt_mul_div := Nat.div_mul;
      rngl_opt_integral := Nat_eq_mul_0';
      rngl_opt_alg_closed := NA;
      rngl_opt_characteristic_prop := nat_opt_characteristic_prop;
