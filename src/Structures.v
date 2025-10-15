@@ -626,7 +626,8 @@ Notation "a ≤ b < c ≤ d" :=
 
 Notation "a <? b" := (rngl_ltb a b) (at level 70) : ring_like_scope.
 
-Notation "l .[ i ]" := (List.nth i l 0%L) (at level 1, format "l .[ i ]").
+Notation "l .[ i ]" := (List.nth i l 0%L)
+  (at level 1, format "'[hv  ' l '/' '[' .[ i ] ']' ']'").
 
 Arguments rngl_add_assoc {T ro rp} (a b c)%_L : rename.
 Arguments rngl_add_comm {T ro ring_like_prop} (a b)%_L.
