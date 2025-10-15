@@ -720,6 +720,17 @@ intros i Hi.
 now rewrite Hgh.
 Qed.
 
+Theorem rngl_summation_list_rev {A} (l : list A) f :
+  ∑ (i ∈ List.rev l), f i = ∑ (i ∈ l), f i.
+Proof.
+induction l as [| a]; [ easy | cbn ].
+rewrite rngl_summation_list_cons.
+rewrite rngl_summation_list_app.
+rewrite rngl_summation_list_only_one.
+rewrite rngl_add_comm; f_equal.
+apply IHl.
+Qed.
+
 Theorem rngl_summation_change_var : ∀ A b e f g (h : _ → A),
   (∀ i, b ≤ i ≤ e → g (h i) = i)
   → ∑ (i = b, e), f i = ∑ (i ∈ List.map h (List.seq b (S e - b))), f (g i).
