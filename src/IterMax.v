@@ -26,10 +26,11 @@ Usage:
 >>
 *)
 
-From Stdlib Require Import Utf8 Arith.
+From Stdlib Require Import Arith.
 Import List.ListNotations.
 Open Scope list.
 
+Require Import Utf8.
 Require Import Core Misc Utils.
 
 Notation "'Max' ( i = b , e ) , g" :=

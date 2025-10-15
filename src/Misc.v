@@ -5,7 +5,8 @@ library, some of which may eventually be incorporated into the Rocq
 standard library.
 *)
 
-From Stdlib Require Import Utf8 Arith Psatz.
+From Stdlib Require Import Arith Psatz.
+Require Import Utf8.
 Import List.ListNotations.
 Open Scope list.
 

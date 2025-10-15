@@ -168,7 +168,6 @@ This is a elementary code of few lines expressing how to use this library.
 It defines a theorem telling that the square of [-1] is [1]. Explanations
 follow.
 <<
-    From Stdlib Require Import Utf8.
     Require Import RingLike.Core.
 
     Theorem rngl_squ_opp_1 :

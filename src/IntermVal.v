@@ -2,8 +2,10 @@
     intermediate values theorem *)
 
 Set Nested Proofs Allowed.
-From Stdlib Require Import Utf8 Arith.
+From Stdlib Require Import Arith.
 Require Import Init.Nat.
+
+Require Import Utf8.
 Require Import Core.
 Require Import Misc.
 

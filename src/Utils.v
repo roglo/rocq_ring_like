@@ -5,9 +5,10 @@
     reusable elements shared by multiple modules.
 *)
 
-From Stdlib Require Import Utf8 Arith.
+From Stdlib Require Import Arith.
 Import List.ListNotations.
 
+Require Import Utf8.
 Require Import Misc.
 
 (** ** Iterators for aggregation operations

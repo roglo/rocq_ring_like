@@ -4,8 +4,8 @@ Specific properties of real numbers: existence of nth roots.
 *)
 
 Set Nested Proofs Allowed.
-From Stdlib Require Import Utf8.
 
+Require Import Utf8.
 Require Import Core.
 
 Class real_like_prop T {ro : ring_like_op T} {rp : ring_like_prop T} :=

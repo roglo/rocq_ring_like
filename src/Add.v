@@ -17,7 +17,8 @@ normal usage is to do:
 which imports the present module and some other ones.
  *)
 
-From Stdlib Require Import Utf8 Arith.
+From Stdlib Require Import Arith.
+Require Import Utf8.
 Require Import Structures.
 
 Section a.

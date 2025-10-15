@@ -25,9 +25,10 @@ Usage:
 
 Set Nested Proofs Allowed.
 
-From Stdlib Require Import Utf8 Arith.
+From Stdlib Require Import Arith.
 Import List.ListNotations.
 
+Require Import Utf8.
 Require Import Misc Utils.
 
 Notation "'⋀' ( i = b , e ) , g" :=
