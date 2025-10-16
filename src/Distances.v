@@ -14,17 +14,10 @@ normal usage is to do:
 which imports the present module and some other ones.
  *)
 
-From Stdlib Require Import Arith.
+Require Import Stdlib.Arith.Arith.
 
-Require Import Utf8.
-Require Import Structures.
-Require Import Order.
-Require Import Add.
-Require Import Mul.
-Require Import Div.
-Require Import Add_with_order.
-Require Import Mul_with_order.
-Require Import Div_with_order.
+Require Import Utf8 Structures Order Add Mul Div.
+Require Import Add_with_order Mul_with_order Div_with_order.
 
 Section a.
 

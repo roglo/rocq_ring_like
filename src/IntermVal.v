@@ -2,12 +2,10 @@
     intermediate values theorem *)
 
 Set Nested Proofs Allowed.
-From Stdlib Require Import Arith.
+Require Import Stdlib.Arith.Arith.
 Require Import Init.Nat.
 
-Require Import Utf8.
-Require Import Core.
-Require Import Misc.
+Require Import Utf8 Core Misc.
 
 Class excl_midd := { em_prop : ∀ P, P + notT P }.
 

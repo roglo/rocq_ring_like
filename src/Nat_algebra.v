@@ -17,10 +17,8 @@
 *)
 
 Set Nested Proofs Allowed.
-From Stdlib Require Import Arith.
-
-Require Import Utf8.
-Require Import Core.
+Require Import Stdlib.Arith.Arith.
+Require Import Utf8 Core.
 
 Instance nat_ring_like_op : ring_like_op nat :=
   {| rngl_zero := 0;

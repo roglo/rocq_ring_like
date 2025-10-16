@@ -18,13 +18,8 @@ which imports the present module and some other ones.
 
 Set Nested Proofs Allowed.
 
-From Stdlib Require Import Arith.
-Require Import Utf8.
-Require Import Structures.
-Require Import Order.
-Require Import Add.
-Require Import Add_with_order.
-Require Import Mul.
+Require Import Stdlib.Arith.Arith.
+Require Import Utf8 Structures Order Add Add_with_order Mul.
 
 Section a.
 

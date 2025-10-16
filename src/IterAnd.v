@@ -25,11 +25,10 @@ Usage:
 
 Set Nested Proofs Allowed.
 
-From Stdlib Require Import Arith.
+Require Import Stdlib.Arith.Arith.
 Import List.ListNotations.
 
-Require Import Utf8.
-Require Import Misc Utils.
+Require Import Utf8 Misc Utils.
 
 Notation "'⋀' ( i = b , e ) , g" :=
   (iter_seq b e (λ c i, (c && g)%bool) true)

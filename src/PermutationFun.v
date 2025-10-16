@@ -12,13 +12,11 @@ conditions (e.g., associativity and commutativity).
 
 Set Nested Proofs Allowed.
 
-From Stdlib Require Import Arith.
-From Stdlib Require FinFun.
+Require Import Stdlib.Arith.Arith Stdlib.Vectors.FinFun.
 Import Init.Nat.
 Import List.ListNotations.
 
-Require Import Utf8.
-Require Import Misc Utils.
+Require Import Utf8 Misc Utils.
 
 Definition reflexive {A} (rel : A → A → bool) :=
   ∀ a, rel a a = true.

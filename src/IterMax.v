@@ -26,12 +26,11 @@ Usage:
 >>
 *)
 
-From Stdlib Require Import Arith.
+Require Import Stdlib.Arith.Arith.
 Import List.ListNotations.
 Open Scope list.
 
-Require Import Utf8.
-Require Import Core Misc Utils.
+Require Import Utf8 Core Misc Utils.
 
 Notation "'Max' ( i = b , e ) , g" :=
   (iter_seq b e (λ c i, rngl_max c (g)) 0%L)

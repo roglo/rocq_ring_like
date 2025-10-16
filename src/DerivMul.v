@@ -12,11 +12,8 @@ The derivative of [f⁻¹] is well-knwon as being [-f'/f²].
 
 Set Nested Proofs Allowed.
 
-From Stdlib Require Import Arith.
-
-Require Import Utf8.
-Require Import Core.
-Require Import RealLike.
+Require Import Stdlib.Arith.Arith.
+Require Import Utf8 Core RealLike.
 
 Section a.
 

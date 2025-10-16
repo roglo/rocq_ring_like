@@ -5,9 +5,11 @@ library, some of which may eventually be incorporated into the Rocq
 standard library.
 *)
 
-From Stdlib Require Import Arith Psatz.
-Require Import Utf8.
+Require Import Stdlib.Arith.Arith Stdlib.micromega.Psatz.
 Import List.ListNotations.
+
+Require Import Utf8.
+
 Open Scope list.
 
 Global Hint Resolve Nat.le_0_l : core.

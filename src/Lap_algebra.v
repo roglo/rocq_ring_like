@@ -19,13 +19,11 @@ Usage:
 
 Set Nested Proofs Allowed.
 
-From Stdlib Require Import Arith.
+Require Import Stdlib.Arith.Arith.
 Import List.ListNotations Init.Nat.
 Open Scope list.
 
-Require Import Utf8.
-Require Import Core Misc Utils.
-Require Import IterAdd.
+Require Import Utf8 Core Misc Utils IterAdd.
 
 Section a.
 

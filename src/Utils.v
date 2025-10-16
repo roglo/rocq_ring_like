@@ -5,7 +5,7 @@
     reusable elements shared by multiple modules.
 *)
 
-From Stdlib Require Import Arith.
+Require Import Stdlib.Arith.Arith.
 Import List.ListNotations.
 
 Require Import Utf8.

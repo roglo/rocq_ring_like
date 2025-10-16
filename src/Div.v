@@ -30,11 +30,8 @@ which imports the present module and some other ones.
  *)
 
 Set Nested Proofs Allowed.
-From Stdlib Require Import Arith.
-Require Import Utf8.
-Require Import Structures.
-Require Import Add.
-Require Import Mul.
+Require Import Stdlib.Arith.Arith.
+Require Import Utf8 Structures Add Mul.
 
 Section a.
 
@@ -741,7 +738,7 @@ The Rocq tactics "ring" and "ring_simplify" help to directly simplify
 some kinds of expressions in the "ring" world. It can be applied to
 ring-like structures, providing the following code is added:
 <<
-  From Stdlib Require Import Ring.
+  Require Import Stdlib.Ring.
   Section a.
   Context {T : Type}.
   Context {ro : ring_like_op T}.
@@ -762,8 +759,8 @@ A typical example (you must stay in this section):
 >>
 *)
 
-From Stdlib Require Import Ring_theory.
-From Stdlib Require Import Field_theory.
+Require Import Stdlib.setoid_ring.Ring_theory.
+Require Import Stdlib.setoid_ring.Field_theory.
 
 Section a.
 

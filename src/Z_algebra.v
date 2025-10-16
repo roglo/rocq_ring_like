@@ -13,10 +13,8 @@
 *)
 
 Set Nested Proofs Allowed.
-From Stdlib Require Import ZArith.
-
-Require Import Utf8.
-Require Import Core.
+Require Import Stdlib.ZArith.ZArith.
+Require Import Utf8 Core.
 
 Notation "x ≤ y" := (x <= y)%Z (at level 70, y at next level) : Z_scope.
 Notation "x ≤ y ≤ z" := (x <= y ∧ y <= z)%Z (at level 70, y at next level) :
