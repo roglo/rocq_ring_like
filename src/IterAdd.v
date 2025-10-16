@@ -423,8 +423,31 @@ f_equal.
 apply IHll.
 Qed.
 
-Theorem rngl_summation_summation_list_flat_map : ∀ A B la (f : A → list B) g,
-  (∑ (a ∈ la), ∑ (b ∈ f a), g b) = ∑ (b ∈ List.flat_map f la), g b.
+Theorem rngl_summation_list_map :
+  ∀ A B (f : A → B) (g : B → _) l,
+  ∑ (j ∈ List.map f l), g j = ∑ (i ∈ l), g (f i).
+Proof.
+intros.
+unfold iter_list.
+now rewrite List_fold_left_map.
+Qed.
+
+Theorem rngl_summation_list_flat_map A B (la : list A) f (g : B → T) :
+  ∑ (i ∈ List.flat_map (λ i, map g (f i)) la), i =
+  ∑ (b ∈ List.flat_map f la), g b.
+Proof.
+induction la as [| a]; cbn. {
+  now apply rngl_summation_list_empty.
+}
+do 2 rewrite rngl_summation_list_app.
+rewrite IHla; f_equal.
+apply rngl_summation_list_map.
+Qed.
+
+Theorem rngl_summation_summation_list_flat_map :
+  ∀ A B (la : list A) (f : A → B → T) (g : A → list B),
+  ∑ (i ∈ la), ∑ (j ∈ g i), f i j =
+  ∑ (i ∈ List.flat_map (λ i, map (f i) (g i)) la), i.
 Proof.
 intros.
 induction la as [| a]; cbn. {
@@ -432,7 +455,18 @@ induction la as [| a]; cbn. {
 }
 rewrite rngl_summation_list_cons.
 rewrite rngl_summation_list_app.
-f_equal; apply IHla.
+rewrite IHla.
+f_equal.
+now rewrite rngl_summation_list_map.
+Qed.
+
+Theorem rngl_summation_summation_list_flat_map' :
+  ∀ A B (la : list A) (f : A → list B) (g : B → T),
+  ∑ (a ∈ la), ∑ (b ∈ f a), g b = ∑ (b ∈ List.flat_map f la), g b.
+Proof.
+intros.
+rewrite rngl_summation_summation_list_flat_map.
+apply rngl_summation_list_flat_map.
 Qed.
 
 Theorem rngl_summation_summation_list_swap : ∀ A B la lb (f : A → B → T),
@@ -697,15 +731,6 @@ Theorem rngl_summation_mul_summation : ∀ bi bj ei ej f g,
 Proof.
 intros.
 apply rngl_summation_list_mul_summation_list.
-Qed.
-
-Theorem rngl_summation_list_map :
-  ∀ A B (f : A → B) (g : B → _) l,
-  ∑ (j ∈ List.map f l), g j = ∑ (i ∈ l), g (f i).
-Proof.
-intros.
-unfold iter_list.
-now rewrite List_fold_left_map.
 Qed.
 
 Theorem rngl_summation_list_change_var : ∀ A B (l : list A) f g (h : _ → B),
