@@ -445,9 +445,9 @@ apply rngl_summation_list_map.
 Qed.
 
 Theorem rngl_summation_summation_list_flat_map :
-  ∀ A B (la : list A) (f : A → B → T) (g : A → list B),
-  ∑ (i ∈ la), ∑ (j ∈ g i), f i j =
-  ∑ (i ∈ List.flat_map (λ i, map (f i) (g i)) la), i.
+  ∀ A B (la : list A) (f : A → list B) (g : B → T),
+  ∑ (a ∈ la), ∑ (b ∈ f a), g b =
+  ∑ (b ∈ List.flat_map f la), g b.
 Proof.
 intros.
 induction la as [| a]; cbn. {
@@ -455,18 +455,19 @@ induction la as [| a]; cbn. {
 }
 rewrite rngl_summation_list_cons.
 rewrite rngl_summation_list_app.
-rewrite IHla.
-f_equal.
-now rewrite rngl_summation_list_map.
+f_equal; apply IHla.
 Qed.
 
 Theorem rngl_summation_summation_list_flat_map' :
-  ∀ A B (la : list A) (f : A → list B) (g : B → T),
-  ∑ (a ∈ la), ∑ (b ∈ f a), g b = ∑ (b ∈ List.flat_map f la), g b.
+  ∀ A B (la : list A) (f : A → B → T) (g : A → list B),
+  ∑ (i ∈ la), ∑ (j ∈ g i), f i j =
+  ∑ (i ∈ List.flat_map (λ i, map (f i) (g i)) la), i.
 Proof.
 intros.
-rewrite rngl_summation_summation_list_flat_map.
-apply rngl_summation_list_flat_map.
+rewrite <- rngl_summation_summation_list_flat_map.
+apply rngl_summation_list_eq_compat.
+intros i Hi.
+symmetry; apply rngl_summation_list_map.
 Qed.
 
 Theorem rngl_summation_summation_list_swap : ∀ A B la lb (f : A → B → T),
