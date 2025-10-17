@@ -445,6 +445,21 @@ intros i Hi.
 now rewrite Nat.add_succ_comm.
 Qed.
 
+Theorem List_flat_map_ext' [A B : Type] (f g : A → list B) :
+  ∀ l : list A,
+  (∀ a : A, a ∈ l → f a = g a)
+  → List.flat_map f l = List.flat_map g l.
+Proof.
+intros * Hl.
+induction l as [| a]; [ easy | ].
+cbn.
+rewrite Hl; [ | now left ].
+progress f_equal.
+apply IHl.
+intros b Hb.
+now apply Hl; right.
+Qed.
+
 Definition bool_of_sumbool {A B : Prop} (P : sumbool A B) :=
   match P with
   | left _ _ => true
