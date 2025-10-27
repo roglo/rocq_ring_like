@@ -1143,6 +1143,7 @@ rewrite List_map_seq.
 rewrite IHla.
 apply List.map_ext_in.
 intros i Hi.
+rewrite Nat.add_1_r.
 do 2 rewrite List_nth_succ_cons.
 easy.
 Qed.
