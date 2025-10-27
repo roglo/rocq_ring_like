@@ -430,14 +430,14 @@ Qed.
 
 Theorem List_map_seq : ∀ A (f : _ → A) sta len,
   List.map f (List.seq sta len) =
-    List.map (λ i, f (i + sta)) (List.seq 0 len).
+    List.map (λ i, f (sta + i)) (List.seq 0 len).
 Proof.
 intros.
 revert sta.
 induction len; intros; [ easy | cbn ].
 symmetry.
 rewrite <- List.seq_shift, List.map_map.
-progress f_equal.
+rewrite Nat.add_0_r; f_equal.
 symmetry.
 rewrite IHlen.
 apply List.map_ext_in.
