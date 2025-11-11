@@ -209,9 +209,6 @@ Class ring_like_prop T {ro : ring_like_op T} :=
     rngl_opt_sub_add_distr :
       if rngl_has_psub T then ∀ a b c, (a - (b + c) = a - b - c)%L
       else not_applicable;
-    rngl_opt_sub_0_l :
-      if rngl_has_psub T then ∀ a, (0 - a = 0)%L
-      else not_applicable;
     (* when has inverse *)
     rngl_opt_mul_inv_diag_l :
       if rngl_has_inv T then ∀ a : T, a ≠ 0%L → (a⁻¹ * a = 1)%L

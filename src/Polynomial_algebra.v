@@ -3590,67 +3590,6 @@ rewrite Hop, Hsu in H1.
 f_equal; apply H1.
 Qed.
 
-Theorem polyn_opt_sub_0_l :
-  let rop := polyn_ring_like_op in
-  if rngl_has_psub (polyn T) then ∀ a : polyn T, (0 - a)%L = 0%L
-  else not_applicable.
-Proof.
-intros.
-remember (rngl_has_psub (polyn T)) as su eqn:Hsup; symmetry in Hsup.
-destruct su; [ | easy ].
-specialize (rngl_has_psub_has_no_opp Hsup) as Hopp.
-specialize rngl_has_opp_rngl_polyn_has_opp as Hop; cbn in Hop.
-specialize rngl_has_psub_rngl_polyn_has_psub as Hsu; cbn in Hsu.
-fold rop in Hop; rewrite Hopp in Hop.
-fold rop in Hsu; rewrite Hsup in Hsu.
-intros.
-apply eq_polyn_eq; cbn.
-unfold rngl_sub.
-rewrite Hopp, Hsup.
-unfold rngl_psub; cbn.
-unfold polyn_opt_opp_or_psub.
-remember (rngl_opt_opp_or_psub T) as os eqn:Hos'; symmetry in Hos'.
-destruct os as [os| ]. 2: {
-  unfold rngl_has_opp_or_psub in Hos.
-  clear - Hos Hos'.
-  now rewrite Hos' in Hos.
-}
-destruct os as [opp| psub]. {
-  unfold rngl_has_opp in Hop; cbn in Hop.
-  unfold polyn_opt_opp_or_psub in Hop.
-  exfalso; clear - Hop Hos'.
-  now rewrite Hos' in Hop.
-}
-unfold polyn_psub.
-destruct a as (la, pa).
-cbn.
-rewrite List.app_nil_r, Nat.sub_0_r.
-rewrite List_rev_map2; [ | now rewrite List.repeat_length ].
-rewrite List.rev_repeat.
-(* lemma *)
-apply List.rev_inj; cbn.
-rewrite List.rev_involutive.
-(* end lemma *)
-remember (List.rev la) as lb eqn:Hlb.
-apply (f_equal (@List.rev _)) in Hlb.
-rewrite List.rev_involutive in Hlb.
-subst la.
-rewrite List.length_rev.
-rename lb into la.
-clear pa.
-induction la as [| a]; [ easy | cbn ].
-rewrite IHla.
-remember (rngl_psub 0 a =? 0)%L as za eqn:Hza.
-symmetry in Hza.
-destruct za; [ easy | exfalso ].
-apply (rngl_eqb_neq Heo) in Hza.
-apply Hza; clear Hza.
-specialize rngl_opt_sub_0_l as H1.
-progress unfold rngl_sub in H1.
-rewrite Hop, Hsu in H1.
-apply H1.
-Qed.
-
 Definition polyn_ring_like_prop : ring_like_prop (polyn T) :=
   {| rngl_mul_is_comm := rngl_mul_is_comm T;
      rngl_is_archimedean := false;
@@ -3668,7 +3607,6 @@ Definition polyn_ring_like_prop : ring_like_prop (polyn T) :=
      rngl_opt_add_opp_diag_l := polyn_opt_add_opp_diag_l;
      rngl_opt_add_sub := polyn_opt_add_sub;
      rngl_opt_sub_add_distr := polyn_opt_sub_add_distr;
-     rngl_opt_sub_0_l := polyn_opt_sub_0_l;
      rngl_opt_mul_inv_diag_l := polyn_opt_has_no_inv _;
      rngl_opt_mul_inv_diag_r := polyn_opt_has_no_inv_and _ _;
      rngl_opt_mul_div := polyn_opt_mul_div;
