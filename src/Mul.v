@@ -330,7 +330,7 @@ Theorem rngl_characteristic_1 :
   ∀ x, x = 0%L.
 Proof.
 intros Hos Hch *.
-specialize (rngl_opt_characteristic_prop) as H1.
+specialize (rngl_characteristic_prop) as H1.
 rewrite  Hch in H1; cbn in H1.
 destruct H1 as (_, H1).
 rewrite rngl_add_0_r in H1.

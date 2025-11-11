@@ -681,7 +681,7 @@ Theorem rngl_characteristic_0 :
   ∀ i : nat, rngl_of_nat (S i) ≠ 0%L.
 Proof.
 intros Hcz.
-specialize (rngl_opt_characteristic_prop) as H1.
+specialize (rngl_characteristic_prop) as H1.
 now rewrite Hcz in H1.
 Qed.
 
@@ -691,7 +691,7 @@ Theorem rngl_characteristic_non_0 :
   rngl_of_nat (rngl_characteristic T) = 0%L.
 Proof.
 intros Hcz.
-specialize (rngl_opt_characteristic_prop) as H1.
+specialize (rngl_characteristic_prop) as H1.
 apply Nat.eqb_neq in Hcz.
 now rewrite  Hcz in H1.
 Qed.
@@ -699,7 +699,7 @@ Qed.
 Theorem rngl_1_neq_0 : rngl_characteristic T ≠ 1 → (1 ≠ 0)%L.
 Proof.
 intros Hc1.
-specialize rngl_opt_characteristic_prop as H1.
+specialize rngl_characteristic_prop as H1.
 remember (Nat.eqb (rngl_characteristic T) 0) as cz eqn:Hcz; symmetry in Hcz.
 destruct cz. {
   specialize (H1 0); cbn in H1.
@@ -721,7 +721,7 @@ Qed.
 Theorem rngl_1_neq_0_iff : rngl_characteristic T ≠ 1 ↔ (1 ≠ 0)%L.
 Proof.
 split; [ apply (rngl_1_neq_0) | ].
-specialize rngl_opt_characteristic_prop as H1.
+specialize rngl_characteristic_prop as H1.
 intros H10 Hc.
 rewrite Hc in H1; cbn in H1.
 now rewrite rngl_add_0_r in H1.

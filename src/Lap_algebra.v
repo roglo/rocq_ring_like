@@ -1340,7 +1340,7 @@ Theorem lap_characteristic_prop :
   ∀ i : nat, rngl_of_nat (S i) ≠ 0%L.
 Proof.
 intros.
-specialize rngl_opt_characteristic_prop as H1.
+specialize rngl_characteristic_prop as H1.
 remember (S i) as j eqn:Hj.
 progress unfold rol.
 progress unfold lap_ring_like_op.
@@ -1393,8 +1393,8 @@ Definition lap_ring_like_prop (Hos : rngl_has_opp_or_psub T = true) :
      rngl_opt_mul_div := NA;
      rngl_opt_integral := lap_polyn_integral;
      rngl_opt_alg_closed := NA;
-     rngl_opt_characteristic_prop := lap_characteristic_prop;
      rngl_opt_ord := NA;
-     rngl_opt_archimedean := NA |}.
+     rngl_opt_archimedean := NA;
+     rngl_characteristic_prop := lap_characteristic_prop |}.
 
 End a.

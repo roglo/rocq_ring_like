@@ -3323,7 +3323,7 @@ destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
   flia Hi Hc1.
 }
 specialize (proj1 (rngl_1_neq_0_iff) Hc1) as H11.
-specialize rngl_opt_characteristic_prop as Hch.
+specialize rngl_characteristic_prop as Hch.
 rewrite if_bool_if_dec in Hch.
 destruct (Sumbool.sumbool_of_bool _) as [Hchz| Hchz]. {
   apply Nat.eqb_eq in Hchz.
@@ -3446,7 +3446,7 @@ Proof.
 intros rop; subst rop.
 set (rol := lap_ring_like_op Heo).
 cbn - [ rngl_mul_nat ].
-specialize rngl_opt_characteristic_prop as H1.
+specialize rngl_characteristic_prop as H1.
 rewrite if_eqb_eq_dec in H1 |-*.
 destruct (Nat.eq_dec (rngl_characteristic T) 0) as [Hcz| Hcz]. {
   intros i.
@@ -3674,8 +3674,8 @@ Definition polyn_ring_like_prop : ring_like_prop (polyn T) :=
      rngl_opt_mul_div := polyn_opt_mul_div;
      rngl_opt_integral := polyn_integral;
      rngl_opt_alg_closed := NA;
-     rngl_opt_characteristic_prop := polyn_characteristic_prop;
      rngl_opt_ord := NA;
-     rngl_opt_archimedean := NA |}.
+     rngl_opt_archimedean := NA;
+     rngl_characteristic_prop := polyn_characteristic_prop |}.
 
 End a.

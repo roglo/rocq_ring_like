@@ -234,13 +234,6 @@ Class ring_like_prop T {ro : ring_like_op T} :=
         ∀ l : list T, 1 < length l → List.last l 0%L ≠ 0%L →
         ∃ x, rngl_eval_polyn l x = 0%L
       else not_applicable;
-    (* characteristic *)
-    rngl_opt_characteristic_prop :
-      if Nat.eqb (rngl_characteristic) 0 then
-        ∀ i, rngl_of_nat (S i) ≠ 0%L
-      else
-        (∀ i, 0 < i < rngl_characteristic → rngl_of_nat i ≠ 0%L) ∧
-        rngl_of_nat rngl_characteristic = 0%L;
     (* when ordered *)
     rngl_opt_ord :
       if rngl_is_ordered T then ring_like_ord T
@@ -249,7 +242,14 @@ Class ring_like_prop T {ro : ring_like_op T} :=
     rngl_opt_archimedean :
       if (rngl_is_archimedean && rngl_is_ordered T)%bool then
         ∀ a b, (0 < a)%L → ∃ₜ n, (b < rngl_mul_nat a n)%L
-      else not_applicable }.
+      else not_applicable;
+    (* characteristic *)
+    rngl_characteristic_prop :
+      if Nat.eqb (rngl_characteristic) 0 then
+        ∀ i, rngl_of_nat (S i) ≠ 0%L
+      else
+        (∀ i, 0 < i < rngl_characteristic → rngl_of_nat i ≠ 0%L) ∧
+        rngl_of_nat rngl_characteristic = 0%L }.
 
 Arguments rngl_opt_eq_dec T {ring_like_op}.
 

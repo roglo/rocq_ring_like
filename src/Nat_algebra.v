@@ -48,7 +48,7 @@ apply Nat.eq_mul_0 in Hab.
 destruct Hab as [Hab| Hab]; [ now left | now right; left ].
 Qed.
 
-Theorem nat_opt_characteristic_prop : ∀ i, rngl_mul_nat 1 (S i) ≠ 0.
+Theorem nat_characteristic_prop : ∀ i, rngl_mul_nat 1 (S i) ≠ 0.
 Proof. easy. Qed.
 
 Theorem Nat_not_le :
@@ -181,9 +181,9 @@ Instance nat_ring_like_prop : ring_like_prop nat :=
      rngl_opt_mul_div := Nat.div_mul;
      rngl_opt_integral := Nat_eq_mul_0';
      rngl_opt_alg_closed := NA;
-     rngl_opt_characteristic_prop := nat_opt_characteristic_prop;
      rngl_opt_ord := nat_ring_like_ord;
-     rngl_opt_archimedean := nat_archimedean |}.
+     rngl_opt_archimedean := nat_archimedean;
+     rngl_characteristic_prop := nat_characteristic_prop |}.
 
 (*
 Global Existing Instance nat_ring_like_prop.
@@ -285,8 +285,8 @@ Definition lcm_ring_like_prop :=
      rngl_opt_mul_div := NA;
      rngl_opt_integral := lcm_opt_integral;
      rngl_opt_alg_closed := NA;
-     rngl_opt_characteristic_prop := lcm_characteristic_prop;
      rngl_opt_ord := NA;
-     rngl_opt_archimedean := NA |}.
+     rngl_opt_archimedean := NA;
+     rngl_characteristic_prop := lcm_characteristic_prop |}.
 
 End a.
