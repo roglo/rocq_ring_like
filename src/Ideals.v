@@ -33,22 +33,6 @@ Ltac destruct_ix :=
 
 (* to be moved somewhere else *)
 
-Notation "'∑' ( ( i , j ) ∈ l ) , g" :=
-  (iter_list l (λ c '(i, j), (c + g)%L) 0%L)
-  (at level 45, l at level 60,
-   right associativity,
-   format "'[hv  ' ∑  ( ( i ,  j )  ∈  l ) ,  '/' '[' g ']' ']'").
-
-Theorem rngl_summation_list_pair {T} {ro : ring_like_op T}  :
-  ∀ A l (f : A → A → T),
-  ∑ ((x, y) ∈ l), f x y = ∑ (xy ∈ l), f (fst xy) (snd xy).
-Proof.
-intros.
-progress unfold iter_list; cbn.
-apply List_fold_left_ext_in.
-now intros (x, y) z Hxy.
-Qed.
-
 Theorem forall_pair {A B} {P : A → B → Prop} :
   (∀ a b, P a b) ↔ (∀ ab, P (fst ab) (snd ab)).
 Proof.

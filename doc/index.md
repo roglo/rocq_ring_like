@@ -67,6 +67,7 @@ Algebras
 - [Z_algebra](RingLike.Z_algebra.html)
 - [Lap_algebra](RingLike.Lap_algebra.html)
 - [Polynomial_algebra](RingLike.Polynomial_algebra.html)
+- [Ideals](RingLike.Ideals.html)
 
 ## Table of Contents
 

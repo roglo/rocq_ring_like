@@ -48,6 +48,12 @@ Notation "'∑' ( i ∈ l ) , g" :=
    right associativity,
    format "'[hv  ' ∑  ( i  ∈  l ) ,  '/' '[' g ']' ']'").
 
+Notation "'∑' ( ( i , j ) ∈ l ) , g" :=
+  (iter_list l (λ c '(i, j), (c + g)%L) 0%L)
+  (at level 45, l at level 60,
+   right associativity,
+   format "'[hv  ' ∑  ( ( i ,  j )  ∈  l ) ,  '/' '[' g ']' ']'").
+
 Section a.
 
 Context {T : Type}.
@@ -961,6 +967,16 @@ rewrite (rngl_sub_diag Hos).
 rewrite (rngl_sub_0_l Hop).
 rewrite (rngl_mul_comm Hic).
 apply (rngl_add_opp_l Hop).
+Qed.
+
+Theorem rngl_summation_list_pair :
+  ∀ A l (f : A → A → T),
+  ∑ ((x, y) ∈ l), f x y = ∑ (xy ∈ l), f (fst xy) (snd xy).
+Proof.
+intros.
+progress unfold iter_list; cbn.
+apply List_fold_left_ext_in.
+now intros (x, y) z Hxy.
 Qed.
 
 End a.
