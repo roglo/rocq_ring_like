@@ -1,4 +1,7 @@
-(* Ideal.v *)
+(** * Ideals
+
+Ideals as a ring-like algebra.
+*)
 
 (* ideals on a RingLike *)
 
