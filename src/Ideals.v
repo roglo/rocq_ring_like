@@ -1636,12 +1636,32 @@ progress unfold I_leb.
 now destruct (I ⊂ J)%I; [ left | right ].
 Qed.
 
+Theorem I_ord_le_refl I : (I ≤ I)%I = true.
+Proof.
+progress unfold I_leb.
+destruct (I ⊂ I)%I as [| Hi]; [ easy | exfalso ].
+now apply Hi; intros.
+Qed.
+
+Theorem I_ord_le_antisymm I J : (I ≤ J)%I = true → (J ≤ I)%I = true → I = J.
+Proof.
+intros * Hij Hji.
+progress unfold I_leb in Hij, Hji.
+destruct (I ⊂ J)%I as [H1| H1]; [ | easy ].
+destruct (J ⊂ I)%I as [H2| H2]; [ | easy ].
+apply eq_ideal_eq.
+apply functional_extensionality_dep.
+intros x.
+apply propositional_extensionality.
+split; [ apply H1 | apply H2 ].
+Qed.
+
 (* to be completed
 Definition I_ring_like_ord' : ring_like_ord (ideal T) :=
   let roi := I_ring_like_op' in
   {| rngl_ord_le_dec := I_ord_le_dec;
-     rngl_ord_le_refl := true;
-     rngl_ord_le_antisymm := true;
+     rngl_ord_le_refl := I_ord_le_refl;
+     rngl_ord_le_antisymm := I_ord_le_antisymm;
      rngl_ord_le_trans := true;
      rngl_ord_add_le_mono_l := true;
      rngl_ord_mul_le_compat_nonneg := true;
