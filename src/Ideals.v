@@ -1692,7 +1692,56 @@ destruct Hu as (Hxi, Hyj).
 now split; [ apply H1 | apply H2 ].
 Qed.
 
+Theorem I_ord_mul_le_compat_nonpos I J K L :
+  (K ≤ I)%I = true ∧ (I ≤ 0)%I = true
+  → (L ≤ J)%I = true ∧ (J ≤ 0)%I = true
+  → (I * J ≤ K * L)%I = true.
+Proof.
+intros * (Hki, Hi) (Hlj, Hj).
+progress unfold I_leb in Hki, Hi, Hlj, Hj |-*.
+destruct (I * J ⊂ K * L)%I as [H1| H1]; [ easy | exfalso ].
+apply H1; clear H1.
+destruct (I ⊂ 0)%I as [H3| H3]; [ clear Hi | easy ].
+destruct (J ⊂ 0)%I as [H4| H4]; [ clear Hj | easy ].
+intros u Hu.
+destruct Hu as (xy & Hx & Hu & Hv).
+subst u.
+exists xy.
+split; [ easy | ].
+split; [ | easy ].
+intros x y Hxy.
+specialize (Hu _ _ Hxy).
+destruct Hu as (Hxi, Hyj).
+apply H3 in Hxi.
+apply H4 in Hyj.
+cbn in Hxi, Hyj; subst x y.
+split; apply i_zero.
+Qed.
+
 (* to be completed
+Theorem I_ord_not_le I J : (I ≤ J)%I ≠ true → I ≠ J ∧ (J ≤ I)%I = true.
+Proof.
+intros * Hij.
+progress unfold I_leb in Hij |-*.
+destruct (J ⊂ I)%I as [H1| H1]. {
+  split; [ | easy ].
+  destruct (I ⊂ J)%I as [H2| H2]; [ easy | clear Hij ].
+  intros Hij; apply H2; clear H2.
+  now subst J.
+} {
+  exfalso.
+  destruct (I ⊂ J)%I as [H2| H2]; [ easy | clear Hij ].
+  apply H1; clear H1.
+  intros z Hz.
+Check @rngl_ord_not_le.
+(* c'est faux, ça : ça suppose que l'ordre est total *)
+(* enfin, je crois que c'est ça le problème *)
+...
+  exfalso.
+  apply H2; clear H2.
+  intros t Ht.
+...
+
 Definition I_ring_like_ord' : ring_like_ord (ideal T) :=
   let roi := I_ring_like_op' in
   {| rngl_ord_le_dec := I_ord_le_dec;
@@ -1701,7 +1750,7 @@ Definition I_ring_like_ord' : ring_like_ord (ideal T) :=
      rngl_ord_le_trans := I_ord_le_trans;
      rngl_ord_add_le_mono_l := NA;
      rngl_ord_mul_le_compat_nonneg := I_ord_mul_le_compat_nonneg;
-     rngl_ord_mul_le_compat_nonpos := true;
+     rngl_ord_mul_le_compat_nonpos := I_ord_mul_le_compat_nonpos;
      rngl_ord_not_le := true |}.
 
 Definition I_ring_like_prop' : ring_like_prop (ideal T) :=
