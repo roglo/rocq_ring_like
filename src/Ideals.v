@@ -1656,13 +1656,26 @@ apply propositional_extensionality.
 split; [ apply H1 | apply H2 ].
 Qed.
 
+Theorem I_ord_le_trans I J K :
+  (I ≤ J)%I = true → (J ≤ K)%I = true → (I ≤ K)%I = true.
+Proof.
+intros * Hij Hjk.
+progress unfold I_leb in Hij, Hjk |-*.
+destruct (I ⊂ K)%I as [H1| H1]; [ easy | exfalso ].
+apply H1; clear H1.
+intros x Hi.
+destruct (I ⊂ J)%I as [H1| H1]; [ | easy ].
+destruct (J ⊂ K)%I as [H2| H2]; [ | easy ].
+now apply H2, H1.
+Qed.
+
 (* to be completed
 Definition I_ring_like_ord' : ring_like_ord (ideal T) :=
   let roi := I_ring_like_op' in
   {| rngl_ord_le_dec := I_ord_le_dec;
      rngl_ord_le_refl := I_ord_le_refl;
      rngl_ord_le_antisymm := I_ord_le_antisymm;
-     rngl_ord_le_trans := true;
+     rngl_ord_le_trans := I_ord_le_trans;
      rngl_ord_add_le_mono_l := true;
      rngl_ord_mul_le_compat_nonneg := true;
      rngl_ord_mul_le_compat_nonpos := true;
