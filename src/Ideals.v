@@ -1670,6 +1670,13 @@ now apply H2, H1.
 Qed.
 
 (* to be completed
+Theorem I_ord_mul_le_compat_nonneg I J K L :
+  (0 ≤ I)%I = true ∧ (I ≤ K)%I = true
+  → (0 ≤ J)%I = true ∧ (J ≤ L)%I = true
+  → (I * J ≤ K * L)%I = true.
+Proof.
+...
+
 Definition I_ring_like_ord' : ring_like_ord (ideal T) :=
   let roi := I_ring_like_op' in
   {| rngl_ord_le_dec := I_ord_le_dec;
