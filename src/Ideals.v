@@ -1599,3 +1599,81 @@ Definition I_ring_like_prop : ring_like_prop (ideal T) :=
      rngl_characteristic_prop := I_characteristic_prop |}.
 
 End a.
+
+Section a.
+
+Context {T : Type}.
+Context {ro : ring_like_op T}.
+Context {rp : ring_like_prop T}.
+Context {ix : ideal_ctx T}.
+
+(* ideals where inclusion is decidable in order to make a version
+   where there is an order relation *)
+
+Axiom i_subset_incl_dec : ∀ I J,
+  { ∀ x, i_subset I x → i_subset J x } +
+  { ¬ ∀ x, i_subset I x → i_subset J x }.
+
+Definition I_leb (I J : ideal T) := bool_of_sumbool (i_subset_incl_dec I J).
+
+Notation "I '⊂' J" := (i_subset_incl_dec I J) (at level 70) : ideal_scope.
+Notation "I ≤ J" := (I_leb I J) : ideal_scope.
+
+Definition I_ring_like_op' : ring_like_op (ideal T) :=
+  {| rngl_zero := I_zero;
+     rngl_one := I_one;
+     rngl_add := I_add;
+     rngl_mul := I_mul;
+     rngl_opt_opp_or_psub := None;
+     rngl_opt_inv_or_pdiv := None;
+     rngl_opt_is_zero_divisor := Some (λ _, True);
+     rngl_opt_eq_dec := None;
+     rngl_opt_leb := Some I_leb |}.
+
+Theorem I_ord_le_dec I J : {(I ≤ J)%I = true} + {(I ≤ J)%I ≠ true}.
+Proof.
+progress unfold I_leb.
+now destruct (I ⊂ J)%I; [ left | right ].
+Qed.
+
+(* to be completed
+Definition I_ring_like_ord' : ring_like_ord (ideal T) :=
+  let roi := I_ring_like_op' in
+  {| rngl_ord_le_dec := I_ord_le_dec;
+     rngl_ord_le_refl := true;
+     rngl_ord_le_antisymm := true;
+     rngl_ord_le_trans := true;
+     rngl_ord_add_le_mono_l := true;
+     rngl_ord_mul_le_compat_nonneg := true;
+     rngl_ord_mul_le_compat_nonpos := true;
+     rngl_ord_not_le := true |}.
+
+Definition I_ring_like_prop' : ring_like_prop (ideal T) :=
+  let roi := I_ring_like_op' in
+  {| rngl_mul_is_comm := rngl_mul_is_comm T;
+     rngl_is_archimedean := false;
+     rngl_is_alg_closed := false;
+     rngl_characteristic := Nat.b2n (rngl_characteristic T =? 1);
+     rngl_add_comm := I_add_comm;
+     rngl_add_assoc := I_add_assoc;
+     rngl_add_0_l := I_add_0_l;
+     rngl_mul_assoc := I_mul_assoc;
+     rngl_mul_1_l := I_mul_1_l;
+     rngl_mul_add_distr_l := I_mul_add_distr_l;
+     rngl_opt_mul_comm := I_opt_mul_comm;
+     rngl_opt_mul_1_r := I_opt_mul_1_r;
+     rngl_opt_mul_add_distr_r := I_opt_mul_add_distr_r;
+     rngl_opt_add_opp_diag_l := NA;
+     rngl_opt_add_sub := NA;
+     rngl_opt_sub_add_distr := NA;
+     rngl_opt_mul_inv_diag_l := NA;
+     rngl_opt_mul_inv_diag_r := NA;
+     rngl_opt_mul_div := NA;
+     rngl_opt_integral := I_opt_integral;
+     rngl_opt_alg_closed := NA;
+     rngl_opt_ord := Some true;
+     rngl_opt_archimedean := NA;
+     rngl_characteristic_prop := I_characteristic_prop |}.
+*)
+
+End a.
