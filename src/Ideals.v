@@ -1669,14 +1669,30 @@ destruct (J ⊂ K)%I as [H2| H2]; [ | easy ].
 now apply H2, H1.
 Qed.
 
-(* to be completed
 Theorem I_ord_mul_le_compat_nonneg I J K L :
   (0 ≤ I)%I = true ∧ (I ≤ K)%I = true
   → (0 ≤ J)%I = true ∧ (J ≤ L)%I = true
   → (I * J ≤ K * L)%I = true.
 Proof.
-...
+intros * (Hi, Hik) (Hj, Hjl).
+progress unfold I_leb in Hi, Hik, Hj, Hjl |-*.
+destruct (I * J ⊂ K * L)%I as [H1| H1]; [ easy | exfalso ].
+apply H1; clear H1.
+destruct (I ⊂ K)%I as [H1| H1]; [ clear Hik | easy ].
+destruct (J ⊂ L)%I as [H2| H2]; [ clear Hjl | easy ].
+intros u Hu.
+destruct Hu as (xy & Hx & Hu & Hv).
+subst u.
+exists xy.
+split; [ easy | ].
+split; [ | easy ].
+intros x y Hxy.
+specialize (Hu _ _ Hxy).
+destruct Hu as (Hxi, Hyj).
+now split; [ apply H1 | apply H2 ].
+Qed.
 
+(* to be completed
 Definition I_ring_like_ord' : ring_like_ord (ideal T) :=
   let roi := I_ring_like_op' in
   {| rngl_ord_le_dec := I_ord_le_dec;
@@ -1684,7 +1700,7 @@ Definition I_ring_like_ord' : ring_like_ord (ideal T) :=
      rngl_ord_le_antisymm := I_ord_le_antisymm;
      rngl_ord_le_trans := I_ord_le_trans;
      rngl_ord_add_le_mono_l := NA;
-     rngl_ord_mul_le_compat_nonneg := true;
+     rngl_ord_mul_le_compat_nonneg := I_ord_mul_le_compat_nonneg;
      rngl_ord_mul_le_compat_nonpos := true;
      rngl_ord_not_le := true |}.
 
