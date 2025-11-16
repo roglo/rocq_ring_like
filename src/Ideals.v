@@ -1670,58 +1670,13 @@ now apply H2, H1.
 Qed.
 
 (* to be completed
-Theorem I_ord_add_le_mono_l I J K :
-  (J ≤ K)%I = true ↔ (I + J ≤ I + K)%I = true.
-Proof.
-intros.
-progress unfold I_leb.
-split; intros Hjk. {
-  destruct (I + J ⊂ I + K)%I as [H1| H1]; [ easy | exfalso ].
-  apply H1; clear H1.
-  destruct (J ⊂ K)%I as [H1| H1]; [ clear Hjk | easy ].
-  intros x Hx.
-  destruct Hx as (u & v & H2 & H3 & H4).
-  subst x.
-  exists u, v.
-  split; [ easy | ].
-  split; [ | easy ].
-  now apply H1.
-} {
-  destruct (J ⊂ K)%I as [H1| H1]; [ easy | exfalso ].
-  apply H1; clear H1.
-  destruct (I + J ⊂ I + K)%I as [H1| H1]; [ clear Hjk | easy ].
-  intros x Hx.
-  specialize (H1 x) as H2.
-  assert (H : (x ∈ I + J)%I). {
-    exists 0%L, x.
-    rewrite rngl_add_0_l.
-    split; [ apply i_zero | easy ].
-  }
-  specialize (H2 H); clear H.
-  destruct H2 as (y & z & H2 & H3 & H4); subst x.
-  apply i_add; [ | easy ].
-  specialize (H1 y) as H4.
-  assert (H : (y ∈ I + J)%I). {
-    exists y, 0%L.
-    rewrite rngl_add_0_r.
-    split; [ easy | ].
-    split; [ apply i_zero | easy ].
-  }
-  specialize (H4 H); clear H.
-  destruct H4 as (t & u & H4 & H5 & H6); subst y.
-  apply i_add; [ | easy ].
-(* chais pas. Mais j'ai un doute : si ce théorème est vrai, je me demande
-   si ça implique pas que l'addition des idéaux est simplifiable ; or,
-   l'addition des idéaux n'est PAS simplifiable ! *)
-...
-
 Definition I_ring_like_ord' : ring_like_ord (ideal T) :=
   let roi := I_ring_like_op' in
   {| rngl_ord_le_dec := I_ord_le_dec;
      rngl_ord_le_refl := I_ord_le_refl;
      rngl_ord_le_antisymm := I_ord_le_antisymm;
      rngl_ord_le_trans := I_ord_le_trans;
-     rngl_ord_add_le_mono_l := true;
+     rngl_ord_add_le_mono_l := NA;
      rngl_ord_mul_le_compat_nonneg := true;
      rngl_ord_mul_le_compat_nonpos := true;
      rngl_ord_not_le := true |}.

@@ -944,7 +944,7 @@ assert (Hio :
 }
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 intros * Hab.
-apply (rngl_eq_add_0 Hor) in Hab; cycle 1. {
+apply (rngl_eq_add_0 Hos Hor) in Hab; cycle 1. {
   apply (rngl_mul_diag_nonneg Hos Hor).
 } {
   apply (rngl_mul_diag_nonneg Hos Hor).

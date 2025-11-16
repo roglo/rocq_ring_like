@@ -190,7 +190,7 @@ Theorem rngl_1_le_2 :
   (1 ≤ 2)%L.
 Proof.
 intros Hos Hor.
-apply (rngl_le_add_l Hor).
+apply (rngl_le_add_l Hos Hor).
 apply (rngl_0_le_1 Hos Hor).
 Qed.
 
@@ -241,7 +241,7 @@ Proof.
 intros Hos Hc1 Hor.
 apply (rngl_lt_le_trans Hor _ 1).
 apply (rngl_0_lt_1 Hos Hc1 Hor).
-apply (rngl_le_add_l Hor).
+apply (rngl_le_add_l Hos Hor).
 apply (rngl_0_le_2 Hos Hor).
 Qed.
 
@@ -351,7 +351,7 @@ intros.
 induction n; [ pauto | ].
 rewrite rngl_of_nat_succ.
 eapply (rngl_le_trans Hor); [ apply IHn | ].
-apply (rngl_le_add_l Hor).
+apply (rngl_le_add_l Hos Hor).
 apply (rngl_0_le_1 Hos Hor).
 Qed.
 
@@ -364,7 +364,7 @@ Theorem rngl_of_nat_inj_le :
   ∀ i j, i ≤ j ↔ (rngl_of_nat i ≤ rngl_of_nat j)%L.
 Proof.
 intros Hos Hc1 Hor *.
-apply (rngl_mul_nat_inj_le Hor).
+apply (rngl_mul_nat_inj_le Hos Hor).
 apply (rngl_0_lt_1 Hos Hc1 Hor).
 Qed.
 

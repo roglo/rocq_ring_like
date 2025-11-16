@@ -237,7 +237,7 @@ rewrite (rngl_squ_sqrt). 2: {
   apply (rngl_add_squ_nonneg Hos Hor).
 }
 rewrite (Brahmagupta_Fibonacci_identity_2 Hic Hop).
-apply (rngl_le_add_r Hor).
+apply (rngl_le_add_r Hos Hor).
 apply (rngl_squ_nonneg Hos Hor).
 Qed.
 
