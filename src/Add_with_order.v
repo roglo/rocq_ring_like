@@ -1539,81 +1539,80 @@ Theorem rngl_leb_opp_r :
   rngl_is_totally_ordered T = true →
   ∀ a b, (a ≤? -b)%L = (b ≤? -a)%L.
 Proof.
-intros Hop Hor *.
+intros Hop Hto *.
 remember (a ≤? -b)%L as ab eqn:Hab.
 symmetry in Hab.
 symmetry.
 destruct ab. {
   apply rngl_leb_le in Hab.
   apply rngl_leb_le.
-  apply (rngl_le_opp_r Hop Hor) in Hab.
+  apply (rngl_le_opp_r Hop Hto) in Hab.
   rewrite rngl_add_comm in Hab.
-  now apply (rngl_le_opp_r Hop Hor) in Hab.
+  now apply (rngl_le_opp_r Hop Hto) in Hab.
 } {
-...
   apply (rngl_leb_gt_iff Hto) in Hab.
   apply (rngl_leb_gt_iff Hto).
-  apply (rngl_lt_opp_l Hop Hor).
+  apply (rngl_lt_opp_l Hop Hto).
   rewrite rngl_add_comm.
-  now apply (rngl_lt_opp_l Hop Hor).
+  now apply (rngl_lt_opp_l Hop Hto).
 }
 Qed.
 
 Theorem rngl_leb_0_opp :
   rngl_has_opp T = true →
-  rngl_is_ordered T = true →
+  rngl_is_totally_ordered T = true →
   ∀ a, (0 ≤? - a)%L = (a ≤? 0)%L.
 Proof.
-intros Hop Hor *.
-rewrite (rngl_leb_opp_r Hop Hor).
+intros Hop Hto *.
+rewrite (rngl_leb_opp_r Hop Hto).
 now rewrite (rngl_opp_0 Hop).
 Qed.
 
 Theorem rngl_ltb_opp_l :
   rngl_has_opp T = true →
-  rngl_is_ordered T = true →
+  rngl_is_totally_ordered T = true →
   ∀ a b, (-a <? b)%L = (-b <? a)%L.
 Proof.
-intros Hop Hor *.
+intros Hop Hto *.
 remember (-a <? b)%L as ab eqn:Hab.
 symmetry in Hab.
 symmetry.
 destruct ab. {
   apply rngl_ltb_lt in Hab.
   apply rngl_ltb_lt.
-  apply (rngl_lt_opp_l Hop Hor) in Hab.
+  apply (rngl_lt_opp_l Hop Hto) in Hab.
   rewrite rngl_add_comm in Hab.
-  now apply (rngl_lt_opp_l Hop Hor) in Hab.
+  now apply (rngl_lt_opp_l Hop Hto) in Hab.
 } {
-  apply (rngl_ltb_ge_iff Hor) in Hab.
+  apply (rngl_ltb_ge_iff Hto) in Hab.
   apply rngl_ltb_ge.
-  apply (rngl_le_opp_r Hop Hor).
+  apply (rngl_le_opp_r Hop Hto).
   rewrite rngl_add_comm.
-  now apply (rngl_le_opp_r Hop Hor).
+  now apply (rngl_le_opp_r Hop Hto).
 }
 Qed.
 
 Theorem rngl_ltb_opp_r :
   rngl_has_opp T = true →
-  rngl_is_ordered T = true →
+  rngl_is_totally_ordered T = true →
   ∀ a b, (a <? -b)%L = (b <? -a)%L.
 Proof.
-intros Hop Hor *.
+intros Hop Hto *.
 remember (a <? -b)%L as ab eqn:Hab.
 symmetry in Hab.
 symmetry.
 destruct ab. {
   apply rngl_ltb_lt in Hab.
   apply rngl_ltb_lt.
-  apply (rngl_lt_opp_r Hop Hor) in Hab.
+  apply (rngl_lt_opp_r Hop Hto) in Hab.
   rewrite rngl_add_comm in Hab.
-  now apply (rngl_lt_opp_r Hop Hor) in Hab.
+  now apply (rngl_lt_opp_r Hop Hto) in Hab.
 } {
-  apply (rngl_ltb_ge_iff Hor) in Hab.
+  apply (rngl_ltb_ge_iff Hto) in Hab.
   apply rngl_ltb_ge.
-  apply (rngl_le_opp_l Hop Hor).
+  apply (rngl_le_opp_l Hop Hto).
   rewrite rngl_add_comm.
-  now apply (rngl_le_opp_l Hop Hor).
+  now apply (rngl_le_opp_l Hop Hto).
 }
 Qed.
 
@@ -1623,7 +1622,8 @@ Theorem rngl_archimedean_ub :
   ∀ a b : T, (0 < a < b)%L →
   ∃ₜ n : nat, (rngl_mul_nat a n ≤ b < rngl_mul_nat a (n + 1))%L.
 Proof.
-intros Har Hor * (Ha, Hab).
+intros Har Hto * (Ha, Hab).
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 specialize rngl_opt_archimedean as H1.
 rewrite Har, Hor in H1; cbn in H1.
 specialize (H1 a b Ha).

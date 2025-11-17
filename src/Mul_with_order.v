@@ -54,20 +54,21 @@ Qed.
 
 Theorem rngl_mul_le_compat_nonpos_nonneg :
   rngl_has_opp T = true →
-  rngl_is_ordered T = true →
+  rngl_is_totally_ordered T = true →
   ∀ a b c d,
   (0 ≤ c ≤ a)%L
   → (b ≤ d ≤ 0)%L
   → (a * b ≤ c * d)%L.
 Proof.
-intros Hop Hor.
+intros Hop Hto.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 intros * Had Hcd.
-apply (rngl_opp_le_compat Hop Hor).
+apply (rngl_opp_le_compat Hop Hto).
 do 2 rewrite <- (rngl_mul_opp_r Hop).
 apply (rngl_mul_le_compat_nonneg Hor); [ easy | ].
 split.
-now apply (rngl_opp_nonneg_nonpos Hop Hor).
-now apply -> (rngl_opp_le_compat Hop Hor).
+now apply (rngl_opp_nonneg_nonpos Hop Hto).
+now apply -> (rngl_opp_le_compat Hop Hto).
 Qed.
 
 Theorem rngl_mul_nonneg_nonneg :
@@ -110,6 +111,7 @@ assert (H : (0 ≤ 0 ≤ a)%L) by now split; [ pauto | ].
 specialize (H1 H); clear H.
 assert (H : (0 ≤ 0 ≤ - b)%L). {
   split; [ pauto | ].
+...
   apply (rngl_opp_le_compat Hop Hor) in Hb.
   now rewrite (rngl_opp_0 Hop) in Hb.
 }
