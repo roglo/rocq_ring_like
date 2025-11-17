@@ -229,12 +229,12 @@ Qed.
 Theorem rngl_2_neq_0 :
   rngl_has_opp_or_psub T = true →
   rngl_characteristic T ≠ 1 →
-  rngl_is_ordered T = true →
+  rngl_is_totally_ordered T = true →
   (2 ≠ 0)%L.
 Proof.
-intros Hos Hc1 Hor.
-...
-specialize (rngl_0_lt_2 Hos Hc1 Hor) as H5.
+intros Hos Hc1 Hto.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+specialize (rngl_0_lt_2 Hos Hc1 Hto) as H5.
 intros H; rewrite H in H5.
 now apply (rngl_lt_irrefl Hor) in H5.
 Qed.
@@ -242,62 +242,64 @@ Qed.
 Theorem rngl_0_lt_3 :
   rngl_has_opp_or_psub T = true →
   rngl_characteristic T ≠ 1 →
-  rngl_is_ordered T = true →
+  rngl_is_totally_ordered T = true →
  (0 < 3)%L.
 Proof.
-intros Hos Hc1 Hor.
+intros Hos Hc1 Hto.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 apply (rngl_lt_le_trans Hto _ 1).
-apply (rngl_0_lt_1 Hos Hc1 Hor).
+apply (rngl_0_lt_1 Hos Hc1 Hto).
 apply (rngl_le_add_l Hos Hor).
-apply (rngl_0_le_2 Hos Hor).
+apply (rngl_0_le_2 Hos Hto).
 Qed.
 
 Theorem rngl_3_neq_0 :
   rngl_has_opp_or_psub T = true →
   rngl_characteristic T ≠ 1 →
-  rngl_is_ordered T = true →
+  rngl_is_totally_ordered T = true →
   (3 ≠ 0)%L.
 Proof.
-intros Hos Hc1 Hor.
-specialize (rngl_0_lt_3 Hos Hc1 Hor) as H.
+intros Hos Hc1 Hto.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+specialize (rngl_0_lt_3 Hos Hc1 Hto) as H.
 intros H1; rewrite H1 in H.
 now apply (rngl_lt_irrefl Hor) in H.
 Qed.
 
 Theorem rngl_opp_1_le_0 :
   rngl_has_opp T = true →
-  rngl_is_ordered T = true →
+  rngl_is_totally_ordered T = true →
   (-1 ≤ 0)%L.
 Proof.
-intros Hop Hor.
+intros Hop Hto.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
-apply (rngl_opp_nonpos_nonneg Hop Hor).
-apply (rngl_0_le_1 Hos Hor).
+apply (rngl_opp_nonpos_nonneg Hop Hto).
+apply (rngl_0_le_1 Hos Hto).
 Qed.
 
 Theorem rngl_opp_1_lt_0 :
   rngl_has_opp T = true →
-  rngl_is_ordered T = true →
+  rngl_is_totally_ordered T = true →
   rngl_characteristic T ≠ 1 →
   (-1 < 0)%L.
 Proof.
-intros Hop Hor Hc1.
+intros Hop Hto Hc1.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
-apply (rngl_opp_neg_pos Hop Hor).
-apply (rngl_0_lt_1 Hos Hc1 Hor).
+apply (rngl_opp_neg_pos Hop Hto).
+apply (rngl_0_lt_1 Hos Hc1 Hto).
 Qed.
 
 Theorem rngl_opp_1_lt_1 :
   rngl_has_opp T = true →
-  rngl_is_ordered T = true →
+  rngl_is_totally_ordered T = true →
   rngl_characteristic T ≠ 1 →
   (-1 < 1)%L.
 Proof.
-intros Hop Hor Hc1.
+intros Hop Hto Hc1.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 apply (rngl_lt_le_trans Hto _ 0).
-apply (rngl_opp_1_lt_0 Hop Hor Hc1).
-apply (rngl_0_le_1 Hos Hor).
+apply (rngl_opp_1_lt_0 Hop Hto Hc1).
+apply (rngl_0_le_1 Hos Hto).
 Qed.
 
 Theorem rngl_opp_1_le_1 :
@@ -308,6 +310,7 @@ Proof.
 intros Hop Hor.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 apply (rngl_le_trans Hor _ 0).
+...
 apply (rngl_opp_1_le_0 Hop Hor).
 apply (rngl_0_le_1 Hos Hor).
 Qed.
