@@ -553,64 +553,67 @@ Qed.
 
 Theorem rngl_pow_ge_1 :
   rngl_has_opp_or_psub T = true →
-  rngl_is_ordered T = true →
+  rngl_is_totally_ordered T = true →
   ∀ a n, (1 ≤ a → 1 ≤ a ^ n)%L.
 Proof.
-intros Hos Hor * Hza.
+intros Hos Hto * Hza.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 induction n; [ pauto | cbn ].
 rewrite <- (rngl_mul_1_l 1%L).
 apply (rngl_mul_le_compat_nonneg Hor). {
   split; [ | easy ].
-...
-  apply (rngl_0_le_1 Hos Hor).
+  apply (rngl_0_le_1 Hos Hto).
 } {
   split; [ | easy ].
-  apply (rngl_0_le_1 Hos Hor).
+  apply (rngl_0_le_1 Hos Hto).
 }
 Qed.
 
 Theorem rngl_pow_le_mono_l :
   rngl_has_opp_or_psub T = true →
-  rngl_is_ordered T = true →
+  rngl_is_totally_ordered T = true →
   ∀ a b n, (0 ≤ a)%L → (a ≤ b)%L → (a ^ n ≤ b ^ n)%L.
 Proof.
-intros Hos Hor.
+intros Hos Hto.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 intros * H1a Hmn.
 induction n; [ pauto | cbn ].
 apply (rngl_mul_le_compat_nonneg Hor); [ easy | ].
 split; [ | easy ].
 clear IHn.
-induction n; cbn; [ apply (rngl_0_le_1 Hos Hor) | ].
+induction n; cbn; [ apply (rngl_0_le_1 Hos Hto) | ].
 now apply (rngl_mul_nonneg_nonneg Hos Hor).
 Qed.
 
 Theorem rngl_pow_le_mono_r :
   rngl_has_opp T = true →
-  rngl_is_ordered T = true →
+  rngl_is_totally_ordered T = true →
   ∀ a m n, (1 ≤ a)%L → m ≤ n → (a ^ m ≤ a ^ n)%L.
 Proof.
-intros Hop Hor.
+intros Hop Hto.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 intros * H1a Hmn.
 revert n Hmn.
 induction m; intros; cbn. {
-  now apply (rngl_pow_ge_1 Hos Hor).
+  now apply (rngl_pow_ge_1 Hos Hto).
 }
 destruct n; [ easy | cbn ].
 apply Nat.succ_le_mono in Hmn.
-apply (rngl_mul_le_mono_nonneg_l Hop Hor). {
+apply (rngl_mul_le_mono_nonneg_l Hop Hto). {
   apply (rngl_le_trans Hor _ 1%L); [ | easy ].
-  apply (rngl_0_le_1 Hos Hor).
+  apply (rngl_0_le_1 Hos Hto).
 }
 now apply IHm.
 Qed.
 
 Theorem rngl_abs_le_squ_le :
   rngl_has_opp T = true →
-  rngl_is_ordered T = true →
+  rngl_is_totally_ordered T = true →
   ∀ a b, (rngl_abs a ≤ rngl_abs b → a² ≤ b²)%L.
 Proof.
-intros Hop Hor.
+intros Hop Hto.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 intros * Hab.
 progress unfold rngl_squ.
@@ -621,11 +624,11 @@ destruct az. {
   apply rngl_leb_le in Haz.
   destruct bz. {
     apply rngl_leb_le in Hbz.
-    apply (rngl_opp_le_compat Hop Hor) in Hab.
+    apply (rngl_opp_le_compat Hop Hto) in Hab.
     now apply (rngl_mul_le_compat_nonpos Hor).
   } {
     apply (rngl_leb_gt_iff Hto) in Hbz.
-    apply (rngl_opp_le_compat Hop Hor) in Haz.
+    apply (rngl_opp_le_compat Hop Hto) in Haz.
     rewrite (rngl_opp_0 Hop) in Haz.
     rewrite <- (rngl_mul_opp_opp Hop).
     apply (rngl_lt_le_incl Hto) in Hbz.
@@ -635,7 +638,7 @@ destruct az. {
   apply (rngl_leb_gt_iff Hto) in Haz.
   destruct bz. {
     apply rngl_leb_le in Hbz.
-    apply (rngl_opp_le_compat Hop Hor) in Hbz.
+    apply (rngl_opp_le_compat Hop Hto) in Hbz.
     rewrite (rngl_opp_0 Hop) in Hbz.
     rewrite <- (rngl_mul_opp_opp Hop b).
     apply (rngl_lt_le_incl Hto) in Haz.
@@ -665,6 +668,7 @@ assert (Heo : rngl_has_eq_dec_or_order T = true). {
 intros a.
 destruct (rngl_ltb_dec 1 (rngl_abs a))%L as [Hx1| Hx1]. {
   apply rngl_ltb_lt in Hx1.
+...
   apply (rngl_archimedean_ub Har Hor).
   split; [ apply (rngl_0_lt_1 Hos Hc1 Hor) | easy ].
 }
