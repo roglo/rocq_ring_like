@@ -149,9 +149,8 @@ intros * Hor a b.
 progress unfold rngl_lt.
 progress unfold rngl_le.
 specialize (rngl_opt_ord T) as rr.
-rewrite Hor in rr.
-move rr after rp.
-specialize rngl_ord_not_le as H1.
+rewrite Hor in rr; move rr after rp.
+specialize rngl_ord_total_prop as H1.
 specialize (rngl_le_antisymm Hor) as H2.
 progress unfold rngl_le in H1.
 progress unfold rngl_le in H2.
@@ -160,10 +159,9 @@ split. {
   intros Hab.
   specialize (H1 b a) as H3.
   rewrite Hab in H3.
-  assert (H : false ≠ true) by easy.
-  specialize (H3 H); clear H.
+  destruct H3 as [H3| H3]; [ easy | ].
   split; [ easy | ].
-  destruct H3; congruence.
+  intros H; subst b; congruence.
 } {
   intros (H3, H4).
   remember (rngl_leb b a) as x eqn:Hx; symmetry in Hx.
@@ -288,9 +286,8 @@ intros Hor *.
 progress unfold rngl_lt.
 progress unfold rngl_le.
 specialize (rngl_opt_ord T) as rr.
-rewrite Hor in rr.
-move rr after rp.
-specialize rngl_ord_not_le as H1.
+rewrite Hor in rr; move rr after rp.
+specialize rngl_ord_total_prop as H1.
 specialize (rngl_le_antisymm Hor) as H2.
 specialize (rngl_le_refl Hor) as H3.
 progress unfold rngl_le in H1.
@@ -304,7 +301,10 @@ split. {
   now specialize (H2 _ _ H Hba); right.
 } {
   intros H.
-  destruct H as [H4| H4]; [ now apply H1; rewrite H4 | ].
+  destruct H as [H4| H4]. {
+    specialize (H1 b a).
+    destruct H1 as [H1| H1]; [ congruence | easy ].
+  }
   subst b; apply H3.
 }
 Qed.
@@ -325,10 +325,12 @@ Theorem rngl_not_le :
 Proof.
 intros Hor *.
 specialize (rngl_opt_ord T) as rr.
-rewrite Hor in rr.
-move rr after rp.
-specialize rngl_ord_not_le as H.
-apply H.
+rewrite Hor in rr; move rr after rp.
+specialize rngl_ord_total_prop as H.
+intros H1.
+destruct (H a b) as [H2| H2]; [ easy | ].
+split; [ | easy ].
+now intros H3; subst a.
 Qed.
 
 Theorem rngl_nle_gt_iff :

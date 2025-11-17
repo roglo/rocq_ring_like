@@ -51,17 +51,16 @@ Qed.
 Theorem nat_characteristic_prop : ∀ i, rngl_mul_nat 1 (S i) ≠ 0.
 Proof. easy. Qed.
 
-Theorem Nat_not_le :
-  ∀ a b : nat, (a <=? b) ≠ true → a ≠ b ∧ (b <=? a) = true.
+Theorem Nat_ord_total_prop : ∀ a b : nat, (a ≤ b)%L ∨ (b ≤ a)%L.
 Proof.
-intros * Hab.
-apply Bool.not_true_iff_false in Hab.
-apply Nat.leb_gt in Hab.
-split. {
-  now intros H; subst b; apply Nat.lt_irrefl in Hab.
+intros; cbn.
+destruct (le_dec a b) as [Hab| Hab]. {
+  now left; apply Nat.leb_le.
+} {
+  right; apply Nat.leb_le.
+  apply Nat.nle_gt in Hab.
+  now apply Nat.lt_le_incl.
 }
-apply Nat.leb_le.
-now apply Nat.lt_le_incl.
 Qed.
 
 Theorem Nat_opt_le_dec :
@@ -149,14 +148,14 @@ now subst a b.
 Qed.
 
 Definition nat_ring_like_ord :=
-  {| rngl_ord_le_dec := Nat_opt_le_dec;
-     rngl_ord_le_refl := Nat.leb_refl;
+   {| rngl_ord_le_refl := Nat.leb_refl;
      rngl_ord_le_antisymm := Nat_le_antisymm;
      rngl_ord_le_trans := Nat_le_trans;
      rngl_ord_add_le_mono_l := Nat_add_le_mono_l;
      rngl_ord_mul_le_compat_nonneg := Nat_mul_le_compat_nonneg;
      rngl_ord_mul_le_compat_nonpos := Nat_mul_le_compat_nonpos;
-     rngl_ord_not_le := Nat_not_le |}.
+     rngl_ord_le_dec := Nat_opt_le_dec;
+     rngl_ord_total_prop := Nat_ord_total_prop |}.
 
 Instance nat_ring_like_prop : ring_like_prop nat :=
   {| rngl_mul_is_comm := true;

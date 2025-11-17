@@ -89,14 +89,16 @@ apply Z.leb_le.
 now apply Z.mul_le_mono_nonpos.
 Qed.
 
-Theorem Z_not_le :
-  ∀ a b : Z, (a <=? b)%Z ≠ true → a ≠ b ∧ (b <=? a)%Z = true.
+Theorem Z_ord_total_prop : ∀ a b, (a ≤ b)%L ∨ (b ≤ a)%L.
 Proof.
-intros * Hab.
-apply Bool.not_true_iff_false in Hab.
-apply Z.leb_gt in Hab.
-split; [ now intros H; subst b; apply Z.lt_irrefl in Hab | ].
-now apply Z.leb_le, Z.lt_le_incl.
+intros; cbn.
+destruct (Z_le_dec a b) as [Hab| Hab]. {
+  now left; apply Z.leb_le.
+} {
+  right; apply Z.leb_le.
+  apply Z.nle_gt in Hab.
+  now apply Z.lt_le_incl.
+}
 Qed.
 
 Theorem Z_opt_le_dec : ∀ a b : Z, {(a <=? b)%Z = true} + {(a <=? b)%Z ≠ true}.
@@ -256,14 +258,14 @@ now rewrite rngl_mul_nat_Z.
 Qed.
 
 Definition Z_ring_like_ord :=
-  {| rngl_ord_le_dec := Z_opt_le_dec;
-     rngl_ord_le_refl := Z_le_refl;
+  {| rngl_ord_le_refl := Z_le_refl;
      rngl_ord_le_antisymm := Z_le_antisymm;
      rngl_ord_le_trans := Z_le_trans;
      rngl_ord_add_le_mono_l := Z_add_le_mono_l;
      rngl_ord_mul_le_compat_nonneg := Z_mul_le_compat_nonneg;
      rngl_ord_mul_le_compat_nonpos := Z_mul_le_compat_nonpos;
-     rngl_ord_not_le := Z_not_le |}.
+     rngl_ord_le_dec := Z_opt_le_dec;
+     rngl_ord_total_prop := Z_ord_total_prop |}.
 
 Definition Z_ring_like_prop : ring_like_prop Z :=
   {| rngl_mul_is_comm := true;
