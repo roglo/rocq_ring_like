@@ -383,21 +383,20 @@ Qed.
 Theorem rngl_of_nat_inj_lt :
   rngl_has_opp_or_psub T = true →
   rngl_characteristic T ≠ 1 →
-  rngl_is_ordered T = true →
+  rngl_is_totally_ordered T = true →
   ∀ i j, i < j ↔ (rngl_of_nat i < rngl_of_nat j)%L.
 Proof.
-intros Hos Hc1 Hor *.
-...
-apply (rngl_mul_nat_inj_lt Hos Hor).
-apply (rngl_0_lt_1 Hos Hc1 Hor).
+intros Hos Hc1 Hto *.
+apply (rngl_mul_nat_inj_lt Hos Hto).
+apply (rngl_0_lt_1 Hos Hc1 Hto).
 Qed.
 
 Theorem rngl_abs_1 :
   rngl_has_opp_or_psub T = true →
-  rngl_is_ordered T = true →
+  rngl_is_totally_ordered T = true →
   (rngl_abs 1 = 1)%L.
 Proof.
-intros Hos Hor.
+intros Hos Hto.
 destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
   specialize (rngl_characteristic_1 Hos Hc1) as H1.
   now rewrite (H1 (rngl_abs 1)%L), (H1 1%L).
@@ -408,15 +407,15 @@ destruct c; [ | easy ].
 apply rngl_leb_le in Hc.
 apply rngl_nlt_ge in Hc.
 exfalso; apply Hc.
-apply (rngl_0_lt_1 Hos Hc1 Hor).
+apply (rngl_0_lt_1 Hos Hc1 Hto).
 Qed.
 
 Theorem rngl_abs_2 :
   rngl_has_opp_or_psub T = true →
-  rngl_is_ordered T = true →
+  rngl_is_totally_ordered T = true →
   (rngl_abs 2 = 2)%L.
 Proof.
-intros Hos Hor.
+intros Hos Hto.
 destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
   specialize (rngl_characteristic_1 Hos Hc1) as H1.
   rewrite H1; apply H1.
@@ -428,33 +427,34 @@ destruct tz; [ | easy ].
 apply rngl_leb_le in Htz.
 apply rngl_nlt_ge in Htz.
 exfalso; apply Htz.
-apply (rngl_0_lt_2 Hos Hc1 Hor).
+apply (rngl_0_lt_2 Hos Hc1 Hto).
 Qed.
 
 Theorem rngl_add_squ_nonneg :
   rngl_has_opp_or_psub T = true →
-  rngl_is_ordered T = true →
+  rngl_is_totally_ordered T = true →
   ∀ a b, (0 ≤ a² + b²)%L.
 Proof.
-intros Hos Hor.
+intros Hos Hto.
 intros *.
-apply (rngl_le_0_add Hos Hor); apply (rngl_squ_nonneg Hos Hor).
+apply (rngl_le_0_add Hos Hto); apply (rngl_squ_nonneg Hos Hto).
 Qed.
 
 Theorem rngl_mul_le_mono_nonneg_l :
   rngl_has_opp T = true →
-  rngl_is_ordered T = true →
+  rngl_is_totally_ordered T = true →
   ∀ a b c, (0 ≤ a)%L → (b ≤ c)%L → (a * b ≤ a * c)%L.
 Proof.
-intros Hop Hor.
+intros Hop Hto.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 intros * Ha Hbc.
-apply (rngl_lt_eq_cases Hor) in Hbc.
+apply (rngl_lt_eq_cases Hto) in Hbc.
 destruct Hbc as [Hbc| Hbc]; [ | subst b; pauto ].
-apply (rngl_le_0_sub Hop Hor).
+apply (rngl_le_0_sub Hop Hto).
 rewrite <- (rngl_mul_sub_distr_l Hop).
 apply (rngl_mul_nonneg_nonneg Hos Hor); [ easy | ].
-apply (rngl_le_0_sub Hop Hor).
+apply (rngl_le_0_sub Hop Hto).
 now apply (rngl_lt_le_incl Hto).
 Qed.
 
@@ -466,6 +466,7 @@ Proof.
 intros Hop Hor.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 intros * Hc Hab.
+...
 apply (rngl_lt_eq_cases Hor) in Hab.
 destruct Hab as [Hab| Hab]; [ | subst b; pauto ].
 apply (rngl_le_0_sub Hop Hor).
