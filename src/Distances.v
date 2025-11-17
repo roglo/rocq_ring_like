@@ -198,11 +198,11 @@ intros Hop Hiv Hor.
 intros * dist mono_1 mono_2 * Hi Hlim.
 progress unfold is_limit_when_seq_tends_to_inf in Hlim.
 split. {
-  apply (rngl_nlt_ge_iff Hor).
+  apply (rngl_nlt_ge_iff Hto).
   intros Hca.
   specialize (Hlim (dt a c))%L.
   assert (H : (0 < dt a c)%L). {
-    apply (rngl_le_neq Hor).
+    apply (rngl_le_neq Hto).
     split; [ apply (dist_nonneg Hop Hiv Hor dist) | ].
     intros H; symmetry in H.
     apply -> (dist_separation dist) in H.
@@ -218,13 +218,13 @@ split. {
   do 2 rewrite (dist_symmetry _ dist _ c).
   apply mono_1.
   split; [ | easy ].
-  now apply (rngl_lt_le_incl Hor).
+  now apply (rngl_lt_le_incl Hto).
 } {
-  apply (rngl_nlt_ge_iff Hor).
+  apply (rngl_nlt_ge_iff Hto).
   intros Hbc.
   specialize (Hlim (dt b c))%L.
   assert (H : (0 < dt b c)%L). {
-    apply (rngl_le_neq Hor).
+    apply (rngl_le_neq Hto).
     split; [ apply (dist_nonneg Hop Hiv Hor dist) | ].
     intros H; symmetry in H.
     apply -> (dist_separation dist) in H.
@@ -239,7 +239,7 @@ split. {
   apply HN; clear HN.
   apply mono_2.
   split; [ easy | ].
-  now apply (rngl_lt_le_incl Hor).
+  now apply (rngl_lt_le_incl Hto).
 }
 Qed.
 
@@ -280,7 +280,7 @@ assert (Hu : is_limit_when_seq_tends_to_inf da (λ _, lim1) lim2). {
   exists (max N1 N2).
   intros n HN.
   destruct dist as (Hdsym, Hdsep, Hdtri).
-  eapply (rngl_le_lt_trans Hor); [ apply (Hdtri _ (u n)) | ].
+  eapply (rngl_le_lt_trans Hto); [ apply (Hdtri _ (u n)) | ].
   rewrite Hdsym.
   replace ε with (ε / 2 + ε / 2)%L. 2: {
     apply (rngl_mul_cancel_r Hi1 _ _ 2%L). {
@@ -316,8 +316,8 @@ apply (rngl_abs_le_ε Hop Hiv Hor).
 intros ε Hε.
 specialize (Hu ε Hε).
 rewrite (rngl_abs_nonneg_eq Hop Hor); [ | apply Hdpos ].
-apply (rngl_lt_le_incl Hor).
-eapply (rngl_le_lt_trans Hor); [ | apply Hu ].
+apply (rngl_lt_le_incl Hto).
+eapply (rngl_le_lt_trans Hto); [ | apply Hu ].
 apply (rngl_le_refl Hor).
 Qed.
 
@@ -364,7 +364,7 @@ apply (rngl_lt_le_trans Hor _ (ε / 2 + ε / 2)%L). 2: {
   }
   apply (rngl_le_refl Hor).
 }
-eapply (rngl_le_lt_trans Hor). 2: {
+eapply (rngl_le_lt_trans Hto). 2: {
   apply (rngl_add_lt_compat Hos Hor); [ apply Hun | apply Hvn ].
 }
 apply Hd.

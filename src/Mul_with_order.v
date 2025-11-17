@@ -168,7 +168,7 @@ Theorem rngl_0_lt_1 :
   (0 < 1)%L.
 Proof.
 intros Hos Hc1 Hor.
-apply (rngl_le_neq Hor).
+apply (rngl_le_neq Hto).
 split; [ apply (rngl_0_le_1 Hos Hor) | ].
 apply not_eq_sym.
 now apply (rngl_1_neq_0_iff).
@@ -213,7 +213,7 @@ Theorem rngl_0_lt_2 :
   (0 < 2)%L.
 Proof.
 intros Hos Hc1 Hor.
-apply (rngl_le_lt_trans Hor _ 1)%L. {
+apply (rngl_le_lt_trans Hto _ 1)%L. {
   apply (rngl_0_le_1 Hos Hor).
 }
 apply (rngl_lt_add_r Hos Hor).
@@ -442,7 +442,7 @@ apply (rngl_le_0_sub Hop Hor).
 rewrite <- (rngl_mul_sub_distr_l Hop).
 apply (rngl_mul_nonneg_nonneg Hos Hor); [ easy | ].
 apply (rngl_le_0_sub Hop Hor).
-now apply (rngl_lt_le_incl Hor).
+now apply (rngl_lt_le_incl Hto).
 Qed.
 
 Theorem rngl_mul_le_mono_nonneg_r :
@@ -459,7 +459,7 @@ apply (rngl_le_0_sub Hop Hor).
 rewrite <- (rngl_mul_sub_distr_r Hop).
 apply (rngl_mul_nonneg_nonneg Hos Hor); [ | easy ].
 apply (rngl_le_0_sub Hop Hor).
-now apply (rngl_lt_le_incl Hor).
+now apply (rngl_lt_le_incl Hto).
 Qed.
 
 Theorem rngl_mul_le_mono_nonpos_l :
@@ -476,7 +476,7 @@ apply (rngl_le_0_sub Hop Hor).
 rewrite <- (rngl_mul_sub_distr_l Hop).
 apply (rngl_mul_nonpos_nonpos Hos Hor); [ easy | ].
 apply (rngl_le_sub_0 Hop Hor).
-now apply (rngl_lt_le_incl Hor).
+now apply (rngl_lt_le_incl Hto).
 Qed.
 
 Theorem rngl_mul_le_mono_nonpos_r :
@@ -493,7 +493,7 @@ apply (rngl_le_0_sub Hop Hor).
 rewrite <- (rngl_mul_sub_distr_r Hop).
 apply (rngl_mul_nonpos_nonpos Hos Hor); [ | easy ].
 apply (rngl_le_sub_0 Hop Hor).
-now apply (rngl_lt_le_incl Hor).
+now apply (rngl_lt_le_incl Hto).
 Qed.
 
 Theorem rngl_lt_mul_0_if :
@@ -516,12 +516,12 @@ destruct az. {
   apply rngl_nle_gt in Hab.
   apply Hab; clear Hab.
   apply (rngl_mul_nonpos_nonpos Hos Hor); [ | easy ].
-  now apply (rngl_lt_le_incl Hor) in Haz.
+  now apply (rngl_lt_le_incl Hto) in Haz.
 }
 apply (rngl_ltb_ge_iff Hor) in Haz.
 right.
 split. {
-  apply (rngl_le_neq Hor).
+  apply (rngl_le_neq Hto).
   split; [ easy | ].
   intros H; subst a.
   rewrite (rngl_mul_0_l Hos) in Hab.
@@ -606,25 +606,25 @@ destruct az. {
     apply (rngl_opp_le_compat Hop Hor) in Hab.
     now apply (rngl_mul_le_compat_nonpos Hor).
   } {
-    apply (rngl_leb_gt_iff Hor) in Hbz.
+    apply (rngl_leb_gt_iff Hto) in Hbz.
     apply (rngl_opp_le_compat Hop Hor) in Haz.
     rewrite (rngl_opp_0 Hop) in Haz.
     rewrite <- (rngl_mul_opp_opp Hop).
-    apply (rngl_lt_le_incl Hor) in Hbz.
+    apply (rngl_lt_le_incl Hto) in Hbz.
     now apply (rngl_mul_le_compat_nonneg Hor).
   }
 } {
-  apply (rngl_leb_gt_iff Hor) in Haz.
+  apply (rngl_leb_gt_iff Hto) in Haz.
   destruct bz. {
     apply rngl_leb_le in Hbz.
     apply (rngl_opp_le_compat Hop Hor) in Hbz.
     rewrite (rngl_opp_0 Hop) in Hbz.
     rewrite <- (rngl_mul_opp_opp Hop b).
-    apply (rngl_lt_le_incl Hor) in Haz.
+    apply (rngl_lt_le_incl Hto) in Haz.
     now apply (rngl_mul_le_compat_nonneg Hor).
   } {
-    apply (rngl_leb_gt_iff Hor) in Hbz.
-    apply (rngl_lt_le_incl Hor) in Haz, Hbz.
+    apply (rngl_leb_gt_iff Hto) in Hbz.
+    apply (rngl_lt_le_incl Hto) in Haz, Hbz.
     now apply (rngl_mul_le_compat_nonneg Hor).
   }
 }
@@ -657,7 +657,7 @@ destruct (rngl_eqb_dec (rngl_abs a) 1) as [Ha1| Ha1]. {
   rewrite Ha1; cbn.
   rewrite rngl_add_0_r.
   split; [ pauto | ].
-  apply (rngl_le_neq Hor).
+  apply (rngl_le_neq Hto).
   split; [ apply (rngl_1_le_2 Hos Hor) | ].
   intros H12.
   apply (f_equal (λ b, rngl_sub b 1))%L in H12.
@@ -670,7 +670,7 @@ apply (rngl_eqb_neq Heo) in Ha1.
 exists 0; cbn.
 rewrite rngl_add_0_r.
 split; [ apply (rngl_abs_nonneg Hop Hor) | ].
-now apply (rngl_le_neq Hor).
+now apply (rngl_le_neq Hto).
 Qed.
 
 End a.

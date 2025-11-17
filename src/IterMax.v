@@ -85,7 +85,7 @@ Theorem rngl_max_iter_list_app :
 Proof.
 intros Hor * Hm.
 rewrite iter_list_app.
-rewrite (rngl_max_comm Hor).
+rewrite (rngl_max_comm Hto).
 progress unfold iter_list.
 revert la.
 induction lb as [| b]; intros; cbn. {
@@ -113,7 +113,7 @@ specialize (IHlb (la ++ [b])) as H1; clear H.
 rewrite List.fold_left_app in H1.
 cbn in H1.
 rewrite H1; clear H1.
-rewrite (rngl_max_comm Hor _ (f b)).
+rewrite (rngl_max_comm Hto _ (f b)).
 rewrite (rngl_max_assoc Hor).
 f_equal.
 specialize (IHlb [b]) as H1.
@@ -269,7 +269,7 @@ progress unfold rngl_max in Hmz.
 remember (f a ≤? m)%L as am eqn:Ham.
 symmetry in Ham.
 destruct am; [ congruence | ].
-apply (rngl_leb_gt_iff Hor) in Ham.
+apply (rngl_leb_gt_iff Hto) in Ham.
 rewrite Hmz in Ham.
 rewrite Hm in Ham.
 exfalso.

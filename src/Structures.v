@@ -31,7 +31,7 @@ Class ring_like_op T :=
     rngl_opt_inv_or_pdiv : option (sum (T → T) (T → T → T));
     rngl_opt_is_zero_divisor : option (T → Prop);
     rngl_opt_eq_dec : option (∀ a b : T, {a = b} + {a ≠ b});
-    rngl_opt_leb : option (T → T → bool) }.
+    rngl_opt_leb : option ((T → T → bool) * bool) }.
 
 Arguments rngl_opt_opp_or_psub T {ring_like_op}.
 Arguments rngl_opt_inv_or_pdiv T {ring_like_op}.
@@ -55,8 +55,14 @@ Definition rngl_has_opp_or_psub T {R : ring_like_op T} :=
 Definition rngl_has_inv_or_pdiv T {R : ring_like_op T} :=
   bool_of_option (rngl_opt_inv_or_pdiv T).
 
-Definition rngl_is_ordered T {R : ring_like_op T} :=
+Definition rngl_is_ordered T {ro : ring_like_op T} :=
   bool_of_option rngl_opt_leb.
+
+Definition rngl_is_totally_ordered T {ro : ring_like_op T} :=
+  match rngl_opt_leb with
+  | None => false
+  | Some (leb, tot) => tot
+  end.
 
 Definition rngl_has_opp T {R : ring_like_op T} :=
   match rngl_opt_opp_or_psub T with
@@ -124,13 +130,13 @@ Definition rngl_div {T} {ro : ring_like_op T} a b :=
 
 Definition rngl_le {T} {ro : ring_like_op T} a b :=
   match rngl_opt_leb with
-  | Some rngl_leb => rngl_leb a b = true
+  | Some (rngl_leb, _) => rngl_leb a b = true
   | None => False
   end.
 
 Definition rngl_lt {T} {ro : ring_like_op T} a b :=
   match rngl_opt_leb with
-  | Some rngl_leb => rngl_leb b a = false
+  | Some (rngl_leb, _) => rngl_leb b a = false
   | None => False
   end.
 
@@ -179,7 +185,9 @@ Class ring_like_ord T {ro : ring_like_op T} :=
     rngl_ord_mul_le_compat_nonpos :
         ∀ a b c d, (c ≤ a ≤ 0)%L → (d ≤ b ≤ 0)%L → (a * b ≤ c * d)%L;
     rngl_ord_le_dec : ∀ a b : T, ({a ≤ b} + {¬ a ≤ b})%L;
-    rngl_ord_total_prop : ∀ a b, (a ≤ b)%L ∨ (b ≤ a)%L }.
+    rngl_ord_total_prop :
+      if rngl_is_totally_ordered T then ∀ a b, (a ≤ b)%L ∨ (b ≤ a)%L
+      else not_applicable }.
 
 Class ring_like_prop T {ro : ring_like_op T} :=
   { rngl_mul_is_comm : bool;
@@ -265,7 +273,7 @@ Definition rngl_squ {T} {ro : ring_like_op T} a := rngl_mul a a.
 
 Definition rngl_leb {T} {ro : ring_like_op T} a b :=
   match rngl_opt_leb with
-  | Some rngl_leb => rngl_leb a b
+  | Some (rngl_leb, _) => rngl_leb a b
   | None => false
   end.
 
@@ -503,16 +511,16 @@ split; intros Hab. {
   progress unfold rngl_leb in Hab.
   apply rngl_ord_le_antisymm.
   progress unfold rngl_le.
-  now destruct rngl_opt_leb.
+  now destruct rngl_opt_leb as [(leb, tot)| ].
   progress unfold rngl_le.
-  now destruct rngl_opt_leb.
+  now destruct rngl_opt_leb as [(leb, tot)| ].
 }
 subst b.
 specialize (rngl_ord_le_refl a) as H.
 progress unfold rngl_is_ordered in Hor.
 progress unfold rngl_le in H.
 progress unfold rngl_leb.
-destruct rngl_opt_leb; [ | easy ].
+destruct rngl_opt_leb as [(leb, tot)| ]; [ | easy ].
 now rewrite H.
 Qed.
 
@@ -585,25 +593,12 @@ Fixpoint rngl_power {T} {ro : ring_like_op T} a n :=
 
 Definition rngl_ltb {T} {ro : ring_like_op T} a b :=
   match rngl_opt_leb with
-  | Some rngl_leb => negb (rngl_leb b a)
+  | Some (rngl_leb, _) => negb (rngl_leb b a)
   | None => false
   end.
 
-(*
-Arguments rngl_opp {T ro} a%_L.
-*)
 Arguments rngl_squ {T ro} a%_L.
 Arguments rngl_power {T ro} a%_L n%_nat.
-(*
-Arguments rngl_le {T ro} (a b)%_L.
-Arguments rngl_lt {T ro} (a b)%_L.
-Arguments rngl_eqb {T ro} (a b)%_L.
-Arguments rngl_leb {T ro} (a b)%_L.
-Arguments rngl_ltb {T ro} (a b)%_L.
-
-Arguments rngl_psub {T ro} (a b)%_L.
-Arguments rngl_pdiv {T ro} (a b)%_L.
-*)
 
 Notation "2" := (rngl_add 1 1) : ring_like_scope.
 Notation "3" := (rngl_add 2 1) : ring_like_scope.

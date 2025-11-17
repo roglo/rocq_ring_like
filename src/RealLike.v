@@ -89,7 +89,7 @@ intros Hop Hiv Hor * Ha Hb.
 progress unfold rngl_div.
 rewrite Hiv.
 rewrite rl_sqrt_mul; [ | easy | ]. 2: {
-  apply (rngl_lt_le_incl Hor).
+  apply (rngl_lt_le_incl Hto).
   now apply (rngl_inv_pos Hop Hiv Hor).
 }
 f_equal.
@@ -115,8 +115,8 @@ destruct az. {
   rewrite (rngl_squ_pow_2).
   now apply rl_nth_root_pow.
 } {
-  apply (rngl_leb_gt_iff Hor) in Haz.
-  apply (rngl_lt_le_incl Hor) in Haz.
+  apply (rngl_leb_gt_iff Hto) in Haz.
+  apply (rngl_lt_le_incl Hto) in Haz.
   rewrite rl_nth_root_mul; [ | easy | easy ].
   rewrite fold_rngl_squ.
   rewrite (rngl_squ_pow_2).
@@ -275,7 +275,7 @@ Theorem rl_sqrt_le_rl_sqrt :
 Proof.
 intros Hop Hiq Hor.
 intros * Ha Hab.
-apply (rngl_nlt_ge_iff Hor).
+apply (rngl_nlt_ge_iff Hto).
 intros H1.
 specialize (rngl_mul_lt_mono_nonneg Hop Hiq Hor) as H2.
 specialize (H2 (√b) (√a) (√b) (√a))%L.
@@ -309,13 +309,13 @@ assert (H : (0 ≤ √b ≤ √a)%L). {
   split; [ | easy ].
   apply rl_sqrt_nonneg.
   apply (rngl_le_trans Hor _ a); [ easy | ].
-  now apply (rngl_lt_le_incl Hor).
+  now apply (rngl_lt_le_incl Hto).
 }
 specialize (H2 H H).
 do 2 rewrite fold_rngl_squ in H2.
 rewrite (rngl_squ_sqrt) in H2. 2: {
   apply (rngl_le_trans Hor _ a); [ easy | ].
-  now apply (rngl_lt_le_incl Hor).
+  now apply (rngl_lt_le_incl Hto).
 }
 rewrite (rngl_squ_sqrt) in H2; [ | easy ].
 now apply rngl_nle_gt in Hab.
@@ -328,13 +328,13 @@ Theorem rl_sqrt_pos :
 Proof.
 intros Hos Hor.
 intros a Ha.
-apply (rngl_le_neq Hor).
+apply (rngl_le_neq Hto).
 split. {
   apply rl_sqrt_nonneg.
-  now apply (rngl_lt_le_incl Hor).
+  now apply (rngl_lt_le_incl Hto).
 }
 intros H; symmetry in H.
-apply (eq_rl_sqrt_0 Hos) in H; [ | now apply (rngl_lt_le_incl Hor) ].
+apply (eq_rl_sqrt_0 Hos) in H; [ | now apply (rngl_lt_le_incl Hto) ].
 subst a.
 now apply (rngl_lt_irrefl Hor) in Ha.
 Qed.
