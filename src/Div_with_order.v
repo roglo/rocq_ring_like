@@ -476,7 +476,7 @@ split; intros Hbc. {
   apply (rngl_lt_0_sub Hop Hor) in Hbc.
   rewrite <- (rngl_mul_sub_distr_l Hop) in Hbc.
   apply rngl_nle_gt in Hbc.
-  apply (rngl_nle_gt_iff Hor).
+  apply (rngl_nle_gt_iff Hto).
   intros H1; apply Hbc; clear Hbc.
   rewrite <- (rngl_mul_0_r Hos a).
   apply (rngl_le_0_sub Hop Hor).
@@ -533,7 +533,7 @@ split; intros Hab. {
   intros H1; apply Hab; clear Hab.
   replace 0%L with (0 * c)%L by apply (rngl_mul_0_l Hos).
   apply (rngl_mul_lt_mono_pos_r Hop Hiq Hor); [ easy | ].
-  apply (rngl_nle_gt_iff Hor).
+  apply (rngl_nle_gt_iff Hto).
   intros H2.
   apply -> (rngl_le_0_sub Hop Hor) in H2.
   now apply rngl_nlt_ge in H2.
@@ -1146,7 +1146,7 @@ destruct (rngl_leb_dec a 0%L) as [Haz| Haz]. {
   now apply (rngl_le_trans Hor a 0%L b).
 }
 apply (rngl_leb_gt_iff Hto) in Haz.
-apply (rngl_nle_gt_iff Hor) in Haz.
+apply (rngl_nle_gt_iff Hto) in Haz.
 apply rngl_nlt_ge in Hab.
 apply (rngl_nlt_ge_iff Hto).
 intros Hba; apply Hab; clear Hab.

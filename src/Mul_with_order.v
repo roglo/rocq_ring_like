@@ -239,7 +239,7 @@ Theorem rngl_0_lt_3 :
  (0 < 3)%L.
 Proof.
 intros Hos Hc1 Hor.
-apply (rngl_lt_le_trans Hor _ 1).
+apply (rngl_lt_le_trans Hto _ 1).
 apply (rngl_0_lt_1 Hos Hc1 Hor).
 apply (rngl_le_add_l Hos Hor).
 apply (rngl_0_le_2 Hos Hor).
@@ -288,7 +288,7 @@ Theorem rngl_opp_1_lt_1 :
 Proof.
 intros Hop Hor Hc1.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
-apply (rngl_lt_le_trans Hor _ 0).
+apply (rngl_lt_le_trans Hto _ 0).
 apply (rngl_opp_1_lt_0 Hop Hor Hc1).
 apply (rngl_0_le_1 Hos Hor).
 Qed.
@@ -527,7 +527,7 @@ split. {
   rewrite (rngl_mul_0_l Hos) in Hab.
   now apply (rngl_lt_irrefl Hor) in Hab.
 }
-apply (rngl_nle_gt_iff Hor).
+apply (rngl_nle_gt_iff Hto).
 intros Hzb.
 apply rngl_nle_gt in Hab.
 apply Hab; clear Hab.

@@ -301,7 +301,7 @@ Theorem rl_sqrt_lt_rl_sqrt :
   → (√ a < √ b)%L.
 Proof.
 intros Hor * Ha Hab.
-apply (rngl_nle_gt_iff Hor).
+apply (rngl_nle_gt_iff Hto).
 intros H1.
 specialize (rngl_mul_le_compat_nonneg Hor) as H2.
 specialize (H2 (√b) (√b) (√a) (√a))%L.

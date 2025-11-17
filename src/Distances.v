@@ -357,7 +357,7 @@ apply Nat.max_lub_iff in H.
 destruct H as (Hnun, Hnvn).
 specialize (Hun _ Hnun).
 specialize (Hvn _ Hnvn).
-apply (rngl_lt_le_trans Hor _ (ε / 2 + ε / 2)%L). 2: {
+apply (rngl_lt_le_trans Hto _ (ε / 2 + ε / 2)%L). 2: {
   rewrite <- (rngl_mul_2_r).
   rewrite (rngl_div_mul Hiv). 2: {
     apply (rngl_2_neq_0 Hos Hc1 Hor).
