@@ -1719,6 +1719,19 @@ split; apply i_zero.
 Qed.
 
 (* to be completed
+Theorem glop :
+  rngl_is_ordered T = true →
+  (∀ a b, (¬ a ≤ b → a ≠ b ∧ b ≤ a)%L)
+  → (∀ a b, (a ≤ b ∨ b ≤ a)%L).
+Proof.
+intros Hor.
+specialize (rngl_opt_ord T) as rr.
+rewrite Hor in rr; move rr before rp.
+intros Hab *.
+destruct (rngl_ord_le_dec a b) as [H1| H1]; [ now left | right ].
+now apply Hab in H1.
+Qed.
+
 Theorem I_ord_not_le I J : (I ≤ J)%I ≠ true → I ≠ J ∧ (J ≤ I)%I = true.
 Proof.
 intros * Hij.

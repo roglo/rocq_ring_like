@@ -35,7 +35,7 @@ Theorem rngl_mul_le_compat_nonneg :
   ∀ a b c d, (0 ≤ a ≤ c)%L → (0 ≤ b ≤ d)%L → (a * b ≤ c * d)%L.
 Proof.
 intros Hor.
-specialize rngl_opt_ord as rr.
+specialize (rngl_opt_ord T) as rr.
 rewrite Hor in rr.
 move rr after rp.
 apply rngl_ord_mul_le_compat_nonneg.
@@ -46,7 +46,7 @@ Theorem rngl_mul_le_compat_nonpos :
   ∀ a b c d, (c ≤ a ≤ 0)%L → (d ≤ b ≤ 0)%L → (a * b ≤ c * d)%L.
 Proof.
 intros Hor.
-specialize rngl_opt_ord as rr.
+specialize (rngl_opt_ord T) as rr.
 rewrite Hor in rr.
 move rr after rp.
 apply rngl_ord_mul_le_compat_nonpos.

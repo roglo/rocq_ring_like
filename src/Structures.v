@@ -298,6 +298,7 @@ Arguments rngl_mul_is_comm T {ro ring_like_prop}.
 Arguments rngl_characteristic T {ro ring_like_prop}.
 Arguments rngl_is_archimedean T {ro ring_like_prop}.
 Arguments rngl_abs {T ro} a%_L.
+Arguments rngl_opt_ord T {ro ring_like_prop}.
 
 Definition rngl_has_inv_or_pdiv_and_comm T {ro : ring_like_op T}
   {rp : ring_like_prop T} :=
@@ -494,7 +495,7 @@ destruct rngl_opt_eq_dec as [rngl_eq_dec| ]. {
 }
 cbn in Heo.
 rename Heo into Hor.
-specialize rngl_opt_ord as rd.
+specialize (rngl_opt_ord T) as rd.
 rewrite Hor in rd.
 move rd before rp.
 split; intros Hab. {

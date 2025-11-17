@@ -118,7 +118,7 @@ Theorem rngl_le_refl :
   ∀ a, (a ≤ a)%L.
 Proof.
 intros Hor *.
-specialize rngl_opt_ord as H.
+specialize (rngl_opt_ord T) as H.
 rewrite Hor in H.
 apply H.
 Qed.
@@ -137,7 +137,7 @@ Theorem rngl_le_antisymm :
   ∀ a b, (a ≤ b → b ≤ a → a = b)%L.
 Proof.
 intros Hor *.
-specialize rngl_opt_ord as H.
+specialize (rngl_opt_ord T) as H.
 rewrite Hor in H.
 apply H.
 Qed.
@@ -148,7 +148,7 @@ Proof.
 intros * Hor a b.
 progress unfold rngl_lt.
 progress unfold rngl_le.
-specialize rngl_opt_ord as rr.
+specialize (rngl_opt_ord T) as rr.
 rewrite Hor in rr.
 move rr after rp.
 specialize rngl_ord_not_le as H1.
@@ -207,7 +207,7 @@ Theorem rngl_le_trans :
    ∀ a b c : T, (a ≤ b)%L → (b ≤ c)%L → (a ≤ c)%L.
 Proof.
 intros Hor *.
-specialize rngl_opt_ord as H.
+specialize (rngl_opt_ord T) as H.
 rewrite Hor in H.
 apply H.
 Qed.
@@ -287,7 +287,7 @@ Proof.
 intros Hor *.
 progress unfold rngl_lt.
 progress unfold rngl_le.
-specialize rngl_opt_ord as rr.
+specialize (rngl_opt_ord T) as rr.
 rewrite Hor in rr.
 move rr after rp.
 specialize rngl_ord_not_le as H1.
@@ -324,7 +324,7 @@ Theorem rngl_not_le :
   ∀ a b, (¬ a ≤ b → a ≠ b ∧ b ≤ a)%L.
 Proof.
 intros Hor *.
-specialize rngl_opt_ord as rr.
+specialize (rngl_opt_ord T) as rr.
 rewrite Hor in rr.
 move rr after rp.
 specialize rngl_ord_not_le as H.

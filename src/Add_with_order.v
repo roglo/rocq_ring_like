@@ -171,7 +171,7 @@ Theorem rngl_add_le_mono_l :
   ∀ a b c, (b ≤ c ↔ a + b ≤ a + c)%L.
 Proof.
 intros Hos Hor.
-specialize rngl_opt_ord as rr.
+specialize (rngl_opt_ord T) as rr.
 rewrite Hor in rr.
 move rr before rp.
 specialize rngl_ord_add_le_mono_l as H1.
@@ -184,7 +184,7 @@ Theorem rngl_add_lt_mono_l :
   ∀ a b c, (b < c ↔ a + b < a + c)%L.
 Proof.
 intros Hos Hor.
-specialize rngl_opt_ord as rr.
+specialize (rngl_opt_ord T) as rr.
 rewrite Hor in rr.
 move rr before rp.
 specialize rngl_ord_add_le_mono_l as H1.
@@ -212,7 +212,7 @@ Theorem rngl_add_le_mono :
   ∀ a b c d, (a ≤ b → c ≤ d → a + c ≤ b + d)%L.
 Proof.
 intros Hos Hor.
-specialize rngl_opt_ord as rr.
+specialize (rngl_opt_ord T) as rr.
 rewrite Hor in rr.
 move rr before rp.
 intros * Hab Hcd.
@@ -637,7 +637,7 @@ Theorem rngl_add_le_mono_r :
   ∀ a b c, (a ≤ b ↔ a + c ≤ b + c)%L.
 Proof.
 intros Hos Hor.
-specialize rngl_opt_ord as rr.
+specialize (rngl_opt_ord T) as rr.
 rewrite Hor in rr.
 move rr before rp.
 split; intros H. {
