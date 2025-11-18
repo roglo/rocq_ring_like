@@ -50,15 +50,15 @@ Definition rngl_dist a b := rngl_abs (a - b)%L.
 
 Theorem rngl_dist_is_dist :
   rngl_has_opp T = true →
-  rngl_is_ordered T = true →
+  rngl_is_totally_ordered T = true →
   is_dist rngl_dist.
 Proof.
-intros Hop Hor.
+intros Hop Hto.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 progress unfold rngl_dist.
 split. {
   intros.
-  apply (rngl_abs_sub_comm Hop Hor).
+  apply (rngl_abs_sub_comm Hop Hto).
 } {
   intros.
   split; intros Hab. {
@@ -70,7 +70,7 @@ split. {
   apply (rngl_abs_0 Hop).
 } {
   intros.
-  specialize (rngl_abs_triangle Hop Hor) as H1.
+  specialize (rngl_abs_triangle Hop Hto) as H1.
   specialize (H1 (a - b) (b - c))%L.
   rewrite (rngl_add_sub_assoc Hop) in H1.
   now rewrite (rngl_sub_add Hop) in H1.
@@ -161,10 +161,11 @@ Qed.
 Theorem dist_nonneg :
   rngl_has_opp T = true →
   rngl_has_inv T = true →
-  rngl_is_ordered T = true →
+  rngl_is_totally_ordered T = true →
   ∀ {A} {da : A → A → T} (dist : is_dist da) a b, (0 ≤ da a b)%L.
 Proof.
-intros Hop Hiv Hor * dist *.
+intros Hop Hiv Hto * dist *.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
 destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
@@ -178,14 +179,14 @@ specialize (Hdtri a b a) as H2.
 rewrite H1, (Hdsym b a) in H2.
 rewrite <- (rngl_mul_2_l) in H2.
 replace 0%L with (2 * 0)%L in H2 by apply (rngl_mul_0_r Hos).
-apply (rngl_mul_le_mono_pos_l Hop Hiq Hor) in H2; [ easy | ].
-apply (rngl_0_lt_2 Hos Hc1 Hor).
+apply (rngl_mul_le_mono_pos_l Hop Hiq Hto) in H2; [ easy | ].
+apply (rngl_0_lt_2 Hos Hc1 Hto).
 Qed.
 
 Theorem rngl_limit_interv :
   rngl_has_opp T = true →
   rngl_has_inv T = true →
-  rngl_is_ordered T = true →
+  rngl_is_totally_ordered T = true →
   ∀ {dt : T → T → T} (dist : is_dist dt),
   (∀ x y z, (x ≤ y ≤ z → dt x y ≤ dt x z)%L)
   → (∀ x y z, (x ≤ y ≤ z → dt y z ≤ dt x z)%L)
@@ -194,7 +195,8 @@ Theorem rngl_limit_interv :
   → is_limit_when_seq_tends_to_inf dt u c
   → (a ≤ c ≤ b)%L.
 Proof.
-intros Hop Hiv Hor.
+intros Hop Hiv Hto.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 intros * dist mono_1 mono_2 * Hi Hlim.
 progress unfold is_limit_when_seq_tends_to_inf in Hlim.
 split. {
@@ -203,7 +205,7 @@ split. {
   specialize (Hlim (dt a c))%L.
   assert (H : (0 < dt a c)%L). {
     apply (rngl_le_neq Hto).
-    split; [ apply (dist_nonneg Hop Hiv Hor dist) | ].
+    split; [ apply (dist_nonneg Hop Hiv Hto dist) | ].
     intros H; symmetry in H.
     apply -> (dist_separation dist) in H.
     subst c.
@@ -225,7 +227,7 @@ split. {
   specialize (Hlim (dt b c))%L.
   assert (H : (0 < dt b c)%L). {
     apply (rngl_le_neq Hto).
-    split; [ apply (dist_nonneg Hop Hiv Hor dist) | ].
+    split; [ apply (dist_nonneg Hop Hiv Hto dist) | ].
     intros H; symmetry in H.
     apply -> (dist_separation dist) in H.
     subst c.
@@ -246,13 +248,14 @@ Qed.
 Theorem limit_unique :
   rngl_has_opp T = true →
   rngl_has_inv T = true →
-  rngl_is_ordered T = true →
+  rngl_is_totally_ordered T = true →
   ∀ {A} {da : A → A → T} (dist : is_dist da) u lim1 lim2,
   is_limit_when_seq_tends_to_inf da u lim1
   → is_limit_when_seq_tends_to_inf da u lim2
   → lim1 = lim2.
 Proof.
-intros Hop Hiv Hor * dist * Hu1 Hu2.
+intros Hop Hiv Hto * dist * Hu1 Hu2.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
 specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hi1.
@@ -262,16 +265,16 @@ destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
   assert (H : ∀ a b : A, a = b) by now intros; apply Hdsep, H1.
   apply H.
 }
-specialize (dist_nonneg Hop Hiv Hor dist) as Hdpos.
+specialize (dist_nonneg Hop Hiv Hto dist) as Hdpos.
 assert (Hu : is_limit_when_seq_tends_to_inf da (λ _, lim1) lim2). {
   intros ε Hε.
   assert (Hε2 : (0 < ε / 2)%L). {
-    apply (rngl_mul_lt_mono_pos_r Hop Hiq Hor) with (a := 2%L). {
-      apply (rngl_0_lt_2 Hos Hc1 Hor).
+    apply (rngl_mul_lt_mono_pos_r Hop Hiq Hto) with (a := 2%L). {
+      apply (rngl_0_lt_2 Hos Hc1 Hto).
     }
     rewrite (rngl_mul_0_l Hos).
     rewrite (rngl_div_mul Hiv); [ easy | ].
-    apply (rngl_2_neq_0 Hos Hc1 Hor).
+    apply (rngl_2_neq_0 Hos Hc1 Hto).
   }
   specialize (Hu1 (ε / 2) Hε2)%L.
   specialize (Hu2 (ε / 2) Hε2)%L.
@@ -284,16 +287,16 @@ assert (Hu : is_limit_when_seq_tends_to_inf da (λ _, lim1) lim2). {
   rewrite Hdsym.
   replace ε with (ε / 2 + ε / 2)%L. 2: {
     apply (rngl_mul_cancel_r Hi1 _ _ 2%L). {
-      apply (rngl_2_neq_0 Hos Hc1 Hor).
+      apply (rngl_2_neq_0 Hos Hc1 Hto).
     }
     rewrite rngl_mul_add_distr_r.
     rewrite (rngl_div_mul Hiv). 2: {
-      apply (rngl_2_neq_0 Hos Hc1 Hor).
+      apply (rngl_2_neq_0 Hos Hc1 Hto).
     }
     symmetry.
     apply (rngl_mul_2_r).
   }
-  apply (rngl_add_lt_compat Hos Hor). {
+  apply (rngl_add_lt_compat Hos Hto). {
     apply Hu1.
     eapply Nat.le_trans; [ | apply HN ].
     apply Nat.le_max_l.
@@ -312,7 +315,7 @@ assert (H : ∀ ε : T, (0 < ε)%L → (da lim1 lim2 < ε)%L). {
 clear Hu; rename H into Hu.
 destruct dist as (Hdsym, Hdsep, Hdtri).
 apply Hdsep.
-apply (rngl_abs_le_ε Hop Hiv Hor).
+apply (rngl_abs_le_ε Hop Hiv Hto).
 intros ε Hε.
 specialize (Hu ε Hε).
 rewrite (rngl_abs_nonneg_eq Hop Hor); [ | apply Hdpos ].
@@ -341,6 +344,7 @@ destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
   now apply (rngl_lt_irrefl Hor) in Hε.
 }
 assert (Hε2 : (0 < ε / 2)%L). {
+...
   apply (rngl_mul_lt_mono_pos_r Hop Hiq Hor 2⁻¹%L) in Hε. 2: {
     apply (rngl_inv_pos Hop Hiv Hor).
     apply (rngl_0_lt_2 Hos Hc1 Hor).
