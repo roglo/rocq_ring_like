@@ -654,11 +654,12 @@ Qed.
 Theorem int_part :
   rngl_has_opp T = true →
   rngl_characteristic T ≠ 1 →
-  rngl_is_ordered T = true →
+  rngl_is_totally_ordered T = true →
   rngl_is_archimedean T = true →
   ∀ a, ∃ₜ n, (rngl_of_nat n ≤ rngl_abs a < rngl_of_nat (n + 1))%L.
 Proof.
-intros Hop Hc1 Hor Har.
+intros Hop Hc1 Hto Har.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 assert (Heo : rngl_has_eq_dec_or_order T = true). {
   progress unfold rngl_has_eq_dec_or_order.
@@ -668,11 +669,10 @@ assert (Heo : rngl_has_eq_dec_or_order T = true). {
 intros a.
 destruct (rngl_ltb_dec 1 (rngl_abs a))%L as [Hx1| Hx1]. {
   apply rngl_ltb_lt in Hx1.
-...
-  apply (rngl_archimedean_ub Har Hor).
-  split; [ apply (rngl_0_lt_1 Hos Hc1 Hor) | easy ].
+  apply (rngl_archimedean_ub Har Hto).
+  split; [ apply (rngl_0_lt_1 Hos Hc1 Hto) | easy ].
 }
-apply (rngl_ltb_ge_iff Hor) in Hx1.
+apply (rngl_ltb_ge_iff Hto) in Hx1.
 destruct (rngl_eqb_dec (rngl_abs a) 1) as [Ha1| Ha1]. {
   apply (rngl_eqb_eq Heo) in Ha1.
   exists 1.
@@ -680,7 +680,7 @@ destruct (rngl_eqb_dec (rngl_abs a) 1) as [Ha1| Ha1]. {
   rewrite rngl_add_0_r.
   split; [ pauto | ].
   apply (rngl_le_neq Hto).
-  split; [ apply (rngl_1_le_2 Hos Hor) | ].
+  split; [ apply (rngl_1_le_2 Hos Hto) | ].
   intros H12.
   apply (f_equal (λ b, rngl_sub b 1))%L in H12.
   rewrite (rngl_sub_diag Hos) in H12.
@@ -691,7 +691,7 @@ destruct (rngl_eqb_dec (rngl_abs a) 1) as [Ha1| Ha1]. {
 apply (rngl_eqb_neq Heo) in Ha1.
 exists 0; cbn.
 rewrite rngl_add_0_r.
-split; [ apply (rngl_abs_nonneg Hop Hor) | ].
+split; [ apply (rngl_abs_nonneg Hop Hto) | ].
 now apply (rngl_le_neq Hto).
 Qed.
 
