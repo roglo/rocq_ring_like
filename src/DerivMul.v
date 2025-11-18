@@ -1856,7 +1856,7 @@ apply (rngl_mul_lt_mono_pos_l Hop Hiq Hto); [ easy | ].
 rewrite <- (rngl_div_1_l Hiv 2).
 rewrite <- (rngl_div_div Hos Hiv); cycle 1. {
   intros H.
-  apply (rngl_eq_add_0 Hos Hto) in H; cycle 1. {
+  apply (rngl_eq_add_0 Hos Hor) in H; cycle 1. {
     apply (rngl_mul_nonneg_nonneg Hos Hor).
     apply (rngl_abs_nonneg Hop Hto).
     apply (rngl_squ_nonneg Hos Hto).
