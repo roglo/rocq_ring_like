@@ -1628,7 +1628,7 @@ Definition I_ring_like_op' : ring_like_op (ideal T) :=
      rngl_opt_inv_or_pdiv := None;
      rngl_opt_is_zero_divisor := Some (λ _, True);
      rngl_opt_eq_dec := None;
-     rngl_opt_leb := Some I_leb |}.
+     rngl_opt_leb := Some (I_leb, false) |}.
 
 Theorem I_ord_le_dec I J : {(I ≤ J)%I = true} + {(I ≤ J)%I ≠ true}.
 Proof.
@@ -1718,40 +1718,16 @@ cbn in Hxi, Hyj; subst x y.
 split; apply i_zero.
 Qed.
 
-(* to be completed
-Theorem I_ord_not_le I J : (I ≤ J)%I ≠ true → I ≠ J ∧ (J ≤ I)%I = true.
-Proof.
-intros * Hij.
-progress unfold I_leb in Hij |-*.
-destruct (J ⊂ I)%I as [H1| H1]. {
-  split; [ | easy ].
-  destruct (I ⊂ J)%I as [H2| H2]; [ easy | clear Hij ].
-  intros Hij; apply H2; clear H2.
-  now subst J.
-} {
-  exfalso.
-  destruct (I ⊂ J)%I as [H2| H2]; [ easy | clear Hij ].
-  apply H1; clear H1.
-  intros z Hz.
-Check @rngl_ord_not_le.
-(* c'est faux, ça : ça suppose que l'ordre est total *)
-(* enfin, je crois que c'est ça le problème *)
-...
-  exfalso.
-  apply H2; clear H2.
-  intros t Ht.
-...
-
 Definition I_ring_like_ord' : ring_like_ord (ideal T) :=
   let roi := I_ring_like_op' in
-  {| rngl_ord_le_dec := I_ord_le_dec;
-     rngl_ord_le_refl := I_ord_le_refl;
+  {| rngl_ord_le_refl := I_ord_le_refl;
      rngl_ord_le_antisymm := I_ord_le_antisymm;
      rngl_ord_le_trans := I_ord_le_trans;
      rngl_ord_add_le_mono_l := NA;
      rngl_ord_mul_le_compat_nonneg := I_ord_mul_le_compat_nonneg;
      rngl_ord_mul_le_compat_nonpos := I_ord_mul_le_compat_nonpos;
-     rngl_ord_not_le := true |}.
+     rngl_ord_le_dec := I_ord_le_dec;
+     rngl_ord_total_prop := NA |}.
 
 Definition I_ring_like_prop' : ring_like_prop (ideal T) :=
   let roi := I_ring_like_op' in
@@ -1776,9 +1752,8 @@ Definition I_ring_like_prop' : ring_like_prop (ideal T) :=
      rngl_opt_mul_div := NA;
      rngl_opt_integral := I_opt_integral;
      rngl_opt_alg_closed := NA;
-     rngl_opt_ord := Some true;
+     rngl_opt_ord := I_ring_like_ord';
      rngl_opt_archimedean := NA;
      rngl_characteristic_prop := I_characteristic_prop |}.
-*)
 
 End a.

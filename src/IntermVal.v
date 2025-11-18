@@ -96,10 +96,11 @@ Fixpoint AnBn (P : T → Type) (an bn : T) n :=
 Theorem rngl_middle_in_middle :
   rngl_has_opp T = true →
   rngl_has_inv T = true →
-  rngl_is_ordered T = true →
+  rngl_is_totally_ordered T = true →
   ∀ a b, (a ≤ b → a ≤ (a + b) / 2 ≤ b)%L.
 Proof.
-intros Hop Hiv Hor * Hab.
+intros Hop Hiv Hto * Hab.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
 destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
@@ -107,16 +108,16 @@ destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
   rewrite (H1 ((a + b) / 2)%L), (H1 a), (H1 b).
   split; apply (rngl_le_refl Hor).
 }
-specialize (rngl_0_lt_2 Hos Hc1 Hor) as Hz2.
-specialize (rngl_2_neq_0 Hos Hc1 Hor) as H2z.
+specialize (rngl_0_lt_2 Hos Hc1 Hto) as Hz2.
+specialize (rngl_2_neq_0 Hos Hc1 Hto) as H2z.
 split. {
-  apply (rngl_mul_le_mono_pos_r Hop Hiq Hor) with (c := 2%L); [ easy | ].
+  apply (rngl_mul_le_mono_pos_r Hop Hiq Hto) with (c := 2%L); [ easy | ].
   rewrite (rngl_div_mul Hiv); [ | easy ].
   rewrite rngl_mul_add_distr_l.
   rewrite rngl_mul_1_r.
   apply (rngl_add_le_mono Hos Hor); [ apply (rngl_le_refl Hor) | easy ].
 } {
-  apply (rngl_mul_le_mono_pos_r Hop Hiq Hor) with (c := 2%L); [ easy | ].
+  apply (rngl_mul_le_mono_pos_r Hop Hiq Hto) with (c := 2%L); [ easy | ].
   rewrite (rngl_div_mul Hiv); [ | easy ].
   rewrite rngl_mul_add_distr_l.
   rewrite rngl_mul_1_r.
@@ -127,14 +128,15 @@ Qed.
 Theorem AnBn_interval :
   rngl_has_opp T = true →
   rngl_has_inv T = true →
-  rngl_is_ordered T = true →
+  rngl_is_totally_ordered T = true →
   ∀ a b, (a ≤ b)%L →
   ∀ P n an bn,
   AnBn P a b n = (an, bn)
   → (a ≤ an ≤ bn ≤ b)%L ∧
     bn = (an + (b - a) / 2 ^ n)%L.
 Proof.
-intros Hop Hiv Hor.
+intros Hop Hiv Hto.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 assert (Hiq : rngl_has_inv_or_pdiv T = true). {
   now apply rngl_has_inv_or_pdiv_iff; left.
@@ -153,7 +155,7 @@ destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
   rewrite rngl_add_0_l, (rngl_sub_0_r Hos).
   symmetry; apply H1.
 }
-specialize (rngl_2_neq_0 Hos Hc1 Hor) as H2z.
+specialize (rngl_2_neq_0 Hos Hc1 Hto) as H2z.
 intros * Hab * Hanbn.
 revert a b Hab Hanbn.
 induction n; intros. {
@@ -173,7 +175,7 @@ cbn in Hanbn |-*.
 destruct (is_upper_bound P _) as [H1| H1]. {
   specialize (IHn a ((a + b) / 2))%L.
   assert (H : (a ≤ (a + b) / 2)%L). {
-    now apply (rngl_middle_in_middle Hop Hiv Hor).
+    now apply (rngl_middle_in_middle Hop Hiv Hto).
   }
   specialize (IHn H Hanbn); clear H.
   destruct  IHn as (Haabb, Hbnan).
@@ -181,49 +183,49 @@ destruct (is_upper_bound P _) as [H1| H1]. {
     split; [ easy | ].
     split; [ easy | ].
     eapply (rngl_le_trans Hor); [ apply Haabb | ].
-    now apply (rngl_middle_in_middle Hop Hiv Hor).
+    now apply (rngl_middle_in_middle Hop Hiv Hto).
   }
   rewrite Hbnan at 1.
   f_equal.
   rewrite <- (rngl_div_div Hos Hiv); cycle 1. {
     rewrite rngl_mul_1_r.
-    apply (rngl_2_neq_0 Hos Hc1 Hor).
+    apply (rngl_2_neq_0 Hos Hc1 Hto).
   } {
     now apply (rngl_pow_neq_0 Hos Hiq).
   }
   f_equal.
   rewrite rngl_mul_1_r.
-  apply (rngl_middle_sub_l Hop Hiv Hor).
+  apply (rngl_middle_sub_l Hop Hiv Hto).
 } {
   specialize (IHn ((a + b) / 2) b)%L.
   assert (H : ((a + b) / 2 ≤ b)%L). {
-    now apply (rngl_middle_in_middle Hop Hiv Hor).
+    now apply (rngl_middle_in_middle Hop Hiv Hto).
   }
   specialize (IHn H Hanbn); clear H.
   destruct  IHn as (Haabb, Hbnan).
   split. {
     split; [ | easy ].
     eapply (rngl_le_trans Hor); [ | apply Haabb ].
-    now apply (rngl_middle_in_middle Hop Hiv Hor).
+    now apply (rngl_middle_in_middle Hop Hiv Hto).
   }
   rewrite Hbnan at 1.
   f_equal.
   rewrite <- (rngl_div_div Hos Hiv); cycle 1. {
     rewrite rngl_mul_1_r.
-    apply (rngl_2_neq_0 Hos Hc1 Hor).
+    apply (rngl_2_neq_0 Hos Hc1 Hto).
   } {
     now apply (rngl_pow_neq_0 Hos Hiq).
   }
   f_equal.
   rewrite rngl_mul_1_r.
-  apply (rngl_middle_sub_r Hop Hiv Hor).
+  apply (rngl_middle_sub_r Hop Hiv Hto).
 }
 Qed.
 
 Theorem AnBn_le :
   rngl_has_opp T = true →
   rngl_has_inv T = true →
-  rngl_is_ordered T = true →
+  rngl_is_totally_ordered T = true →
   ∀ a b, (a ≤ b)%L →
   ∀ P p q ap bp aq bq,
   p ≤ q
@@ -231,12 +233,12 @@ Theorem AnBn_le :
   → AnBn P a b q = (aq, bq)
   → (ap ≤ aq ∧ bq ≤ bp)%L.
 Proof.
-intros Hop Hiv Hor * Hab * Hpq Hp Hq.
+intros Hop Hiv Hto * Hab * Hpq Hp Hq.
 revert a b q Hab Hpq Hp Hq.
 induction p; intros; cbn. {
   cbn in Hp.
   injection Hp; clear Hp; intros; subst ap bp.
-  specialize (AnBn_interval Hop Hiv Hor) as H1.
+  specialize (AnBn_interval Hop Hiv Hto) as H1.
   now specialize (H1 a b Hab P q aq bq Hq).
 }
 cbn in Hp.
@@ -244,10 +246,10 @@ destruct q; [ easy | cbn in Hq ].
 apply Nat.succ_le_mono in Hpq.
 destruct (is_upper_bound _ _) as [H1| H1]. {
   eapply IHp; [ | apply Hpq | apply Hp | apply Hq ].
-  now apply (rngl_middle_in_middle Hop Hiv Hor).
+  now apply (rngl_middle_in_middle Hop Hiv Hto).
 } {
   eapply IHp; [ | apply Hpq | apply Hp | apply Hq ].
-  now apply (rngl_middle_in_middle Hop Hiv Hor).
+  now apply (rngl_middle_in_middle Hop Hiv Hto).
 }
 Qed.
 
@@ -277,9 +279,10 @@ destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
 assert (H2i : ∀ i, (2 ^ i)%L ≠ 0%L). {
   intros.
   apply (rngl_pow_neq_0 Hos Hiq).
-  apply (rngl_2_neq_0 Hos Hc1 Hor).
+...
+  apply (rngl_2_neq_0 Hos Hc1 Hto).
 }
-specialize (AnBn_interval Hop Hiv Hor) as Habi.
+specialize (AnBn_interval Hop Hiv Hto) as Habi.
 rewrite (rngl_abs_nonpos_eq Hop Hor). 2: {
   apply (rngl_le_sub_0 Hop Hor).
   apply (AnBn_le Hop Hiv Hor a b Hab P p q ap bp aq bq Hpq Ha Hb).
@@ -315,23 +318,23 @@ cbn in Ha, Hb.
 destruct (is_upper_bound _ _) as [H1| H1]. {
   specialize (IHp a ((a + b) / 2)%L q).
   assert (H : (a ≤ (a + b) / 2)%L). {
-    now apply (rngl_middle_in_middle Hop Hiv Hor).
+    now apply (rngl_middle_in_middle Hop Hiv Hto).
   }
   specialize (IHp H Hpq Ha Hb); clear H.
-  rewrite (rngl_middle_sub_l Hop Hiv Hor) in IHp.
+  rewrite (rngl_middle_sub_l Hop Hiv Hto) in IHp.
   rewrite rngl_mul_1_r.
   rewrite <- (rngl_div_div Hos Hiv); [ easy | | apply H2i ].
-  apply (rngl_2_neq_0 Hos Hc1 Hor).
+  apply (rngl_2_neq_0 Hos Hc1 Hto).
 } {
   specialize (IHp ((a + b) / 2)%L b q).
   assert (H : ((a + b) / 2 ≤ b)%L). {
-    now apply (rngl_middle_in_middle Hop Hiv Hor).
+    now apply (rngl_middle_in_middle Hop Hiv Hto).
   }
   specialize (IHp H Hpq Ha Hb); clear H.
-  rewrite (rngl_middle_sub_r Hop Hiv Hor) in IHp.
+  rewrite (rngl_middle_sub_r Hop Hiv Hto) in IHp.
   rewrite rngl_mul_1_r.
   rewrite <- (rngl_div_div Hos Hiv); [ easy | | apply H2i ].
-  apply (rngl_2_neq_0 Hos Hc1 Hor).
+  apply (rngl_2_neq_0 Hos Hc1 Hto).
 }
 Qed.
 
@@ -391,13 +394,13 @@ split. {
   assert (H2i : ∀ i, (2 ^ i)%L ≠ 0%L). {
     intros.
     apply (rngl_pow_neq_0 Hos Hiq).
-    apply (rngl_2_neq_0 Hos Hc1 Hor).
+    apply (rngl_2_neq_0 Hos Hc1 Hto).
   }
   (* TODO: a lemma *)
   assert (H1 : (rngl_abs (u p - u q) ≤ (b - a) / 2 ^ min p q)%L). {
     clear Hp Hq.
     progress unfold u.
-    specialize (AnBn_interval Hop Hiv Hor) as Habi.
+    specialize (AnBn_interval Hop Hiv Hto) as Habi.
     specialize (rngl_abs_AnBn_sub_AnBn_le Hop Hiv Hor) as H1.
     specialize (H1 a b Hab P).
     destruct (le_dec p q) as [Hpq| Hpq]. {
@@ -463,13 +466,13 @@ split. {
   assert (H2i : ∀ i, (2 ^ i)%L ≠ 0%L). {
     intros.
     apply (rngl_pow_neq_0 Hos Hiq).
-    apply (rngl_2_neq_0 Hos Hc1 Hor).
+    apply (rngl_2_neq_0 Hos Hc1 Hto).
   }
   (* TODO: a lemma *)
   assert (H1 : (rngl_abs (v p - v q) ≤ (b - a) / 2 ^ min p q)%L). {
     clear Hp Hq.
     unfold v.
-    specialize (AnBn_interval Hop Hiv Hor) as Habi.
+    specialize (AnBn_interval Hop Hiv Hto) as Habi.
     specialize (rngl_abs_AnBn_sub_AnBn_le Hop Hiv Hor) as H1.
     specialize (H1 a b Hab P).
     destruct (le_dec p q) as [Hpq| Hpq]. {
@@ -529,7 +532,7 @@ destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
   rewrite H.
   apply (rngl_le_refl Hor).
 }
-specialize (AnBn_interval Hop Hiv Hor) as H1.
+specialize (AnBn_interval Hop Hiv Hto) as H1.
 specialize (H1 a b Hab P n _ _ (surjective_pairing _)).
 rewrite Habn in H1; cbn in H1.
 destruct H1 as (H1, H2).
@@ -1100,7 +1103,7 @@ destruct (is_bound _ P lim) as [H1| H1]. {
     intros Hc.
     specialize (limit_between_An_and_Bn Hiv a b lim P) as Hl.
     specialize (Hl Hab Hal Hbl).
-    specialize (AnBn_interval Hop Hiv Hor a b Hab P) as Hi.
+    specialize (AnBn_interval Hop Hiv Hto a b Hab P) as Hi.
     specialize (in_AnBn P a b Ha Hs) as Hin.
     (* if (b - a) / 2 ^ n < lim - c, then c < an < lim,
        we have a y between an and bn with P y, but
@@ -1168,7 +1171,7 @@ destruct (is_bound _ P lim) as [H1| H1]. {
   intros Hlc.
   specialize (limit_between_An_and_Bn Hiv a b lim P) as Hl.
   specialize (Hl Hab Hal Hbl).
-  specialize (AnBn_interval Hop Hiv Hor a b Hab P) as Hi.
+  specialize (AnBn_interval Hop Hiv Hto a b Hab P) as Hi.
   specialize (in_AnBn P a b Ha Hs) as Hin.
   specialize (after_AnBn P a b Ha Hs) as Han.
   (* faut que je trouve un n tel que bn < c,
