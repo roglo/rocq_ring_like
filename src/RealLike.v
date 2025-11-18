@@ -247,12 +247,12 @@ Theorem euclidean_distance_triangular :
   rngl_mul_is_comm T = true →
   rngl_has_opp T = true →
   rngl_has_inv T = true →
-  rngl_is_ordered T = true →
+  rngl_is_totally_ordered T = true →
   ∀ x1 y1 x2 y2 x3 y3,
   (rl_modl (x3 - x1) (y3 - y1)
    ≤ rl_modl (x2 - x1) (y2 - y1) + rl_modl (x3 - x2) (y3 - y2))%L.
 Proof.
-intros Hic Hop Hiv Hor *.
+intros Hic Hop Hiv Hto *.
 progress unfold rl_modl.
 rewrite (rngl_add_comm (√((x2 - x1)² + (y2 - y1)²)))%L.
 replace (x3 - x1)%L with ((x3 - x2) + (x2 - x1))%L. 2: {
@@ -263,24 +263,24 @@ replace (y3 - y1)%L with ((y3 - y2) + (y2 - y1))%L. 2: {
   rewrite (rngl_add_sub_assoc Hop).
   now rewrite (rngl_sub_add Hop).
 }
-...
 apply (rl_modl_add_le Hic Hop Hiv Hto).
 Qed.
 
 Theorem rl_sqrt_le_rl_sqrt :
   rngl_has_opp T = true →
   rngl_has_inv_or_pdiv T = true →
-  rngl_is_ordered T = true →
+  rngl_is_totally_ordered T = true →
   ∀ a b,
   (0 ≤ a)%L
   → (a ≤ b)%L
   → (√ a ≤ √ b)%L.
 Proof.
-intros Hop Hiq Hor.
+intros Hop Hiq Hto.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 intros * Ha Hab.
 apply (rngl_nlt_ge_iff Hto).
 intros H1.
-specialize (rngl_mul_lt_mono_nonneg Hop Hiq Hor) as H2.
+specialize (rngl_mul_lt_mono_nonneg Hop Hiq Hto) as H2.
 specialize (H2 (√b) (√a) (√b) (√a))%L.
 assert (H : (0 ≤ √b < √a)%L). {
   split; [ | easy ].
@@ -297,13 +297,14 @@ now apply rngl_nle_gt in Hab.
 Qed.
 
 Theorem rl_sqrt_lt_rl_sqrt :
-  rngl_is_ordered T = true →
+  rngl_is_totally_ordered T = true →
   ∀ a b,
   (0 ≤ a)%L
   → (a < b)%L
   → (√ a < √ b)%L.
 Proof.
-intros Hor * Ha Hab.
+intros Hto * Ha Hab.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 apply (rngl_nle_gt_iff Hto).
 intros H1.
 specialize (rngl_mul_le_compat_nonneg Hor) as H2.
@@ -326,10 +327,11 @@ Qed.
 
 Theorem rl_sqrt_pos :
   rngl_has_opp_or_psub T = true →
-  rngl_is_ordered T = true →
+  rngl_is_totally_ordered T = true →
   ∀ a, (0 < a)%L → (0 < √a)%L.
 Proof.
-intros Hos Hor.
+intros Hos Hto.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 intros a Ha.
 apply (rngl_le_neq Hto).
 split. {
@@ -345,25 +347,26 @@ Qed.
 Theorem rl_sqrt_1 :
   rngl_has_opp T = true →
   rngl_has_inv_or_pdiv T = true →
-  rngl_is_ordered T = true →
+  rngl_is_totally_ordered T = true →
   rl_sqrt 1%L = 1%L.
 Proof.
-intros Hop Hiq Hor.
+intros Hop Hiq Hto.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 specialize (rngl_int_dom_or_inv_or_pdiv_r Hiq) as Hii.
-specialize (rngl_0_le_1 Hos Hor) as Hz1.
+specialize (rngl_0_le_1 Hos Hto) as Hz1.
 progress unfold rl_sqrt.
 specialize (rl_nth_root_pow 2 1%L Hz1) as H1.
 rewrite <- (rngl_squ_1) in H1 at 2.
 rewrite <- (rngl_squ_pow_2) in H1.
-apply (eq_rngl_squ_rngl_abs Hop Hor Hii) in H1. 2: {
+apply (eq_rngl_squ_rngl_abs Hop Hto Hii) in H1. 2: {
   rewrite rngl_mul_1_l.
   apply rngl_mul_1_r.
 }
 rewrite (rngl_abs_nonneg_eq Hop Hor) in H1. 2: {
   now apply rl_sqrt_nonneg.
 }
-now rewrite (rngl_abs_1 Hos Hor) in H1.
+now rewrite (rngl_abs_1 Hos Hto) in H1.
 Qed.
 
 End a.
