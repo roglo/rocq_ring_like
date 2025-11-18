@@ -327,7 +327,7 @@ Qed.
 Theorem limit_add :
   rngl_has_opp T = true →
   rngl_has_inv T = true →
-  rngl_is_ordered T = true →
+  rngl_is_totally_ordered T = true →
   ∀ {dt : T → T → T} (dist : is_dist dt),
   (∀ a b c d, (dt (a + b) (c + d) ≤ dt a c + dt b d)%L)
   → ∀ u v limu limv,
@@ -335,7 +335,8 @@ Theorem limit_add :
   → is_limit_when_seq_tends_to_inf dt v limv
   → is_limit_when_seq_tends_to_inf dt (λ n, (u n + v n))%L (limu + limv)%L.
 Proof.
-intros Hop Hiv Hor * dist * Hd * Hu Hv ε Hε.
+intros Hop Hiv Hto * dist * Hd * Hu Hv ε Hε.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
 destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
@@ -344,10 +345,9 @@ destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
   now apply (rngl_lt_irrefl Hor) in Hε.
 }
 assert (Hε2 : (0 < ε / 2)%L). {
-...
-  apply (rngl_mul_lt_mono_pos_r Hop Hiq Hor 2⁻¹%L) in Hε. 2: {
-    apply (rngl_inv_pos Hop Hiv Hor).
-    apply (rngl_0_lt_2 Hos Hc1 Hor).
+  apply (rngl_mul_lt_mono_pos_r Hop Hiq Hto 2⁻¹%L) in Hε. 2: {
+    apply (rngl_inv_pos Hop Hiv Hto).
+    apply (rngl_0_lt_2 Hos Hc1 Hto).
   }
   rewrite (rngl_mul_0_l Hos) in Hε.
   now rewrite (rngl_mul_inv_r Hiv) in Hε.
@@ -364,72 +364,74 @@ specialize (Hvn _ Hnvn).
 apply (rngl_lt_le_trans Hto _ (ε / 2 + ε / 2)%L). 2: {
   rewrite <- (rngl_mul_2_r).
   rewrite (rngl_div_mul Hiv). 2: {
-    apply (rngl_2_neq_0 Hos Hc1 Hor).
+    apply (rngl_2_neq_0 Hos Hc1 Hto).
   }
   apply (rngl_le_refl Hor).
 }
 eapply (rngl_le_lt_trans Hto). 2: {
-  apply (rngl_add_lt_compat Hos Hor); [ apply Hun | apply Hvn ].
+  apply (rngl_add_lt_compat Hos Hto); [ apply Hun | apply Hvn ].
 }
 apply Hd.
 Qed.
 
 Theorem rngl_dist_add_add_le :
   rngl_has_opp T = true →
-  rngl_is_ordered T = true →
+  rngl_is_totally_ordered T = true →
   ∀ a b c d,
   (rngl_dist (a + b) (c + d) ≤ rngl_dist a c + rngl_dist b d)%L.
 Proof.
-intros Hop Hor.
+intros Hop Hto.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 intros.
 progress unfold rngl_dist.
 rewrite (rngl_sub_add_distr Hos).
 rewrite (rngl_add_sub_swap Hop).
 rewrite <- (rngl_add_sub_assoc Hop).
-apply (rngl_abs_triangle Hop Hor).
+apply (rngl_abs_triangle Hop Hto).
 Qed.
 
 Theorem rngl_dist_left_mono :
   rngl_has_opp T = true →
-  rngl_is_ordered T = true →
+  rngl_is_totally_ordered T = true →
   ∀ a b c,
   (a ≤ b ≤ c)%L
   → (rngl_dist a b ≤ rngl_dist a c)%L.
 Proof.
-intros Hop Hor.
+intros Hop Hto.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 intros * Habc.
 progress unfold rngl_dist.
-rewrite (rngl_abs_nonpos_eq Hop Hor). 2: {
-  now apply (rngl_le_sub_0 Hop Hor).
+rewrite (rngl_abs_nonpos_eq Hop Hto). 2: {
+  now apply (rngl_le_sub_0 Hop Hto).
 }
-rewrite (rngl_abs_nonpos_eq Hop Hor). 2: {
-  apply (rngl_le_sub_0 Hop Hor).
+rewrite (rngl_abs_nonpos_eq Hop Hto). 2: {
+  apply (rngl_le_sub_0 Hop Hto).
   now apply (rngl_le_trans Hor _ b).
 }
 do 2 rewrite (rngl_opp_sub_distr Hop).
-now apply (rngl_sub_le_mono_r Hop Hor).
+now apply (rngl_sub_le_mono_r Hop Hto).
 Qed.
 
 Theorem rngl_dist_right_mono :
   rngl_has_opp T = true →
-  rngl_is_ordered T = true →
+  rngl_is_totally_ordered T = true →
   ∀ a b c,
   (a ≤ b ≤ c)%L
   → (rngl_dist b c ≤ rngl_dist a c)%L.
 Proof.
-intros Hop Hor.
+intros Hop Hto.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 intros * Habc.
 progress unfold rngl_dist.
-rewrite (rngl_abs_nonpos_eq Hop Hor). 2: {
-  now apply (rngl_le_sub_0 Hop Hor).
+rewrite (rngl_abs_nonpos_eq Hop Hto). 2: {
+  now apply (rngl_le_sub_0 Hop Hto).
 }
-rewrite (rngl_abs_nonpos_eq Hop Hor). 2: {
-  apply (rngl_le_sub_0 Hop Hor).
+rewrite (rngl_abs_nonpos_eq Hop Hto). 2: {
+  apply (rngl_le_sub_0 Hop Hto).
   now apply (rngl_le_trans Hor _ b).
 }
 do 2 rewrite (rngl_opp_sub_distr Hop).
-now apply (rngl_sub_le_mono_l Hop Hor).
+now apply (rngl_sub_le_mono_l Hop Hto).
 Qed.
 
 Theorem is_limit_neighbourhood_eq_compat :
