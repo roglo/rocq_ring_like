@@ -349,13 +349,13 @@ Qed.
 Theorem rngl_mul_pos_pos :
   rngl_has_opp T = true →
   rngl_has_inv_or_pdiv T = true →
-  rngl_is_ordered T = true →
+  rngl_is_totally_ordered T = true →
   ∀ a b : T, (0 < a)%L → (0 < b)%L → (0 < a * b)%L.
 Proof.
-intros Hop Hiq Hor.
+intros Hop Hiq Hto.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 intros * Haz Hbz.
-...
 apply (rngl_le_neq Hto) in Haz.
 apply (rngl_le_neq Hto) in Hbz.
 apply (rngl_le_neq Hto).
@@ -371,10 +371,10 @@ Qed.
 Theorem rngl_mul_pos_cancel_r :
   rngl_has_opp T = true →
   rngl_has_inv_or_pdiv T = true →
-  rngl_is_ordered T = true →
+  rngl_is_totally_ordered T = true →
   ∀ a b : T, (0 < b → 0 < a * b ↔ 0 < a)%L.
 Proof.
-intros Hop Hiq Hor * Ha.
+intros Hop Hiq Hto * Ha.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 split; intros Hb. {
   apply (rngl_le_neq Hto) in Ha.
@@ -384,12 +384,12 @@ split; intros Hb. {
   destruct Hb as (Habz, Hzab).
   apply not_eq_sym in Hza, Hzab.
   split. {
-    apply (rngl_lt_eq_cases Hor) in Habz.
+    apply (rngl_lt_eq_cases Hto) in Habz.
     destruct Habz as [Habz| Habz]. {
       apply rngl_nle_gt in Habz.
       apply (rngl_nlt_ge_iff Hto).
       intros Hb; apply Habz; clear Habz.
-      apply (rngl_mul_nonpos_nonneg Hop Hor); [ | easy ].
+      apply (rngl_mul_nonpos_nonneg Hop Hto); [ | easy ].
       now apply (rngl_lt_le_incl Hto).
     }
     now rewrite Habz in Hzab.
@@ -397,17 +397,17 @@ split; intros Hb. {
   intros H; subst a.
   now rewrite (rngl_mul_0_l Hos) in Hzab.
 } {
-  now apply (rngl_mul_pos_pos Hop Hiq Hor).
+  now apply (rngl_mul_pos_pos Hop Hiq Hto).
 }
 Qed.
 
 Theorem rngl_mul_pos_cancel_l :
   rngl_has_opp T = true →
   rngl_has_inv_or_pdiv T = true →
-  rngl_is_ordered T = true →
+  rngl_is_totally_ordered T = true →
   ∀ a b : T, (0 < a → 0 < a * b ↔ 0 < b)%L.
 Proof.
-intros Hop Hiq Hor * Ha.
+intros Hop Hiq Hto * Ha.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 split; intros Hb. {
   apply (rngl_le_neq Hto) in Ha.
@@ -417,12 +417,12 @@ split; intros Hb. {
   destruct Hb as (Habz, Hzab).
   apply not_eq_sym in Hza, Hzab.
   split. {
-    apply (rngl_lt_eq_cases Hor) in Habz.
+    apply (rngl_lt_eq_cases Hto) in Habz.
     destruct Habz as [Habz| Habz]. {
       apply rngl_nle_gt in Habz.
       apply (rngl_nlt_ge_iff Hto).
       intros Hb; apply Habz; clear Habz.
-      apply (rngl_mul_nonneg_nonpos Hop Hor); [ easy | ].
+      apply (rngl_mul_nonneg_nonpos Hop Hto); [ easy | ].
       now apply (rngl_lt_le_incl Hto).
     }
     now rewrite Habz in Hzab.
@@ -430,7 +430,7 @@ split; intros Hb. {
   intros H; subst b.
   now rewrite (rngl_mul_0_r Hos) in Hzab.
 } {
-  now apply (rngl_mul_pos_pos Hop Hiq Hor).
+  now apply (rngl_mul_pos_pos Hop Hiq Hto).
 }
 Qed.
 
@@ -439,59 +439,60 @@ Qed.
 Theorem rngl_mul_le_mono_pos_l :
   rngl_has_opp T = true →
   rngl_has_inv_or_pdiv T = true →
-  rngl_is_ordered T = true →
+  rngl_is_totally_ordered T = true →
   ∀ a b c : T, (0 < a)%L → (b ≤ c)%L ↔ (a * b ≤ a * c)%L.
 Proof.
-intros Hop Hiq Hor * Hc.
+intros Hop Hiq Hto * Hc.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 split; intros Hbc. {
-  apply (rngl_mul_le_mono_nonneg_l Hop Hor); [ | easy ].
+  apply (rngl_mul_le_mono_nonneg_l Hop Hto); [ | easy ].
   now apply (rngl_lt_le_incl Hto).
 } {
-  apply (rngl_le_0_sub Hop Hor) in Hbc.
+  apply (rngl_le_0_sub Hop Hto) in Hbc.
   rewrite <- (rngl_mul_sub_distr_l Hop) in Hbc.
   apply rngl_nlt_ge in Hbc.
   apply (rngl_nlt_ge_iff Hto).
   intros H1; apply Hbc; clear Hbc.
   rewrite <- (rngl_mul_0_r Hos a).
-  apply (rngl_lt_0_sub Hop Hor).
+  apply (rngl_lt_0_sub Hop Hto).
   rewrite <- (rngl_mul_sub_distr_l Hop).
   rewrite (rngl_sub_0_l Hop).
   rewrite (rngl_opp_sub_distr Hop).
-  apply (rngl_mul_pos_pos Hop Hiq Hor); [ easy | ].
-  now apply (rngl_lt_0_sub Hop Hor).
+  apply (rngl_mul_pos_pos Hop Hiq Hto); [ easy | ].
+  now apply (rngl_lt_0_sub Hop Hto).
 }
 Qed.
 
 Theorem rngl_mul_lt_mono_pos_l :
   rngl_has_opp T = true →
   rngl_has_inv_or_pdiv T = true →
-  rngl_is_ordered T = true →
+  rngl_is_totally_ordered T = true →
   ∀ a b c : T, (0 < a)%L → (b < c)%L ↔ (a * b < a * c)%L.
 Proof.
-intros Hop Hiq Hor.
+intros Hop Hiq Hto.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 intros * Ha.
 split; intros Hbc. {
-  apply (rngl_lt_0_sub Hop Hor).
+  apply (rngl_lt_0_sub Hop Hto).
   rewrite <- (rngl_mul_sub_distr_l Hop).
-  apply (rngl_mul_pos_pos Hop Hiq Hor); [ easy | ].
-  now apply (rngl_lt_0_sub Hop Hor).
+  apply (rngl_mul_pos_pos Hop Hiq Hto); [ easy | ].
+  now apply (rngl_lt_0_sub Hop Hto).
 } {
-  apply (rngl_lt_0_sub Hop Hor) in Hbc.
+  apply (rngl_lt_0_sub Hop Hto) in Hbc.
   rewrite <- (rngl_mul_sub_distr_l Hop) in Hbc.
   apply rngl_nle_gt in Hbc.
   apply (rngl_nle_gt_iff Hto).
   intros H1; apply Hbc; clear Hbc.
   rewrite <- (rngl_mul_0_r Hos a).
-  apply (rngl_le_0_sub Hop Hor).
+  apply (rngl_le_0_sub Hop Hto).
   rewrite <- (rngl_mul_sub_distr_l Hop).
   rewrite (rngl_sub_0_l Hop).
   rewrite (rngl_opp_sub_distr Hop).
   apply (rngl_mul_nonneg_nonneg Hos Hor). {
     now apply (rngl_lt_le_incl Hto).
   }
-  now apply (rngl_le_0_sub Hop Hor).
+  now apply (rngl_le_0_sub Hop Hto).
 }
 Qed.
 
@@ -500,47 +501,47 @@ Qed.
 Theorem rngl_mul_lt_mono_pos_r :
   rngl_has_opp T = true →
   rngl_has_inv_or_pdiv T = true →
-  rngl_is_ordered T = true →
+  rngl_is_totally_ordered T = true →
   ∀ a b c : T, (0 < a)%L → (b < c)%L ↔ (b * a < c * a)%L.
 Proof.
-intros Hop Hiq Hor.
+intros Hop Hiq Hto.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 intros * Ha.
 split; intros Hbc. {
-  apply (rngl_lt_0_sub Hop Hor).
+  apply (rngl_lt_0_sub Hop Hto).
   rewrite <- (rngl_mul_sub_distr_r Hop).
-  apply (rngl_mul_pos_pos Hop Hiq Hor); [ | easy ].
-  now apply (rngl_lt_0_sub Hop Hor).
+  apply (rngl_mul_pos_pos Hop Hiq Hto); [ | easy ].
+  now apply (rngl_lt_0_sub Hop Hto).
 } {
-  apply (rngl_lt_0_sub Hop Hor) in Hbc.
+  apply (rngl_lt_0_sub Hop Hto) in Hbc.
   rewrite <- (rngl_mul_sub_distr_r Hop) in Hbc.
-  apply (rngl_mul_pos_cancel_r Hop Hiq Hor) in Hbc; [ | easy ].
-  now apply (rngl_lt_0_sub Hop Hor).
+  apply (rngl_mul_pos_cancel_r Hop Hiq Hto) in Hbc; [ | easy ].
+  now apply (rngl_lt_0_sub Hop Hto).
 }
 Qed.
 
 Theorem rngl_mul_le_mono_pos_r :
   rngl_has_opp T = true →
   rngl_has_inv_or_pdiv T = true →
-  rngl_is_ordered T = true →
+  rngl_is_totally_ordered T = true →
   ∀ a b c : T, (0 < c)%L → (a ≤ b)%L ↔ (a * c ≤ b * c)%L.
 Proof.
-intros Hop Hiq Hor * Hc.
+intros Hop Hiq Hto * Hc.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 split; intros Hab. {
-  apply (rngl_mul_le_mono_nonneg_r Hop Hor); [ | easy ].
+  apply (rngl_mul_le_mono_nonneg_r Hop Hto); [ | easy ].
   now apply (rngl_lt_le_incl Hto).
 } {
-  apply (rngl_le_0_sub Hop Hor) in Hab.
+  apply (rngl_le_0_sub Hop Hto) in Hab.
   rewrite <- (rngl_mul_sub_distr_r Hop) in Hab.
   apply rngl_nlt_ge in Hab.
   apply (rngl_nlt_ge_iff Hto).
   intros H1; apply Hab; clear Hab.
   replace 0%L with (0 * c)%L by apply (rngl_mul_0_l Hos).
-  apply (rngl_mul_lt_mono_pos_r Hop Hiq Hor); [ easy | ].
+  apply (rngl_mul_lt_mono_pos_r Hop Hiq Hto); [ easy | ].
   apply (rngl_nle_gt_iff Hto).
   intros H2.
-  apply -> (rngl_le_0_sub Hop Hor) in H2.
+  apply -> (rngl_le_0_sub Hop Hto) in H2.
   now apply rngl_nlt_ge in H2.
 }
 Qed.
@@ -548,10 +549,11 @@ Qed.
 Theorem rngl_div_lt_mono_pos_r :
   rngl_has_opp T = true →
   rngl_has_inv T = true →
-  rngl_is_ordered T = true →
+  rngl_is_totally_ordered T = true →
   ∀ a b c : T, (0 < a)%L → (b < c)%L ↔ (b / a < c / a)%L.
 Proof.
-intros Hop Hiv Hor.
+intros Hop Hiv Hto.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
 destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
@@ -564,10 +566,10 @@ intros * Hza.
 split; intros Hbc. {
   progress unfold rngl_div at 1 2.
   rewrite Hiv.
-  apply (rngl_mul_lt_mono_pos_r Hop Hiq Hor); [ | easy ].
-  now apply (rngl_inv_pos Hop Hiv Hor).
+  apply (rngl_mul_lt_mono_pos_r Hop Hiq Hto); [ | easy ].
+  now apply (rngl_inv_pos Hop Hiv Hto).
 } {
-  apply (rngl_mul_lt_mono_pos_r Hop Hiq Hor a) in Hbc; [ | easy ].
+  apply (rngl_mul_lt_mono_pos_r Hop Hiq Hto a) in Hbc; [ | easy ].
   rewrite (rngl_div_mul Hiv) in Hbc. 2: {
     intros H; subst a.
     now apply (rngl_lt_irrefl Hor) in Hza.
@@ -583,30 +585,30 @@ Qed.
 Theorem rngl_div_le_mono_pos_l :
   rngl_has_opp T = true →
   rngl_has_inv T = true →
-  rngl_is_ordered T = true →
+  rngl_is_totally_ordered T = true →
   ∀ a b c, (0 < a)%L → (b⁻¹ ≤ c⁻¹ ↔ a / b ≤ a / c)%L.
 Proof.
-intros Hop Hiv Hor.
+intros Hop Hiv Hto.
 specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
 intros * Haz.
 progress unfold rngl_div.
 rewrite Hiv.
-now apply (rngl_mul_le_mono_pos_l Hop Hiq Hor).
+now apply (rngl_mul_le_mono_pos_l Hop Hiq Hto).
 Qed.
 
 Theorem rngl_div_le_mono_pos_r :
   rngl_has_opp T = true →
   rngl_has_inv T = true →
-  rngl_is_ordered T = true →
+  rngl_is_totally_ordered T = true →
   ∀ a b c, (0 < c)%L → (a ≤ b ↔ a / c ≤ b / c)%L.
 Proof.
-intros Hop Hiv Hor.
+intros Hop Hiv Hto.
 specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
 intros * Hcz.
 progress unfold rngl_div.
 rewrite Hiv.
-apply (rngl_mul_le_mono_pos_r Hop Hiq Hor).
-now apply (rngl_inv_pos Hop Hiv Hor).
+apply (rngl_mul_le_mono_pos_r Hop Hiq Hto).
+now apply (rngl_inv_pos Hop Hiv Hto).
 Qed.
 
 Theorem rngl_lt_neq :
@@ -622,17 +624,18 @@ Qed.
 Theorem rngl_le_inv_inv :
   rngl_has_opp T = true →
   rngl_has_inv T = true →
-  rngl_is_ordered T = true →
+  rngl_is_totally_ordered T = true →
   ∀ a b : T, (0 < a)%L → (0 < b)%L → (a⁻¹ ≤ b⁻¹)%L ↔ (b ≤ a)%L.
 Proof.
-intros Hop Hiv Hor.
+intros Hop Hiv Hto.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
 intros * Haz Hbz.
 split; intros Hab. {
-  apply (rngl_mul_le_mono_nonneg_l Hop Hor a) in Hab. 2: {
+  apply (rngl_mul_le_mono_nonneg_l Hop Hto a) in Hab. 2: {
     now apply (rngl_lt_le_incl Hto).
   }
-  apply (rngl_mul_le_mono_nonneg_r Hop Hor _ _ b) in Hab. 2: {
+  apply (rngl_mul_le_mono_nonneg_r Hop Hto _ _ b) in Hab. 2: {
     now apply (rngl_lt_le_incl Hto).
   }
   rewrite (rngl_mul_inv_diag_r Hiv) in Hab. 2: {
@@ -646,8 +649,8 @@ split; intros Hab. {
   rewrite rngl_mul_1_r in Hab.
   easy.
 } {
-  apply (rngl_mul_le_mono_pos_l Hop Hiq Hor a); [ easy | ].
-  apply (rngl_mul_le_mono_pos_r Hop Hiq Hor _ _ b); [ easy | ].
+  apply (rngl_mul_le_mono_pos_l Hop Hiq Hto a); [ easy | ].
+  apply (rngl_mul_le_mono_pos_r Hop Hiq Hto _ _ b); [ easy | ].
   rewrite (rngl_mul_inv_diag_r Hiv). 2: {
     now apply (rngl_lt_neq Hor) in Haz.
   }
@@ -664,20 +667,21 @@ Qed.
 Theorem rngl_div_nonneg :
   rngl_has_opp T = true →
   rngl_has_inv T = true →
-  rngl_is_ordered T = true →
+  rngl_is_totally_ordered T = true →
   ∀ a b, (0 ≤ a → 0 < b → 0 ≤ a / b)%L.
 Proof.
-intros Hop Hiv Hor.
+intros Hop Hiv Hto.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
 intros * Ha Hb.
 progress unfold rngl_div.
 rewrite Hiv.
 apply (rngl_mul_nonneg_nonneg Hos Hor); [ easy | ].
-apply (rngl_mul_le_mono_pos_l Hop Hiq Hor b); [ easy | ].
+apply (rngl_mul_le_mono_pos_l Hop Hiq Hto b); [ easy | ].
 rewrite rngl_mul_0_r; [ | now apply rngl_has_opp_or_psub_iff; left ].
 rewrite (rngl_mul_inv_diag_r Hiv). {
-  apply (rngl_0_le_1 Hos Hor).
+  apply (rngl_0_le_1 Hos Hto).
 }
 apply (rngl_le_neq Hto) in Hb.
 now apply not_eq_sym.
@@ -686,26 +690,27 @@ Qed.
 Theorem rngl_div_pos :
   rngl_has_opp T = true →
   rngl_has_inv T = true →
-  rngl_is_ordered T = true →
+  rngl_is_totally_ordered T = true →
   ∀ a b : T, (0 < a)%L → (0 < b)%L → (0 < a / b)%L.
 Proof.
-intros Hop Hiv Hor.
+intros Hop Hiv Hto.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
 intros * Ha Hb.
 progress unfold rngl_div.
 rewrite Hiv.
-apply (rngl_mul_pos_pos Hop Hiq Hor); [ easy | ].
-now apply (rngl_inv_pos Hop Hiv Hor).
+apply (rngl_mul_pos_pos Hop Hiq Hto); [ easy | ].
+now apply (rngl_inv_pos Hop Hiv Hto).
 Qed.
 
 Theorem rngl_le_div_l :
   rngl_has_opp T = true →
   rngl_has_inv T = true →
-  rngl_is_ordered T = true →
+  rngl_is_totally_ordered T = true →
   ∀ a b c, (0 < c → a ≤ b * c ↔ a / c ≤ b)%L.
 Proof.
-intros Hop Hiv Hor.
+intros Hop Hiv Hto.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
 intros * Hzc.
 assert (Hcz : c ≠ 0%L). {
@@ -713,10 +718,10 @@ assert (Hcz : c ≠ 0%L). {
   now apply (rngl_lt_irrefl Hor) in Hzc.
 }
 split; intros Habq. {
-  apply (rngl_mul_le_mono_pos_r Hop Hiq Hor) with (c := c); [ easy | ].
+  apply (rngl_mul_le_mono_pos_r Hop Hiq Hto) with (c := c); [ easy | ].
   now rewrite (rngl_div_mul Hiv).
 } {
-  apply (rngl_mul_le_mono_pos_r Hop Hiq Hor _ _ c) in Habq; [ | easy ].
+  apply (rngl_mul_le_mono_pos_r Hop Hiq Hto _ _ c) in Habq; [ | easy ].
   now rewrite (rngl_div_mul Hiv) in Habq.
 }
 Qed.
@@ -724,10 +729,11 @@ Qed.
 Theorem rngl_lt_div_l :
   rngl_has_opp T = true →
   rngl_has_inv T = true →
-  rngl_is_ordered T = true →
+  rngl_is_totally_ordered T = true →
   ∀ a b c, (0 < c → a < b * c ↔ a / c < b)%L.
 Proof.
-intros Hop Hiv Hor.
+intros Hop Hiv Hto.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
 intros * Hzc.
 assert (Hcz : c ≠ 0%L). {
@@ -735,10 +741,10 @@ assert (Hcz : c ≠ 0%L). {
   now apply (rngl_lt_irrefl Hor) in Hzc.
 }
 split; intros Habq. {
-  apply (rngl_mul_lt_mono_pos_r Hop Hiq Hor c); [ easy | ].
+  apply (rngl_mul_lt_mono_pos_r Hop Hiq Hto c); [ easy | ].
   now rewrite (rngl_div_mul Hiv).
 } {
-  apply (rngl_mul_lt_mono_pos_r Hop Hiq Hor c) in Habq; [ | easy ].
+  apply (rngl_mul_lt_mono_pos_r Hop Hiq Hto c) in Habq; [ | easy ].
   now rewrite (rngl_div_mul Hiv) in Habq.
 }
 Qed.
@@ -746,10 +752,11 @@ Qed.
 Theorem rngl_le_div_r :
   rngl_has_opp T = true →
   rngl_has_inv T = true →
-  rngl_is_ordered T = true →
+  rngl_is_totally_ordered T = true →
   ∀ a b c, (0 < c → a * c ≤ b ↔ a ≤ b / c)%L.
 Proof.
-intros Hop Hiv Hor.
+intros Hop Hiv Hto.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
 intros * Hzc.
 assert (Hcz : c ≠ 0%L). {
@@ -757,10 +764,10 @@ assert (Hcz : c ≠ 0%L). {
   now apply (rngl_lt_irrefl Hor) in Hzc.
 }
 split; intros Habq. {
-  apply (rngl_mul_le_mono_pos_r Hop Hiq Hor _ _ c); [ easy | ].
+  apply (rngl_mul_le_mono_pos_r Hop Hiq Hto _ _ c); [ easy | ].
   now rewrite (rngl_div_mul Hiv).
 } {
-  apply (rngl_mul_le_mono_pos_r Hop Hiq Hor _ _ c) in Habq; [ | easy ].
+  apply (rngl_mul_le_mono_pos_r Hop Hiq Hto _ _ c) in Habq; [ | easy ].
   now rewrite (rngl_div_mul Hiv) in Habq.
 }
 Qed.
@@ -779,6 +786,7 @@ assert (Hcz : c ≠ 0%L). {
   now apply (rngl_lt_irrefl Hor) in Hzc.
 }
 split; intros Habq. {
+...
   apply (rngl_mul_lt_mono_pos_r Hop Hiq Hor c); [ easy | ].
   now rewrite (rngl_div_mul Hiv).
 } {
