@@ -29,7 +29,7 @@ Instance Z_ring_like_op : ring_like_op Z :=
      rngl_opt_inv_or_pdiv := Some (inr Z.quot);
      rngl_opt_is_zero_divisor := None;
      rngl_opt_eq_dec := Some Z.eq_dec;
-     rngl_opt_leb := Some Z.leb |}.
+     rngl_opt_leb := Some (Z.leb, true) |}.
 
 Theorem Z_eq_mul_0 :  ∀ n m, (n * m)%Z = 0%Z → n = 0%Z ∨ m = 0%Z.
 Proof. now apply Z.eq_mul_0. Qed.

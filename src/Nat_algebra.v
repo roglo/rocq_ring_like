@@ -29,7 +29,7 @@ Instance nat_ring_like_op : ring_like_op nat :=
      rngl_opt_inv_or_pdiv := Some (inr Nat.div);
      rngl_opt_is_zero_divisor := None;
      rngl_opt_eq_dec := Some Nat.eq_dec;
-     rngl_opt_leb := Some Nat.leb |}.
+     rngl_opt_leb := Some (Nat.leb, true) |}.
 
 (*
 Global Existing Instance nat_ring_like_op.
