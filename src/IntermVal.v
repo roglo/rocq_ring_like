@@ -908,8 +908,7 @@ assert (Hfu : ∀ x, (rngl_max a (b - η) < x ≤ b → u < f x)%L). {
     rewrite rngl_add_comm.
     apply (rngl_lt_sub_lt_add_l Hop Hto).
     eapply (rngl_le_lt_trans Hto); [ | apply Hx ].
-...
-    apply (rngl_le_max_r Hor).
+    apply (rngl_le_max_r Hto).
   }
   destruct Hx as (Hx, Hxb).
   specialize (H2 x Hxb H); clear H.
@@ -921,7 +920,7 @@ assert (Hfu : ∀ x, (rngl_max a (b - η) < x ≤ b → u < f x)%L). {
       now apply (rngl_le_sub_0 Hop Hto).
     }
     rewrite (rngl_opp_sub_distr Hop) in H2.
-    now apply (rngl_sub_lt_mono_l Hop Hor) in H2.
+    now apply (rngl_sub_lt_mono_l Hop Hto) in H2.
   }
   apply (rngl_leb_gt_iff Hto) in Hfxb.
   now apply (rngl_lt_trans Hto _ (f b)).
@@ -944,7 +943,7 @@ destruct (is_upper_bound P x) as [Hux| Hux]. 2: {
     split; [ | easy ].
     apply (rngl_le_lt_trans Hto _ x); [ | easy ].
     progress unfold x.
-    apply (rngl_le_div_r Hop Hiv Hor). {
+    apply (rngl_le_div_r Hop Hiv Hto). {
       apply (rngl_0_lt_2 Hos Hc1 Hto).
     }
     rewrite (rngl_mul_2_r).
@@ -1431,7 +1430,7 @@ assert
       apply (rngl_le_trans Hor _ c); [ now apply Hub1 | ].
       progress unfold x.
       apply (rngl_le_add_r Hos Hor).
-      apply (rngl_le_div_r Hop Hiv Hor). {
+      apply (rngl_le_div_r Hop Hiv Hto). {
         apply (rngl_0_lt_2 Hos Hc1 Hto).
       }
       rewrite (rngl_mul_0_l Hos).
