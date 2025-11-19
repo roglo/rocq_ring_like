@@ -384,8 +384,6 @@ apply H2; clear H2.
 now apply rngl_ord_le_antisymm.
 Qed.
 
-...
-
 Theorem rngl_nlt_ge_iff :
   rngl_is_totally_ordered T = true →
   ∀ a b, (¬ (a < b) ↔ b ≤ a)%L.
@@ -408,12 +406,14 @@ split; intros Hab. {
 Qed.
 
 Theorem rngl_leb_gt :
+  rngl_is_ordered T = true →
   ∀ a b, (b < a → ¬ (a ≤ b))%L.
 Proof.
-intros * Hab H1.
-progress unfold rngl_lt in Hab.
-progress unfold rngl_le in H1.
-destruct rngl_opt_leb as [(leb, tot)| ]; [ congruence | easy ].
+intros Hor * Hab H1.
+specialize (rngl_opt_ord T) as rr.
+rewrite Hor in rr; move rr before rp.
+destruct Hab as (Hab, H); apply H; clear H.
+now apply rngl_ord_le_antisymm.
 Qed.
 
 Theorem rngl_leb_gt_iff :
@@ -445,6 +445,7 @@ progress unfold rngl_ltb.
 remember rngl_opt_leb as ol eqn:Hol.
 symmetry in Hol.
 destruct ol as [(leb, tot)| ]; [ | easy ].
+...
 now apply Bool.negb_false_iff in Hab.
 Qed.
 
