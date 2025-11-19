@@ -135,10 +135,7 @@ Definition rngl_le {T} {ro : ring_like_op T} a b :=
   end.
 
 Definition rngl_lt {T} {ro : ring_like_op T} a b :=
-  match rngl_opt_leb with
-  | Some (rngl_leb, _) => rngl_leb b a = false
-  | None => False
-  end.
+  rngl_le a b ∧ a ≠ b.
 
 Definition rngl_eval_polyn {T} {ro : ring_like_op T} l (x : T) :=
   List.fold_right (λ a acc, rngl_add (rngl_mul acc x) a) rngl_zero l.
@@ -592,10 +589,7 @@ Fixpoint rngl_power {T} {ro : ring_like_op T} a n :=
   end.
 
 Definition rngl_ltb {T} {ro : ring_like_op T} a b :=
-  match rngl_opt_leb with
-  | Some (rngl_leb, _) => negb (rngl_leb b a)
-  | None => false
-  end.
+  ((a ≤? b)%L && (a ≠? b)%L)%bool.
 
 Arguments rngl_squ {T ro} a%_L.
 Arguments rngl_power {T ro} a%_L n%_nat.

@@ -34,24 +34,63 @@ Definition rngl_eqb_dec a b := sumbool_of_bool (a =? b)%L.
 Definition rngl_leb_dec a b := sumbool_of_bool (a ≤? b)%L.
 Definition rngl_ltb_dec a b := sumbool_of_bool (a <? b)%L.
 
+Theorem rngl_is_totally_ordered_is_ordered :
+  rngl_is_totally_ordered T = true → rngl_is_ordered T = true.
+Proof.
+intros Hto.
+progress unfold rngl_is_totally_ordered in Hto.
+progress unfold rngl_is_ordered.
+now destruct rngl_opt_leb as [(leb, tot)| ].
+Qed.
+
 Theorem rngl_leb_neg_ltb :
-  rngl_is_ordered T = true →
+  rngl_is_totally_ordered T = true →
   ∀ a b, (a ≤? b = negb (b <? a))%L.
 Proof.
-intros Hor *.
-progress unfold rngl_leb.
+intros Hto.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
+specialize (rngl_opt_ord T) as rr.
+rewrite Hor in rr; move rr before rp.
+intros.
+specialize rngl_ord_le_antisymm as H1.
+specialize (rngl_ord_total_prop) as H2.
+rewrite Hto in H2.
 progress unfold rngl_ltb.
+progress unfold rngl_leb.
 progress unfold rngl_is_ordered in Hor.
+progress unfold rngl_le in H1.
+progress unfold rngl_le in H2.
 destruct rngl_opt_leb as [(leb, tot)| ]; [ | easy ].
-symmetry; apply Bool.negb_involutive.
+symmetry.
+remember (leb a b) as ab eqn:Hab.
+remember (leb b a) as ba eqn:Hba.
+symmetry in Hab, Hba.
+destruct ab. {
+  destruct ba; [ cbn | easy ].
+  rewrite (H1 a b Hab Hba).
+  rewrite (rngl_eqb_refl Heo).
+  apply Bool.negb_involutive.
+}
+destruct ba. {
+  cbn.
+  rewrite Bool.negb_involutive.
+  apply Bool.not_true_iff_false.
+  intros H.
+  apply (rngl_eqb_eq Heo) in H; subst b.
+  congruence.
+}
+exfalso.
+specialize (H2 a b).
+destruct H2; congruence.
 Qed.
 
 Theorem rngl_ltb_neg_leb :
-  rngl_is_ordered T = true →
+  rngl_is_totally_ordered T = true →
   ∀ a b, (a <? b = negb (b ≤? a))%L.
 Proof.
-intros Hor *.
-rewrite (rngl_leb_neg_ltb Hor).
+intros Hto *.
+rewrite (rngl_leb_neg_ltb Hto).
 symmetry; apply Bool.negb_involutive.
 Qed.
 
@@ -65,17 +104,22 @@ now split; intros Hab; destruct rngl_opt_leb as [(leb, tot)| ].
 Qed.
 
 Theorem rngl_ltb_lt :
+  rngl_has_eq_dec_or_order T = true →
   ∀ a b, (a <? b)%L = true ↔ (a < b)%L.
 Proof.
-intros.
+intros Heo *.
 progress unfold rngl_ltb.
 progress unfold rngl_lt.
 split; intros Hab. {
-  destruct rngl_opt_leb as [(leb, tot)| ]; [ | easy ].
-  now apply Bool.negb_true_iff.
+  apply Bool.andb_true_iff in Hab.
+  destruct Hab as (H1, H2).
+  apply rngl_leb_le in H1.
+  now apply (rngl_neqb_neq Heo) in H2.
 } {
-  destruct rngl_opt_leb as [(leb, tot)| ]; [ | easy ].
-  now apply Bool.negb_true_iff.
+  apply Bool.andb_true_iff.
+  split.
+  now apply rngl_leb_le.
+  now apply (rngl_neqb_neq Heo).
 }
 Qed.
 
@@ -140,15 +184,6 @@ intros Hor *.
 specialize (rngl_opt_ord T) as H.
 rewrite Hor in H.
 apply H.
-Qed.
-
-Theorem rngl_is_totally_ordered_is_ordered :
-  rngl_is_totally_ordered T = true → rngl_is_ordered T = true.
-Proof.
-intros Hto.
-progress unfold rngl_is_totally_ordered in Hto.
-progress unfold rngl_is_ordered.
-now destruct rngl_opt_leb as [(leb, tot)| ].
 Qed.
 
 Theorem rngl_le_neq :
