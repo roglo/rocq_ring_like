@@ -1100,8 +1100,7 @@ induction i; intros; cbn. {
 destruct j. {
   split; [ easy | cbn ].
   intros H; exfalso.
-...
-  apply rngl_nlt_ge in H; apply H; clear H.
+  apply (rngl_nlt_ge Hor) in H; apply H; clear H.
   eapply (rngl_lt_le_trans Hor); [ apply Haz | ].
   apply (rngl_le_add_r Hos Hor).
   clear IHi.
@@ -1194,6 +1193,7 @@ Theorem rngl_add_neg_nonpos :
   ∀ a b, (a < 0 → b ≤ 0 → a + b < 0)%L.
 Proof.
 intros Hop Hto * Haz Hbz.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 eapply (rngl_lt_le_trans Hor); [ | apply Hbz ].
 apply (rngl_lt_add_lt_sub_r Hop Hto).
@@ -1375,6 +1375,7 @@ Theorem rngl_abs_lt :
   ∀ x y, (- x < y < x ↔ rngl_abs y < x)%L.
 Proof.
 intros * Hop Hto *.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 progress unfold rngl_abs.
 split. {
   intros (Hxy, Hyx).
@@ -1481,7 +1482,7 @@ destruct abz. {
     now apply -> (rngl_opp_lt_compat Hop Hto).
   }
   apply (rngl_leb_gt_iff Hto) in Hbz.
-  apply rngl_nlt_ge in Habz.
+  apply (rngl_nlt_ge Hor) in Habz.
   exfalso; apply Habz; clear Habz.
   apply (rngl_lt_le_trans Hor _ a); [ easy | ].
   apply (rngl_le_add_r Hos Hor).
@@ -1577,12 +1578,14 @@ Theorem rngl_ltb_opp_l :
   ∀ a b, (-a <? b)%L = (-b <? a)%L.
 Proof.
 intros Hop Hto *.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
 remember (-a <? b)%L as ab eqn:Hab.
 symmetry in Hab.
 symmetry.
 destruct ab. {
-  apply rngl_ltb_lt in Hab.
-  apply rngl_ltb_lt.
+  apply (rngl_ltb_lt Heo) in Hab.
+  apply (rngl_ltb_lt Heo).
   apply (rngl_lt_opp_l Hop Hto) in Hab.
   rewrite rngl_add_comm in Hab.
   now apply (rngl_lt_opp_l Hop Hto) in Hab.
@@ -1601,12 +1604,14 @@ Theorem rngl_ltb_opp_r :
   ∀ a b, (a <? -b)%L = (b <? -a)%L.
 Proof.
 intros Hop Hto *.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
 remember (a <? -b)%L as ab eqn:Hab.
 symmetry in Hab.
 symmetry.
 destruct ab. {
-  apply rngl_ltb_lt in Hab.
-  apply rngl_ltb_lt.
+  apply (rngl_ltb_lt Heo) in Hab.
+  apply (rngl_ltb_lt Heo).
   apply (rngl_lt_opp_r Hop Hto) in Hab.
   rewrite rngl_add_comm in Hab.
   now apply (rngl_lt_opp_r Hop Hto) in Hab.

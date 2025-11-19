@@ -219,6 +219,7 @@ Theorem rngl_0_lt_2 :
   (0 < 2)%L.
 Proof.
 intros Hos Hc1 Hto.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 apply (rngl_le_lt_trans Hor _ 1)%L. {
   apply (rngl_0_le_1 Hos Hto).
 }
@@ -296,6 +297,7 @@ Theorem rngl_opp_1_lt_1 :
   (-1 < 1)%L.
 Proof.
 intros Hop Hto Hc1.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 apply (rngl_lt_le_trans Hor _ 0).
 apply (rngl_opp_1_lt_0 Hop Hto Hc1).
@@ -397,6 +399,7 @@ Theorem rngl_abs_1 :
   (rngl_abs 1 = 1)%L.
 Proof.
 intros Hos Hto.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
   specialize (rngl_characteristic_1 Hos Hc1) as H1.
   now rewrite (H1 (rngl_abs 1)%L), (H1 1%L).
@@ -405,7 +408,7 @@ progress unfold rngl_abs.
 remember (1 ≤? 0)%L as c eqn:Hc; symmetry in Hc.
 destruct c; [ | easy ].
 apply rngl_leb_le in Hc.
-apply rngl_nlt_ge in Hc.
+apply (rngl_nlt_ge Hor) in Hc.
 exfalso; apply Hc.
 apply (rngl_0_lt_1 Hos Hc1 Hto).
 Qed.
@@ -416,6 +419,7 @@ Theorem rngl_abs_2 :
   (rngl_abs 2 = 2)%L.
 Proof.
 intros Hos Hto.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
   specialize (rngl_characteristic_1 Hos Hc1) as H1.
   rewrite H1; apply H1.
@@ -425,7 +429,7 @@ remember (2 ≤? 0)%L as tz eqn:Htz.
 symmetry in Htz.
 destruct tz; [ | easy ].
 apply rngl_leb_le in Htz.
-apply rngl_nlt_ge in Htz.
+apply (rngl_nlt_ge Hor) in Htz.
 exfalso; apply Htz.
 apply (rngl_0_lt_2 Hos Hc1 Hto).
 Qed.
@@ -519,16 +523,17 @@ Theorem rngl_lt_mul_0_if :
 Proof.
 intros Hos Hto.
 specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
 intros * Hab.
 remember (a <? 0)%L as az eqn:Haz.
 symmetry in Haz.
 destruct az. {
-  apply rngl_ltb_lt in Haz.
+  apply (rngl_ltb_lt Heo) in Haz.
   left.
   split; [ easy | ].
   remember (0 <? b)%L as zb eqn:Hzb.
   symmetry in Hzb.
-  destruct zb; [ now apply rngl_ltb_lt in Hzb | exfalso ].
+  destruct zb; [ now apply (rngl_ltb_lt Heo) in Hzb | exfalso ].
   apply (rngl_ltb_ge_iff Hto) in Hzb.
   apply (rngl_nle_gt Hor) in Hab.
   apply Hab; clear Hab.
@@ -661,14 +666,10 @@ Proof.
 intros Hop Hc1 Hto Har.
 specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
-assert (Heo : rngl_has_eq_dec_or_order T = true). {
-  progress unfold rngl_has_eq_dec_or_order.
-  rewrite Hor.
-  apply Bool.orb_true_r.
-}
+specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
 intros a.
 destruct (rngl_ltb_dec 1 (rngl_abs a))%L as [Hx1| Hx1]. {
-  apply rngl_ltb_lt in Hx1.
+  apply (rngl_ltb_lt Heo) in Hx1.
   apply (rngl_archimedean_ub Har Hto).
   split; [ apply (rngl_0_lt_1 Hos Hc1 Hto) | easy ].
 }
