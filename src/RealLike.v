@@ -89,7 +89,7 @@ intros Hop Hiv Hto * Ha Hb.
 progress unfold rngl_div.
 rewrite Hiv.
 rewrite rl_sqrt_mul; [ | easy | ]. 2: {
-  apply (rngl_lt_le_incl Hto).
+  apply rngl_lt_le_incl.
   now apply (rngl_inv_pos Hop Hiv Hto).
 }
 f_equal.
@@ -116,7 +116,7 @@ destruct az. {
   now apply rl_nth_root_pow.
 } {
   apply (rngl_leb_gt_iff Hto) in Haz.
-  apply (rngl_lt_le_incl Hto) in Haz.
+  apply rngl_lt_le_incl in Haz.
   rewrite rl_nth_root_mul; [ | easy | easy ].
   rewrite fold_rngl_squ.
   rewrite (rngl_squ_pow_2).
@@ -313,13 +313,13 @@ assert (H : (0 ≤ √b ≤ √a)%L). {
   split; [ | easy ].
   apply rl_sqrt_nonneg.
   apply (rngl_le_trans Hor _ a); [ easy | ].
-  now apply (rngl_lt_le_incl Hto).
+  now apply rngl_lt_le_incl.
 }
 specialize (H2 H H).
 do 2 rewrite fold_rngl_squ in H2.
 rewrite (rngl_squ_sqrt) in H2. 2: {
   apply (rngl_le_trans Hor _ a); [ easy | ].
-  now apply (rngl_lt_le_incl Hto).
+  now apply rngl_lt_le_incl.
 }
 rewrite (rngl_squ_sqrt) in H2; [ | easy ].
 now apply rngl_nle_gt in Hab.
@@ -333,13 +333,13 @@ Proof.
 intros Hos Hto.
 specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 intros a Ha.
-apply (rngl_le_neq Hto).
+apply rngl_le_neq.
 split. {
   apply rl_sqrt_nonneg.
-  now apply (rngl_lt_le_incl Hto).
+  now apply rngl_lt_le_incl.
 }
 intros H; symmetry in H.
-apply (eq_rl_sqrt_0 Hos) in H; [ | now apply (rngl_lt_le_incl Hto) ].
+apply (eq_rl_sqrt_0 Hos) in H; [ | now apply rngl_lt_le_incl ].
 subst a.
 now apply (rngl_lt_irrefl Hor) in Ha.
 Qed.

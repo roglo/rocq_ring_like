@@ -204,7 +204,7 @@ split. {
   intros Hca.
   specialize (Hlim (dt a c))%L.
   assert (H : (0 < dt a c)%L). {
-    apply (rngl_le_neq Hto).
+    apply rngl_le_neq.
     split; [ apply (dist_nonneg Hop Hiv Hto dist) | ].
     intros H; symmetry in H.
     apply -> (dist_separation dist) in H.
@@ -220,13 +220,13 @@ split. {
   do 2 rewrite (dist_symmetry _ dist _ c).
   apply mono_1.
   split; [ | easy ].
-  now apply (rngl_lt_le_incl Hto).
+  now apply rngl_lt_le_incl.
 } {
   apply (rngl_nlt_ge_iff Hto).
   intros Hbc.
   specialize (Hlim (dt b c))%L.
   assert (H : (0 < dt b c)%L). {
-    apply (rngl_le_neq Hto).
+    apply rngl_le_neq.
     split; [ apply (dist_nonneg Hop Hiv Hto dist) | ].
     intros H; symmetry in H.
     apply -> (dist_separation dist) in H.
@@ -241,7 +241,7 @@ split. {
   apply HN; clear HN.
   apply mono_2.
   split; [ easy | ].
-  now apply (rngl_lt_le_incl Hto).
+  now apply rngl_lt_le_incl.
 }
 Qed.
 
@@ -319,7 +319,7 @@ apply (rngl_abs_le_ε Hop Hiv Hto).
 intros ε Hε.
 specialize (Hu ε Hε).
 rewrite (rngl_abs_nonneg_eq Hop Hor); [ | apply Hdpos ].
-apply (rngl_lt_le_incl Hto).
+apply rngl_lt_le_incl.
 eapply (rngl_le_lt_trans Hto); [ | apply Hu ].
 apply (rngl_le_refl Hor).
 Qed.

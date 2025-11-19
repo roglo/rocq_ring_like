@@ -192,15 +192,15 @@ specialize rngl_ord_add_le_mono_l as H1.
 rewrite Hos in H1.
 intros.
 split; intros Hbc. {
-  apply (rngl_le_neq Hto).
-  split; [ now apply H1, (rngl_lt_le_incl Hto) | ].
+  apply rngl_le_neq.
+  split; [ now apply H1, rngl_lt_le_incl | ].
   intros H.
   apply (rngl_add_cancel_l Hos) in H.
   subst.
   now apply (rngl_lt_irrefl Hor) in Hbc.
 } {
-  apply (rngl_le_neq Hto).
-  split; [ now apply (H1 a), (rngl_lt_le_incl Hto) | ].
+  apply rngl_le_neq.
+  split; [ now apply (H1 a), rngl_lt_le_incl | ].
   intros H.
   subst.
   now apply (rngl_lt_irrefl Hor) in Hbc.
@@ -238,7 +238,7 @@ split. {
   intros.
   apply iff_sym, (rngl_nle_gt_iff Hto).
 } {
-  apply (rngl_lt_le_incl Hto).
+  apply rngl_lt_le_incl.
 } {
   easy.
 } {
@@ -271,7 +271,7 @@ split. {
 } {
   easy.
 } {
-  apply (rngl_lt_le_incl Hto).
+  apply rngl_lt_le_incl.
 } {
   intros.
   now apply (rngl_le_lt_trans Hto _ b).
@@ -1093,7 +1093,7 @@ induction i; intros; cbn. {
   intros H; clear H.
   induction j; [ pauto | cbn ].
   eapply (rngl_le_trans Hor); [ apply IHj | ].
-  now apply (rngl_le_add_l Hos Hor), (rngl_lt_le_incl Hto).
+  now apply (rngl_le_add_l Hos Hor), rngl_lt_le_incl.
 }
 destruct j. {
   split; [ easy | cbn ].
@@ -1104,7 +1104,7 @@ destruct j. {
   clear IHi.
   induction i; [ pauto | cbn ].
   eapply (rngl_le_trans Hor); [ apply IHi | ].
-  now apply (rngl_le_add_l Hos Hor), (rngl_lt_le_incl Hto).
+  now apply (rngl_le_add_l Hos Hor), rngl_lt_le_incl.
 }
 cbn.
 split; intros Hij. {
@@ -1138,19 +1138,19 @@ induction i; intros; cbn. {
   apply (rngl_lt_le_trans Hto _ a); [ easy | ].
   apply (rngl_le_add_r Hos Hor).
   destruct j; [ pauto | ].
-  apply (rngl_lt_le_incl Hto), IHj.
+  apply rngl_lt_le_incl, IHj.
   apply Nat.lt_0_succ.
 }
 destruct j. {
   split; [ easy | cbn ].
   intros H; exfalso.
   apply rngl_nle_gt in H; apply H; clear H.
-  eapply (rngl_le_trans Hor); [ apply (rngl_lt_le_incl Hto), Haz | ].
+  eapply (rngl_le_trans Hor); [ apply rngl_lt_le_incl, Haz | ].
   apply (rngl_le_add_r Hos Hor).
   clear IHi.
   induction i; [ pauto | cbn ].
   eapply (rngl_le_trans Hor); [ apply IHi | ].
-  now apply (rngl_le_add_l Hos Hor), (rngl_lt_le_incl Hto).
+  now apply (rngl_le_add_l Hos Hor), rngl_lt_le_incl.
 }
 cbn.
 split; intros Hij. {
@@ -1221,7 +1221,7 @@ destruct az. {
   now rewrite (rngl_opp_0 Hop) in Haz.
 } {
   apply (rngl_leb_gt_iff Hto) in Haz.
-  now apply (rngl_lt_le_incl Hto).
+  now apply rngl_lt_le_incl.
 }
 Qed.
 
@@ -1336,11 +1336,11 @@ split. {
   }
   split; [ | easy ].
   apply (rngl_leb_gt_iff Hto) in Hyz.
-  apply (rngl_lt_le_incl Hto).
+  apply rngl_lt_le_incl.
   apply (rngl_le_lt_trans Hto _ 0)%L; [ | easy ].
   rewrite <- (rngl_opp_0 Hop).
   apply -> (rngl_opp_le_compat Hop Hto).
-  apply (rngl_lt_le_incl Hto).
+  apply rngl_lt_le_incl.
   now apply (rngl_lt_le_trans Hto _ y)%L.
 }
 Qed.
@@ -1401,7 +1401,7 @@ split. {
   apply (rngl_le_lt_trans Hto _ 0)%L; [ | easy ].
   rewrite <- (rngl_opp_0 Hop).
   apply -> (rngl_opp_le_compat Hop Hto).
-  apply (rngl_lt_le_incl Hto).
+  apply rngl_lt_le_incl.
   now apply (rngl_lt_trans Hto _ y)%L.
 }
 Qed.
@@ -1422,7 +1422,7 @@ Theorem rngl_abs_pos :
   ∀ x, (x ≠ 0 → 0 < rngl_abs x)%L.
 Proof.
 intros Hop Hto * Hxz.
-apply (rngl_le_neq Hto).
+apply rngl_le_neq.
 split. 2: {
   apply not_eq_sym.
   intros H; apply Hxz; clear Hxz.
@@ -1459,7 +1459,7 @@ destruct abz. {
     apply (rngl_add_le_mono_l Hos Hor).
     destruct bz; [ pauto | ].
     apply (rngl_leb_gt_iff Hto) in Hbz.
-    apply (rngl_lt_le_incl Hto).
+    apply rngl_lt_le_incl.
     apply (rngl_lt_trans Hto _ 0)%L; [ | easy ].
     rewrite <- (rngl_opp_0 Hop).
     now apply -> (rngl_opp_lt_compat Hop Hto).
@@ -1472,7 +1472,7 @@ destruct abz. {
     rewrite Hop.
     rewrite rngl_add_comm.
     apply (rngl_add_le_mono_r Hos Hor).
-    apply (rngl_lt_le_incl Hto).
+    apply rngl_lt_le_incl.
     apply (rngl_lt_trans Hto _ 0)%L; [ | easy ].
     rewrite <- (rngl_opp_0 Hop).
     now apply -> (rngl_opp_lt_compat Hop Hto).
@@ -1482,7 +1482,7 @@ destruct abz. {
   exfalso; apply Habz; clear Habz.
   apply (rngl_lt_le_trans Hto _ a); [ easy | ].
   apply (rngl_le_add_r Hos Hor).
-  now apply (rngl_lt_le_incl Hto).
+  now apply rngl_lt_le_incl.
 }
 apply (rngl_leb_gt_iff Hto) in Habz.
 destruct az. {
@@ -1632,7 +1632,7 @@ induction m. {
   exfalso; cbn in Hm.
   apply rngl_nle_gt in Hm.
   apply Hm; clear Hm.
-  now apply (rngl_le_trans Hor _ a); apply (rngl_lt_le_incl Hto).
+  now apply (rngl_le_trans Hor _ a); apply rngl_lt_le_incl.
 }
 destruct (rngl_leb_dec (rngl_mul_nat a m) b) as [Hba| Hba]. {
   apply rngl_leb_le in Hba.
