@@ -341,7 +341,7 @@ split. {
 intros H; symmetry in H.
 apply (eq_rl_sqrt_0 Hos) in H; [ | now apply rngl_lt_le_incl ].
 subst a.
-now apply (rngl_lt_irrefl Hor) in Ha.
+now apply rngl_lt_irrefl in Ha.
 Qed.
 
 Theorem rl_sqrt_1 :

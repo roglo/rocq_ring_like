@@ -209,7 +209,7 @@ split. {
     intros H; symmetry in H.
     apply -> (dist_separation dist) in H.
     subst c.
-    now apply (rngl_lt_irrefl Hor) in Hca.
+    now apply rngl_lt_irrefl in Hca.
   }
   specialize (Hlim H); clear H.
   destruct Hlim as (N, HN).
@@ -231,7 +231,7 @@ split. {
     intros H; symmetry in H.
     apply -> (dist_separation dist) in H.
     subst c.
-    now apply (rngl_lt_irrefl Hor) in Hbc.
+    now apply rngl_lt_irrefl in Hbc.
   }
   specialize (Hlim H); clear H.
   destruct Hlim as (N, HN).
@@ -283,7 +283,7 @@ assert (Hu : is_limit_when_seq_tends_to_inf da (λ _, lim1) lim2). {
   exists (max N1 N2).
   intros n HN.
   destruct dist as (Hdsym, Hdsep, Hdtri).
-  eapply (rngl_le_lt_trans Hto); [ apply (Hdtri _ (u n)) | ].
+  eapply (rngl_le_lt_trans Hor); [ apply (Hdtri _ (u n)) | ].
   rewrite Hdsym.
   replace ε with (ε / 2 + ε / 2)%L. 2: {
     apply (rngl_mul_cancel_r Hi1 _ _ 2%L). {
@@ -320,7 +320,7 @@ intros ε Hε.
 specialize (Hu ε Hε).
 rewrite (rngl_abs_nonneg_eq Hop Hor); [ | apply Hdpos ].
 apply rngl_lt_le_incl.
-eapply (rngl_le_lt_trans Hto); [ | apply Hu ].
+eapply (rngl_le_lt_trans Hor); [ | apply Hu ].
 apply (rngl_le_refl Hor).
 Qed.
 
@@ -342,7 +342,7 @@ specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
 destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
   specialize (rngl_characteristic_1 Hos Hc1) as H1.
   rewrite H1 in Hε.
-  now apply (rngl_lt_irrefl Hor) in Hε.
+  now apply rngl_lt_irrefl in Hε.
 }
 assert (Hε2 : (0 < ε / 2)%L). {
   apply (rngl_mul_lt_mono_pos_r Hop Hiq Hto 2⁻¹%L) in Hε. 2: {
@@ -361,14 +361,14 @@ apply Nat.max_lub_iff in H.
 destruct H as (Hnun, Hnvn).
 specialize (Hun _ Hnun).
 specialize (Hvn _ Hnvn).
-apply (rngl_lt_le_trans Hto _ (ε / 2 + ε / 2)%L). 2: {
+apply (rngl_lt_le_trans Hor _ (ε / 2 + ε / 2)%L). 2: {
   rewrite <- (rngl_mul_2_r).
   rewrite (rngl_div_mul Hiv). 2: {
     apply (rngl_2_neq_0 Hos Hc1 Hto).
   }
   apply (rngl_le_refl Hor).
 }
-eapply (rngl_le_lt_trans Hto). 2: {
+eapply (rngl_le_lt_trans Hor). 2: {
   apply (rngl_add_lt_compat Hos Hto); [ apply Hun | apply Hvn ].
 }
 apply Hd.

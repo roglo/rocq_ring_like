@@ -45,7 +45,7 @@ specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 intros * Hza.
 assert (Haz : a ≠ 0%L). {
   intros H; subst a.
-  now apply (rngl_lt_irrefl Hor) in Hza.
+  now apply rngl_lt_irrefl in Hza.
 }
 specialize (rngl_inv_neq_0 Hos Hiv) as H1.
 destruct (rngl_leb_dec 0 a⁻¹)%L as [H2| H2]. {
@@ -133,7 +133,7 @@ destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
 assert (Hc2 : (2 ≠ 0)%L). {
   specialize (rngl_0_lt_2 Hos Hc1 Hto) as H2.
   intros H; rewrite H in H2.
-  now apply (rngl_lt_irrefl Hor) in H2.
+  now apply rngl_lt_irrefl in H2.
 }
 apply (rngl_mul_cancel_r Hi1) with (c := 2%L); [ easy | ].
 rewrite (rngl_mul_sub_distr_r Hop).
@@ -339,7 +339,7 @@ apply (rngl_integral Hos) in H2. 2: {
   now destruct rngl_is_integral_domain.
 }
 destruct H2 as [H2| H2]. {
-  now subst x; apply (rngl_lt_irrefl Hor) in Hx.
+  now subst x; apply rngl_lt_irrefl in Hx.
 } {
   exfalso; revert H2.
   now apply (rngl_inv_neq_0 Hos Hiv).
@@ -384,7 +384,7 @@ split; intros Hb. {
   destruct Hb as (Habz, Hzab).
   apply not_eq_sym in Hza, Hzab.
   split. {
-    apply (rngl_lt_eq_cases Hto) in Habz.
+    apply (rngl_lt_eq_cases Hor) in Habz.
     destruct Habz as [Habz| Habz]. {
       apply rngl_nle_gt in Habz.
       apply (rngl_nlt_ge_iff Hto).
@@ -417,7 +417,7 @@ split; intros Hb. {
   destruct Hb as (Habz, Hzab).
   apply not_eq_sym in Hza, Hzab.
   split. {
-    apply (rngl_lt_eq_cases Hto) in Habz.
+    apply (rngl_lt_eq_cases Hor) in Habz.
     destruct Habz as [Habz| Habz]. {
       apply rngl_nle_gt in Habz.
       apply (rngl_nlt_ge_iff Hto).
@@ -560,7 +560,7 @@ destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
   specialize (rngl_characteristic_1 Hos Hc1) as H1.
   intros * Hza.
   rewrite (H1 a) in Hza.
-  now apply (rngl_lt_irrefl Hor) in Hza.
+  now apply rngl_lt_irrefl in Hza.
 }
 intros * Hza.
 split; intros Hbc. {
@@ -572,11 +572,11 @@ split; intros Hbc. {
   apply (rngl_mul_lt_mono_pos_r Hop Hiq Hto a) in Hbc; [ | easy ].
   rewrite (rngl_div_mul Hiv) in Hbc. 2: {
     intros H; subst a.
-    now apply (rngl_lt_irrefl Hor) in Hza.
+    now apply rngl_lt_irrefl in Hza.
   }
   rewrite (rngl_div_mul Hiv) in Hbc. 2: {
     intros H; subst a.
-    now apply (rngl_lt_irrefl Hor) in Hza.
+    now apply rngl_lt_irrefl in Hza.
   }
   easy.
 }
@@ -618,7 +618,7 @@ Proof.
 intros Hor.
 intros * Hab.
 intros H; subst b.
-now apply (rngl_lt_irrefl Hor) in Hab.
+now apply rngl_lt_irrefl in Hab.
 Qed.
 
 Theorem rngl_le_inv_inv :
@@ -715,7 +715,7 @@ specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
 intros * Hzc.
 assert (Hcz : c ≠ 0%L). {
   intros H; rewrite H in Hzc.
-  now apply (rngl_lt_irrefl Hor) in Hzc.
+  now apply rngl_lt_irrefl in Hzc.
 }
 split; intros Habq. {
   apply (rngl_mul_le_mono_pos_r Hop Hiq Hto) with (c := c); [ easy | ].
@@ -738,7 +738,7 @@ specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
 intros * Hzc.
 assert (Hcz : c ≠ 0%L). {
   intros H; rewrite H in Hzc.
-  now apply (rngl_lt_irrefl Hor) in Hzc.
+  now apply rngl_lt_irrefl in Hzc.
 }
 split; intros Habq. {
   apply (rngl_mul_lt_mono_pos_r Hop Hiq Hto c); [ easy | ].
@@ -761,7 +761,7 @@ specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
 intros * Hzc.
 assert (Hcz : c ≠ 0%L). {
   intros H; rewrite H in Hzc.
-  now apply (rngl_lt_irrefl Hor) in Hzc.
+  now apply rngl_lt_irrefl in Hzc.
 }
 split; intros Habq. {
   apply (rngl_mul_le_mono_pos_r Hop Hiq Hto _ _ c); [ easy | ].
@@ -784,7 +784,7 @@ specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
 intros * Hzc.
 assert (Hcz : c ≠ 0%L). {
   intros H; rewrite H in Hzc.
-  now apply (rngl_lt_irrefl Hor) in Hzc.
+  now apply rngl_lt_irrefl in Hzc.
 }
 split; intros Habq. {
   apply (rngl_mul_lt_mono_pos_r Hop Hiq Hto c); [ easy | ].
@@ -934,10 +934,10 @@ split. {
 intros H.
 apply (rngl_eq_mul_0_l Hos Hiq) in H. {
   subst a.
-  now apply (rngl_lt_irrefl Hor) in Hza.
+  now apply rngl_lt_irrefl in Hza.
 } {
   intros H1; subst b.
-  now apply (rngl_lt_irrefl Hor) in Hbz.
+  now apply rngl_lt_irrefl in Hbz.
 }
 Qed.
 
@@ -1014,10 +1014,10 @@ destruct abz. {
   apply not_eq_sym.
   intros H1.
   apply (rngl_eq_mul_0_l Hos Hiq) in H1. {
-    now subst a; apply (rngl_lt_irrefl Hor) in Haz.
+    now subst a; apply rngl_lt_irrefl in Haz.
   } {
     intros H; subst b.
-    now apply (rngl_lt_irrefl Hor) in Hbz.
+    now apply rngl_lt_irrefl in Hbz.
   }
 }
 apply (rngl_leb_gt_iff Hto) in Habz.
@@ -1101,12 +1101,12 @@ Theorem rngl_mul_lt_mono_nonneg :
   ∀ a b c d, (0 ≤ a < b → 0 ≤ c < d → a * c < b * d)%L.
 Proof.
 intros Hop Hiq Hto * (Haz, Hab) (Hcz, Hcd).
-apply (rngl_le_lt_trans Hto _ (b * c)%L). {
+apply (rngl_le_lt_trans Hor _ (b * c)%L). {
   apply (rngl_mul_le_mono_nonneg_r Hop Hto); [ easy | ].
   now apply rngl_lt_le_incl.
 }
 apply (rngl_mul_lt_mono_pos_l Hop Hiq Hto); [ | easy ].
-now apply (rngl_le_lt_trans Hto _ a).
+now apply (rngl_le_lt_trans Hor _ a).
 Qed.
 
 Theorem rngl_mul_min_distr_l :
@@ -1187,7 +1187,7 @@ destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
   specialize (rngl_characteristic_1 Hos Hc1) as H1.
   intros * Hza.
   rewrite H1 in Hza.
-  now apply (rngl_lt_irrefl Hor) in Hza.
+  now apply rngl_lt_irrefl in Hza.
 }
 intros * Hza.
 induction n; cbn; [ apply (rngl_0_lt_1 Hos Hc1 Hto) | ].
@@ -1249,7 +1249,7 @@ split. {
 intros H.
 apply (eq_rngl_squ_rngl_abs Hop Hto Hii _ _ Habc) in H.
 rewrite H in Hab.
-now apply (rngl_lt_irrefl Hor) in Hab.
+now apply rngl_lt_irrefl in Hab.
 Qed.
 
 Theorem rngl_squ_le_abs_le :
@@ -1314,7 +1314,7 @@ intros H.
 apply (f_equal rngl_squ) in H.
 do 2 rewrite (rngl_squ_abs Hop) in H.
 rewrite H in Hab.
-now apply (rngl_lt_irrefl Hor) in Hab.
+now apply rngl_lt_irrefl in Hab.
 Qed.
 
 Theorem rngl_squ_le_1_iff :

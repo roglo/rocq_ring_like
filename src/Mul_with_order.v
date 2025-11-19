@@ -219,7 +219,7 @@ Theorem rngl_0_lt_2 :
   (0 < 2)%L.
 Proof.
 intros Hos Hc1 Hto.
-apply (rngl_le_lt_trans Hto _ 1)%L. {
+apply (rngl_le_lt_trans Hor _ 1)%L. {
   apply (rngl_0_le_1 Hos Hto).
 }
 apply (rngl_lt_add_r Hos Hto).
@@ -236,7 +236,7 @@ intros Hos Hc1 Hto.
 specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 specialize (rngl_0_lt_2 Hos Hc1 Hto) as H5.
 intros H; rewrite H in H5.
-now apply (rngl_lt_irrefl Hor) in H5.
+now apply rngl_lt_irrefl in H5.
 Qed.
 
 Theorem rngl_0_lt_3 :
@@ -247,7 +247,7 @@ Theorem rngl_0_lt_3 :
 Proof.
 intros Hos Hc1 Hto.
 specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
-apply (rngl_lt_le_trans Hto _ 1).
+apply (rngl_lt_le_trans Hor _ 1).
 apply (rngl_0_lt_1 Hos Hc1 Hto).
 apply (rngl_le_add_l Hos Hor).
 apply (rngl_0_le_2 Hos Hto).
@@ -263,7 +263,7 @@ intros Hos Hc1 Hto.
 specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 specialize (rngl_0_lt_3 Hos Hc1 Hto) as H.
 intros H1; rewrite H1 in H.
-now apply (rngl_lt_irrefl Hor) in H.
+now apply rngl_lt_irrefl in H.
 Qed.
 
 Theorem rngl_opp_1_le_0 :
@@ -297,7 +297,7 @@ Theorem rngl_opp_1_lt_1 :
 Proof.
 intros Hop Hto Hc1.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
-apply (rngl_lt_le_trans Hto _ 0).
+apply (rngl_lt_le_trans Hor _ 0).
 apply (rngl_opp_1_lt_0 Hop Hto Hc1).
 apply (rngl_0_le_1 Hos Hto).
 Qed.
@@ -449,7 +449,7 @@ intros Hop Hto.
 specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 intros * Ha Hbc.
-apply (rngl_lt_eq_cases Hto) in Hbc.
+apply (rngl_lt_eq_cases Hor) in Hbc.
 destruct Hbc as [Hbc| Hbc]; [ | subst b; pauto ].
 apply (rngl_le_0_sub Hop Hto).
 rewrite <- (rngl_mul_sub_distr_l Hop).
@@ -467,7 +467,7 @@ intros Hop Hto.
 specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 intros * Hc Hab.
-apply (rngl_lt_eq_cases Hto) in Hab.
+apply (rngl_lt_eq_cases Hor) in Hab.
 destruct Hab as [Hab| Hab]; [ | subst b; pauto ].
 apply (rngl_le_0_sub Hop Hto).
 rewrite <- (rngl_mul_sub_distr_r Hop).
@@ -485,7 +485,7 @@ intros Hop Hto.
 specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 intros * Ha Hbc.
-apply (rngl_lt_eq_cases Hto) in Hbc.
+apply (rngl_lt_eq_cases Hor) in Hbc.
 destruct Hbc as [Hbc| Hbc]; [ | subst b; pauto ].
 apply (rngl_le_0_sub Hop Hto).
 rewrite <- (rngl_mul_sub_distr_l Hop).
@@ -503,7 +503,7 @@ intros Hop Hto.
 specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 intros * Hc Hab.
-apply (rngl_lt_eq_cases Hto) in Hab.
+apply (rngl_lt_eq_cases Hor) in Hab.
 destruct Hab as [Hab| Hab]; [ | subst b; pauto ].
 apply (rngl_le_0_sub Hop Hto).
 rewrite <- (rngl_mul_sub_distr_r Hop).
@@ -542,7 +542,7 @@ split. {
   split; [ easy | ].
   intros H; subst a.
   rewrite (rngl_mul_0_l Hos) in Hab.
-  now apply (rngl_lt_irrefl Hor) in Hab.
+  now apply rngl_lt_irrefl in Hab.
 }
 apply (rngl_nle_gt_iff Hto).
 intros Hzb.

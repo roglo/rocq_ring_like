@@ -197,13 +197,13 @@ split; intros Hbc. {
   intros H.
   apply (rngl_add_cancel_l Hos) in H.
   subst.
-  now apply (rngl_lt_irrefl Hor) in Hbc.
+  now apply rngl_lt_irrefl in Hbc.
 } {
   apply rngl_le_neq.
   split; [ now apply (H1 a), rngl_lt_le_incl | ].
   intros H.
   subst.
-  now apply (rngl_lt_irrefl Hor) in Hbc.
+  now apply rngl_lt_irrefl in Hbc.
 }
 Qed.
 
@@ -274,10 +274,10 @@ split. {
   apply rngl_lt_le_incl.
 } {
   intros.
-  now apply (rngl_le_lt_trans Hto _ b).
+  now apply (rngl_le_lt_trans Hor _ b).
 } {
   intros.
-  now apply (rngl_lt_le_trans Hto _ b).
+  now apply (rngl_lt_le_trans Hor _ b).
 } {
   intros.
   remember (rngl_has_opp_or_psub T) as os eqn:Hos.
@@ -1028,7 +1028,7 @@ Theorem rngl_lt_0_add :
 Proof.
 intros Hos Hto * Hza Hzb.
 specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
-apply (rngl_lt_le_trans Hto _ a); [ easy | ].
+apply (rngl_lt_le_trans Hor _ a); [ easy | ].
 now apply (rngl_le_add_r Hos Hor).
 Qed.
 
@@ -1099,7 +1099,7 @@ destruct j. {
   split; [ easy | cbn ].
   intros H; exfalso.
   apply rngl_nlt_ge in H; apply H; clear H.
-  eapply (rngl_lt_le_trans Hto); [ apply Haz | ].
+  eapply (rngl_lt_le_trans Hor); [ apply Haz | ].
   apply (rngl_le_add_r Hos Hor).
   clear IHi.
   induction i; [ pauto | cbn ].
@@ -1131,11 +1131,11 @@ revert j.
 induction i; intros; cbn. {
   split; intros Hj. 2: {
     destruct j; [ | apply Nat.lt_0_succ ].
-    now apply (rngl_lt_irrefl Hor) in Hj.
+    now apply rngl_lt_irrefl in Hj.
   }
   induction j; [ easy | clear Hj ].
   cbn.
-  apply (rngl_lt_le_trans Hto _ a); [ easy | ].
+  apply (rngl_lt_le_trans Hor _ a); [ easy | ].
   apply (rngl_le_add_r Hos Hor).
   destruct j; [ pauto | ].
   apply rngl_lt_le_incl, IHj.
@@ -1192,7 +1192,7 @@ Theorem rngl_add_neg_nonpos :
 Proof.
 intros Hop Hto * Haz Hbz.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
-eapply (rngl_lt_le_trans Hto); [ | apply Hbz ].
+eapply (rngl_lt_le_trans Hor); [ | apply Hbz ].
 apply (rngl_lt_add_lt_sub_r Hop Hto).
 now rewrite (rngl_sub_diag Hos).
 Qed.
@@ -1251,7 +1251,7 @@ destruct c. {
   apply (rngl_opp_lt_compat Hop Hto) in Hc.
   destruct d; [ easy | ].
   apply (rngl_leb_gt_iff Hto) in Hd.
-  now apply (rngl_lt_asymm Hto) in Hd.
+  now apply (rngl_lt_asymm Hor) in Hd.
 }
 Qed.
 
@@ -1337,11 +1337,11 @@ split. {
   split; [ | easy ].
   apply (rngl_leb_gt_iff Hto) in Hyz.
   apply rngl_lt_le_incl.
-  apply (rngl_le_lt_trans Hto _ 0)%L; [ | easy ].
+  apply (rngl_le_lt_trans Hor _ 0)%L; [ | easy ].
   rewrite <- (rngl_opp_0 Hop).
   apply -> (rngl_opp_le_compat Hop Hto).
   apply rngl_lt_le_incl.
-  now apply (rngl_lt_le_trans Hto _ y)%L.
+  now apply (rngl_lt_le_trans Hor _ y)%L.
 }
 Qed.
 
@@ -1388,8 +1388,8 @@ split. {
       apply (rngl_opp_lt_compat Hop Hto) in Hyx.
       now rewrite (rngl_opp_involutive Hop) in Hyx.
     } {
-      apply (rngl_le_lt_trans Hto _ 0%L); [ easy | ].
-      apply (rngl_le_lt_trans Hto _ (- y)%L); [ | easy ].
+      apply (rngl_le_lt_trans Hor _ 0%L); [ easy | ].
+      apply (rngl_le_lt_trans Hor _ (- y)%L); [ | easy ].
       apply (rngl_le_0_sub Hop Hto) in Hyz.
       progress unfold rngl_sub in Hyz.
       rewrite Hop in Hyz.
@@ -1398,7 +1398,7 @@ split. {
   }
   split; [ | easy ].
   apply (rngl_leb_gt_iff Hto) in Hyz.
-  apply (rngl_le_lt_trans Hto _ 0)%L; [ | easy ].
+  apply (rngl_le_lt_trans Hor _ 0)%L; [ | easy ].
   rewrite <- (rngl_opp_0 Hop).
   apply -> (rngl_opp_le_compat Hop Hto).
   apply rngl_lt_le_incl.
@@ -1480,7 +1480,7 @@ destruct abz. {
   apply (rngl_leb_gt_iff Hto) in Hbz.
   apply rngl_nlt_ge in Habz.
   exfalso; apply Habz; clear Habz.
-  apply (rngl_lt_le_trans Hto _ a); [ easy | ].
+  apply (rngl_lt_le_trans Hor _ a); [ easy | ].
   apply (rngl_le_add_r Hos Hor).
   now apply rngl_lt_le_incl.
 }
