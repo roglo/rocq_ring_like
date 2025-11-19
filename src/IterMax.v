@@ -279,7 +279,7 @@ apply (rngl_leb_gt_iff Hto) in Ham.
 rewrite Hmz in Ham.
 rewrite Hm in Ham.
 exfalso.
-apply rngl_nle_gt in Ham.
+apply (rngl_nle_gt Hor) in Ham.
 apply Ham; clear Ham.
 apply (rngl_iter_max_list_nonneg Hto).
 intros b Hb.

@@ -839,7 +839,7 @@ assert (Haηb : (a < (a + rngl_min (a + η) b) / 2 ≤ b)%L). {
       apply (rngl_0_lt_2 Hos Hc1 Hto).
     }
     rewrite (rngl_mul_2_r).
-    apply (rngl_add_lt_mono_l Hos Hto).
+    apply (rngl_add_lt_mono_l Hos Hor).
     apply (rngl_min_glb_lt); [ | easy ].
     now apply (rngl_lt_add_r Hos Hto).
   } {
@@ -923,7 +923,7 @@ assert (Hfu : ∀ x, (rngl_max a (b - η) < x ≤ b → u < f x)%L). {
     now apply (rngl_sub_lt_mono_l Hop Hto) in H2.
   }
   apply (rngl_leb_gt_iff Hto) in Hfxb.
-  now apply (rngl_lt_trans Hto _ (f b)).
+  now apply (rngl_lt_trans Hor _ (f b)).
 }
 intros H.
 subst c.
@@ -1266,7 +1266,7 @@ assert (H : (a < b)%L). {
   split; [ easy | ].
   intros H; subst b.
   destruct Hfab as (Hfau, Hfua).
-  apply (rngl_lt_trans Hto u) in Hfau; [ | easy ].
+  apply (rngl_lt_trans Hor u) in Hfau; [ | easy ].
   now apply rngl_lt_irrefl in Hfau.
 }
 move H before Hab; clear Hab; rename H into Hab.
@@ -1442,7 +1442,7 @@ assert
     assert (H : (c ≤ x < c + rngl_min3 η1 η2 η3)%L). {
       split; [ easy | ].
       progress unfold x.
-      apply (rngl_add_lt_mono_l Hos Hto).
+      apply (rngl_add_lt_mono_l Hos Hor).
       apply (rngl_lt_div_l Hop Hiv Hto). {
         apply (rngl_0_lt_2 Hos Hc1 Hto).
       }

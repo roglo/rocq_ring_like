@@ -386,7 +386,7 @@ split; intros Hb. {
   split. {
     apply (rngl_lt_eq_cases Hor) in Habz.
     destruct Habz as [Habz| Habz]. {
-      apply rngl_nle_gt in Habz.
+      apply (rngl_nle_gt Hor) in Habz.
       apply (rngl_nlt_ge_iff Hto).
       intros Hb; apply Habz; clear Habz.
       apply (rngl_mul_nonpos_nonneg Hop Hto); [ | easy ].
@@ -419,7 +419,7 @@ split; intros Hb. {
   split. {
     apply (rngl_lt_eq_cases Hor) in Habz.
     destruct Habz as [Habz| Habz]. {
-      apply rngl_nle_gt in Habz.
+      apply (rngl_nle_gt Hor) in Habz.
       apply (rngl_nlt_ge_iff Hto).
       intros Hb; apply Habz; clear Habz.
       apply (rngl_mul_nonneg_nonpos Hop Hto); [ easy | ].
@@ -481,7 +481,7 @@ split; intros Hbc. {
 } {
   apply (rngl_lt_0_sub Hop Hto) in Hbc.
   rewrite <- (rngl_mul_sub_distr_l Hop) in Hbc.
-  apply rngl_nle_gt in Hbc.
+  apply (rngl_nle_gt Hor) in Hbc.
   apply (rngl_nle_gt_iff Hto).
   intros H1; apply Hbc; clear Hbc.
   rewrite <- (rngl_mul_0_r Hos a).
@@ -1143,14 +1143,14 @@ destruct abc. {
   apply rngl_leb_le in Habc.
   apply (rngl_leb_gt_iff Hto) in Hbc.
   apply (rngl_mul_le_mono_pos_l Hop Hiq Hto) in Habc; [ | easy ].
-  now apply rngl_nle_gt in Hbc.
+  now apply (rngl_nle_gt Hor) in Hbc.
 }
 destruct bc; [ | easy ].
 f_equal.
 apply rngl_leb_le in Hbc.
 apply (rngl_leb_gt_iff Hto) in Habc.
 apply (rngl_mul_lt_mono_pos_l Hop Hiq Hto) in Habc; [ | easy ].
-now apply rngl_nle_gt in Habc.
+now apply (rngl_nle_gt Hor) in Habc.
 Qed.
 
 Theorem rngl_square_le_simpl_nonneg :
@@ -1224,7 +1224,7 @@ destruct (rngl_leb_dec 0 a)%L as [Hza| Hza]. {
   right.
   rewrite <- (rngl_mul_0_l Hos b) in Hab.
   split; [ now apply rngl_lt_le_incl | ].
-  apply rngl_nle_gt in Hza.
+  apply (rngl_nle_gt Hor) in Hza.
   apply (rngl_nlt_ge_iff Hto).
   intros Hzb; apply Hza.
   now apply (rngl_mul_le_mono_pos_r Hop Hiq Hto) in Hab.

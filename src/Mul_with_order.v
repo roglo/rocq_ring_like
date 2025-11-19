@@ -530,7 +530,7 @@ destruct az. {
   symmetry in Hzb.
   destruct zb; [ now apply rngl_ltb_lt in Hzb | exfalso ].
   apply (rngl_ltb_ge_iff Hto) in Hzb.
-  apply rngl_nle_gt in Hab.
+  apply (rngl_nle_gt Hor) in Hab.
   apply Hab; clear Hab.
   apply (rngl_mul_nonpos_nonpos Hos Hor); [ | easy ].
   now apply rngl_lt_le_incl in Haz.
@@ -546,7 +546,7 @@ split. {
 }
 apply (rngl_nle_gt_iff Hto).
 intros Hzb.
-apply rngl_nle_gt in Hab.
+apply (rngl_nle_gt Hor) in Hab.
 apply Hab; clear Hab.
 now apply (rngl_mul_nonneg_nonneg Hos Hor).
 Qed.

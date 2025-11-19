@@ -59,7 +59,7 @@ destruct ab. {
   apply rngl_leb_le in Hab.
   apply (rngl_leb_gt_iff Hto) in Hacbc.
   exfalso.
-  apply rngl_nle_gt in Hacbc.
+  apply (rngl_nle_gt Hor) in Hacbc.
   apply Hacbc; clear Hacbc.
   now apply (rngl_mul_le_mono_nonneg_r Hop Hto).
 }
@@ -500,7 +500,7 @@ destruct c. {
       rewrite (rngl_sub_diag Hos) in Hd.
       rewrite rngl_mul_1_l in Hd.
       apply -> (rngl_lt_sub_0 Hop Hto) in Hd.
-      now apply rngl_nle_gt in Hd.
+      now apply (rngl_nle_gt Hor) in Hd.
     } {
       rewrite <- (rngl_opp_sub_distr Hop) in Hb.
       subst σ.
@@ -549,7 +549,7 @@ destruct c. {
       now apply rngl_lt_le_incl.
     } {
       exfalso.
-      apply rngl_nle_gt in Hb.
+      apply (rngl_nle_gt Hor) in Hb.
       apply Hb; clear Hb.
       apply (rngl_le_trans Hor _ 0). {
         subst σ.
@@ -594,7 +594,7 @@ destruct c. {
     } {
       apply (rngl_leb_gt_iff Hto) in Hflz.
       exfalso.
-      apply rngl_nle_gt in Hb.
+      apply (rngl_nle_gt Hor) in Hb.
       apply Hb; clear Hb.
       apply (rngl_le_trans Hor _ 0). {
         rewrite rngl_mul_1_l.
@@ -620,7 +620,7 @@ destruct c. {
       rewrite (rngl_opp_sub_distr Hop) in Hd.
       apply -> (rngl_lt_sub_0 Hop Hto) in Hd.
       apply rngl_lt_le_incl in Hd.
-      now apply rngl_nle_gt in Hd.
+      now apply (rngl_nle_gt Hor) in Hd.
     } {
       apply (rngl_leb_gt_iff Hto) in Hflz.
       rewrite (rngl_abs_nonneg_eq Hop Hor) in Hd, H2; cycle 1. {

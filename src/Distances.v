@@ -215,7 +215,7 @@ split. {
   destruct Hlim as (N, HN).
   specialize (HN N (Nat.le_refl _)).
   specialize (Hi N) as H.
-  apply rngl_nle_gt in HN.
+  apply (rngl_nle_gt Hor) in HN.
   apply HN; clear HN.
   do 2 rewrite (dist_symmetry _ dist _ c).
   apply mono_1.
@@ -237,7 +237,7 @@ split. {
   destruct Hlim as (N, HN).
   specialize (HN N (Nat.le_refl _)).
   specialize (Hi N).
-  apply rngl_nle_gt in HN.
+  apply (rngl_nle_gt Hor) in HN.
   apply HN; clear HN.
   apply mono_2.
   split; [ easy | ].

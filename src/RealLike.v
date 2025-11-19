@@ -293,7 +293,7 @@ rewrite (rngl_squ_sqrt) in H2. 2: {
   now apply (rngl_le_trans Hor _ a).
 }
 rewrite (rngl_squ_sqrt) in H2; [ | easy ].
-now apply rngl_nle_gt in Hab.
+now apply (rngl_nle_gt Hor) in Hab.
 Qed.
 
 Theorem rl_sqrt_lt_rl_sqrt :
@@ -322,7 +322,7 @@ rewrite (rngl_squ_sqrt) in H2. 2: {
   now apply rngl_lt_le_incl.
 }
 rewrite (rngl_squ_sqrt) in H2; [ | easy ].
-now apply rngl_nle_gt in Hab.
+now apply (rngl_nle_gt Hor) in Hab.
 Qed.
 
 Theorem rl_sqrt_pos :

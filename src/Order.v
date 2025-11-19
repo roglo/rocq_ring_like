@@ -432,21 +432,24 @@ split; intros Hab. {
 } {
   apply rngl_leb_nle.
   intros H1.
-  now apply rngl_nle_gt in Hab.
+  now apply (rngl_nle_gt Hor) in Hab.
 }
 Qed.
 
 Theorem rngl_ltb_ge :
+  rngl_is_ordered T = true →
   ∀ a b, (b ≤ a → (a <? b) = false)%L.
 Proof.
-intros * Hab.
-progress unfold rngl_le in Hab.
-progress unfold rngl_ltb.
-remember rngl_opt_leb as ol eqn:Hol.
-symmetry in Hol.
-destruct ol as [(leb, tot)| ]; [ | easy ].
-...
-now apply Bool.negb_false_iff in Hab.
+intros Hor.
+specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
+intros * Hba.
+apply (rngl_ltb_nlt Heo).
+intros Hab.
+destruct Hab as (Hab & H).
+apply H; clear H.
+specialize (rngl_opt_ord T) as rr.
+rewrite Hor in rr; move rr before rp.
+now apply rngl_ord_le_antisymm.
 Qed.
 
 Theorem rngl_ltb_ge_iff :
@@ -455,12 +458,13 @@ Theorem rngl_ltb_ge_iff :
 Proof.
 intros Hto.
 specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
 intros.
 split; intros Hab. {
-  apply rngl_ltb_nlt in Hab.
+  apply (rngl_ltb_nlt Heo) in Hab.
   now apply (rngl_nlt_ge_iff Hto) in Hab.
 } {
-  apply rngl_ltb_nlt.
+  apply (rngl_ltb_nlt Heo).
   intros H1.
   now apply rngl_nlt_ge in Hab.
 }
@@ -666,7 +670,7 @@ destruct ab. {
 }
 apply (rngl_leb_gt_iff Hto) in Hab.
 split; [ | easy ].
-now apply (rngl_lt_trans Hto _ b).
+now apply (rngl_lt_trans Hor _ b).
 Qed.
 
 Theorem rngl_min_le_iff :
@@ -713,7 +717,7 @@ destruct ab. {
 }
 destruct Hcab as [Hac| Hbc]; [ | easy ].
 apply (rngl_leb_gt_iff Hto) in Hab.
-now apply (rngl_lt_trans Hto _ a).
+now apply (rngl_lt_trans Hor _ a).
 Qed.
 
 Theorem rngl_max_lt_iff :
@@ -735,7 +739,7 @@ destruct bc. {
   split; intros Ha; [ now left | ].
   destruct Ha as [Ha| Ha]; [ easy | ].
   apply (rngl_leb_gt_iff Hto) in Hbc.
-  now apply (rngl_lt_trans Hto _ c).
+  now apply (rngl_lt_trans Hor _ c).
 }
 Qed.
 
@@ -927,7 +931,7 @@ destruct ab. {
     apply rngl_leb_le in Halb.
     split; [ easy | ].
     intros H.
-    now apply rngl_nle_gt in H.
+    now apply (rngl_nle_gt Hor) in H.
   } {
     now apply (rngl_leb_gt_iff Hto) in Halb.
   }
@@ -945,7 +949,7 @@ split; intros H. {
   apply (rngl_nlt_ge_iff Hto).
   now intros H1; apply (rngl_compare_gt_iff Hto) in H1.
 } {
-  apply rngl_nlt_ge in H.
+  apply (rngl_nlt_ge Hor) in H.
   intros H1.
   now apply (rngl_compare_gt_iff Hto) in H1.
 }
