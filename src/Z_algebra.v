@@ -251,6 +251,18 @@ assert (H : (0 < a)%Z). {
   destruct Ha as (H1, H2).
   apply Z.leb_le in H1.
   cbn in H1, H2.
+  apply Z.nle_gt.
+  intros H3; apply H2; symmetry.
+  now apply Z.le_antisymm.
+}
+specialize (Z_archimedean' a b H) as H1.
+destruct H1 as (m & Hm).
+exists m; cbn.
+apply Z.compare_gt_iff in Hm.
+rewrite rngl_mul_nat_Z.
+...
+apply Z.leb_gt.
+now rewrite rngl_mul_nat_Z.
 ...
   progress unfold Z.lt.
   apply Z.compare_le_iff in H1.
