@@ -296,7 +296,7 @@ assert (Hu : is_limit_when_seq_tends_to_inf da (λ _, lim1) lim2). {
     symmetry.
     apply (rngl_mul_2_r).
   }
-  apply (rngl_add_lt_compat Hos Hto). {
+  apply (rngl_add_lt_compat Hos Hor). {
     apply Hu1.
     eapply Nat.le_trans; [ | apply HN ].
     apply Nat.le_max_l.
@@ -369,7 +369,7 @@ apply (rngl_lt_le_trans Hor _ (ε / 2 + ε / 2)%L). 2: {
   apply (rngl_le_refl Hor).
 }
 eapply (rngl_le_lt_trans Hor). 2: {
-  apply (rngl_add_lt_compat Hos Hto); [ apply Hun | apply Hvn ].
+  apply (rngl_add_lt_compat Hos Hor); [ apply Hun | apply Hvn ].
 }
 apply Hd.
 Qed.

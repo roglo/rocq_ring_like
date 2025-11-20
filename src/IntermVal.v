@@ -389,7 +389,7 @@ split. {
   rewrite rngl_of_nat_add in HM2.
   cbn in HM2.
   rewrite rngl_add_0_r in HM2.
-  apply (rngl_add_lt_mono_r Hos Hto) in HM2.
+  apply (rngl_add_lt_mono_r Hos Hor) in HM2.
   exists (S (Nat.log2_up M)).
   intros * Hp Hq.
   assert (H2i : ∀ i, (2 ^ i)%L ≠ 0%L). {
@@ -461,7 +461,7 @@ split. {
   rewrite rngl_of_nat_add in HM2.
   cbn in HM2.
   rewrite rngl_add_0_r in HM2.
-  apply (rngl_add_lt_mono_r Hos Hto) in HM2.
+  apply (rngl_add_lt_mono_r Hos Hor) in HM2.
   exists (S (Nat.log2_up M)).
   intros * Hp Hq.
   assert (H2i : ∀ i, (2 ^ i)%L ≠ 0%L). {
@@ -866,7 +866,7 @@ assert (H : P ((a + rngl_min (a + η) b) / 2)%L). {
     apply (rngl_0_lt_2 Hos Hc1 Hto).
   }
   rewrite (rngl_mul_2_r).
-  apply (rngl_add_lt_mono_r Hos Hto).
+  apply (rngl_add_lt_mono_r Hos Hor).
   apply (rngl_min_glb_lt); [ | easy ].
   now apply (rngl_lt_add_r Hos Hto).
 }
@@ -961,7 +961,7 @@ apply (rngl_lt_div_l Hop Hiv Hto). {
   apply (rngl_0_lt_2 Hos Hc1 Hto).
 }
 rewrite (rngl_mul_2_r).
-apply (rngl_add_lt_mono_r Hos Hto).
+apply (rngl_add_lt_mono_r Hos Hor).
 apply rngl_max_lub_lt; [ easy | ].
 apply (rngl_lt_sub_lt_add_l Hop Hto).
 now apply (rngl_lt_add_l Hos Hto).
@@ -1468,7 +1468,7 @@ assert (H3 : ∀ ε, (0 < ε → u - ε < f c < u + ε)%L). {
   progress unfold P in Hpa'; cbn in Hpa'.
   split. 2: {
     apply (rngl_le_lt_trans Hor _ (f a' + ε)). 2: {
-      now apply (rngl_add_lt_mono_r Hos Hto).
+      now apply (rngl_add_lt_mono_r Hos Hor).
     }
     specialize (Hη a') as H2.
     rewrite (rngl_abs_nonpos_eq Hop Hto) in H2. 2: {

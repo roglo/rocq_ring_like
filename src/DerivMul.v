@@ -1442,7 +1442,7 @@ eapply (rngl_le_lt_trans Hor). {
 }
 do 2 rewrite (rngl_abs_mul Hop Hiq Hto).
 eapply (rngl_lt_le_trans Hor). {
-  apply (rngl_add_lt_mono_r Hos Hto).
+  apply (rngl_add_lt_mono_r Hos Hor).
   apply (rngl_mul_lt_mono_nonneg Hop Hiq Hto). {
     split; [ | apply H1 ].
     apply (rngl_abs_nonneg Hop Hto).
