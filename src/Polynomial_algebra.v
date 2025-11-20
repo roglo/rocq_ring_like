@@ -3678,6 +3678,33 @@ destruct lba; [ cbn | easy | easy ].
 apply (rngl_compare_antisym Hto).
 Qed.
 
+Theorem lap_compare_eq_iff :
+  ∀ la lb,
+  length la = length lb
+  → lap_compare la lb = Eq ↔ la = lb.
+Proof.
+intros * Hlab.
+split; intros Hab. {
+  revert lb Hlab Hab.
+  induction la as [| a la]; intros; cbn. {
+    symmetry in Hlab.
+    now apply List.length_zero_iff_nil in Hlab.
+  }
+  destruct lb as [| b lb]; [ easy | ].
+  cbn in Hab, Hlab.
+  apply Nat.succ_inj in Hlab.
+  specialize (IHla lb Hlab) as H1.
+  remember (lap_compare la lb) as lab eqn:Hlab'.
+  symmetry in Hlab'.
+  destruct lab; [ | easy | easy ].
+  specialize (H1 eq_refl); subst lb.
+  apply (rngl_compare_eq_iff Heo) in Hab.
+  now subst b.
+}
+subst lb.
+apply lap_compare_refl.
+Qed.
+
 (* to be completed
 Theorem polyn_ord_le_refl :
   let rop := polyn_ring_like_op in
@@ -3720,8 +3747,15 @@ progress unfold polyn_leb in Hba.
 progress unfold polyn_compare in Hab.
 progress unfold polyn_compare in Hba.
 rewrite Nat.compare_antisym in Hba.
-... ...
-rewrite (lap_compare_antisym Htop) in Hba.
+assert (Hto : rngl_is_totally_ordered T = true). {
+  progress unfold rngl_is_totally_ordered in Htop.
+  progress unfold rngl_is_totally_ordered.
+  cbn in Htop.
+  progress unfold polyn_opt_leb in Htop.
+  cbn in Htop.
+  now destruct (rngl_opt_leb T) as [(leb', tot')| ].
+}
+rewrite (lap_compare_antisym Hto) in Hba.
 (* lemma *)
 remember (lap pa) as la eqn:Hla.
 remember (lap pb) as lb eqn:Hlb.
@@ -3729,8 +3763,13 @@ clear pa pb Hla Hlb.
 remember (length la ?= length lb) as lab eqn:Hlab.
 symmetry in Hlab.
 destruct lab. {
+  apply Nat.compare_eq_iff in Hlab.
   cbn in Hba.
-
+  remember (lap_compare la lb) as lab eqn:Hlab'.
+  symmetry in Hlab'.
+  destruct lab. {
+    now apply lap_compare_eq_iff in Hlab'.
+  }
 ...
 
 Definition polyn_ring_like_ord (Horp : rngl_is_ordered (polyn T) = true) :
