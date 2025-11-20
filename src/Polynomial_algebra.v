@@ -3762,20 +3762,20 @@ remember (lap pb) as lb eqn:Hlb.
 clear pa pb Hla Hlb.
 remember (length la ?= length lb) as lab eqn:Hlab.
 symmetry in Hlab.
-destruct lab. {
-  apply Nat.compare_eq_iff in Hlab.
-  cbn in Hba.
-  remember (lap_compare la lb) as lab eqn:Hlab'.
-  symmetry in Hlab'.
-  destruct lab. {
-    now apply lap_compare_eq_iff in Hlab'.
-  }
-...
+destruct lab; [ | easy | easy ].
+apply Nat.compare_eq_iff in Hlab.
+cbn in Hba.
+remember (lap_compare la lb) as lab eqn:Hlab'.
+symmetry in Hlab'.
+destruct lab; [ | easy | easy ].
+now apply lap_compare_eq_iff in Hlab'.
+Qed.
 
-Definition polyn_ring_like_ord (Horp : rngl_is_ordered (polyn T) = true) :
+Definition polyn_ring_like_ord (Htop : rngl_is_totally_ordered (polyn T) = true) :
     ring_like_ord (polyn T) :=
+  let Horp := rngl_is_totally_ordered_is_ordered Htop in
   {| rngl_ord_le_refl := polyn_ord_le_refl Horp;
-     rngl_ord_le_antisymm := true;
+     rngl_ord_le_antisymm := polyn_ord_le_antisymm Htop;
      rngl_ord_le_trans := ?rngl_ord_le_trans;
      rngl_ord_add_le_mono_l := ?rngl_ord_add_le_mono_l;
      rngl_ord_mul_le_compat_nonneg := ?rngl_ord_mul_le_compat_nonneg;
