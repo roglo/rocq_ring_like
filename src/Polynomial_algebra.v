@@ -3771,12 +3771,41 @@ destruct lab; [ | easy | easy ].
 now apply lap_compare_eq_iff in Hlab'.
 Qed.
 
+Theorem polyn_ord_le_trans :
+  let rop := polyn_ring_like_op in
+  ∀ pa pb pc : polyn T, (pa ≤ pb)%L → (pb ≤ pc)%L → (pa ≤ pc)%L.
+Proof.
+cbn; intros (*Htop*) * Hab Hbc.
+(*
+specialize (rngl_is_totally_ordered_is_ordered Htop) as Horp.
+progress unfold rngl_is_ordered in Horp; cbn in Horp.
+*)
+progress unfold rngl_le in Hab; cbn in Hab.
+progress unfold rngl_le in Hbc; cbn in Hbc.
+progress unfold rngl_le; cbn.
+(*
+progress unfold polyn_opt_leb in Horp.
+*)
+progress unfold polyn_opt_leb in Hab.
+progress unfold polyn_opt_leb in Hbc.
+progress unfold polyn_opt_leb.
+remember (rngl_opt_leb T) as leb eqn:Hleb.
+symmetry in Hleb.
+destruct leb as [(leb, tot)| ]; [ (*clear Horp*) | easy ].
+progress unfold polyn_leb in Hab.
+progress unfold polyn_leb in Hbc.
+progress unfold polyn_leb.
+progress unfold polyn_compare in Hab.
+progress unfold polyn_compare in Hbc.
+progress unfold polyn_compare.
+...
+
 Definition polyn_ring_like_ord (Htop : rngl_is_totally_ordered (polyn T) = true) :
     ring_like_ord (polyn T) :=
   let Horp := rngl_is_totally_ordered_is_ordered Htop in
   {| rngl_ord_le_refl := polyn_ord_le_refl Horp;
      rngl_ord_le_antisymm := polyn_ord_le_antisymm Htop;
-     rngl_ord_le_trans := ?rngl_ord_le_trans;
+     rngl_ord_le_trans := polyn_ord_le_trans;
      rngl_ord_add_le_mono_l := ?rngl_ord_add_le_mono_l;
      rngl_ord_mul_le_compat_nonneg := ?rngl_ord_mul_le_compat_nonneg;
      rngl_ord_mul_le_compat_nonpos := ?rngl_ord_mul_le_compat_nonpos;
