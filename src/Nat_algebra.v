@@ -122,11 +122,16 @@ Proof.
 intros * Ha *.
 exists (S b).
 rewrite nat_rngl_mul_nat.
-apply Nat.leb_gt in Ha; cbn in Ha.
-apply Nat.leb_gt; cbn.
+destruct Ha as (_, Ha).
 destruct a; [ easy | cbn ].
-apply Nat.lt_succ_r.
-apply Nat.le_add_r.
+rewrite <- Nat.add_succ_r.
+split. {
+  apply Nat.leb_le.
+  apply Nat.le_add_r.
+}
+symmetry; intros H.
+apply Nat.add_sub_eq_l in H.
+now rewrite Nat.sub_diag in H.
 Qed.
 
 Theorem Nat_mul_le_compat_nonneg :

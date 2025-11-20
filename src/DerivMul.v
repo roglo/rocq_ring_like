@@ -69,7 +69,7 @@ apply rngl_leb_le in Hacbc.
 apply (rngl_lt_eq_cases Hor) in Hzc.
 destruct Hzc as [Hzc| Hzc]. {
   exfalso.
-  apply rngl_nlt_ge in Hacbc.
+  apply (rngl_nlt_ge Hor) in Hacbc.
   apply Hacbc; clear Hacbc.
   now apply (rngl_mul_lt_mono_pos_r Hop Hiq Hto).
 }
@@ -291,7 +291,7 @@ destruct b. {
       destruct is_left. {
         apply (rngl_nle_gt_iff Hto).
         intros Hea.
-        apply rngl_nlt_ge in Hb.
+        apply (rngl_nlt_ge Hor) in Hb.
         apply Hb; clear Hb.
         eapply (rngl_le_lt_trans Hor). {
           apply (rngl_mul_le_mono_pos_r Hop Hiq Hto). {
@@ -307,7 +307,7 @@ destruct b. {
         apply rngl_le_neq.
         split; [ easy | ].
         intros H; rewrite H, (rngl_sub_diag Hos) in Hea.
-        now apply rngl_nlt_ge in Hea.
+        now apply (rngl_nlt_ge Hor) in Hea.
       } {
         subst σ.
         rewrite (rngl_mul_opp_l Hop) in Hd.
@@ -382,7 +382,7 @@ destruct b. {
         rewrite (rngl_sub_diag Hos) in Hd.
         rewrite (rngl_mul_0_l Hos) in Hd.
         apply -> (rngl_lt_sub_0 Hop Hto) in Hd.
-        now apply rngl_nlt_ge in Hd.
+        now apply (rngl_nlt_ge Hor) in Hd.
       }
     }
   } {
@@ -455,7 +455,7 @@ destruct b. {
         rewrite (rngl_mul_0_l Hos) in Hd.
         apply -> (rngl_lt_sub_0 Hop Hto) in Hd.
         apply rngl_lt_le_incl in Hd.
-        now apply rngl_nlt_ge in Hd.
+        now apply (rngl_nlt_ge Hor) in Hd.
       } {
         subst σ.
         rewrite (rngl_mul_opp_l Hop) in Hb.
@@ -942,7 +942,7 @@ destruct is_left. {
       apply -> (rngl_sub_move_0_r Hop) in H.
       specialize (rngl_abs_nonneg Hop Hto v) as H'.
       rewrite H in H'.
-      apply rngl_nlt_ge in H'.
+      apply (rngl_nlt_ge Hor) in H'.
       apply H'; clear H'.
       apply (rngl_opp_1_lt_0 Hop Hto Hc1).
     }
@@ -1234,7 +1234,7 @@ destruct is_left. {
       apply -> (rngl_sub_move_0_r Hop) in H.
       specialize (rngl_abs_nonneg Hop Hto v) as H'.
       rewrite H in H'.
-      apply rngl_nlt_ge in H'.
+      apply (rngl_nlt_ge Hor) in H'.
       apply H'; clear H'.
       apply (rngl_opp_1_lt_0 Hop Hto Hc1).
     }
@@ -1567,7 +1567,7 @@ assert (Hfz : f x ≠ 0%L). {
   intros H; rewrite H in H50.
   rewrite (rngl_abs_0 Hop) in H50.
   apply rngl_lt_le_incl in H50.
-  now apply rngl_nlt_ge in H50.
+  now apply (rngl_nlt_ge Hor) in H50.
 }
 move x before x₀.
 move Hfz before Hfzz.
@@ -1725,7 +1725,7 @@ assert (Hfz : f x ≠ 0%L). {
   intros H; rewrite H in H1.
   rewrite (rngl_abs_0 Hop) in H1.
   apply rngl_lt_le_incl in H1.
-  now apply rngl_nlt_ge in H1.
+  now apply (rngl_nlt_ge Hor) in H1.
 }
 specialize (H3 x Hxx Hdη).
 rewrite (rngl_abs_sub_comm Hop Hto).

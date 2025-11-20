@@ -548,7 +548,7 @@ split; intros Hab. {
   apply (rngl_nle_gt_iff Hto).
   intros H2.
   apply -> (rngl_le_0_sub Hop Hto) in H2.
-  now apply rngl_nlt_ge in H2.
+  now apply (rngl_nlt_ge Hor) in H2.
 }
 Qed.
 
@@ -857,13 +857,14 @@ Theorem rngl_abs_le_ε :
 Proof.
 intros Hop Hiv Hto * H1.
 specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
 destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
   apply (rngl_characteristic_1 Hos Hc1).
 }
 destruct (rngl_ltb_dec a 0%L) as [H12| H12]. {
-  apply rngl_ltb_lt in H12.
+  apply (rngl_ltb_lt Heo) in H12.
   specialize (H1 (- a / 2))%L.
   assert (H : (0 < - a / 2)%L). {
     progress unfold rngl_div.
@@ -877,8 +878,7 @@ destruct (rngl_ltb_dec a 0%L) as [H12| H12]. {
   }
   specialize (H1 H); clear H.
   exfalso.
-...
-  apply rngl_nlt_ge in H1; apply H1; clear H1.
+  apply (rngl_nlt_ge Hor) in H1; apply H1; clear H1.
   rewrite (rngl_abs_nonpos_eq Hop Hto). 2: {
     now apply rngl_lt_le_incl.
   }
@@ -896,7 +896,7 @@ destruct (rngl_ltb_dec a 0%L) as [H12| H12]. {
   now apply -> (rngl_opp_lt_compat Hop Hto).
 }
 destruct (rngl_ltb_dec 0 a) as [H21| H21]. {
-  apply rngl_ltb_lt in H21.
+  apply (rngl_ltb_lt Heo) in H21.
   specialize (H1 (a / 2))%L.
   assert (H : (0 < a / 2)%L). {
     progress unfold rngl_div.
@@ -907,7 +907,7 @@ destruct (rngl_ltb_dec 0 a) as [H21| H21]. {
   }
   specialize (H1 H); clear H.
   exfalso.
-  apply rngl_nlt_ge in H1; apply H1.
+  apply (rngl_nlt_ge Hor) in H1; apply H1.
   rewrite (rngl_abs_nonneg_eq Hop Hor). 2: {
     now apply rngl_lt_le_incl.
   }
@@ -1010,7 +1010,7 @@ destruct abz. {
   apply (rngl_leb_gt_iff Hto) in Haz.
   destruct bz; [ now rewrite (rngl_mul_opp_r Hop) | ].
   apply (rngl_leb_gt_iff Hto) in Hbz.
-  apply rngl_nlt_ge in Habz.
+  apply (rngl_nlt_ge Hor) in Habz.
   exfalso; apply Habz; clear Habz.
   apply rngl_le_neq.
   split. {
@@ -1040,7 +1040,7 @@ destruct az. {
   apply rngl_le_neq in Hbz.
   destruct Hbz as (Hbz, Hzb).
   specialize (rngl_mul_nonpos_nonneg Hop Hto _ _ Haz Hbz) as H1.
-  now apply rngl_nlt_ge in H1.
+  now apply (rngl_nlt_ge Hor) in H1.
 }
 apply (rngl_leb_gt_iff Hto) in Haz.
 destruct bz; [ | easy ].
@@ -1048,7 +1048,7 @@ apply rngl_leb_le in Hbz.
 apply rngl_le_neq in Haz.
 destruct Haz as (Haz, Hza).
 specialize (rngl_mul_nonneg_nonpos Hop Hto _ _ Haz Hbz) as H1.
-now apply rngl_nlt_ge in H1.
+now apply (rngl_nlt_ge Hor) in H1.
 Qed.
 
 Theorem eq_rngl_squ_rngl_abs :
@@ -1108,6 +1108,7 @@ Theorem rngl_mul_lt_mono_nonneg :
   ∀ a b c d, (0 ≤ a < b → 0 ≤ c < d → a * c < b * d)%L.
 Proof.
 intros Hop Hiq Hto * (Haz, Hab) (Hcz, Hcd).
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 apply (rngl_le_lt_trans Hor _ (b * c)%L). {
   apply (rngl_mul_le_mono_nonneg_r Hop Hto); [ easy | ].
   now apply rngl_lt_le_incl.
@@ -1174,7 +1175,7 @@ destruct (rngl_leb_dec a 0%L) as [Haz| Haz]. {
 }
 apply (rngl_leb_gt_iff Hto) in Haz.
 apply (rngl_nle_gt_iff Hto) in Haz.
-apply rngl_nlt_ge in Hab.
+apply (rngl_nlt_ge Hor) in Hab.
 apply (rngl_nlt_ge_iff Hto).
 intros Hba; apply Hab; clear Hab.
 now apply (rngl_mul_lt_mono_nonneg Hop Hiq Hto).
@@ -1209,11 +1210,12 @@ Theorem rngl_le_0_mul :
 Proof.
 intros Hop Hiq Hto * Hab.
 specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 destruct (rngl_leb_dec 0 a)%L as [Hza| Hza]. {
   apply rngl_leb_le in Hza.
   destruct (rngl_ltb_dec 0 a) as [Hlza| Hlza]. {
-    apply rngl_ltb_lt in Hlza.
+    apply (rngl_ltb_lt Heo) in Hlza.
     rewrite <- (rngl_mul_0_r Hos a) in Hab.
     now left; apply (rngl_mul_le_mono_pos_l Hop Hiq Hto) in Hab.
   }

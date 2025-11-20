@@ -629,7 +629,7 @@ split. {
     eapply (rngl_le_trans Hor); [ | apply H6 ].
     now apply rngl_lt_le_incl.
   }
-  apply rngl_nlt_ge in HM.
+  apply (rngl_nlt_ge Hor) in HM.
   apply HM; clear HM.
   apply (rngl_le_div_l Hop Hiv Hto). {
     apply (rngl_0_lt_2 Hos Hc1 Hto).
@@ -672,7 +672,7 @@ split. {
     now apply rngl_lt_le_incl.
   }
   rewrite (rngl_opp_sub_distr Hop) in HM.
-  apply rngl_nlt_ge in HM.
+  apply (rngl_nlt_ge Hor) in HM.
   apply HM; clear HM.
   apply (rngl_le_div_l Hop Hiv Hto). {
     apply (rngl_0_lt_2 Hos Hc1 Hto).
@@ -758,7 +758,7 @@ induction n; intros; cbn in Habn. {
   injection Habn; clear Habn; intros; subst an bn.
   intros H.
   apply Hs in H.
-  now apply rngl_nlt_ge in H.
+  now apply (rngl_nlt_ge Hor) in H.
 }
 destruct (is_upper_bound _ _) as [H1| H1]. {
   apply (IHn a ((a + b) / 2)%L H1 Habn).
@@ -871,7 +871,7 @@ assert (H : P ((a + rngl_min (a + η) b) / 2)%L). {
   now apply (rngl_lt_add_r Hos Hto).
 }
 apply Hub1 in H.
-now apply rngl_nlt_ge in H.
+now apply (rngl_nlt_ge Hor) in H.
 Qed.
 
 Theorem intermediate_value_prop_2 :
@@ -955,7 +955,7 @@ destruct (is_upper_bound P x) as [Hux| Hux]. 2: {
   specialize (H3 H).
   now apply (rngl_lt_asymm Hor) in Hfy.
 }
-apply rngl_nlt_ge in H3; apply H3; clear H3.
+apply (rngl_nlt_ge Hor) in H3; apply H3; clear H3.
 progress unfold x.
 apply (rngl_lt_div_l Hop Hiv Hto). {
   apply (rngl_0_lt_2 Hos Hc1 Hto).
@@ -1157,7 +1157,7 @@ destruct (is_bound _ P lim) as [H1| H1]. {
       now apply Nat.pow_gt_lin_r.
     }
     apply H2 in Hy.
-    now apply rngl_nlt_ge in Hy.
+    now apply (rngl_nlt_ge Hor) in Hy.
   } {
     specialize (limit_between_An_and_Bn Hiv a b lim P) as Hl.
     specialize (Hl Hab Hal Hbl).
@@ -1400,7 +1400,7 @@ assert
         now apply Hyc, Hub1.
       }
     }
-    apply rngl_nlt_ge in H2; apply H2; clear H2.
+    apply (rngl_nlt_ge Hor) in H2; apply H2; clear H2.
     progress unfold x.
     apply (rngl_lt_sub_lt_add_l Hop Hto).
     apply (rngl_lt_add_l Hos Hto).
@@ -1451,7 +1451,7 @@ assert
     }
     specialize (H3 H); clear H.
     apply Hub1 in H3.
-    apply rngl_nlt_ge in H3.
+    apply (rngl_nlt_ge Hor) in H3.
     apply H3; clear H3.
     progress unfold x.
     apply (rngl_lt_add_r Hos Hto).

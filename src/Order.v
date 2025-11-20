@@ -466,7 +466,7 @@ split; intros Hab. {
 } {
   apply (rngl_ltb_nlt Heo).
   intros H1.
-  now apply rngl_nlt_ge in Hab.
+  now apply (rngl_nlt_ge Hor) in Hab.
 }
 Qed.
 
@@ -602,7 +602,7 @@ split; intros H1. {
   destruct ba; [ subst b; apply (rngl_le_refl Hor) | ].
   apply (rngl_leb_gt_iff Hto) in Hab, Hba.
   apply rngl_lt_le_incl in Hba.
-  now apply rngl_nlt_ge in Hba.
+  now apply (rngl_nlt_ge Hor) in Hba.
 } {
   destruct ab; [ easy | ].
   apply rngl_leb_le in H1.

@@ -247,6 +247,18 @@ Theorem Z_archimedean :
   ∀ a b : Z, (0 < a)%L → ∃ₜ n : nat, (b < rngl_mul_nat a n)%L.
 Proof.
 intros * Ha *.
+assert (H : (0 < a)%Z). {
+  destruct Ha as (H1, H2).
+  apply Z.leb_le in H1.
+  cbn in H1, H2.
+...
+  progress unfold Z.lt.
+  apply Z.compare_le_iff in H1.
+easy.
+...
+specialize (Z_archimedean' a b) as H1.
+...
+intros * Ha *.
 apply Z.leb_gt in Ha.
 cbn in Ha.
 specialize (Z_archimedean' a b Ha) as H1.
