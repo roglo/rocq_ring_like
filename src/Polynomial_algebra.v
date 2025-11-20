@@ -3000,11 +3000,16 @@ Definition polyn_leb pa pb :=
   | Gt => false
   end.
 
+(*
 Definition polyn_opt_leb :=
   match rngl_opt_leb T with
   | Some (_, tot) => Some (polyn_leb, tot)
   | None => None
   end.
+*)
+Definition polyn_opt_leb : option ((polyn T → polyn T → bool) * bool) :=
+  None.
+(**)
 
 Definition polyn_ring_like_op : ring_like_op (polyn T) :=
   {| rngl_zero := polyn_zero;
@@ -3015,7 +3020,7 @@ Definition polyn_ring_like_op : ring_like_op (polyn T) :=
      rngl_opt_inv_or_pdiv := polyn_opt_inv_or_pdiv;
      rngl_opt_is_zero_divisor := Some (λ _, True);
      rngl_opt_eq_dec := Some polyn_eq_dec;
-     rngl_opt_leb := None (*polyn_opt_leb*) |}.
+     rngl_opt_leb := polyn_opt_leb |}.
 
 (* allows to use ring-like theorems on polynomials
 Canonical Structure polyn_ring_like_op.
@@ -3620,6 +3625,33 @@ Qed.
 
 (* polyn leb *)
 
+(* to be completed
+Theorem rngl_compare_antisym : ∀ a b : T, (a ?= b)%L = CompOpp (b ?= a)%L.
+Proof.
+intros.
+progress unfold rngl_compare.
+...
+progress unfold rngl_eqb.
+..
+
+Theorem lap_compare_antisym :
+  ∀ la lb : list T, lap_compare la lb = CompOpp (lap_compare lb la).
+Proof.
+intros.
+revert lb.
+induction la as [| a]; intros; [ now symmetry; destruct lb | cbn ].
+destruct lb as [| b]; [ easy | cbn ].
+rewrite IHla.
+remember (lap_compare lb la) as lba eqn:Hlba.
+symmetry in Hlba.
+destruct lba; [ cbn | easy | easy ].
+Search (CompOpp (_ ?= _)%L).
+... ....
+Proof.
+rewrite rngl_compare_antisymm.
+...
+*)
+
 Theorem lap_compare_refl : ∀ la, lap_compare la la = Eq.
 Proof.
 intros.
@@ -3649,10 +3681,44 @@ rewrite Nat.compare_refl.
 now rewrite lap_compare_refl.
 Qed.
 
+Theorem polyn_ord_le_antisymm :
+  let rop := polyn_ring_like_op in
+  rngl_is_ordered (polyn T) = true →
+  ∀ pa pb : polyn T, (pa ≤ pb)%L → (pb ≤ pa)%L → pa = pb.
+Proof.
+cbn; intros Horp * Hab Hba.
+progress unfold rngl_is_ordered in Horp; cbn in Horp.
+progress unfold rngl_le in Hab; cbn in Hab.
+progress unfold rngl_le in Hba; cbn in Hba.
+progress unfold polyn_opt_leb in Horp.
+progress unfold polyn_opt_leb in Hab.
+progress unfold polyn_opt_leb in Hba.
+apply eq_polyn_eq.
+remember (rngl_opt_leb T) as leb eqn:Hleb.
+symmetry in Hleb.
+destruct leb as [(leb, tot)| ]; [ clear Horp | easy ].
+progress unfold polyn_leb in Hab.
+progress unfold polyn_leb in Hba.
+progress unfold polyn_compare in Hab.
+progress unfold polyn_compare in Hba.
+rewrite Nat.compare_antisym in Hba.
+... ...
+rewrite lap_compare_antisym in Hba.
+(* lemma *)
+remember (lap pa) as la eqn:Hla.
+remember (lap pb) as lb eqn:Hlb.
+clear pa pb Hla Hlb.
+remember (length la ?= length lb) as lab eqn:Hlab.
+symmetry in Hlab.
+destruct lab. {
+  cbn in Hba.
+
+...
+
 Definition polyn_ring_like_ord (Horp : rngl_is_ordered (polyn T) = true) :
     ring_like_ord (polyn T) :=
   {| rngl_ord_le_refl := polyn_ord_le_refl Horp;
-     rngl_ord_le_antisymm := ?rngl_ord_le_antisymm;
+     rngl_ord_le_antisymm := true;
      rngl_ord_le_trans := ?rngl_ord_le_trans;
      rngl_ord_add_le_mono_l := ?rngl_ord_add_le_mono_l;
      rngl_ord_mul_le_compat_nonneg := ?rngl_ord_mul_le_compat_nonneg;
