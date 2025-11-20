@@ -3000,7 +3000,7 @@ Definition polyn_leb pa pb :=
   | Gt => false
   end.
 
-(*
+(* to be completed
 Definition polyn_opt_leb :=
   match rngl_opt_leb T with
   | Some (_, tot) => Some (polyn_leb, tot)
