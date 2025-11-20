@@ -36,6 +36,7 @@ Class ring_like_op T :=
 Arguments rngl_opt_opp_or_psub T {ring_like_op}.
 Arguments rngl_opt_inv_or_pdiv T {ring_like_op}.
 Arguments rngl_opt_is_zero_divisor T {ring_like_op}.
+Arguments rngl_opt_leb T {ring_like_op}.
 
 Declare Scope ring_like_scope.
 Delimit Scope ring_like_scope with L.
@@ -56,10 +57,10 @@ Definition rngl_has_inv_or_pdiv T {R : ring_like_op T} :=
   bool_of_option (rngl_opt_inv_or_pdiv T).
 
 Definition rngl_is_ordered T {ro : ring_like_op T} :=
-  bool_of_option rngl_opt_leb.
+  bool_of_option (rngl_opt_leb T).
 
 Definition rngl_is_totally_ordered T {ro : ring_like_op T} :=
-  match rngl_opt_leb with
+  match rngl_opt_leb T with
   | None => false
   | Some (leb, tot) => tot
   end.
@@ -129,7 +130,7 @@ Definition rngl_div {T} {ro : ring_like_op T} a b :=
   else rngl_zero.
 
 Definition rngl_le {T} {ro : ring_like_op T} a b :=
-  match rngl_opt_leb with
+  match rngl_opt_leb T with
   | Some (rngl_leb, _) => rngl_leb a b = true
   | None => False
   end.
@@ -269,7 +270,7 @@ Definition rngl_is_integral_domain T {ro : ring_like_op T} :=
 Definition rngl_squ {T} {ro : ring_like_op T} a := rngl_mul a a.
 
 Definition rngl_leb {T} {ro : ring_like_op T} a b :=
-  match rngl_opt_leb with
+  match rngl_opt_leb T with
   | Some (rngl_leb, _) => rngl_leb a b
   | None => false
   end.

@@ -2978,6 +2978,19 @@ Definition polyn_opt_inv_or_pdiv :
   | right _ => None
   end.
 
+Definition polyn_leb pa pb :=
+  match Nat.compare (length (lap pa)) (length (lap pb)) with
+  | Lt => true
+  | Gt => false
+  | Eq => false
+  end.
+
+Definition polyn_opt_leb :=
+  match rngl_opt_leb T with
+  | Some (leb, tot) => Some (polyn_leb, tot)
+  | None => None
+  end.
+
 Definition polyn_ring_like_op : ring_like_op (polyn T) :=
   {| rngl_zero := polyn_zero;
      rngl_one := polyn_one;
@@ -2987,7 +3000,7 @@ Definition polyn_ring_like_op : ring_like_op (polyn T) :=
      rngl_opt_inv_or_pdiv := polyn_opt_inv_or_pdiv;
      rngl_opt_is_zero_divisor := Some (λ _, True);
      rngl_opt_eq_dec := Some polyn_eq_dec;
-     rngl_opt_leb := None |}.
+     rngl_opt_leb := None (*polyn_opt_leb*) |}.
 
 (* allows to use ring-like theorems on polynomials
 Canonical Structure polyn_ring_like_op.
