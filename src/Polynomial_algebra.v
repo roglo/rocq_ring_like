@@ -2978,16 +2978,31 @@ Definition polyn_opt_inv_or_pdiv :
   | right _ => None
   end.
 
-Definition polyn_leb pa pb :=
+Fixpoint lap_compare la lb :=
+  match (la, lb) with
+  | (a :: la', b :: lb') =>
+      match lap_compare la' lb' with
+      | Eq => rngl_compare a b
+      | c => c
+      end
+  | _ => Eq
+  end.
+
+Definition polyn_compare pa pb :=
   match Nat.compare (length (lap pa)) (length (lap pb)) with
-  | Lt => true
+  | Eq => lap_compare (lap pa) (lap pb)
+  | c => c
+  end.
+
+Definition polyn_leb pa pb :=
+  match polyn_compare pa pb with
+  | Lt | Eq => true
   | Gt => false
-  | Eq => false
   end.
 
 Definition polyn_opt_leb :=
   match rngl_opt_leb T with
-  | Some (leb, tot) => Some (polyn_leb, tot)
+  | Some (_, tot) => Some (polyn_leb, tot)
   | None => None
   end.
 
@@ -3603,6 +3618,62 @@ rewrite Hop, Hsu in H1.
 f_equal; apply H1.
 Qed.
 
+(* polyn leb *)
+
+Theorem lap_compare_refl : ∀ la, lap_compare la la = Eq.
+Proof.
+intros.
+induction la as [| a]; [ easy | cbn ].
+rewrite IHla.
+progress unfold rngl_compare.
+now rewrite (rngl_eqb_refl Heo).
+Qed.
+
+(* to be completed
+Theorem polyn_ord_le_refl :
+  let rop := polyn_ring_like_op in
+  rngl_is_ordered (polyn T) = true →
+  ∀ p : polyn T, (p ≤ p)%L.
+Proof.
+intros rop Horp *; cbn.
+progress unfold rngl_is_ordered in Horp; cbn in Horp.
+progress unfold rngl_le; cbn.
+progress unfold polyn_opt_leb.
+progress unfold polyn_opt_leb in Horp.
+remember (rngl_opt_leb T) as leb eqn:Hleb.
+symmetry in Hleb.
+destruct leb as [(leb, tot)| ]; [ clear Horp | easy ].
+progress unfold polyn_leb.
+progress unfold polyn_compare.
+rewrite Nat.compare_refl.
+now rewrite lap_compare_refl.
+Qed.
+
+Definition polyn_ring_like_ord (Horp : rngl_is_ordered (polyn T) = true) :
+    ring_like_ord (polyn T) :=
+  {| rngl_ord_le_refl := polyn_ord_le_refl Horp;
+     rngl_ord_le_antisymm := ?rngl_ord_le_antisymm;
+     rngl_ord_le_trans := ?rngl_ord_le_trans;
+     rngl_ord_add_le_mono_l := ?rngl_ord_add_le_mono_l;
+     rngl_ord_mul_le_compat_nonneg := ?rngl_ord_mul_le_compat_nonneg;
+     rngl_ord_mul_le_compat_nonpos := ?rngl_ord_mul_le_compat_nonpos;
+     rngl_ord_le_dec := ?rngl_ord_le_dec;
+     rngl_ord_total_prop := ?rngl_ord_total_prop |}.
+...
+
+Theorem polyn_opt_ord :
+  let rop := polyn_ring_like_op in
+  if rngl_is_ordered (polyn T) then ring_like_ord (polyn T)
+  else not_applicable.
+Proof.
+cbn.
+remember (rngl_is_ordered (polyn T)) as orp eqn:Horp.
+symmetry in Horp.
+destruct orp; [ | easy ].
+apply true.
+...
+*)
+
 Definition polyn_ring_like_prop : ring_like_prop (polyn T) :=
   {| rngl_mul_is_comm := rngl_mul_is_comm T;
      rngl_is_archimedean := false;
@@ -3625,7 +3696,7 @@ Definition polyn_ring_like_prop : ring_like_prop (polyn T) :=
      rngl_opt_mul_div := polyn_opt_mul_div;
      rngl_opt_integral := polyn_integral;
      rngl_opt_alg_closed := NA;
-     rngl_opt_ord := NA;
+     rngl_opt_ord := NA; (*polyn_opt_ord;*)
      rngl_opt_archimedean := NA;
      rngl_characteristic_prop := polyn_characteristic_prop |}.
 
