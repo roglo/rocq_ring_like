@@ -260,25 +260,11 @@ destruct H1 as (m & Hm).
 exists m; cbn.
 apply Z.compare_gt_iff in Hm.
 rewrite rngl_mul_nat_Z.
-...
-apply Z.leb_gt.
-now rewrite rngl_mul_nat_Z.
-...
-  progress unfold Z.lt.
-  apply Z.compare_le_iff in H1.
-easy.
-...
-specialize (Z_archimedean' a b) as H1.
-...
-intros * Ha *.
-apply Z.leb_gt in Ha.
-cbn in Ha.
-specialize (Z_archimedean' a b Ha) as H1.
-destruct H1 as (m & Hm).
-exists m; cbn.
-apply Z.compare_gt_iff in Hm.
-apply Z.leb_gt.
-now rewrite rngl_mul_nat_Z.
+split. {
+  apply Z.leb_le.
+  now apply Z.lt_le_incl.
+}
+now apply Z.lt_neq.
 Qed.
 
 Definition Z_ring_like_ord :=
