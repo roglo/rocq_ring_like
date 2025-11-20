@@ -87,37 +87,6 @@ Context {rp : ring_like_prop T}.
 Tactic Notation "pauto" := progress auto.
 Hint Resolve rngl_le_refl : core.
 
-(*
-Theorem roc_l1_iff_l1_iff_l2_iff_l2 {l1 l2}
-  {Hroc : rngl_order_compatibility l1 l2} :
-  (∀ a b c d, l1 a b ↔ l1 c d) ↔
-  (∀ a b c d, l2 a b ↔ l2 c d)%L.
-Proof.
-intros.
-split; intros Hll *. {
-  split; intros H. {
-    apply roc_dual_2 in H; apply roc_dual_2.
-    intros H1; apply H; clear H.
-    now apply (Hll _ _ d c).
-  } {
-    apply roc_dual_2 in H; apply roc_dual_2.
-    intros H1; apply H; clear H.
-    now apply (Hll _ _ d c) in H1.
-  }
-} {
-  split; intros H. {
-    apply roc_dual_1 in H; apply roc_dual_1.
-    intros H1; apply H; clear H.
-    now apply (Hll _ _ d c).
-  } {
-    apply roc_dual_1 in H; apply roc_dual_1.
-    intros H1; apply H; clear H.
-    now apply (Hll _ _ d c) in H1.
-  }
-}
-Qed.
-*)
-
 Theorem rngl_order_compatibility_comm :
   rngl_is_totally_ordered T = true →
   ∀ l1 l2, rngl_order_compatibility l1 l2 → rngl_order_compatibility l2 l1.
