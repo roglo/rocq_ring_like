@@ -3634,7 +3634,6 @@ progress unfold rngl_compare.
 now rewrite (rngl_eqb_refl Heo).
 Qed.
 
-(* to be completed *)
 Theorem rngl_compare_antisym :
   rngl_is_totally_ordered T = true →
   ∀ a b : T, (a ?= b)%L = CompOpp (b ?= a)%L.
@@ -3678,7 +3677,6 @@ symmetry in Hlba.
 destruct lba; [ cbn | easy | easy ].
 apply (rngl_compare_antisym Hto).
 Qed.
-(**)
 
 (* to be completed
 Theorem polyn_ord_le_refl :
