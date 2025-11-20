@@ -3625,33 +3625,6 @@ Qed.
 
 (* polyn leb *)
 
-(* to be completed
-Theorem rngl_compare_antisym : ∀ a b : T, (a ?= b)%L = CompOpp (b ?= a)%L.
-Proof.
-intros.
-progress unfold rngl_compare.
-...
-progress unfold rngl_eqb.
-..
-
-Theorem lap_compare_antisym :
-  ∀ la lb : list T, lap_compare la lb = CompOpp (lap_compare lb la).
-Proof.
-intros.
-revert lb.
-induction la as [| a]; intros; [ now symmetry; destruct lb | cbn ].
-destruct lb as [| b]; [ easy | cbn ].
-rewrite IHla.
-remember (lap_compare lb la) as lba eqn:Hlba.
-symmetry in Hlba.
-destruct lba; [ cbn | easy | easy ].
-Search (CompOpp (_ ?= _)%L).
-... ....
-Proof.
-rewrite rngl_compare_antisymm.
-...
-*)
-
 Theorem lap_compare_refl : ∀ la, lap_compare la la = Eq.
 Proof.
 intros.
@@ -3660,6 +3633,52 @@ rewrite IHla.
 progress unfold rngl_compare.
 now rewrite (rngl_eqb_refl Heo).
 Qed.
+
+(* to be completed *)
+Theorem rngl_compare_antisym :
+  rngl_is_totally_ordered T = true →
+  ∀ a b : T, (a ?= b)%L = CompOpp (b ?= a)%L.
+Proof.
+intros Hto.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+intros.
+progress unfold rngl_compare.
+rewrite (rngl_eqb_sym Heo b).
+remember (a =? b)%L as ab eqn:Hab.
+symmetry in Hab.
+destruct ab; [ easy | ].
+apply (rngl_eqb_neq Heo) in Hab.
+remember (a ≤? b)%L as ab eqn:H1.
+remember (b ≤? a)%L as ba eqn:H2.
+symmetry in H1, H2.
+destruct ab; cbn. {
+  destruct ba; [ | easy ].
+  apply rngl_leb_le in H1, H2.
+  exfalso; apply Hab.
+  now apply (rngl_le_antisymm Hor).
+}
+destruct ba; [ easy | ].
+apply (rngl_leb_gt_iff Hto) in H1, H2.
+apply rngl_lt_le_incl in H1, H2.
+exfalso; apply Hab.
+now apply (rngl_le_antisymm Hor).
+Qed.
+
+Theorem lap_compare_antisym :
+  rngl_is_totally_ordered T = true →
+  ∀ la lb : list T, lap_compare la lb = CompOpp (lap_compare lb la).
+Proof.
+intros Hto *.
+revert lb.
+induction la as [| a]; intros; [ now symmetry; destruct lb | cbn ].
+destruct lb as [| b]; [ easy | cbn ].
+rewrite IHla.
+remember (lap_compare lb la) as lba eqn:Hlba.
+symmetry in Hlba.
+destruct lba; [ cbn | easy | easy ].
+apply (rngl_compare_antisym Hto).
+Qed.
+(**)
 
 (* to be completed
 Theorem polyn_ord_le_refl :
@@ -3683,10 +3702,11 @@ Qed.
 
 Theorem polyn_ord_le_antisymm :
   let rop := polyn_ring_like_op in
-  rngl_is_ordered (polyn T) = true →
+  rngl_is_totally_ordered (polyn T) = true →
   ∀ pa pb : polyn T, (pa ≤ pb)%L → (pb ≤ pa)%L → pa = pb.
 Proof.
-cbn; intros Horp * Hab Hba.
+cbn; intros Htop * Hab Hba.
+specialize (rngl_is_totally_ordered_is_ordered Htop) as Horp.
 progress unfold rngl_is_ordered in Horp; cbn in Horp.
 progress unfold rngl_le in Hab; cbn in Hab.
 progress unfold rngl_le in Hba; cbn in Hba.
@@ -3703,7 +3723,7 @@ progress unfold polyn_compare in Hab.
 progress unfold polyn_compare in Hba.
 rewrite Nat.compare_antisym in Hba.
 ... ...
-rewrite lap_compare_antisym in Hba.
+rewrite (lap_compare_antisym Htop) in Hba.
 (* lemma *)
 remember (lap pa) as la eqn:Hla.
 remember (lap pb) as lb eqn:Hlb.
