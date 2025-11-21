@@ -3775,6 +3775,15 @@ destruct ab; [ | | easy ]. {
 }
 Qed.
 
+Theorem lap_add_0_l : ∀ la, ([] + la)%lap = la.
+Proof.
+intros; cbn.
+rewrite Nat.sub_0_r.
+rewrite List.app_nil_r.
+induction la as [| a]; [ easy | cbn ].
+now rewrite rngl_add_0_l; f_equal.
+Qed.
+
 (* to be completed
 Theorem polyn_ord_le_refl :
   rngl_is_ordered T = true →
@@ -4028,6 +4037,31 @@ split; intros Hc. {
     now rewrite Nat.compare_refl in Hlabc.
   }
   clear Hc.
+  progress unfold polyn_compare in Hbc.
+  remember (length (lap b) ?= length (lap c)) as lbc eqn:Hlbc.
+  symmetry in Hlbc.
+  destruct lbc; [ | | easy ]. {
+    apply Nat.compare_eq_iff in Hlbc.
+    remember (length _ ?= length _) as labc eqn:Hlabc.
+    symmetry in Hlabc.
+    destruct labc; [ | easy | ]. {
+      apply Nat.compare_eq_iff in Hlabc.
+      move Hlabc before Hlbc.
+      cbn in Habc, Hlabc.
+      remember (lap a) as la eqn:Hla.
+      remember (lap b) as lb eqn:Hlb.
+      remember (lap c) as lc eqn:Hlc.
+      clear a b c Hlb Hlc Hla.
+      revert lb lc Hlbc Hlabc Hbc Habc.
+      induction la as [| a]; intros. {
+        do 2 rewrite lap_add_0_l in Hlabc, Habc.
+...
+      rewrite Hbc in Habc.
+      now rewrite lap_compare_refl in Habc.
+    }
+    cbn in Hlabc.
+    rewrite Hbc in Hlabc.
+    now rewrite Nat.compare_refl in Hlabc.
 ...
     remember (lap a) as la eqn:Hla.
     remember (lap b) as lb eqn:Hlb.
