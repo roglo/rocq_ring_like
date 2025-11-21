@@ -3705,6 +3705,31 @@ subst lb.
 apply lap_compare_refl.
 Qed.
 
+Theorem rngl_compare_lt_lt :
+  rngl_is_ordered T = true →
+  ∀ a b, (a ?= b)%L = Lt → (b ?= a)%L = Lt → a = b.
+Proof.
+intros Hor.
+specialize (rngl_opt_ord T) as rr.
+rewrite Hor in rr; move rr before rp.
+intros * Hab Hba.
+progress unfold rngl_compare in Hab.
+progress unfold rngl_compare in Hba.
+remember (a =? b)%L as x eqn:Hx.
+remember (a ≤? b)%L as y eqn:Hy.
+symmetry in Hx, Hy.
+destruct x; [ easy | ].
+destruct y; [ | easy ].
+clear Hab.
+remember (b =? a)%L as z eqn:Hz.
+remember (b ≤? a)%L as t eqn:Ht.
+symmetry in Hz, Ht.
+destruct z; [ easy | ].
+destruct t; [ | easy ].
+apply rngl_leb_le in Hy, Ht.
+now apply rngl_ord_le_antisymm.
+Qed.
+
 Theorem lap_compare_lt_lt :
   rngl_is_ordered T = true →
   ∀ la lb,
@@ -3730,23 +3755,10 @@ destruct ab; [ | | easy ]. {
   apply lap_compare_eq_iff in H1; [ | easy ].
   subst lb; f_equal.
   destruct ba; [ | | easy ]. {
-    progress unfold rngl_compare in Hab.
-    progress unfold rngl_compare in Hba.
-    remember (a =? b)%L as x eqn:Hx.
-    remember (a ≤? b)%L as y eqn:Hy.
-    symmetry in Hx, Hy.
-    destruct x; [ easy | ].
-    destruct y; [ | easy ].
-    clear Hab.
-    remember (b =? a)%L as z eqn:Hz.
-    remember (b ≤? a)%L as t eqn:Ht.
-    symmetry in Hz, Ht.
-    destruct z; [ easy | ].
-    destruct t; [ | easy ].
-    apply rngl_leb_le in Hy, Ht.
-    now apply rngl_ord_le_antisymm.
+    now apply (rngl_compare_lt_lt Hor).
+  } {
+    now rewrite lap_compare_refl in H2.
   }
-  now rewrite lap_compare_refl in H2.
 } {
   clear Hab.
   destruct ba; [ | | easy ]. {
