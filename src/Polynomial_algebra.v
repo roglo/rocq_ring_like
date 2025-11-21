@@ -2978,6 +2978,10 @@ Definition polyn_opt_inv_or_pdiv :
   | right _ => None
   end.
 
+Declare Scope polyn_scope.
+Delimit Scope polyn_scope with pol.
+Bind Scope polyn_scope with polyn.
+
 Fixpoint lap_compare la lb :=
   match (la, lb) with
   | (a :: la', b :: lb') =>
@@ -2999,6 +3003,8 @@ Definition polyn_leb pa pb :=
   | Lt | Eq => true
   | Gt => false
   end.
+
+Arguments polyn_compare (pa pb)%_pol.
 
 (* to be completed
 Definition polyn_opt_leb :=
@@ -3033,9 +3039,6 @@ Existing Instance polyn_ring_like_op.
 (* Another way is to add at the beginning of the theorem
   let _ := polyn_ring_like_op in
 *)
-
-Declare Scope polyn_scope.
-Delimit Scope polyn_scope with pol.
 
 Notation "0" := polyn_zero : polyn_scope.
 Notation "1" := polyn_one : polyn_scope.
@@ -3774,11 +3777,11 @@ Qed.
 
 (* to be completed
 Theorem polyn_ord_le_refl :
-  let rop := polyn_ring_like_op in
   rngl_is_ordered T = true →
+  let rop := polyn_ring_like_op in
   ∀ p : polyn T, (p ≤ p)%L.
 Proof.
-intros rop Hor *; cbn.
+intros Hor *; cbn.
 progress unfold rngl_is_ordered in Hor.
 progress unfold rngl_le; cbn.
 progress unfold polyn_opt_leb.
@@ -3792,8 +3795,8 @@ now rewrite lap_compare_refl.
 Qed.
 
 Theorem polyn_ord_le_antisymm :
-  let rop := polyn_ring_like_op in
   rngl_is_ordered T = true →
+  let rop := polyn_ring_like_op in
   ∀ pa pb : polyn T, (pa ≤ pb)%L → (pb ≤ pa)%L → pa = pb.
 Proof.
 cbn; intros Hor.
@@ -3836,8 +3839,8 @@ destruct lba; [ | | easy ]. {
 Qed.
 
 Theorem polyn_ord_le_trans :
-  let rop := polyn_ring_like_op in
   rngl_is_ordered T = true →
+  let rop := polyn_ring_like_op in
   ∀ pa pb pc : polyn T, (pa ≤ pb)%L → (pb ≤ pc)%L → (pa ≤ pc)%L.
 Proof.
 cbn; intros Hor * Hab Hbc.
@@ -3976,12 +3979,76 @@ apply (Nat.lt_trans _ _ (length lc)) in Hlab; [ | easy ].
 now apply Nat.lt_asymm in Hlab.
 Qed.
 
+Theorem polyn_ord_add_le_mono_l :
+  rngl_is_ordered T = true →
+  let rop := polyn_ring_like_op in
+  if rngl_has_opp_or_psub (polyn T) then
+    ∀ a b c : polyn T, (b ≤ c)%L ↔ (a + b ≤ a + c)%L
+  else not_applicable.
+Proof.
+intros Hor; cbn.
+remember (rngl_has_opp_or_psub (polyn T)) as osp eqn:Hosp.
+symmetry in Hosp.
+destruct osp; [ | easy ].
+intros.
+split; intros Hc. {
+  progress unfold rngl_le in Hc; cbn in Hc.
+  progress unfold rngl_le; cbn.
+  progress unfold polyn_opt_leb in Hc.
+  progress unfold polyn_opt_leb.
+  generalize Hor; intros H.
+  progress unfold rngl_is_ordered in H.
+  destruct (rngl_opt_leb T) as [(leb, tot)| ]; [ clear H | easy ].
+  progress unfold polyn_leb.
+  remember (polyn_compare (a + b) (a + c)) as abc eqn:Habc.
+  symmetry in Habc.
+  destruct abc; [ easy | easy | exfalso ].
+  progress unfold polyn_compare in Habc.
+  progress unfold polyn_leb in Hc.
+  remember (polyn_compare b c) as bc eqn:Hbc.
+  symmetry in Hbc.
+  destruct bc; [ | | easy ]. {
+    clear Hc.
+    (* todo : polyn_compare_eq_iff *)
+    progress unfold polyn_compare in Hbc.
+    remember (length (lap b) ?= length (lap c)) as lbc eqn:Hlbc.
+    symmetry in Hlbc.
+    destruct lbc; [ | easy | easy ].
+    apply Nat.compare_eq_iff in Hlbc.
+    apply lap_compare_eq_iff in Hbc; [ | easy ].
+    remember (length _ ?= length _) as labc eqn:Hlabc.
+    symmetry in Hlabc.
+    destruct labc; [ | easy | ]. {
+      cbn in Habc.
+      rewrite Hbc in Habc.
+      now rewrite lap_compare_refl in Habc.
+    }
+    cbn in Hlabc.
+    rewrite Hbc in Hlabc.
+    now rewrite Nat.compare_refl in Hlabc.
+  }
+  clear Hc.
+...
+    remember (lap a) as la eqn:Hla.
+    remember (lap b) as lb eqn:Hlb.
+    remember (lap c) as lc eqn:Hlc.
+      clear a b c Hla Hlb Hlc.
+      subst lc.
+...
+progress unfold rngl_has_opp_or_psub; cbn.
+generalize Hos; intros H.
+progress unfold rngl_has_opp_or_psub in H.
+progress unfold polyn_opt_opp_or_psub.
+destruct (rngl_opt_opp_or_psub T) as [opp_psub| ]; [ | easy ].
+cbn
+...
+
 Definition polyn_ring_like_ord (Hor : rngl_is_ordered T = true) :
     ring_like_ord (polyn T) :=
   {| rngl_ord_le_refl := polyn_ord_le_refl Hor;
      rngl_ord_le_antisymm := polyn_ord_le_antisymm Hor;
      rngl_ord_le_trans := polyn_ord_le_trans Hor;
-     rngl_ord_add_le_mono_l := ?rngl_ord_add_le_mono_l;
+     rngl_ord_add_le_mono_l := polyn_ord_add_le_mono_l;
      rngl_ord_mul_le_compat_nonneg := ?rngl_ord_mul_le_compat_nonneg;
      rngl_ord_mul_le_compat_nonpos := ?rngl_ord_mul_le_compat_nonpos;
      rngl_ord_le_dec := ?rngl_ord_le_dec;
