@@ -4090,63 +4090,26 @@ split; intros Hc. {
       apply Nat.compare_eq_iff in Hlabc.
       move Hlabc before Hlbc.
       cbn in Habc, Hlabc.
-...
-      remember (lap a) as la eqn:Hla.
-      remember (lap b) as lb eqn:Hlb.
-      remember (lap c) as lc eqn:Hlc.
-      clear a b c Hlb Hlc Hla.
-      revert lb lc Hlbc Hlabc Hbc Habc.
-      induction la as [| a]; intros. {
-        do 2 rewrite lap_add_0_l in Hlabc, Habc.
-        revert lc Hlbc Hlabc Hbc Habc.
-(*
-        induction lb as [| b]; intros; [ easy | ].
-        destruct lc as [| c]; [ easy | ].
-        cbn in Hbc.
-        cbn in Habc.
-...
-*)
-        induction lb as [| b] using List.rev_ind; intros; [ easy | ].
-        revert lb IHlb Hlbc Hlabc Hbc Habc.
-        induction lc as [| c] using List.rev_ind; intros. {
-          rewrite List.length_app in Hlbc.
-          now rewrite Nat.add_comm in Hlbc; cbn in Hlbc.
-        }
-        do 2 rewrite List.length_app in Hlbc.
-        do 2 rewrite Nat.add_1_r in Hlbc.
-        apply Nat.succ_inj in Hlbc.
-        rewrite lap_compare_app_single in Hbc; [ | easy ].
-        remember (b ?= c)%L as bc eqn:Hbc'.
-        symmetry in Hbc'.
-        destruct bc; [ | | easy ]. {
-          apply (rngl_compare_eq_iff Heo) in Hbc'; subst c.
-          do 2 rewrite lap_norm_app_single in Hlabc, Habc.
-          destruct (b =? 0)%L; [ now apply (IHlb lc) | ].
-          rewrite lap_compare_app_single in Habc; [ | easy ].
-          rewrite (rngl_compare_refl Heo) in Habc.
-          congruence.
-        }
-        clear Hbc.
-        do 2 rewrite lap_norm_app_single in Hlabc, Habc.
-        remember (b =? 0)%L as bz eqn:Hbz.
-        remember (c =? 0)%L as cz eqn:Hcz.
-        symmetry in Hbz, Hcz.
-        destruct bz. {
-          apply (rngl_eqb_eq Heo) in Hbz; subst b.
-          destruct cz. {
-            apply (rngl_eqb_eq Heo) in Hcz; subst c.
-            now rewrite (rngl_compare_refl Heo) in Hbc'.
-          }
-          rewrite List.length_app, Nat.add_comm in Hlabc.
-          cbn in Hlabc.
-          rewrite <- Hlbc in Hlabc.
-          specialize (lap_norm_length_le Hed lb) as H1.
-          rewrite Hlabc in H1.
-          apply Nat.nlt_ge in H1.
-          now apply H1.
-        }
-        destruct cz. {
-          apply (rngl_eqb_eq Heo) in Hcz; subst c.
+      destruct a as (la, Hla).
+      destruct b as (lb, Hlb).
+      destruct c as (lc, Hlc).
+      cbn - [ lap_norm lap_add ] in Hlbc, Hlabc, Hbc, Habc.
+      move lb before la; move lc before lb.
+      clear leb tot.
+      revert lb lc Hlb Hlc Hlbc Hlabc Hbc Habc.
+      induction la as [| a] using List.rev_ind; intros. {
+        do 2 rewrite lap_add_0_l in Habc.
+        rewrite (has_polyn_prop_lap_norm Hed) in Habc; [ | easy ].
+        rewrite (has_polyn_prop_lap_norm Hed) in Habc; [ | easy ].
+        congruence.
+      }
+      destruct lb as [| b] using List.rev_ind; [ easy | ].
+      clear IHlb.
+      destruct lc as [| c] using List.rev_ind. {
+        now rewrite List.length_app, Nat.add_comm in Hlbc.
+      }
+      clear IHlc.
+(* bin chais pas *)
 ...
       rewrite Hbc in Habc.
       now rewrite lap_compare_refl in Habc.
