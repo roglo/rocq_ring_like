@@ -3845,31 +3845,57 @@ Qed.
 
 Theorem polyn_ord_le_trans :
   let rop := polyn_ring_like_op in
+  rngl_is_ordered T = true →
   ∀ pa pb pc : polyn T, (pa ≤ pb)%L → (pb ≤ pc)%L → (pa ≤ pc)%L.
 Proof.
-cbn; intros (*Htop*) * Hab Hbc.
-(*
-specialize (rngl_is_totally_ordered_is_ordered Htop) as Horp.
-progress unfold rngl_is_ordered in Horp; cbn in Horp.
-*)
+cbn; intros Hor * Hab Hbc.
 progress unfold rngl_le in Hab; cbn in Hab.
 progress unfold rngl_le in Hbc; cbn in Hbc.
 progress unfold rngl_le; cbn.
-(*
-progress unfold polyn_opt_leb in Horp.
-*)
 progress unfold polyn_opt_leb in Hab.
 progress unfold polyn_opt_leb in Hbc.
 progress unfold polyn_opt_leb.
 remember (rngl_opt_leb T) as leb eqn:Hleb.
 symmetry in Hleb.
-destruct leb as [(leb, tot)| ]; [ (*clear Horp*) | easy ].
+destruct leb as [(leb, tot)| ]; [ | easy ].
 progress unfold polyn_leb in Hab.
 progress unfold polyn_leb in Hbc.
 progress unfold polyn_leb.
 progress unfold polyn_compare in Hab.
 progress unfold polyn_compare in Hbc.
 progress unfold polyn_compare.
+remember (lap pa) as la eqn:Hla.
+remember (lap pb) as lb eqn:Hlb.
+remember (lap pc) as lc eqn:Hlc.
+clear pa pb pc Hla Hlb Hlc.
+remember (length la ?= length lb) as lab eqn:Hlab.
+symmetry in Hlab.
+destruct lab. {
+  apply Nat.compare_eq_iff in Hlab.
+  rewrite Hlab.
+  remember (length lb ?= length lc) as lbc eqn:Hlbc.
+  symmetry in Hlbc.
+  destruct lbc. {
+    apply Nat.compare_eq_iff in Hlbc.
+    remember (lap_compare la lb) as ab eqn:Hcab.
+    symmetry in Hcab.
+    destruct ab; [ | | easy ]. {
+      apply lap_compare_eq_iff in Hcab; [ | easy ].
+      now subst lb.
+    }
+    remember (lap_compare lb lc) as bc eqn:Hcbc.
+    symmetry in Hcbc.
+    destruct bc; [ | | easy ]. {
+      apply lap_compare_eq_iff in Hcbc; [ | easy ].
+      subst lb.
+      now rewrite Hcab.
+    }
+    remember (lap_compare la lc) as ac eqn:Hcac.
+    symmetry in Hcac.
+    destruct ac; [ easy | easy | exfalso ].
+    clear Hab Hbc.
+    move lc before lb.
+    move Hlbc before Hlab.
 ...
 
 Definition polyn_ring_like_ord (Horp : rngl_is_ordered (polyn T) = true) :
