@@ -3705,6 +3705,61 @@ subst lb.
 apply lap_compare_refl.
 Qed.
 
+Theorem lap_compare_lt_lt :
+  rngl_is_ordered T = true →
+  ∀ la lb,
+  length la = length lb
+  → lap_compare la lb = Lt
+  → lap_compare lb la = Lt
+  → la = lb.
+Proof.
+intros Hor.
+specialize (rngl_opt_ord T) as rr.
+rewrite Hor in rr; move rr before rp.
+intros * Hlab Hab Hba.
+revert lb Hlab Hab Hba.
+induction la as [| a]; intros; cbn; [ easy | ].
+destruct lb as [| b]; [ easy | ].
+cbn in Hlab.
+apply Nat.succ_inj in Hlab.
+cbn in Hab, Hba.
+remember (lap_compare la lb) as ab eqn:H1.
+remember (lap_compare lb la) as ba eqn:H2.
+symmetry in H1, H2.
+destruct ab; [ | | easy ]. {
+  apply lap_compare_eq_iff in H1; [ | easy ].
+  subst lb; f_equal.
+  destruct ba; [ | | easy ]. {
+    progress unfold rngl_compare in Hab.
+    progress unfold rngl_compare in Hba.
+    remember (a =? b)%L as x eqn:Hx.
+    remember (a ≤? b)%L as y eqn:Hy.
+    symmetry in Hx, Hy.
+    destruct x; [ easy | ].
+    destruct y; [ | easy ].
+    clear Hab.
+    remember (b =? a)%L as z eqn:Hz.
+    remember (b ≤? a)%L as t eqn:Ht.
+    symmetry in Hz, Ht.
+    destruct z; [ easy | ].
+    destruct t; [ | easy ].
+    apply rngl_leb_le in Hy, Ht.
+    now apply rngl_ord_le_antisymm.
+  }
+  now rewrite lap_compare_refl in H2.
+} {
+  clear Hab.
+  destruct ba; [ | | easy ]. {
+    apply lap_compare_eq_iff in H2; [ | easy ].
+    subst lb; f_equal.
+    now rewrite lap_compare_refl in H1.
+  }
+  specialize (IHla _ Hlab H1 H2) as H3.
+  subst lb; f_equal.
+  now rewrite lap_compare_refl in H1.
+}
+Qed.
+
 (* to be completed
 Theorem polyn_ord_le_refl :
   let rop := polyn_ring_like_op in
@@ -3730,7 +3785,7 @@ Theorem polyn_ord_le_antisymm :
   rngl_is_ordered (polyn T) = true →
   ∀ pa pb : polyn T, (pa ≤ pb)%L → (pb ≤ pa)%L → pa = pb.
 Proof.
-cbn; intros Horp * Hab Hba.
+cbn; intros Horp.
 assert (Hor : rngl_is_ordered T = true). {
   progress unfold rngl_is_ordered in Horp.
   progress unfold rngl_is_ordered.
@@ -3738,6 +3793,7 @@ assert (Hor : rngl_is_ordered T = true). {
   progress unfold polyn_opt_leb in Horp.
   now destruct (rngl_opt_leb T) as [(leb', tot')| ].
 }
+intros * Hab Hba.
 specialize (rngl_opt_ord T) as rr.
 rewrite Hor in rr; move rr before rp.
 progress unfold rngl_le in Hab; cbn in Hab.
@@ -3753,7 +3809,6 @@ progress unfold polyn_leb in Hba.
 progress unfold polyn_compare in Hab.
 progress unfold polyn_compare in Hba.
 rewrite Nat.compare_antisym in Hba.
-(* lemma *)
 remember (lap pa) as la eqn:Hla.
 remember (lap pb) as lb eqn:Hlb.
 clear pa pb Hla Hlb.
@@ -3771,50 +3826,9 @@ remember (lap_compare lb la) as lba eqn:Hlba'.
 symmetry in Hlba'.
 destruct lba; [ | | easy ]. {
   now apply lap_compare_eq_iff in Hlba'.
-}
-clear Hab Hba.
-revert lb Hlab Hlab' Hlba'.
-induction la as [| a]; intros; cbn; [ easy | ].
-destruct lb as [| b]; [ easy | ].
-cbn in Hlab.
-apply Nat.succ_inj in Hlab.
-cbn in Hlab', Hlba'.
-remember (lap_compare la lb) as ab eqn:Hab.
-remember (lap_compare lb la) as ba eqn:Hba.
-symmetry in Hab, Hba.
-destruct ab. {
-  apply lap_compare_eq_iff in Hab; [ | easy ].
-  subst lb; f_equal.
-  destruct ba; [ | | easy ]. {
-    progress unfold rngl_compare in Hlab'.
-    progress unfold rngl_compare in Hlba'.
-    remember (a =? b)%L as x eqn:Hx.
-    remember (a ≤? b)%L as y eqn:Hy.
-    symmetry in Hx, Hy.
-    destruct x; [ easy | ].
-    destruct y; [ | easy ].
-    clear Hlab'.
-    remember (b =? a)%L as z eqn:Hz.
-    remember (b ≤? a)%L as t eqn:Ht.
-    symmetry in Hz, Ht.
-    destruct z; [ easy | ].
-    destruct t; [ | easy ].
-    apply rngl_leb_le in Hy, Ht.
-    now apply rngl_ord_le_antisymm.
-  }
-  now rewrite lap_compare_refl in Hba.
 } {
-  clear Hlab'.
-  destruct ba; [ | | easy ]. {
-    apply lap_compare_eq_iff in Hba; [ | easy ].
-    subst lb; f_equal.
-    now rewrite lap_compare_refl in Hab.
-  }
-  specialize (IHla _ Hlab Hab Hba) as H1.
-  subst lb; f_equal.
-  now rewrite lap_compare_refl in Hab.
+  now apply lap_compare_lt_lt.
 }
-easy.
 Qed.
 
 Theorem polyn_ord_le_trans :
