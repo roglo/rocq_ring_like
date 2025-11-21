@@ -3775,17 +3775,16 @@ Qed.
 (* to be completed
 Theorem polyn_ord_le_refl :
   let rop := polyn_ring_like_op in
-  rngl_is_ordered (polyn T) = true →
+  rngl_is_ordered T = true →
   ∀ p : polyn T, (p ≤ p)%L.
 Proof.
-intros rop Horp *; cbn.
-progress unfold rngl_is_ordered in Horp; cbn in Horp.
+intros rop Hor *; cbn.
+progress unfold rngl_is_ordered in Hor.
 progress unfold rngl_le; cbn.
 progress unfold polyn_opt_leb.
-progress unfold polyn_opt_leb in Horp.
 remember (rngl_opt_leb T) as leb eqn:Hleb.
 symmetry in Hleb.
-destruct leb as [(leb, tot)| ]; [ clear Horp | easy ].
+destruct leb as [(leb, tot)| ]; [ clear Hor | easy ].
 progress unfold polyn_leb.
 progress unfold polyn_compare.
 rewrite Nat.compare_refl.
@@ -3794,17 +3793,10 @@ Qed.
 
 Theorem polyn_ord_le_antisymm :
   let rop := polyn_ring_like_op in
-  rngl_is_ordered (polyn T) = true →
+  rngl_is_ordered T = true →
   ∀ pa pb : polyn T, (pa ≤ pb)%L → (pb ≤ pa)%L → pa = pb.
 Proof.
-cbn; intros Horp.
-assert (Hor : rngl_is_ordered T = true). {
-  progress unfold rngl_is_ordered in Horp.
-  progress unfold rngl_is_ordered.
-  cbn in Horp.
-  progress unfold polyn_opt_leb in Horp.
-  now destruct (rngl_opt_leb T) as [(leb', tot')| ].
-}
+cbn; intros Hor.
 intros * Hab Hba.
 specialize (rngl_opt_ord T) as rr.
 rewrite Hor in rr; move rr before rp.
@@ -3870,39 +3862,125 @@ remember (lap pc) as lc eqn:Hlc.
 clear pa pb pc Hla Hlb Hlc.
 remember (length la ?= length lb) as lab eqn:Hlab.
 symmetry in Hlab.
-destruct lab. {
+destruct lab; [ | | easy ]. {
   apply Nat.compare_eq_iff in Hlab.
   rewrite Hlab.
   remember (length lb ?= length lc) as lbc eqn:Hlbc.
   symmetry in Hlbc.
-  destruct lbc. {
-    apply Nat.compare_eq_iff in Hlbc.
-    remember (lap_compare la lb) as ab eqn:Hcab.
-    symmetry in Hcab.
-    destruct ab; [ | | easy ]. {
-      apply lap_compare_eq_iff in Hcab; [ | easy ].
-      now subst lb.
-    }
-    remember (lap_compare lb lc) as bc eqn:Hcbc.
-    symmetry in Hcbc.
-    destruct bc; [ | | easy ]. {
-      apply lap_compare_eq_iff in Hcbc; [ | easy ].
-      subst lb.
-      now rewrite Hcab.
-    }
-    remember (lap_compare la lc) as ac eqn:Hcac.
-    symmetry in Hcac.
-    destruct ac; [ easy | easy | exfalso ].
-    clear Hab Hbc.
-    move lc before lb.
-    move Hlbc before Hlab.
-...
+  destruct lbc; [ | easy | easy ].
+  apply Nat.compare_eq_iff in Hlbc.
+  remember (lap_compare la lb) as ab eqn:Hcab.
+  symmetry in Hcab.
+  destruct ab; [ | | easy ]. {
+    apply lap_compare_eq_iff in Hcab; [ | easy ].
+    now subst lb.
+  }
+  remember (lap_compare lb lc) as bc eqn:Hcbc.
+  symmetry in Hcbc.
+  destruct bc; [ | | easy ]. {
+    apply lap_compare_eq_iff in Hcbc; [ | easy ].
+    subst lb.
+    now rewrite Hcab.
+  }
+  remember (lap_compare la lc) as ac eqn:Hcac.
+  symmetry in Hcac.
+  destruct ac; [ easy | easy | exfalso ].
+  clear Hab Hbc.
+  move lc before lb.
+  move Hlbc before Hlab.
+  revert lb lc Hlab Hlbc Hcab Hcbc Hcac.
+  induction la as [| a]; intros; [ easy | ].
+  destruct lb as [| b]; [ easy | ].
+  destruct lc as [| c]; [ easy | ].
+  cbn in Hlab, Hlbc.
+  apply Nat.succ_inj in Hlab, Hlbc.
+  cbn in Hcab, Hcbc, Hcac.
+  remember (lap_compare la lb) as ab eqn:Hab.
+  symmetry in Hab.
+  destruct ab; [ | | easy ]. {
+    apply lap_compare_eq_iff in Hab; [ | easy ].
+    subst lb; clear Hlab.
+    remember (lap_compare la lc) as ac eqn:Hac.
+    symmetry in Hac.
+    destruct ac; [ | easy | easy ].
+    apply lap_compare_eq_iff in Hac; [ | easy ].
+    subst lc.
+    (* *)
+    progress unfold rngl_compare in Hcab.
+    progress unfold rngl_compare in Hcbc.
+    progress unfold rngl_compare in Hcac.
+    remember (a =? b)%L as x eqn:Hx.
+    remember (a ≤? b)%L as y eqn:Hy.
+    symmetry in Hx, Hy.
+    destruct x; [ easy | ].
+    destruct y; [ | easy ].
+    clear Hcab.
+    remember (b =? c)%L as z eqn:Hz.
+    remember (b ≤? c)%L as t eqn:Ht.
+    symmetry in Hz, Ht.
+    destruct z; [ easy | ].
+    destruct t; [ | easy ].
+    clear Hcbc.
+    remember (a =? c)%L as u eqn:Hu.
+    remember (a ≤? c)%L as v eqn:Hv.
+    symmetry in Hu, Hv.
+    destruct u; [ easy | ].
+    destruct v; [ easy | ].
+    clear Hcac.
+    apply Bool.not_true_iff_false in Hv.
+    apply Hv; clear Hv.
+    apply rngl_leb_le in Hy, Ht.
+    apply rngl_leb_le.
+    now apply (rngl_le_trans Hor _ b).
+  }
+  clear Hcab.
+  remember (lap_compare lb lc) as bc eqn:Hbc.
+  symmetry in Hbc.
+  destruct bc; [ | | easy ]. {
+    apply lap_compare_eq_iff in Hbc; [ | easy ].
+    subst lc.
+    now rewrite Hab in Hcac.
+  }
+  clear Hcbc.
+  remember (lap_compare la lc) as ac eqn:Hac.
+  symmetry in Hac.
+  destruct ac; [ | easy | ]. {
+    apply lap_compare_eq_iff in Hac; [ | now transitivity (length lb) ].
+    subst lc.
+    apply (lap_compare_lt_lt Hor) in Hab; [ | easy | easy ].
+    subst lb.
+    now rewrite lap_compare_refl in Hbc.
+  }
+  clear Hcac.
+  now apply (IHla _ _ Hlab Hlbc).
+}
+clear Hab.
+remember (length lb ?= length lc) as lbc eqn:Hlbc.
+symmetry in Hlbc.
+destruct lbc; [ | | easy ]. {
+  apply Nat.compare_eq_iff in Hlbc.
+  rewrite <- Hlbc.
+  now rewrite Hlab.
+}
+clear Hbc.
+apply Nat.compare_lt_iff in Hlab, Hlbc.
+remember (length la ?= length lc) as lac eqn:Hlac.
+symmetry in Hlac.
+destruct lac; [ | easy | ]. {
+  apply Nat.compare_eq_iff in Hlac.
+  rewrite <- Hlac in Hlbc.
+  now apply Nat.lt_asymm in Hlab.
+}
+apply Nat.compare_gt_iff in Hlac.
+apply (Nat.lt_trans _ _ (length lc)) in Hlab; [ | easy ].
+now apply Nat.lt_asymm in Hlab.
+Qed.
 
-Definition polyn_ring_like_ord (Horp : rngl_is_ordered (polyn T) = true) :
+Definition polyn_ring_like_ord (Hor : rngl_is_ordered T = true) :
     ring_like_ord (polyn T) :=
-  {| rngl_ord_le_refl := polyn_ord_le_refl Horp;
-     rngl_ord_le_antisymm := polyn_ord_le_antisymm Horp;
-     rngl_ord_le_trans := polyn_ord_le_trans;
+  {| rngl_ord_le_refl := polyn_ord_le_refl Hor;
+     rngl_ord_le_antisymm := polyn_ord_le_antisymm Hor;
+     rngl_ord_le_trans := polyn_ord_le_trans Hor;
      rngl_ord_add_le_mono_l := ?rngl_ord_add_le_mono_l;
      rngl_ord_mul_le_compat_nonneg := ?rngl_ord_mul_le_compat_nonneg;
      rngl_ord_mul_le_compat_nonpos := ?rngl_ord_mul_le_compat_nonpos;
