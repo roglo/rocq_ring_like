@@ -3826,6 +3826,31 @@ rewrite List.last_last.
 now rewrite Haz.
 Qed.
 
+Theorem polyn_compare_eq_iff :
+  ∀ pa pb, polyn_compare pa pb = Eq ↔ pa = pb.
+Proof.
+intros.
+split; intros Hab. {
+  progress unfold polyn_compare in Hab.
+  remember (length (lap pa) ?= length (lap pb)) as lab eqn:Hlab.
+  symmetry in Hlab.
+  destruct lab; [ | easy | easy ].
+  apply Nat.compare_eq_iff in Hlab.
+  apply lap_compare_eq_iff in Hab; [ | easy ].
+  now apply eq_polyn_eq.
+}
+subst pb.
+progress unfold polyn_compare.
+rewrite Nat.compare_refl.
+apply lap_compare_refl.
+Qed.
+
+Theorem polyn_compare_refl : ∀ p, polyn_compare p p = Eq.
+Proof.
+intros.
+now apply polyn_compare_eq_iff.
+Qed.
+
 (* to be completed
 Theorem polyn_ord_le_refl :
   rngl_is_ordered T = true →
@@ -4054,31 +4079,16 @@ split; intros Hc. {
   remember (polyn_compare (a + b) (a + c)) as abc eqn:Habc.
   symmetry in Habc.
   destruct abc; [ easy | easy | exfalso ].
-  progress unfold polyn_compare in Habc.
   progress unfold polyn_leb in Hc.
   remember (polyn_compare b c) as bc eqn:Hbc.
   symmetry in Hbc.
   destruct bc; [ | | easy ]. {
     clear Hc.
-    (* todo : polyn_compare_eq_iff *)
-    progress unfold polyn_compare in Hbc.
-    remember (length (lap b) ?= length (lap c)) as lbc eqn:Hlbc.
-    symmetry in Hlbc.
-    destruct lbc; [ | easy | easy ].
-    apply Nat.compare_eq_iff in Hlbc.
-    apply lap_compare_eq_iff in Hbc; [ | easy ].
-    remember (length _ ?= length _) as labc eqn:Hlabc.
-    symmetry in Hlabc.
-    destruct labc; [ | easy | ]. {
-      cbn in Habc.
-      rewrite Hbc in Habc.
-      now rewrite lap_compare_refl in Habc.
-    }
-    cbn in Hlabc.
-    rewrite Hbc in Hlabc.
-    now rewrite Nat.compare_refl in Hlabc.
+    apply polyn_compare_eq_iff in Hbc; subst c.
+    now rewrite polyn_compare_refl in Habc.
   }
   clear Hc.
+...
   progress unfold polyn_compare in Hbc.
   remember (length (lap b) ?= length (lap c)) as lbc eqn:Hlbc.
   symmetry in Hlbc.
