@@ -4144,20 +4144,42 @@ rewrite List.length_app, Nat.add_comm in Hla, Hlb.
 cbn in Hla, Hlb.
 apply Nat.succ_inj in Hla, Hlb.
 do 2 rewrite List.last_last.
+(**)
+clear IHn.
+revert a b la lb Hla Hlb Hcab.
+induction n; intros. {
+  apply List.length_zero_iff_nil in Hla, Hlb; subst la lb.
+  cbn in Hcab.
+...
+  apply rngl_compare_gt_iff in Hcab.
+About rngl_compare_gt_iff.
+...
 rewrite lap_compare_app_single in Hcab; [ | congruence ].
 remember (a ?= b)%L as ab eqn:Hab.
 symmetry in Hab.
 destruct ab; [ | easy | ]. {
   apply (rngl_compare_eq_iff Heo) in Hab; subst b.
   exfalso; clear a.
-...
-  destruct la as [| a'] using List.rev_ind; intros; [ easy | clear IHla ].
+(**)
+  clear IHn.
+  revert n lb Hla Hlb Hcab.
+  induction la as [| a] using List.rev_ind; intros; [ easy | ].
   rewrite List.length_app, Nat.add_comm in Hla; cbn in Hla.
-  rewrite <- Hla in Hlb.
-  destruct lb as [| b'] using List.rev_ind; intros; [ easy | clear IHlb ].
+  destruct lb as [| b] using List.rev_ind; intros; [ now subst n | ].
   rewrite List.length_app, Nat.add_comm in Hlb; cbn in Hlb.
-  apply Nat.succ_inj in Hlb.
-  rewrite lap_compare_app_single in Hcab; [ | easy ].
+  rewrite lap_compare_app_single in Hcab; [ | congruence ].
+  remember (a ?= b)%L as ab eqn:Hab.
+  symmetry in Hab.
+  destruct ab; [ | easy | ]. {
+    apply (rngl_compare_eq_iff Heo) in Hab; subst b.
+    destruct n; [ easy | ].
+    apply Nat.succ_inj in Hla, Hlb.
+    now apply (IHla n lb).
+  }
+  clear Hcab.
+  clear a b Hab IHlb.
+  destruct n; [ easy | ].
+  apply Nat.succ_inj in Hla, Hlb.
 ...
 intros * Hlab Hcab.
 revert lb Hlab Hcab.
