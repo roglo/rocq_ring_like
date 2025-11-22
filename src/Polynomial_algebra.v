@@ -4088,6 +4088,153 @@ split; intros Hc. {
     now rewrite polyn_compare_refl in Habc.
   }
   clear Hc.
+Theorem polyn_compare_lt_iff :
+  ∀ pa pb,
+  polyn_compare pa pb = Lt ↔
+  length (lap pa) ≠ length (lap pb) ∨
+  ∃ n,
+  (∀ i, i < n →
+    List.nth (length (lap pa) - 1 - i) (lap pa) 0%L =
+    List.nth (length (lap pa) - 1 - i) (lap pb) 0%L) ∧
+  (List.nth (length (lap pa) - 1 - n) (lap pa) 0%L <
+   List.nth (length (lap pa) - 1 - n) (lap pb) 0%L)%L.
+Proof.
+intros.
+destruct pa as (la, Hla).
+destruct pb as (lb, Hlb); cbn.
+move lb before la.
+progress unfold polyn_compare; cbn.
+split; intros Hab. {
+  destruct (Nat.eq_dec (length la) (length lb)) as [Hlab| Hlab]. 2: {
+    now left.
+  }
+  right.
+  rewrite Hlab in Hab.
+  rewrite Nat.compare_refl in Hab.
+(**)
+  progress unfold has_polyn_prop in Hla.
+  progress unfold has_polyn_prop in Hlb.
+  apply Bool.orb_true_iff in Hla, Hlb.
+  destruct Hla as [Hla| Hla]. {
+    apply is_empty_list_empty in Hla.
+    now subst la.
+  }
+  destruct Hlb as [Hlb| Hlb]. {
+    apply is_empty_list_empty in Hlb.
+    subst lb.
+    now apply List.length_zero_iff_nil in Hlab; subst la.
+  }
+  apply Bool.negb_true_iff in Hla, Hlb.
+  apply (rngl_eqb_neq Heo) in Hla, Hlb.
+  remember (length la) as n eqn:Hn.
+  symmetry in Hn, Hlab.
+  rename Hn into Hlla.
+  rename Hlab into Hllb.
+  revert la lb Hla Hlb Hab Hlla Hllb.
+  induction n; intros. {
+    apply List.length_zero_iff_nil in Hlla, Hllb; subst la lb.
+    easy.
+  }
+  destruct la as [| a] using List.rev_ind; intros; [ easy | clear IHla ].
+  destruct lb as [| b] using List.rev_ind; intros; [ easy | clear IHlb ].
+  rewrite List.last_last in Hla, Hlb.
+  rewrite List.length_app, Nat.add_1_r in Hlla, Hllb.
+  apply Nat.succ_inj in Hlla, Hllb.
+  rewrite lap_compare_app_single in Hab; [ | congruence ].
+  remember (a ?= b)%L as ab eqn:Hab'.
+  symmetry in Hab'.
+  destruct ab; [ | | easy ]. {
+    destruct (Nat.eq_dec n 0) as [Hnz| Hnz]. {
+      subst n.
+      rewrite Hnz in Hllb.
+      now apply List.length_zero_iff_nil in Hllb, Hnz; subst la lb.
+    }
+    apply (rngl_compare_eq_iff Heo) in Hab'; subst b.
+    remember (has_polyn_prop la) as pa eqn:Hpa.
+    symmetry in Hpa.
+    destruct pa. {
+      progress unfold has_polyn_prop in Hpa.
+      apply Bool.orb_true_iff in Hpa.
+      destruct Hpa as [Hpa| Hpa]. {
+        now apply is_empty_list_empty in Hpa; subst la.
+      }
+      apply Bool.negb_true_iff in Hpa.
+      apply (rngl_eqb_neq Heo) in Hpa.
+      remember (has_polyn_prop lb) as pb eqn:Hpb.
+      symmetry in Hpb.
+      destruct pb. {
+        progress unfold has_polyn_prop in Hpb.
+        apply Bool.orb_true_iff in Hpb.
+        destruct Hpb as [Hpb| Hpb]. {
+          apply is_empty_list_empty in Hpb; subst lb.
+          rewrite <- Hllb in Hlla.
+          now apply List.length_zero_iff_nil in Hlla; subst la.
+        }
+        apply Bool.negb_true_iff in Hpb.
+        apply (rngl_eqb_neq Heo) in Hpb.
+        specialize (IHn la lb Hpa Hpb Hab Hlla Hllb).
+        destruct IHn as (m & Hm1 & Hm2).
+        exists (S m).
+        split. {
+          intros i Hi.
+          destruct i. {
+            rewrite Nat.sub_0_r.
+            rewrite Nat_sub_succ_1.
+            rewrite List.app_nth2; [ | now unfold ge; rewrite Hlla ].
+            rewrite List.app_nth2; [ | now unfold ge; rewrite Hllb ].
+            now rewrite Hlla, Hllb.
+          }
+          apply Nat.succ_lt_mono in Hi.
+          rewrite Nat_sub_sub_swap; cbn.
+          rewrite Nat_sub_sub_swap.
+          rewrite List.app_nth1; [ | flia Hlla Hnz ].
+          rewrite List.app_nth1; [ | flia Hllb Hnz ].
+          now apply Hm1.
+        }
+        rewrite Nat_sub_sub_swap; cbn.
+        rewrite Nat_sub_sub_swap.
+        rewrite List.app_nth1; [ | flia Hlla Hnz ].
+        rewrite List.app_nth1; [ | flia Hllb Hnz ].
+        apply Hm2.
+      }
+      progress unfold has_polyn_prop in Hpb.
+      apply Bool.orb_false_iff in Hpb.
+      destruct Hpb as (H1, H2).
+      destruct lb as [| b] using List.rev_ind; [ easy | clear IHlb ].
+      rewrite List.last_last in H2.
+      apply Bool.negb_false_iff in H2.
+      apply (rngl_eqb_eq Heo) in H2; subst b.
+...
+  revert lb Hlb Hab Hlab.
+  induction la as [| a] using List.rev_ind; intros; [ easy | ].
+  destruct lb as [| b] using List.rev_ind; [ | clear IHlb ]. {
+    now rewrite List.length_app, Nat.add_comm in Hlab.
+  }
+  do 2 rewrite List.length_app, Nat.add_1_r in Hlab.
+  apply Nat.succ_inj in  Hlab.
+  rewrite lap_compare_app_single in Hab; [ | easy ].
+  remember (a ?= b)%L as ab eqn:Hab'.
+  symmetry in Hab'.
+  destruct ab; [ | | easy ]. {
+    apply (rngl_compare_eq_iff Heo) in Hab'; subst b.
+    remember (has_polyn_prop la) as pa eqn:Hpa.
+    symmetry in Hpa.
+    destruct pa. {
+      specialize (IHla eq_refl).
+...
+  remember (List.rev la) as rla eqn:H.
+  symmetry in H.
+  apply List_rev_symm in H; subst la.
+  remember (List.rev lb) as rlb eqn:H.
+  symmetry in H.
+  apply List_rev_symm in H; subst lb.
+  rename rla into la; rename rlb into lb.
+  move lb before la.
+  do 2 rewrite List.length_rev in Hlab.
+  do 2 rewrite List.length_rev.
+
+... ...
+apply polyn_compare_lt_iff in Hbc.
 ...
   progress unfold polyn_compare in Hbc.
   remember (length (lap b) ?= length (lap c)) as lbc eqn:Hlbc.
