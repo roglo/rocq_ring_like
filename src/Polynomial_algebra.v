@@ -4123,6 +4123,67 @@ split; intros Hc. {
       symmetry in Hlabc.
       destruct labc. {
         apply Nat.compare_eq_iff in Hlabc.
+Theorem lap_compare_gt_last_lt :
+  ∀ la lb,
+  length la = length lb
+  → lap_compare la lb = Gt
+  → (List.last lb 0 < List.last la 0)%L.
+Proof.
+intros * Hlab Hcab.
+remember (length la) as n eqn:Hla.
+rename Hlab into Hlb.
+symmetry in Hla, Hlb.
+revert la lb Hla Hlb Hcab.
+induction n; intros. {
+  apply List.length_zero_iff_nil in Hla, Hlb.
+  now subst la lb.
+}
+destruct la as [| a] using List.rev_ind; intros; [ easy | clear IHla ].
+destruct lb as [| b] using List.rev_ind; intros; [ easy | clear IHlb ].
+rewrite List.length_app, Nat.add_comm in Hla, Hlb.
+cbn in Hla, Hlb.
+apply Nat.succ_inj in Hla, Hlb.
+do 2 rewrite List.last_last.
+rewrite lap_compare_app_single in Hcab; [ | congruence ].
+remember (a ?= b)%L as ab eqn:Hab.
+symmetry in Hab.
+destruct ab; [ | easy | ]. {
+  apply (rngl_compare_eq_iff Heo) in Hab; subst b.
+  exfalso; clear a.
+...
+  destruct la as [| a'] using List.rev_ind; intros; [ easy | clear IHla ].
+  rewrite List.length_app, Nat.add_comm in Hla; cbn in Hla.
+  rewrite <- Hla in Hlb.
+  destruct lb as [| b'] using List.rev_ind; intros; [ easy | clear IHlb ].
+  rewrite List.length_app, Nat.add_comm in Hlb; cbn in Hlb.
+  apply Nat.succ_inj in Hlb.
+  rewrite lap_compare_app_single in Hcab; [ | easy ].
+...
+intros * Hlab Hcab.
+revert lb Hlab Hcab.
+induction la as [| a] using List.rev_ind; intros; [ easy | ].
+rewrite List.length_app, Nat.add_comm in Hlab.
+symmetry in Hlab.
+destruct lb as [| b] using List.rev_ind; [ easy | clear IHlb ].
+do 2 rewrite List.last_last.
+rewrite List.length_app, Nat.add_comm in Hlab; cbn in Hlab.
+apply Nat.succ_inj in Hlab.
+symmetry in Hlab.
+rewrite lap_compare_app_single in Hcab; [ | easy ].
+remember (a ?= b)%L as ab eqn:Hab.
+symmetry in Hab.
+destruct ab; [ | easy | ]. {
+  apply (rngl_compare_eq_iff Heo) in Hab; subst b.
+  specialize (IHla _ Hlab Hcab).
+...
+cbn in Hcab.
+remember (lap_compare la lb) as cab eqn:Hcab'.
+symmetry in Hcab'.
+destruct cab; [ | easy | ]. {
+...
+apply lap_compare_gt_last_lt in Habc; [ | easy ].
+...
+        cbn in Hlabc, Habc.
 ...
 Search lap_compare.
 Search (_ = Gt ↔ _).
