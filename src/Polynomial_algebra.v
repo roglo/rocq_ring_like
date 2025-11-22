@@ -3851,6 +3851,34 @@ intros.
 now apply polyn_compare_eq_iff.
 Qed.
 
+Theorem length_lap_add :
+  ∀ pa pb, length (lap (pa + pb)) ≤ max (length (lap pa)) (length (lap pb)).
+Proof.
+intros.
+destruct pa as (la, Hpa).
+destruct pb as (lb, Hpb).
+move lb before la.
+cbn - [ lap_add ].
+eapply Nat.le_trans; [ apply (lap_norm_length_le Hed) | ].
+progress unfold lap_add.
+rewrite List_length_map2.
+do 2 rewrite List.length_app.
+do 2 rewrite List.repeat_length.
+do 2 rewrite (Nat.add_comm _ (_ - _)).
+destruct (le_dec (length la) (length lb)) as [Hab| Hab]. {
+  rewrite Nat.sub_add; [ | easy ].
+  rewrite (proj2 (Nat.sub_0_le _ _)); [ | easy ].
+  rewrite Nat.min_id.
+  apply Nat.le_max_r.
+} {
+  apply Nat.nle_gt, Nat.lt_le_incl in Hab.
+  rewrite (proj2 (Nat.sub_0_le _ _)); [ | easy ].
+  rewrite Nat.sub_add; [ | easy ].
+  rewrite Nat.min_id.
+  apply Nat.le_max_l.
+}
+Qed.
+
 (* to be completed
 Theorem polyn_ord_le_refl :
   rngl_is_ordered T = true →
@@ -4059,7 +4087,7 @@ Theorem polyn_ord_add_le_mono_l :
   rngl_is_ordered T = true →
   let rop := polyn_ring_like_op in
   if rngl_has_opp_or_psub (polyn T) then
-    ∀ a b c : polyn T, (b ≤ c)%L ↔ (a + b ≤ a + c)%L
+    ∀ pa pb pc : polyn T, (pb ≤ pc)%L ↔ (pa + pb ≤ pa + pc)%L
   else not_applicable.
 Proof.
 intros Hor; cbn.
@@ -4076,18 +4104,29 @@ split; intros Hc. {
   progress unfold rngl_is_ordered in H.
   destruct (rngl_opt_leb T) as [(leb, tot)| ]; [ clear H | easy ].
   progress unfold polyn_leb.
-  remember (polyn_compare (a + b) (a + c)) as abc eqn:Habc.
+  remember (polyn_compare (pa + pb) (pa + pc)) as abc eqn:Habc.
   symmetry in Habc.
   destruct abc; [ easy | easy | exfalso ].
   progress unfold polyn_leb in Hc.
-  remember (polyn_compare b c) as bc eqn:Hbc.
+  remember (polyn_compare pb pc) as bc eqn:Hbc.
   symmetry in Hbc.
   destruct bc; [ | | easy ]. {
     clear Hc.
-    apply polyn_compare_eq_iff in Hbc; subst c.
+    apply polyn_compare_eq_iff in Hbc; subst pc.
     now rewrite polyn_compare_refl in Habc.
   }
   clear Hc.
+  destruct (lt_dec (length (lap pb)) (length (lap pc))) as [Hlbc| Hlbc]. {
+    destruct (lt_dec (length (lap pa)) (length (lap pc))) as [Hlac| Hlac]. {
+      progress unfold polyn_compare in Habc.
+      remember (_ ?= _) as labc eqn:Hlabc.
+      symmetry in Hlabc.
+      destruct labc. {
+        apply Nat.compare_eq_iff in Hlabc.
+...
+Search lap_compare.
+Search (_ = Gt ↔ _).
+...
 Theorem polyn_compare_lt_iff :
   ∀ pa pb,
   polyn_compare pa pb = Lt ↔
