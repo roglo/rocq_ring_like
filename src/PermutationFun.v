@@ -2144,8 +2144,8 @@ split. {
     }
     rewrite List.length_firstn, Hbl.
     rewrite Nat.min_l; [ | flia Hgb ].
-    rewrite List_nth_skipn.
-    replace (i - g 0 + S (g 0)) with (S i) by flia Higz.
+    rewrite List.nth_skipn.
+    replace (S (g 0) + (i - g 0)) with (S i) by flia Higz.
     apply Nat.succ_lt_mono in Hi.
     specialize (Hn (S i) Hi) as H2.
     rewrite H2.

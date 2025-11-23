@@ -4178,6 +4178,16 @@ split; intros Hc. {
               now apply Nat.nlt_ge in H.
             }
             rewrite List_map2_rngl_add_0_l.
+            rewrite List_last_nth.
+            rewrite List.length_skipn.
+Search (List.nth _ (List.skipn _ _)).
+specialize List.nth_skipn as H1.
+specialize List_nth_skipn as H2.
+About List_nth_skipn.
+rewrite List.nth_skipn.
+Search (List.skipn (length _)).
+Search (List.last (List.skipn _ _)).
+Search List.last.
 ...
             rewrite List.firstn_app.
             rewrite (proj2 (Nat.sub_0_le (length la) _)); [ | flia Hlac ].

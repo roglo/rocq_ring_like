@@ -326,20 +326,6 @@ do 2 rewrite List.skipn_cons.
 now apply IHla.
 Qed.
 
-Theorem List_nth_skipn : ∀ A (l : list A) i j d,
-  List.nth i (List.skipn j l) d = List.nth (i + j) l d.
-Proof.
-intros.
-revert i j.
-induction l as [| a la]; intros. {
-  rewrite List.skipn_nil; cbn.
-  now destruct i, j.
-}
-destruct j; [ now rewrite Nat.add_0_r | ].
-rewrite Nat.add_succ_r; cbn.
-apply IHla.
-Qed.
-
 Theorem List_length_map_seq : ∀ A (f : _ → A) a len,
   length (List.map f (List.seq a len)) = len.
 Proof.
