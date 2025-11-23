@@ -3949,22 +3949,6 @@ destruct (le_dec (length la) (length lb)) as [Hab| Hab]. {
 Qed.
 
 (* to be completed
-(*
-Theorem rngl_compare'_gt_iff :
-  ∀ a b : T, rngl_compare' a b = Gt ↔ (b < a)%L.
-Proof.
-intros.
-progress unfold rngl_compare'.
-split; intros Hab. {
-  destruct (rngl_eqb_dec a b) as [Heab| Heab]; [ easy | ].
-  destruct (rngl_ord_le_dec a b) as [Hlab| Hlab]; [ easy | ].
-  clear Hab.
-  apply (rngl_eqb_neq Heo) in Heab.
-  progress unfold rngl_lt.
-  split; [ | easy ].
-...
-*)
-
 Theorem polyn_ord_le_refl :
   rngl_is_ordered T = true →
   let rop := polyn_ring_like_op in
@@ -4194,6 +4178,8 @@ split; intros Hc. {
       symmetry in Hlabc.
       destruct labc. {
         apply Nat.compare_eq_iff in Hlabc.
+        clear Hbc.
+...
 Theorem lap_compare_gt_last_lt :
   ∀ la lb,
   length la = length lb
