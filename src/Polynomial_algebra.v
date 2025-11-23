@@ -3949,6 +3949,7 @@ destruct (le_dec (length la) (length lb)) as [Hab| Hab]. {
 Qed.
 
 (* to be completed
+(*
 Theorem rngl_compare'_gt_iff :
   ∀ a b : T, rngl_compare' a b = Gt ↔ (b < a)%L.
 Proof.
@@ -3959,7 +3960,10 @@ split; intros Hab. {
   destruct (rngl_ord_le_dec a b) as [Hlab| Hlab]; [ easy | ].
   clear Hab.
   apply (rngl_eqb_neq Heo) in Heab.
+  progress unfold rngl_lt.
+  split; [ | easy ].
 ...
+*)
 
 Theorem polyn_ord_le_refl :
   rngl_is_ordered T = true →
