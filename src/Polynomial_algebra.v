@@ -3879,6 +3879,17 @@ destruct (le_dec (length la) (length lb)) as [Hab| Hab]. {
 }
 Qed.
 
+Theorem List_last_app {A} :
+  ∀ (d : A) la lb, lb ≠ [] → List.last (la ++ lb) d = List.last lb d.
+Proof.
+intros * Hlb.
+revert lb Hlb.
+induction la as [| a] using List.rev_ind; intros; [ easy | ].
+rewrite <- List.app_assoc.
+rewrite IHla; [ cbn | easy ].
+now destruct lb.
+Qed.
+
 (* to be completed
 Theorem polyn_ord_le_refl :
   rngl_is_ordered T = true →
@@ -4155,6 +4166,19 @@ split; intros Hc. {
             progress unfold lap_add.
             rewrite (proj2 (Nat.sub_0_le (length la) _)); [ | flia Hlac ].
             rewrite List_map2_app_l.
+(**)
+            cbn; rewrite List.app_nil_r.
+            replace (length lc - length la) with
+              (length (List.skipn (length la) lc)) by
+              apply List.length_skipn.
+            rewrite List_last_app. 2: {
+              rewrite List_map2_rngl_add_0_l.
+              intros H.
+              apply List.skipn_all_iff in H.
+              now apply Nat.nlt_ge in H.
+            }
+            rewrite List_map2_rngl_add_0_l.
+...
             rewrite List.firstn_app.
             rewrite (proj2 (Nat.sub_0_le (length la) _)); [ | flia Hlac ].
             cbn; do 2 rewrite List.app_nil_r.
