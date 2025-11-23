@@ -2884,7 +2884,6 @@ Section a.
 Context {T : Type}.
 Context {ro : ring_like_op T}.
 Context {rp : ring_like_prop T}.
-Context {rr : ring_like_ord T}.
 Context (Hos : rngl_has_opp_or_psub T = true).
 Context (Hed : rngl_has_eq_dec T = true).
 
@@ -2983,37 +2982,32 @@ Declare Scope polyn_scope.
 Delimit Scope polyn_scope with pol.
 Bind Scope polyn_scope with polyn.
 
-Definition rngl_compare' {rr : ring_like_ord T} a b :=
-  if rngl_eqb_dec a b then Eq
-  else if rngl_ord_le_dec a b then Lt
-  else Gt.
-
-Fixpoint lap_compare {rr : ring_like_ord T} la lb :=
+Fixpoint lap_compare la lb :=
   match (la, lb) with
   | (a :: la', b :: lb') =>
       match lap_compare la' lb' with
-      | Eq => rngl_compare' a b
+      | Eq => rngl_compare a b
       | c => c
       end
   | _ => Eq
   end.
 
-Definition polyn_compare {rr : ring_like_ord T} pa pb :=
+Definition polyn_compare pa pb :=
   match Nat.compare (length (lap pa)) (length (lap pb)) with
   | Eq => lap_compare (lap pa) (lap pb)
   | c => c
   end.
 
-Definition polyn_leb {rr : ring_like_ord T} pa pb :=
+Definition polyn_leb pa pb :=
   match polyn_compare pa pb with
   | Lt | Eq => true
   | Gt => false
   end.
 
-Arguments polyn_compare {rr} (pa pb)%_pol.
+Arguments polyn_compare (pa pb)%_pol.
 
 (* to be completed
-Definition polyn_opt_leb {rr : ring_like_ord T} :=
+Definition polyn_opt_leb :=
   match rngl_opt_leb T with
   | Some (_, tot) => Some (polyn_leb, tot)
   | None => None
@@ -3023,8 +3017,7 @@ Definition polyn_opt_leb : option ((polyn T → polyn T → bool) * bool) :=
   None.
 (**)
 
-Definition polyn_ring_like_op {rr : ring_like_ord T} :
-  ring_like_op (polyn T) :=
+Definition polyn_ring_like_op : ring_like_op (polyn T) :=
   {| rngl_zero := polyn_zero;
      rngl_one := polyn_one;
      rngl_add := polyn_add;
@@ -3052,23 +3045,6 @@ Notation "1" := polyn_one : polyn_scope.
 Notation "- a" := (polyn_opp a) : polyn_scope.
 Notation "a + b" := (polyn_add a b) : polyn_scope.
 Notation "a * b" := (polyn_mul a b) : polyn_scope.
-
-Theorem rngl_compare'_eq_iff:
-  ∀ a b : T, rngl_compare' a b = Eq ↔ a = b.
-Proof.
-specialize (rngl_has_eq_dec_or_is_ordered_l Hed) as Heo.
-intros.
-progress unfold rngl_compare'.
-split; intros Hab. {
-  destruct (rngl_eqb_dec a b) as [Heab| Heab]. {
-    now apply (rngl_eqb_eq Heo) in Heab.
-  }
-  now destruct (rngl_ord_le_dec a b).
-}
-subst b.
-destruct (rngl_eqb_dec a a) as [Heab| Heab]; [ easy | ].
-now apply (rngl_eqb_neq Heo) in Heab.
-Qed.
 
 Theorem polyn_add_comm :
   let rop := polyn_ring_like_op in
@@ -3657,41 +3633,9 @@ Proof.
 intros.
 induction la as [| a]; [ easy | cbn ].
 rewrite IHla.
-progress unfold rngl_compare'.
-destruct (rngl_eqb_dec a a) as [Haa| Haa]; [ easy | exfalso ].
-now rewrite (rngl_eqb_refl Heo) in Haa.
+progress unfold rngl_compare.
+now rewrite (rngl_eqb_refl Heo).
 Qed.
-
-(*
-Theorem rngl_compare_antisym' :
-  rngl_is_ordered T = true →
-  ∀ a b : T, rngl_compare' a b = CompOpp (rngl_compare' b a).
-Proof.
-intros Hor.
-intros.
-progress unfold rngl_compare'.
-destruct (rngl_eqb_dec a b) as [Hab| Hab]. {
-  apply (rngl_eqb_eq Heo) in Hab; subst b.
-  destruct (rngl_eqb_dec a a) as [Haa| Haa]; [ easy | ].
-  now apply (rngl_eqb_neq Heo) in Haa.
-}
-apply (rngl_eqb_neq Heo) in Hab.
-destruct (rngl_ord_le_dec a b) as [Hoab| Hoab]. {
-  destruct (rngl_eqb_dec b a) as [Hba| Hba]. {
-    now apply (rngl_eqb_eq Heo) in Hba; symmetry in Hba.
-  }
-  destruct (rngl_ord_le_dec b a) as [Hoba| Hoba]; [ | easy ].
-  exfalso; apply Hab; clear Hab.
-  now apply rngl_ord_le_antisymm.
-}
-destruct (rngl_eqb_dec b a) as [Hba| Hba]. {
-  now apply (rngl_eqb_eq Heo) in Hba; symmetry in Hba.
-}
-apply (rngl_eqb_neq Heo) in Hba.
-destruct (rngl_ord_le_dec b a) as [Hoba| Hoba]; [ easy | exfalso ].
-...
-Qed.
-*)
 
 Theorem rngl_compare_antisym :
   rngl_is_totally_ordered T = true →
@@ -3722,7 +3666,6 @@ exfalso; apply Hab.
 now apply (rngl_le_antisymm Hor).
 Qed.
 
-(*
 Theorem lap_compare_antisym :
   rngl_is_totally_ordered T = true →
   ∀ la lb : list T, lap_compare la lb = CompOpp (lap_compare lb la).
@@ -3735,10 +3678,8 @@ rewrite IHla.
 remember (lap_compare lb la) as lba eqn:Hlba.
 symmetry in Hlba.
 destruct lba; [ cbn | easy | easy ].
-...
 apply (rngl_compare_antisym Hto).
 Qed.
-*)
 
 Theorem lap_compare_eq_iff :
   ∀ la lb,
@@ -3760,7 +3701,7 @@ split; intros Hab. {
   symmetry in Hlab'.
   destruct lab; [ | easy | easy ].
   specialize (H1 eq_refl); subst lb.
-  apply rngl_compare'_eq_iff in Hab.
+  apply (rngl_compare_eq_iff Heo) in Hab.
   now subst b.
 }
 subst lb.
@@ -3772,6 +3713,8 @@ Theorem rngl_compare_lt_lt :
   ∀ a b, (a ?= b)%L = Lt → (b ?= a)%L = Lt → a = b.
 Proof.
 intros Hor.
+specialize (rngl_opt_ord T) as rr.
+rewrite Hor in rr; move rr before rp.
 intros * Hab Hba.
 progress unfold rngl_compare in Hab.
 progress unfold rngl_compare in Hba.
@@ -3790,27 +3733,17 @@ apply rngl_leb_le in Hy, Ht.
 now apply rngl_ord_le_antisymm.
 Qed.
 
-Theorem rngl_compare'_lt_lt :
-  ∀ a b, rngl_compare' a b = Lt → rngl_compare' b a = Lt → a = b.
-Proof.
-intros * Hab Hba.
-progress unfold rngl_compare' in Hab.
-progress unfold rngl_compare' in Hba.
-destruct (rngl_eqb_dec a b) as [H1| H1]; [ easy | ].
-destruct (rngl_eqb_dec b a) as [H2| H2]; [ easy | ].
-destruct (rngl_ord_le_dec a b) as [H3| H3]; [ | easy ].
-destruct (rngl_ord_le_dec b a) as [H4| H4]; [ | easy ].
-clear Hab Hba.
-now apply rngl_ord_le_antisymm.
-Qed.
-
 Theorem lap_compare_lt_lt :
+  rngl_is_ordered T = true →
   ∀ la lb,
   length la = length lb
   → lap_compare la lb = Lt
   → lap_compare lb la = Lt
   → la = lb.
 Proof.
+intros Hor.
+specialize (rngl_opt_ord T) as rr.
+rewrite Hor in rr; move rr before rp.
 intros * Hlab Hab Hba.
 revert lb Hlab Hab Hba.
 induction la as [| a]; intros; cbn; [ easy | ].
@@ -3825,7 +3758,7 @@ destruct ab; [ | | easy ]. {
   apply lap_compare_eq_iff in H1; [ | easy ].
   subst lb; f_equal.
   destruct ba; [ | | easy ]. {
-    now apply rngl_compare'_lt_lt.
+    now apply (rngl_compare_lt_lt Hor).
   } {
     now rewrite lap_compare_refl in H2.
   }
@@ -3842,8 +3775,6 @@ destruct ab; [ | | easy ]. {
 }
 Qed.
 
-(* *)
-
 Theorem lap_add_0_l : ∀ la, ([] + la)%lap = la.
 Proof.
 intros; cbn.
@@ -3857,7 +3788,7 @@ Theorem lap_compare_app_single :
   ∀ a b la lb,
   length la = length lb
   → lap_compare (la ++ [a]) (lb ++ [b]) =
-      match rngl_compare' a b with
+      match rngl_compare a b with
       | Eq => lap_compare la lb
       | c => c
       end.
@@ -3867,10 +3798,10 @@ revert a b lb Hlab.
 induction la as [| a']; intros. {
   symmetry in Hlab.
   apply List.length_zero_iff_nil in Hlab; subst lb; cbn.
-  now destruct (rngl_compare' a b).
+  now destruct (a ?= b)%L.
 }
 destruct lb as [| b']; [ easy | cbn ].
-rewrite IHla; [ now destruct (rngl_compare' a b) | ].
+rewrite IHla; [ now destruct (a ?= b)%L | ].
 cbn in Hlab.
 now apply Nat.succ_inj in Hlab.
 Qed.
@@ -3974,6 +3905,8 @@ Theorem polyn_ord_le_antisymm :
 Proof.
 cbn; intros Hor.
 intros * Hab Hba.
+specialize (rngl_opt_ord T) as rr.
+rewrite Hor in rr; move rr before rp.
 progress unfold rngl_le in Hab; cbn in Hab.
 progress unfold rngl_le in Hba; cbn in Hba.
 progress unfold polyn_opt_leb in Hab.
@@ -4080,19 +4013,31 @@ destruct lab; [ | | easy ]. {
     apply lap_compare_eq_iff in Hac; [ | easy ].
     subst lc.
     (* *)
-    progress unfold rngl_compare' in Hcab.
-    progress unfold rngl_compare' in Hcbc.
-    progress unfold rngl_compare' in Hcac.
-    destruct (rngl_eqb_dec a b) as [Hx| Hx]; [ easy | ].
-    destruct (rngl_ord_le_dec a b) as [Hy| Hy]; [ | easy ].
+    progress unfold rngl_compare in Hcab.
+    progress unfold rngl_compare in Hcbc.
+    progress unfold rngl_compare in Hcac.
+    remember (a =? b)%L as x eqn:Hx.
+    remember (a ≤? b)%L as y eqn:Hy.
+    symmetry in Hx, Hy.
+    destruct x; [ easy | ].
+    destruct y; [ | easy ].
     clear Hcab.
-    destruct (rngl_eqb_dec b c) as [Hz| Hz]; [ easy | ].
-    destruct (rngl_ord_le_dec b c) as [Ht| Ht]; [ | easy ].
+    remember (b =? c)%L as z eqn:Hz.
+    remember (b ≤? c)%L as t eqn:Ht.
+    symmetry in Hz, Ht.
+    destruct z; [ easy | ].
+    destruct t; [ | easy ].
     clear Hcbc.
-    destruct (rngl_eqb_dec a c) as [Hu| Hu]; [ easy | ].
-    destruct (rngl_ord_le_dec a c) as [Hv| Hv]; [ easy | ].
+    remember (a =? c)%L as u eqn:Hu.
+    remember (a ≤? c)%L as v eqn:Hv.
+    symmetry in Hu, Hv.
+    destruct u; [ easy | ].
+    destruct v; [ easy | ].
     clear Hcac.
+    apply Bool.not_true_iff_false in Hv.
     apply Hv; clear Hv.
+    apply rngl_leb_le in Hy, Ht.
+    apply rngl_leb_le.
     now apply (rngl_le_trans Hor _ b).
   }
   clear Hcab.
@@ -4109,7 +4054,7 @@ destruct lab; [ | | easy ]. {
   destruct ac; [ | easy | ]. {
     apply lap_compare_eq_iff in Hac; [ | now transitivity (length lb) ].
     subst lc.
-    apply lap_compare_lt_lt in Hab; [ | easy | easy ].
+    apply (lap_compare_lt_lt Hor) in Hab; [ | easy | easy ].
     subst lb.
     now rewrite lap_compare_refl in Hbc.
   }
@@ -4207,9 +4152,6 @@ revert a b la lb Hla Hlb Hcab.
 induction n; intros. {
   apply List.length_zero_iff_nil in Hla, Hlb; subst la lb.
   cbn in Hcab.
-About rngl_compare_gt_iff.
-Check rngl_compare_le_iff.
-Print rngl_compare.
 ...
   apply rngl_compare_gt_iff in Hcab.
 About rngl_compare_gt_iff.
