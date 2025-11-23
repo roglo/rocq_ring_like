@@ -4161,6 +4161,19 @@ split; intros Hc. {
             replace (length lc - length la) with
               (length (List.skipn (length la) lc)) by apply List.length_skipn.
             rewrite List_map2_rngl_add_0_l.
+            rewrite List_last_nth.
+            rewrite List.length_app.
+Search (length (List_map2 _ _ _)).
+rewrite List_length_map2.
+rewrite List.length_firstn.
+rewrite (Nat.min_l _ (length lc)); [ | flia Hlac ].
+rewrite Nat.min_id.
+rewrite List.length_skipn.
+rewrite Nat.add_comm.
+rewrite Nat.sub_add; [ | flia Hlac ].
+(* ah merde, c'est quoi, ce bordel ? *)
+...
+            rewrite List.last_app2.
 ...
           revert lc Hlc Habc Hlabc Hlac.
           induction la as [| a] using List.rev_ind; intros; [ easy | ].
