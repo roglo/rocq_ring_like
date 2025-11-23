@@ -4138,6 +4138,35 @@ split; intros Hc. {
           rewrite Hlabc in Hlbc.
           now apply Nat.lt_irrefl in Hlbc.
         }
+        destruct (Nat.eq_dec (length lb) 0) as [Hbz| Hbz]. {
+          apply List.length_zero_iff_nil in Hbz; subst lb.
+          rewrite lap_add_0_r in Habc.
+          rewrite lap_add_0_r in Hlabc.
+          rewrite (has_polyn_prop_lap_norm Hed) in Habc; [ | easy ].
+          rewrite (has_polyn_prop_lap_norm Hed) in Hlabc; [ | easy ].
+          clear Hlb Hlbc.
+          replace (lap_norm (la + lc)) with (la + lc)%lap in Habc. 2: {
+            symmetry.
+            apply (has_polyn_prop_lap_norm Hed).
+            progress unfold has_polyn_prop.
+            apply Bool.orb_true_iff; right.
+            apply Bool.negb_true_iff.
+            apply (rngl_eqb_neq Heo).
+            progress unfold lap_add.
+            rewrite (proj2 (Nat.sub_0_le (length la) _)); [ | flia Hlac ].
+            rewrite List_map2_app_l.
+            rewrite List.firstn_app.
+            rewrite (proj2 (Nat.sub_0_le (length la) _)); [ | flia Hlac ].
+            cbn; do 2 rewrite List.app_nil_r.
+            replace (length lc - length la) with
+              (length (List.skipn (length la) lc)) by apply List.length_skipn.
+            rewrite List_map2_rngl_add_0_l.
+...
+          revert lc Hlc Habc Hlabc Hlac.
+          induction la as [| a] using List.rev_ind; intros; [ easy | ].
+          cbn in Habc.
+...
+        }
 ...
         destruct (Nat.eq_dec (length lc) 0) as [Hcz| Hcz]. {
           now apply List.length_zero_iff_nil in Hcz; subst lc.
