@@ -4149,6 +4149,40 @@ split; intros Hc. {
           rewrite Hlabc in Hlbc.
           now apply Nat.lt_irrefl in Hlbc.
         }
+        assert (Hnac : lap_norm (la + lc) = (la + lc)%lap). {
+          apply (has_polyn_prop_lap_norm Hed).
+          progress unfold has_polyn_prop.
+          apply Bool.orb_true_iff; right.
+          apply Bool.negb_true_iff.
+          apply (rngl_eqb_neq Heo).
+          progress unfold lap_add.
+          rewrite (proj2 (Nat.sub_0_le (length la) _)); [ | flia Hlac ].
+          rewrite List_map2_app_l.
+          cbn; rewrite List.app_nil_r.
+          replace (length lc - length la) with
+            (length (List.skipn (length la) lc)) by
+            apply List.length_skipn.
+          rewrite List_last_app. 2: {
+            rewrite List_map2_rngl_add_0_l.
+            intros H.
+            apply List.skipn_all_iff in H.
+            now apply Nat.nlt_ge in H.
+          }
+          rewrite List_map2_rngl_add_0_l.
+          rewrite List_last_nth.
+          rewrite List.length_skipn.
+          rewrite List.nth_skipn.
+          rewrite Nat.add_sub_assoc; [ | flia Hlac ].
+          rewrite Nat.add_sub_assoc; [ | flia Hlac ].
+          rewrite Nat.add_comm, Nat.add_sub.
+          rewrite <- List_last_nth.
+          apply Bool.orb_true_iff in Hlc.
+          apply (rngl_eqb_neq Heo).
+          apply Bool.negb_true_iff.
+          destruct Hlc as [Hlc| Hlc]; [ | easy ].
+          now apply is_empty_list_empty in Hlc; subst lc.
+        }
+        rewrite Hnac in Hlabc, Habc.
         destruct (Nat.eq_dec (length lb) 0) as [Hbz| Hbz]. {
           apply List.length_zero_iff_nil in Hbz; subst lb.
           rewrite lap_add_0_r in Habc.
@@ -4156,82 +4190,26 @@ split; intros Hc. {
           rewrite (has_polyn_prop_lap_norm Hed) in Habc; [ | easy ].
           rewrite (has_polyn_prop_lap_norm Hed) in Hlabc; [ | easy ].
           clear Hlb Hlbc.
-          replace (lap_norm (la + lc)) with (la + lc)%lap in Habc. 2: {
-            symmetry.
-            apply (has_polyn_prop_lap_norm Hed).
-            progress unfold has_polyn_prop.
-            apply Bool.orb_true_iff; right.
-            apply Bool.negb_true_iff.
-            apply (rngl_eqb_neq Heo).
-            progress unfold lap_add.
-            rewrite (proj2 (Nat.sub_0_le (length la) _)); [ | flia Hlac ].
-            rewrite List_map2_app_l.
-(**)
-            cbn; rewrite List.app_nil_r.
-            replace (length lc - length la) with
-              (length (List.skipn (length la) lc)) by
-              apply List.length_skipn.
-            rewrite List_last_app. 2: {
-              rewrite List_map2_rngl_add_0_l.
-              intros H.
-              apply List.skipn_all_iff in H.
-              now apply Nat.nlt_ge in H.
-            }
-            rewrite List_map2_rngl_add_0_l.
-            rewrite List_last_nth.
-            rewrite List.length_skipn.
-Search (List.nth _ (List.skipn _ _)).
-specialize List.nth_skipn as H1.
-specialize List_nth_skipn as H2.
-About List_nth_skipn.
-rewrite List.nth_skipn.
-Search (List.skipn (length _)).
-Search (List.last (List.skipn _ _)).
-Search List.last.
-...
-            rewrite List.firstn_app.
-            rewrite (proj2 (Nat.sub_0_le (length la) _)); [ | flia Hlac ].
-            cbn; do 2 rewrite List.app_nil_r.
-            replace (length lc - length la) with
-              (length (List.skipn (length la) lc)) by apply List.length_skipn.
-            rewrite List_map2_rngl_add_0_l.
-            rewrite List_last_nth.
-            rewrite List.length_app.
-Search (length (List_map2 _ _ _)).
-rewrite List_length_map2.
-rewrite List.length_firstn.
-rewrite (Nat.min_l _ (length lc)); [ | flia Hlac ].
-rewrite Nat.min_id.
-rewrite List.length_skipn.
-rewrite Nat.add_comm.
-rewrite Nat.sub_add; [ | flia Hlac ].
-(* ah merde, c'est quoi, ce bordel ? *)
-...
-            rewrite List.last_app2.
-...
-          revert lc Hlc Habc Hlabc Hlac.
-          induction la as [| a] using List.rev_ind; intros; [ easy | ].
-          cbn in Habc.
-...
+          rewrite lap_add_length in Hlabc.
+          rewrite Nat.max_r in Hlabc; [ | flia Hlac ].
+          rewrite Hlabc in Hlac.
+          now apply Nat.lt_irrefl in Hlac.
         }
-...
         destruct (Nat.eq_dec (length lc) 0) as [Hcz| Hcz]. {
           now apply List.length_zero_iff_nil in Hcz; subst lc.
         }
-        progress unfold has_polyn_prop in Hlc.
-        apply Bool.orb_true_iff in Hlc.
+        progress unfold has_polyn_prop in Hla, Hlb, Hlc.
+        apply Bool.orb_true_iff in Hla, Hlb, Hlc.
+        destruct Hla as [Hla| Hla]. {
+          now apply is_empty_list_empty in Hla; subst la.
+        }
+        destruct Hlb as [Hlb| Hlb]. {
+          now apply is_empty_list_empty in Hlb; subst lb.
+        }
         destruct Hlc as [Hlc| Hlc]. {
           now apply is_empty_list_empty in Hlc; subst lc.
         }
-        apply Bool.negb_true_iff in Hlc.
-        apply (rngl_eqb_neq Heo) in Hlc.
-        progress unfold has_polyn_prop in Hla.
-        apply Bool.orb_true_iff in Hla.
-        destruct Hla as [Hla| Hla]. {
-          apply is_empty_list_empty in Hla; subst la.
-          do 2 rewrite lap_add_0_l in Habc, Hlabc.
-          rewrite (has_polyn_prop_lap_norm Hed) in Habc; [ | easy ].
-          rewrite (has_polyn_prop_lap_norm Hed) in Habc; [ | easy ].
+        apply (rngl_neqb_neq Heo) in Hla, Hlb, Hlc.
 ...
 Theorem lap_compare_gt_last_lt :
   ∀ la lb,
