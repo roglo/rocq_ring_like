@@ -4124,6 +4124,38 @@ split; intros Hc. {
       destruct labc. {
         apply Nat.compare_eq_iff in Hlabc.
         clear Hbc.
+        destruct pa as (la, Hla).
+        destruct pb as (lb, Hlb).
+        destruct pc as (lc, Hlc).
+        cbn - [ lap_add ] in Hlabc, Habc, Hlbc, Hlac.
+        move lb before la; move lc before lb.
+        clear leb tot.
+        destruct (Nat.eq_dec (length la) 0) as [Haz| Haz]. {
+          apply List.length_zero_iff_nil in Haz; subst la.
+          do 2 rewrite lap_add_0_l in Hlabc.
+          rewrite (has_polyn_prop_lap_norm Hed) in Hlabc; [ | easy ].
+          rewrite (has_polyn_prop_lap_norm Hed) in Hlabc; [ | easy ].
+          rewrite Hlabc in Hlbc.
+          now apply Nat.lt_irrefl in Hlbc.
+        }
+...
+        destruct (Nat.eq_dec (length lc) 0) as [Hcz| Hcz]. {
+          now apply List.length_zero_iff_nil in Hcz; subst lc.
+        }
+        progress unfold has_polyn_prop in Hlc.
+        apply Bool.orb_true_iff in Hlc.
+        destruct Hlc as [Hlc| Hlc]. {
+          now apply is_empty_list_empty in Hlc; subst lc.
+        }
+        apply Bool.negb_true_iff in Hlc.
+        apply (rngl_eqb_neq Heo) in Hlc.
+        progress unfold has_polyn_prop in Hla.
+        apply Bool.orb_true_iff in Hla.
+        destruct Hla as [Hla| Hla]. {
+          apply is_empty_list_empty in Hla; subst la.
+          do 2 rewrite lap_add_0_l in Habc, Hlabc.
+          rewrite (has_polyn_prop_lap_norm Hed) in Habc; [ | easy ].
+          rewrite (has_polyn_prop_lap_norm Hed) in Habc; [ | easy ].
 ...
 Theorem lap_compare_gt_last_lt :
   ∀ la lb,
