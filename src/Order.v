@@ -405,17 +405,6 @@ split; intros Hab. {
 }
 Qed.
 
-Theorem rngl_leb_gt :
-  rngl_is_ordered T = true →
-  ∀ a b, (b < a → ¬ (a ≤ b))%L.
-Proof.
-intros Hor * Hab H1.
-specialize (rngl_opt_ord T) as rr.
-rewrite Hor in rr; move rr before rp.
-destruct Hab as (Hab, H); apply H; clear H.
-now apply rngl_ord_le_antisymm.
-Qed.
-
 Theorem rngl_leb_gt_iff :
   rngl_is_totally_ordered T = true →
   ∀ a b, ((a ≤? b) = false ↔ b < a)%L.
