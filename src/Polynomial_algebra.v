@@ -4311,6 +4311,17 @@ split; intros Hc. {
       }
     }
     apply Nat.nlt_ge in Hlac.
+    rewrite (lap_add_comm la) in Habc.
+    rewrite lap_norm_add_when_len_lt in Habc; [ | easy | flia Hlbc Hlac ].
+    rewrite (lap_add_comm _ la) in Habc.
+    destruct (lt_dec (length lc) (length la)) as [Hlca| Hlca]. {
+      rewrite (lap_add_comm _ lc) in Habc.
+      rewrite lap_norm_add_when_len_lt in Habc; [ | easy | easy ].
+      rewrite (lap_add_comm lc) in Habc.
+      do 2 rewrite lap_add_length in Habc.
+      rewrite Nat.max_l in Habc; [ | flia Hlbc Hlac ].
+      rewrite Nat.max_l in Habc; [ | flia Hlac ].
+      rewrite Nat.compare_refl in Habc.
 ...
 Theorem lap_compare_gt_last_lt :
   ∀ la lb,
