@@ -4106,6 +4106,23 @@ remember (rngl_has_opp_or_psub (polyn T)) as osp eqn:Hosp.
 symmetry in Hosp.
 destruct osp; [ | easy ].
 intros.
+destruct (Nat.eq_dec (length (lap pa)) 0) as [Haz| Haz]. {
+  apply List.length_zero_iff_nil in Haz.
+  destruct pa as (la, Hla).
+  cbn in Haz; subst la.
+  progress unfold polyn_add.
+  cbn - [ lap_add ].
+  do 2 rewrite lap_add_0_l.
+Theorem polyn_norm_lap : ∀ p, polyn_norm (lap p) = p.
+Proof.
+intros.
+apply eq_polyn_eq; cbn.
+...
+  destruct pb as (lb, Hlb).
+  destruct pc as (lc, Hlc).
+  cbn.
+  progress unfold polyn_norm.
+...
 split; intros Hc. {
   progress unfold rngl_le in Hc; cbn in Hc.
   progress unfold rngl_le; cbn.
@@ -4133,6 +4150,7 @@ split; intros Hc. {
   move lb before la; move lc before lb.
   progress unfold polyn_compare in Hbc, Habc.
   cbn - [ lap_add ] in Hbc, Habc.
+...
   destruct (lt_dec (length lb) (length lc)) as [Hlbc| Hlbc]. {
     destruct (lt_dec (length la) (length lc)) as [Hlac| Hlac]. {
       remember (length (lap_norm _) ?= _) as labc eqn:Hlabc.
