@@ -3980,6 +3980,18 @@ progress f_equal.
 apply IHla.
 Qed.
 
+Theorem lap_add_cons_l :
+  ∀ (a : T) (la lb : list T),
+  ((a :: la) + lb = (a + List.hd 0%L lb)%L :: (la + List.tl lb))%lap.
+Proof.
+intros.
+destruct lb as [| b]; [ | easy ].
+cbn.
+progress f_equal.
+rewrite List.app_nil_r, lap_add_0_r.
+apply List_map2_rngl_add_0_r.
+Qed.
+
 (* to be completed
 Theorem polyn_ord_le_refl :
   rngl_is_ordered T = true →
@@ -4351,12 +4363,13 @@ induction la as [| a]; intros. {
   do 2 rewrite Nat.sub_0_r, List.app_nil_r.
   now do 2 rewrite List_map2_rngl_add_0_l.
 }
-Search ((_ :: _) + _)%lap.
-Theorem glop :
-  ∀ (a : T) (la lb : list T),
-  ((a :: la) + lb = (a + List.hd 0%L lb)%L :: (la + List.tl lb))%lap.
-...
-rewrite glop.
+rewrite lap_add_cons_l.
+destruct lb as [| b]. {
+  cbn - [ lap_add lap_compare ].
+  rewrite rngl_add_0_r.
+  rewrite lap_add_0_r.
+  rewrite lap_add_cons_l.
+  cbn.
 ...
 rewrite List_app_lap_add.
 do 2 rewrite <- lap_add_assoc.
