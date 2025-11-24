@@ -4188,35 +4188,42 @@ split; intros Hc. {
         destruct Hlc as [Hlc| Hlc]; [ | easy ].
         now apply is_empty_list_empty in Hlc; subst lc.
       }
-      destruct labc; [ | easy | ]. {
-        apply Nat.compare_eq_iff in Hlabc.
-        clear Hbc.
-        clear leb tot.
-        rewrite Hnac in Hlabc, Habc.
-        destruct (Nat.eq_dec (length lb) 0) as [Hbz| Hbz]. {
-          apply List.length_zero_iff_nil in Hbz; subst lb.
-          rewrite lap_add_0_r in Hlabc.
-          rewrite (has_polyn_prop_lap_norm Hed) in Hlabc; [ | easy ].
-          clear Hlb Hlbc.
-          rewrite lap_add_length in Hlabc.
-          rewrite Nat.max_r in Hlabc; [ | easy ].
+      destruct (Nat.eq_dec (length lb) 0) as [Hbz| Hbz]. {
+        apply List.length_zero_iff_nil in Hbz; subst lb.
+        rewrite lap_add_0_r in Hlabc.
+        rewrite (has_polyn_prop_lap_norm Hed) in Hlabc; [ | easy ].
+        rewrite Hnac in Hlabc.
+        rewrite lap_add_length in Hlabc.
+        rewrite Nat.max_r in Hlabc; [ | easy ].
+        destruct labc; [ | easy | ]. {
+          apply Nat.compare_eq_iff in Hlabc.
+          rewrite Hlabc in Hlac.
+          now apply Nat.lt_irrefl in Hlac.
+        } {
+          apply Nat.compare_gt_iff in Hlabc.
           rewrite Hlabc in Hlac.
           now apply Nat.lt_irrefl in Hlac.
         }
-        destruct (Nat.eq_dec (length lc) 0) as [Hcz| Hcz]. {
-          now apply List.length_zero_iff_nil in Hcz; subst lc.
-        }
-        progress unfold has_polyn_prop in Hla, Hlb, Hlc.
-        apply Bool.orb_true_iff in Hla, Hlb, Hlc.
-        destruct Hla as [Hla| Hla]. {
-          now apply is_empty_list_empty in Hla; subst la.
-        }
-        destruct Hlb as [Hlb| Hlb]. {
-          now apply is_empty_list_empty in Hlb; subst lb.
-        }
-        destruct Hlc as [Hlc| Hlc]. {
-          now apply is_empty_list_empty in Hlc; subst lc.
-        }
+      }
+      destruct (Nat.eq_dec (length lc) 0) as [Hcz| Hcz]. {
+        now apply List.length_zero_iff_nil in Hcz; subst lc.
+      }
+      progress unfold has_polyn_prop in Hla, Hlb, Hlc.
+      clear Hbc.
+      apply Bool.orb_true_iff in Hla, Hlb, Hlc.
+      destruct Hla as [Hla| Hla]. {
+        now apply is_empty_list_empty in Hla; subst la.
+      }
+      destruct Hlb as [Hlb| Hlb]. {
+        now apply is_empty_list_empty in Hlb; subst lb.
+      }
+      destruct Hlc as [Hlc| Hlc]. {
+        now apply is_empty_list_empty in Hlc; subst lc.
+      }
+      destruct labc; [ | easy | ]. {
+        clear leb tot.
+        apply Nat.compare_eq_iff in Hlabc.
+        rewrite Hnac in Hlabc, Habc.
         apply (rngl_neqb_neq Heo) in Hla, Hlb, Hlc.
         specialize (lap_norm_length_le Hed (la + lb)%lap) as H1.
         rewrite Hlabc in H1.
@@ -4243,33 +4250,9 @@ split; intros Hc. {
           now rewrite Nat.min_id.
         }
       } {
-        clear Habc Hbc leb tot.
+        clear Habc leb tot.
         apply Nat.compare_gt_iff in Hlabc.
         rewrite Hnac in Hlabc.
-        destruct (Nat.eq_dec (length lb) 0) as [Hbz| Hbz]. {
-          apply List.length_zero_iff_nil in Hbz; subst lb.
-          rewrite lap_add_0_r in Hlabc.
-          rewrite (has_polyn_prop_lap_norm Hed) in Hlabc; [ | easy ].
-          clear Hlb Hlbc.
-          rewrite lap_add_length in Hlabc.
-          rewrite Nat.max_r in Hlabc; [ | easy ].
-          rewrite Hlabc in Hlac.
-          now apply Nat.lt_irrefl in Hlac.
-        }
-        destruct (Nat.eq_dec (length lc) 0) as [Hcz| Hcz]. {
-          now apply List.length_zero_iff_nil in Hcz; subst lc.
-        }
-        progress unfold has_polyn_prop in Hla, Hlb, Hlc.
-        apply Bool.orb_true_iff in Hla, Hlb, Hlc.
-        destruct Hla as [Hla| Hla]. {
-          now apply is_empty_list_empty in Hla; subst la.
-        }
-        destruct Hlb as [Hlb| Hlb]. {
-          now apply is_empty_list_empty in Hlb; subst lb.
-        }
-        destruct Hlc as [Hlc| Hlc]. {
-          now apply is_empty_list_empty in Hlc; subst lc.
-        }
         apply (rngl_neqb_neq Heo) in Hla, Hlb, Hlc.
         specialize (lap_norm_length_le Hed (la + lb)%lap) as H1.
         apply Nat.nlt_ge in H1.
