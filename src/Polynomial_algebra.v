@@ -4127,15 +4127,16 @@ split; intros Hc. {
     now rewrite polyn_compare_refl in Habc.
   }
   clear Hc.
-  destruct (lt_dec (length (lap pb)) (length (lap pc))) as [Hlbc| Hlbc]. {
-    destruct (lt_dec (length (lap pa)) (length (lap pc))) as [Hlac| Hlac]. {
-      progress unfold polyn_compare in Habc.
-      remember (_ ?= _) as labc eqn:Hlabc.
+  destruct pa as (la, Hla).
+  destruct pb as (lb, Hlb).
+  destruct pc as (lc, Hlc).
+  move lb before la; move lc before lb.
+  progress unfold polyn_compare in Hbc, Habc.
+  cbn - [ lap_add ] in Hbc, Habc.
+  destruct (lt_dec (length lb) (length lc)) as [Hlbc| Hlbc]. {
+    destruct (lt_dec (length la) (length lc)) as [Hlac| Hlac]. {
+      remember (length (lap_norm _) ?= _) as labc eqn:Hlabc.
       symmetry in Hlabc.
-      destruct pa as (la, Hla).
-      destruct pb as (lb, Hlb).
-      destruct pc as (lc, Hlc).
-      move lb before la; move lc before lb.
       cbn - [ lap_add ] in Hlabc, Habc, Hlbc, Hlac.
       destruct (Nat.eq_dec (length la) 0) as [Haz| Haz]. {
         apply List.length_zero_iff_nil in Haz; subst la.
@@ -4220,15 +4221,15 @@ split; intros Hc. {
       destruct Hlc as [Hlc| Hlc]. {
         now apply is_empty_list_empty in Hlc; subst lc.
       }
+      apply (rngl_neqb_neq Heo) in Hla, Hlb, Hlc.
+      rewrite Hnac in Hlabc, Habc.
+      specialize (lap_norm_length_le Hed (la + lb)%lap) as H1.
+      apply Nat.nlt_ge in H1.
+      apply H1; clear H1.
+      clear leb tot.
       destruct labc; [ | easy | ]. {
-        clear leb tot.
         apply Nat.compare_eq_iff in Hlabc.
-        rewrite Hnac in Hlabc, Habc.
-        apply (rngl_neqb_neq Heo) in Hla, Hlb, Hlc.
-        specialize (lap_norm_length_le Hed (la + lb)%lap) as H1.
-        rewrite Hlabc in H1.
-        apply Nat.nlt_ge in H1.
-        apply H1; clear H1.
+        rewrite Hlabc.
         progress unfold lap_add.
         rewrite (proj2 (Nat.sub_0_le _ (length lc))); [ | easy ].
         rewrite List.app_nil_r.
@@ -4250,13 +4251,7 @@ split; intros Hc. {
           now rewrite Nat.min_id.
         }
       } {
-        clear Habc leb tot.
         apply Nat.compare_gt_iff in Hlabc.
-        rewrite Hnac in Hlabc.
-        apply (rngl_neqb_neq Heo) in Hla, Hlb, Hlc.
-        specialize (lap_norm_length_le Hed (la + lb)%lap) as H1.
-        apply Nat.nlt_ge in H1.
-        apply H1; clear H1.
         eapply Nat.le_lt_trans; [ | apply Hlabc ].
         progress unfold lap_add.
         rewrite (proj2 (Nat.sub_0_le _ (length lc))); [ | easy ].
