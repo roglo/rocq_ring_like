@@ -3914,6 +3914,13 @@ apply (rngl_eqb_neq Heo) in Hpa.
 now rewrite Hpa.
 Qed.
 
+Theorem lap_nil_iff : ∀ pa, lap pa = [] ↔ pa = 0%pol.
+Proof.
+intros.
+split; intros Hpa; [ now apply eq_polyn_eq | ].
+now apply eq_polyn_eq in Hpa.
+Qed.
+
 (* to be completed
 Theorem polyn_ord_le_refl :
   rngl_is_ordered T = true →
@@ -4168,6 +4175,7 @@ split; intros Hc. {
   progress unfold polyn_compare in Hbc, Habc.
   cbn - [ lap_add ] in Hbc, Habc, Haz.
   destruct (lt_dec (length lb) (length lc)) as [Hlbc| Hlbc]. {
+    clear Hbc.
     destruct (lt_dec (length la) (length lc)) as [Hlac| Hlac]. {
       remember (length (lap_norm _) ?= _) as labc eqn:Hlabc.
       symmetry in Hlabc.
@@ -4201,7 +4209,6 @@ split; intros Hc. {
         rewrite Nat.add_comm, Nat.add_sub.
         rewrite <- List_last_nth.
         progress unfold has_polyn_prop in Hlc.
-        clear Hbc.
         apply Bool.orb_true_iff in Hlc.
         apply (rngl_eqb_neq Heo).
         apply Bool.negb_true_iff.
@@ -4229,7 +4236,6 @@ split; intros Hc. {
         now apply List.length_zero_iff_nil in Hcz; subst lc.
       }
       progress unfold has_polyn_prop in Hla, Hlb, Hlc.
-      clear Hbc.
       apply Bool.orb_true_iff in Hla, Hlb, Hlc.
       destruct Hla as [Hla| Hla]. {
         now apply is_empty_list_empty in Hla; subst la.
@@ -4294,6 +4300,7 @@ split; intros Hc. {
         }
       }
     }
+    apply Nat.nlt_ge in Hlac.
 ...
 Theorem lap_compare_gt_last_lt :
   ∀ la lb,
