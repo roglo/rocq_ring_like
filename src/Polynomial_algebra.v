@@ -4346,6 +4346,26 @@ Proof.
 (* chais pas si c'est vrai, ça *)
 intros.
 revert lb lc.
+induction la as [| a]; intros. {
+  cbn.
+  do 2 rewrite Nat.sub_0_r, List.app_nil_r.
+  now do 2 rewrite List_map2_rngl_add_0_l.
+}
+Search ((_ :: _) + _)%lap.
+Theorem glop :
+  ∀ (a : T) (la lb : list T),
+  ((a :: la) + lb = (a + List.hd 0%L lb)%L :: (la + List.tl lb))%lap.
+...
+rewrite glop.
+...
+rewrite List_app_lap_add.
+do 2 rewrite <- lap_add_assoc.
+rewrite IHla.
+Search ((_ ++ _) + _)%lap.
+...
+(* chais pas si c'est vrai, ça *)
+intros.
+revert lb lc.
 induction la as [| a] using List.rev_ind; intros; cbn. {
   do 2 rewrite Nat.sub_0_r, List.app_nil_r.
   now do 2 rewrite List_map2_rngl_add_0_l.
@@ -4353,6 +4373,7 @@ induction la as [| a] using List.rev_ind; intros; cbn. {
 rewrite List_app_lap_add.
 do 2 rewrite <- lap_add_assoc.
 rewrite IHla.
+Search ((_ ++ _) + _)%lap.
 ...
 intros.
 revert lb.
