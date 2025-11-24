@@ -3890,6 +3890,30 @@ rewrite IHla; [ cbn | easy ].
 now destruct lb.
 Qed.
 
+Theorem polyn_norm_lap : ∀ p, polyn_norm (lap p) = p.
+Proof.
+intros.
+apply eq_polyn_eq; cbn.
+destruct p as (la, Hpa); cbn.
+symmetry.
+apply List_rev_symm.
+progress unfold has_polyn_prop in Hpa.
+apply Bool.orb_true_iff in Hpa.
+destruct Hpa as [Hpa| Hpa]. {
+  now apply is_empty_list_empty in Hpa; subst la.
+}
+apply Bool.negb_true_iff in Hpa.
+apply (rngl_eqb_neq Heo) in Hpa.
+rewrite <- (List.rev_involutive la) in Hpa.
+rewrite List_last_rev in Hpa.
+remember (List.rev la) as lb eqn:Hlb.
+clear la Hlb; rename lb into la.
+destruct la as [| a]; [ easy | ].
+cbn in Hpa |-*.
+apply (rngl_eqb_neq Heo) in Hpa.
+now rewrite Hpa.
+Qed.
+
 (* to be completed
 Theorem polyn_ord_le_refl :
   rngl_is_ordered T = true →
@@ -4113,16 +4137,9 @@ destruct (Nat.eq_dec (length (lap pa)) 0) as [Haz| Haz]. {
   progress unfold polyn_add.
   cbn - [ lap_add ].
   do 2 rewrite lap_add_0_l.
-Theorem polyn_norm_lap : ∀ p, polyn_norm (lap p) = p.
-Proof.
-intros.
-apply eq_polyn_eq; cbn.
-...
-  destruct pb as (lb, Hlb).
-  destruct pc as (lc, Hlc).
-  cbn.
-  progress unfold polyn_norm.
-...
+  do 2 rewrite polyn_norm_lap.
+  easy.
+}
 split; intros Hc. {
   progress unfold rngl_le in Hc; cbn in Hc.
   progress unfold rngl_le; cbn.
@@ -4149,28 +4166,12 @@ split; intros Hc. {
   destruct pc as (lc, Hlc).
   move lb before la; move lc before lb.
   progress unfold polyn_compare in Hbc, Habc.
-  cbn - [ lap_add ] in Hbc, Habc.
-...
+  cbn - [ lap_add ] in Hbc, Habc, Haz.
   destruct (lt_dec (length lb) (length lc)) as [Hlbc| Hlbc]. {
     destruct (lt_dec (length la) (length lc)) as [Hlac| Hlac]. {
       remember (length (lap_norm _) ?= _) as labc eqn:Hlabc.
       symmetry in Hlabc.
       cbn - [ lap_add ] in Hlabc, Habc, Hlbc, Hlac.
-      destruct (Nat.eq_dec (length la) 0) as [Haz| Haz]. {
-        apply List.length_zero_iff_nil in Haz; subst la.
-        do 2 rewrite lap_add_0_l in Hlabc.
-        rewrite (has_polyn_prop_lap_norm Hed) in Hlabc; [ | easy ].
-        rewrite (has_polyn_prop_lap_norm Hed) in Hlabc; [ | easy ].
-        destruct labc; [ | easy | ]. {
-          apply Nat.compare_eq_iff in Hlabc.
-          rewrite Hlabc in Hlbc.
-          now apply Nat.lt_irrefl in Hlbc.
-        } {
-          apply Nat.compare_gt_iff in Hlabc.
-          rewrite Hlabc in Hlbc. (* ??? *)
-          now apply Nat.lt_irrefl in Hlbc.
-        }
-      }
       assert (Hlac' : length la ≤ length lc) by flia Hlac.
       assert (Hnac : lap_norm (la + lc) = (la + lc)%lap). {
         apply (has_polyn_prop_lap_norm Hed).
