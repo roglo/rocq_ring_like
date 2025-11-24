@@ -2992,6 +2992,8 @@ Fixpoint lap_compare la lb :=
   | _ => Eq
   end.
 
+Arguments lap_compare (la lb)%_lap.
+
 Definition polyn_compare pa pb :=
   match Nat.compare (length (lap pa)) (length (lap pb)) with
   | Eq => lap_compare (lap pa) (lap pb)
@@ -3962,6 +3964,22 @@ destruct Hpb as [Hpb| Hpb]; [ | easy ].
 now apply is_empty_list_empty in Hpb; subst lb.
 Qed.
 
+Theorem List_app_lap_add :
+  ∀ la lb, la ++ lb = (la + (List.repeat 0%L (length la) ++ lb))%lap.
+Proof.
+intros.
+revert lb.
+induction la as [| a]; intros. {
+  cbn.
+  rewrite Nat.sub_0_r, List.app_nil_r; symmetry.
+  apply List_map2_rngl_add_0_l.
+}
+cbn.
+rewrite rngl_add_0_r.
+progress f_equal.
+apply IHla.
+Qed.
+
 (* to be completed
 Theorem polyn_ord_le_refl :
   rngl_is_ordered T = true →
@@ -4322,6 +4340,36 @@ split; intros Hc. {
       rewrite Nat.max_l in Habc; [ | flia Hlbc Hlac ].
       rewrite Nat.max_l in Habc; [ | flia Hlac ].
       rewrite Nat.compare_refl in Habc.
+Theorem lap_compare_add_compat :
+  ∀ la lb lc, lap_compare (la + lb) (la + lc) = lap_compare lb lc.
+Proof.
+(* chais pas si c'est vrai, ça *)
+intros.
+revert lb lc.
+induction la as [| a] using List.rev_ind; intros; cbn. {
+  do 2 rewrite Nat.sub_0_r, List.app_nil_r.
+  now do 2 rewrite List_map2_rngl_add_0_l.
+}
+rewrite List_app_lap_add.
+do 2 rewrite <- lap_add_assoc.
+rewrite IHla.
+...
+intros.
+revert lb.
+induction la as [| a] using List.rev_ind; intros; cbn. {
+  rewrite Nat.sub_0_r, List.app_nil_r; symmetry.
+  apply List_map2_rngl_add_0_l.
+}
+rewrite <- List.app_assoc.
+rewrite IHla.
+cbn.
+rewrite IHla.
+rewrite lap_add_length.
+rewrite List.length_app.
+rewrite List.repeat_length.
+...
+... ... chais pas si ça sert à quelque chose...
+rewrite glop.
 ...
 Theorem lap_compare_gt_last_lt :
   ∀ la lb,
