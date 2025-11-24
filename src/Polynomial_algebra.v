@@ -4132,24 +4132,31 @@ split; intros Hc. {
       progress unfold polyn_compare in Habc.
       remember (_ ?= _) as labc eqn:Hlabc.
       symmetry in Hlabc.
+      destruct pa as (la, Hla).
+      destruct pb as (lb, Hlb).
+      destruct pc as (lc, Hlc).
+      move lb before la; move lc before lb.
+      cbn - [ lap_add ] in Hlabc, Habc, Hlbc, Hlac.
+      destruct (Nat.eq_dec (length la) 0) as [Haz| Haz]. {
+        apply List.length_zero_iff_nil in Haz; subst la.
+        do 2 rewrite lap_add_0_l in Hlabc.
+        rewrite (has_polyn_prop_lap_norm Hed) in Hlabc; [ | easy ].
+        rewrite (has_polyn_prop_lap_norm Hed) in Hlabc; [ | easy ].
+        destruct labc; [ | easy | ]. {
+          apply Nat.compare_eq_iff in Hlabc.
+          rewrite Hlabc in Hlbc.
+          now apply Nat.lt_irrefl in Hlbc.
+        } {
+          apply Nat.compare_gt_iff in Hlabc.
+          rewrite Hlabc in Hlbc. (* ??? *)
+          now apply Nat.lt_irrefl in Hlbc.
+        }
+      }
+      assert (Hlac' : length la ≤ length lc) by flia Hlac.
       destruct labc; [ | easy | ]. {
         apply Nat.compare_eq_iff in Hlabc.
         clear Hbc.
-        destruct pa as (la, Hla).
-        destruct pb as (lb, Hlb).
-        destruct pc as (lc, Hlc).
-        cbn - [ lap_add ] in Hlabc, Habc, Hlbc, Hlac.
-        move lb before la; move lc before lb.
         clear leb tot.
-        destruct (Nat.eq_dec (length la) 0) as [Haz| Haz]. {
-          apply List.length_zero_iff_nil in Haz; subst la.
-          do 2 rewrite lap_add_0_l in Hlabc.
-          rewrite (has_polyn_prop_lap_norm Hed) in Hlabc; [ | easy ].
-          rewrite (has_polyn_prop_lap_norm Hed) in Hlabc; [ | easy ].
-          rewrite Hlabc in Hlbc.
-          now apply Nat.lt_irrefl in Hlbc.
-        }
-        assert (Hlac' : length la ≤ length lc) by flia Hlac.
         assert (Hnac : lap_norm (la + lc) = (la + lc)%lap). {
           apply (has_polyn_prop_lap_norm Hed).
           progress unfold has_polyn_prop.
@@ -4234,24 +4241,8 @@ split; intros Hc. {
           now rewrite Nat.min_id.
         }
       } {
-        clear Habc.
+        clear Habc Hbc leb tot.
         apply Nat.compare_gt_iff in Hlabc.
-        clear Hbc.
-        destruct pa as (la, Hla).
-        destruct pb as (lb, Hlb).
-        destruct pc as (lc, Hlc).
-        cbn - [ lap_add ] in Hlabc, Hlbc, Hlac.
-        move lb before la; move lc before lb.
-        clear leb tot.
-        destruct (Nat.eq_dec (length la) 0) as [Haz| Haz]. {
-          apply List.length_zero_iff_nil in Haz; subst la.
-          do 2 rewrite lap_add_0_l in Hlabc.
-          rewrite (has_polyn_prop_lap_norm Hed) in Hlabc; [ | easy ].
-          rewrite (has_polyn_prop_lap_norm Hed) in Hlabc; [ | easy ].
-          rewrite Hlabc in Hlbc.
-          now apply Nat.lt_irrefl in Hlbc.
-        }
-        assert (Hlac' : length la ≤ length lc) by flia Hlac.
         assert (Hnac : lap_norm (la + lc) = (la + lc)%lap). {
           apply (has_polyn_prop_lap_norm Hed).
           progress unfold has_polyn_prop.
