@@ -3921,6 +3921,47 @@ split; intros Hpa; [ now apply eq_polyn_eq | ].
 now apply eq_polyn_eq in Hpa.
 Qed.
 
+Theorem lap_norm_add_when_len_lt :
+  ∀ la lb,
+  has_polyn_prop lb = true
+  → length la < length lb
+  → lap_norm (la + lb) = (la + lb)%lap.
+Proof.
+intros * Hpb Hlab.
+apply (has_polyn_prop_lap_norm Hed).
+progress unfold has_polyn_prop.
+apply Bool.orb_true_iff; right.
+apply Bool.negb_true_iff.
+apply (rngl_eqb_neq Heo).
+progress unfold lap_add.
+rewrite (proj2 (Nat.sub_0_le (length la) _)); [ | flia Hlab ].
+rewrite List_map2_app_l.
+cbn; rewrite List.app_nil_r.
+replace (length lb - length la) with
+  (length (List.skipn (length la) lb)) by
+  apply List.length_skipn.
+rewrite List_last_app. 2: {
+  rewrite List_map2_rngl_add_0_l.
+  intros H.
+  apply List.skipn_all_iff in H.
+  now apply Nat.nlt_ge in H.
+}
+rewrite List_map2_rngl_add_0_l.
+rewrite List_last_nth.
+rewrite List.length_skipn.
+rewrite List.nth_skipn.
+rewrite Nat.add_sub_assoc; [ | flia Hlab ].
+rewrite Nat.add_sub_assoc; [ | flia Hlab ].
+rewrite Nat.add_comm, Nat.add_sub.
+rewrite <- List_last_nth.
+progress unfold has_polyn_prop in Hpb.
+apply Bool.orb_true_iff in Hpb.
+apply (rngl_eqb_neq Heo).
+apply Bool.negb_true_iff.
+destruct Hpb as [Hpb| Hpb]; [ | easy ].
+now apply is_empty_list_empty in Hpb; subst lb.
+Qed.
+
 (* to be completed
 Theorem polyn_ord_le_refl :
   rngl_is_ordered T = true →
@@ -4182,38 +4223,7 @@ split; intros Hc. {
       cbn - [ lap_add ] in Hlabc, Habc, Hlbc, Hlac.
       assert (Hlac' : length la ≤ length lc) by flia Hlac.
       assert (Hnac : lap_norm (la + lc) = (la + lc)%lap). {
-        apply (has_polyn_prop_lap_norm Hed).
-        progress unfold has_polyn_prop.
-        apply Bool.orb_true_iff; right.
-        apply Bool.negb_true_iff.
-        apply (rngl_eqb_neq Heo).
-        progress unfold lap_add.
-        rewrite (proj2 (Nat.sub_0_le (length la) _)); [ | easy ].
-        rewrite List_map2_app_l.
-        cbn; rewrite List.app_nil_r.
-        replace (length lc - length la) with
-          (length (List.skipn (length la) lc)) by
-          apply List.length_skipn.
-        rewrite List_last_app. 2: {
-          rewrite List_map2_rngl_add_0_l.
-          intros H.
-          apply List.skipn_all_iff in H.
-          now apply Nat.nlt_ge in H.
-        }
-        rewrite List_map2_rngl_add_0_l.
-        rewrite List_last_nth.
-        rewrite List.length_skipn.
-        rewrite List.nth_skipn.
-        rewrite Nat.add_sub_assoc; [ | flia Hlac ].
-        rewrite Nat.add_sub_assoc; [ | easy ].
-        rewrite Nat.add_comm, Nat.add_sub.
-        rewrite <- List_last_nth.
-        progress unfold has_polyn_prop in Hlc.
-        apply Bool.orb_true_iff in Hlc.
-        apply (rngl_eqb_neq Heo).
-        apply Bool.negb_true_iff.
-        destruct Hlc as [Hlc| Hlc]; [ | easy ].
-        now apply is_empty_list_empty in Hlc; subst lc.
+        now apply lap_norm_add_when_len_lt.
       }
       destruct (Nat.eq_dec (length lb) 0) as [Hbz| Hbz]. {
         apply List.length_zero_iff_nil in Hbz; subst lb.
