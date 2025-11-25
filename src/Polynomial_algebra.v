@@ -3015,6 +3015,7 @@ Definition polyn_opt_leb :=
   | None => None
   end.
 *)
+(* relation order not compatible with addition and multiplication *)
 Definition polyn_opt_leb : option ((polyn T → polyn T → bool) * bool) :=
   None.
 (**)
