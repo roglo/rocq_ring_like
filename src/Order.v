@@ -956,6 +956,7 @@ End a.
 
 Notation "x ?= y" := (rngl_compare x y) : ring_like_scope.
 
+Arguments rngl_compare {T ro} (a b)%_L.
 Arguments rngl_eqb_dec {T ro} (a b)%_L.
 Arguments rngl_le_trans {T ro rp} Hor (a b c)%_L.
 Arguments rngl_le_lt_trans {T ro rp} Hor (a b c)%_L.
