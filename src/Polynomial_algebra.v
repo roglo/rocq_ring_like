@@ -2997,7 +2997,8 @@ Arguments lap_compare (la lb)%_lap.
 Definition polyn_compare pa pb :=
   match Nat.compare (length (lap pa)) (length (lap pb)) with
   | Eq => lap_compare (lap pa) (lap pb)
-  | c => c
+  | Lt => rngl_compare 0 (List.last (lap pb) 0%L)
+  | Gt => rngl_compare (List.last (lap pa) 0%L) 0
   end.
 
 Definition polyn_leb pa pb :=
@@ -3837,10 +3838,38 @@ split; intros Hab. {
   progress unfold polyn_compare in Hab.
   remember (length (lap pa) ?= length (lap pb)) as lab eqn:Hlab.
   symmetry in Hlab.
-  destruct lab; [ | easy | easy ].
-  apply Nat.compare_eq_iff in Hlab.
-  apply lap_compare_eq_iff in Hab; [ | easy ].
-  now apply eq_polyn_eq.
+  destruct lab. {
+    apply Nat.compare_eq_iff in Hlab.
+    apply lap_compare_eq_iff in Hab; [ | easy ].
+    now apply eq_polyn_eq.
+  } {
+    apply Nat.compare_lt_iff in Hlab.
+    apply (rngl_compare_eq_iff Heo) in Hab.
+    symmetry in Hab.
+    apply eq_polyn_eq.
+    destruct pa as (la, Hla).
+    destruct pb as (lb, Hlb).
+    cbn in Hlab, Hab |-*.
+    apply Bool.orb_true_iff in Hlb.
+    destruct Hlb as [Hlb| Hlb]. {
+      now apply is_empty_list_empty in Hlb; subst lb.
+    }
+    apply Bool.negb_true_iff in Hlb.
+    now apply (rngl_eqb_neq Heo) in Hlb.
+  } {
+    apply Nat.compare_gt_iff in Hlab.
+    apply (rngl_compare_eq_iff Heo) in Hab.
+    apply eq_polyn_eq.
+    destruct pa as (la, Hla).
+    destruct pb as (lb, Hlb).
+    cbn in Hlab, Hab |-*.
+    apply Bool.orb_true_iff in Hla.
+    destruct Hla as [Hla| Hla]. {
+      now apply is_empty_list_empty in Hla; subst la.
+    }
+    apply Bool.negb_true_iff in Hla.
+    now apply (rngl_eqb_neq Heo) in Hla.
+  }
 }
 subst pb.
 progress unfold polyn_compare.
