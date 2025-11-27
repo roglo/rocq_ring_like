@@ -4283,8 +4283,17 @@ destruct lab. {
     remember (lap pa) as la eqn:Hla.
     remember (lap pb) as lb eqn:Hlb.
     clear pa pb pc Hla Hlb Hlbc.
+(*
+  Hlab : length la = length lb
+  Hlbz : (List.last lb 0 ?= 0)%L = Lt
+  Hlaz : (List.last la 0 ?= 0)%L = Gt
+  Hcab : lap_compare la lb = Lt
+  ============================
+  False
+*)
     revert lb Hlab Hlbz Hcab.
-    induction la as [| a] using List.rev_ind; intros; [ easy | ].
+    destruct la as [| a] using List.rev_ind; intros; [ easy | ].
+    clear IHla.
     rewrite List.last_last in Hlaz.
     rewrite List.length_app, Nat.add_1_r in Hlab.
     destruct lb as [| b] using List.rev_ind; [ easy | clear IHlb ].
@@ -4465,11 +4474,64 @@ destruct bc. {
   }
   remember (length (lap pa) ?= length (lap pc)) as ac eqn:Hlac.
   symmetry in Hlac.
-  destruct ac; [ | | easy ]. {
-    apply Nat.compare_eq_iff in Hlac.
-    remember (lap_compare (lap pa) (lap pc)) as ac eqn:Hac.
-    symmetry in Hac.
-    destruct ac; [ easy | easy | exfalso ].
+  destruct ac; [ | easy | easy ].
+  apply Nat.compare_eq_iff in Hlac.
+  remember (lap_compare (lap pa) (lap pc)) as ac eqn:Hac.
+  symmetry in Hac.
+  destruct ac; [ easy | easy | exfalso ].
+  clear pb Hlab Hlbc.
+  destruct pa as (la, Hla).
+  destruct pc as (lc, Hlc).
+  cbn in Haz, Hcz, Hlac, Hac.
+  clear Hla Hlc.
+  revert lc Hcz Hlac Hac.
+  destruct la as [| a] using List.rev_ind; intros; [ easy | ].
+  clear IHla.
+  rewrite List.last_last in Haz.
+  rewrite List.length_app, Nat.add_1_r in Hlac.
+  destruct lc as [| c] using List.rev_ind; [ easy | clear IHlc ].
+  rewrite List.length_app, Nat.add_1_r in Hlac.
+  apply Nat.succ_inj in Hlac.
+  rewrite List.last_last in Hcz.
+  rewrite lap_compare_app_single in Hac; [ | easy ].
+  remember (a ?= c)%L as ac eqn:Haec.
+  symmetry in Haec.
+  destruct ac; [ | easy | ]. {
+    apply (rngl_compare_eq_iff Heo) in Haec; subst c.
+    apply (rngl_compare_lt_lt Hor) in Haz; [ subst a | easy ].
+    now rewrite (rngl_compare_refl Heo) in Hcz.
+  }
+  clear Hac.
+  move Haz before Hcz.
+  (* lemma? *)
+  clear - Haz Hcz Hlac Haec ro rp Hor Heo.
+  progress unfold rngl_compare in Haz.
+  progress unfold rngl_compare in Hcz.
+  progress unfold rngl_compare in Haec.
+  remember (a =? c)%L as ac eqn:Hac.
+  symmetry in Hac.
+  destruct ac; [ easy | ].
+  remember (a ≤? c)%L as ac eqn:Halc.
+  symmetry in Halc.
+  destruct ac; [ easy | clear Haec ].
+  remember (a =? 0)%L as az eqn:Haez.
+  symmetry in Haez.
+  destruct az; [ easy | ].
+  remember (a ≤? 0)%L as az eqn:Halz.
+  symmetry in Halz.
+  destruct az; [ clear Haz | easy ].
+  remember (0 =? c)%L as zc eqn:Hzc.
+  symmetry in Hzc.
+  destruct zc; [ easy | ].
+  remember (0 ≤? c)%L as zc eqn:Hzlc.
+  symmetry in Hzlc.
+  destruct zc; [ clear Hcz | easy ].
+  apply rngl_leb_le in Halz, Hzlc.
+  apply (rngl_eqb_neq Heo) in Haez, Hzc, Hac.
+  apply rngl_leb_nle in Halc.
+  apply Halc.
+  now apply (rngl_le_trans Hor _ 0).
+}
 ...
 clear Hab.
 remember (length lb ?= length lc) as lbc eqn:Hlbc.
