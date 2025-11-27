@@ -4141,36 +4141,174 @@ progress unfold polyn_leb.
 progress unfold polyn_compare in Hab.
 progress unfold polyn_compare in Hbc.
 progress unfold polyn_compare.
-remember (lap pa) as la eqn:Hla.
-remember (lap pb) as lb eqn:Hlb.
-remember (lap pc) as lc eqn:Hlc.
-clear pa pb pc Hla Hlb Hlc.
-remember (length la ?= length lb) as lab eqn:Hlab.
+remember (length (lap pa) ?= length (lap pb)) as lab eqn:Hlab.
 symmetry in Hlab.
 destruct lab. {
   apply Nat.compare_eq_iff in Hlab.
   rewrite Hlab.
-  remember (length lb ?= length lc) as lbc eqn:Hlbc.
+  remember (length (lap pb) ?= length (lap pc)) as lbc eqn:Hlbc.
   symmetry in Hlbc.
   destruct lbc; [ | easy | ]. {
     apply Nat.compare_eq_iff in Hlbc.
-    remember (lap_compare la lb) as ab eqn:Hcab.
+    remember (lap_compare (lap pa) (lap pb)) as ab eqn:Hcab.
     symmetry in Hcab.
     destruct ab; [ | | easy ]. {
       apply lap_compare_eq_iff in Hcab; [ | easy ].
-      now subst lb.
+      now rewrite Hcab.
     }
-    remember (lap_compare lb lc) as bc eqn:Hcbc.
+    remember (lap_compare (lap pb) (lap pc)) as bc eqn:Hcbc.
     symmetry in Hcbc.
     destruct bc; [ | | easy ]. {
       apply lap_compare_eq_iff in Hcbc; [ | easy ].
-      subst lb.
+      rewrite Hcbc in Hcab.
       now rewrite Hcab.
     }
-    remember (lap_compare la lc) as ac eqn:Hcac.
+    remember (lap_compare (lap pa) (lap pc)) as ac eqn:Hcac.
     symmetry in Hcac.
     destruct ac; [ easy | easy | exfalso ].
     clear Hab Hbc.
+    move Hlbc before Hlab.
+    remember (lap pa) as la eqn:Hla.
+    remember (lap pb) as lb eqn:Hlb.
+    remember (lap pc) as lc eqn:Hlc.
+    clear pa pb pc Hla Hlb Hlc.
+    (* lap_compare_lt_lt_gt *)
+    revert lb lc Hlab Hlbc Hcab Hcbc Hcac.
+    induction la as [| a]; intros; [ easy | ].
+    destruct lb as [| b]; [ easy | ].
+    destruct lc as [| c]; [ easy | ].
+    cbn in Hlab, Hlbc.
+    apply Nat.succ_inj in Hlab, Hlbc.
+    cbn in Hcab, Hcbc, Hcac.
+    remember (lap_compare la lb) as ab eqn:Hab.
+    symmetry in Hab.
+    destruct ab; [ | | easy ]. {
+      apply lap_compare_eq_iff in Hab; [ | easy ].
+      subst lb; clear Hlab.
+      remember (lap_compare la lc) as ac eqn:Hac.
+      symmetry in Hac.
+      destruct ac; [ | easy | easy ].
+      apply lap_compare_eq_iff in Hac; [ | easy ].
+      subst lc.
+      (* *)
+      progress unfold rngl_compare in Hcab.
+      progress unfold rngl_compare in Hcbc.
+      progress unfold rngl_compare in Hcac.
+      remember (a =? b)%L as x eqn:Hx.
+      remember (a ≤? b)%L as y eqn:Hy.
+      symmetry in Hx, Hy.
+      destruct x; [ easy | ].
+      destruct y; [ | easy ].
+      clear Hcab.
+      remember (b =? c)%L as z eqn:Hz.
+      remember (b ≤? c)%L as t eqn:Ht.
+      symmetry in Hz, Ht.
+      destruct z; [ easy | ].
+      destruct t; [ | easy ].
+      clear Hcbc.
+      remember (a =? c)%L as u eqn:Hu.
+      remember (a ≤? c)%L as v eqn:Hv.
+      symmetry in Hu, Hv.
+      destruct u; [ easy | ].
+      destruct v; [ easy | ].
+      clear Hcac.
+      apply Bool.not_true_iff_false in Hv.
+      apply Hv; clear Hv.
+      apply rngl_leb_le in Hy, Ht.
+      apply rngl_leb_le.
+      now apply (rngl_le_trans Hor _ b).
+    }
+    clear Hcab.
+    remember (lap_compare lb lc) as bc eqn:Hbc.
+    symmetry in Hbc.
+    destruct bc; [ | | easy ]. {
+      apply lap_compare_eq_iff in Hbc; [ | easy ].
+      subst lc.
+      now rewrite Hab in Hcac.
+    }
+    clear Hcbc.
+    remember (lap_compare la lc) as ac eqn:Hac.
+    symmetry in Hac.
+    destruct ac; [ | easy | ]. {
+      apply lap_compare_eq_iff in Hac; [ | now transitivity (length lb) ].
+      subst lc.
+      apply (lap_compare_lt_lt Hor) in Hab; [ | easy | easy ].
+      subst lb.
+      now rewrite lap_compare_refl in Hbc.
+    }
+
+    clear Hcac.
+    now apply (IHla _ _ Hlab Hlbc).
+  } {
+    apply Nat.compare_gt_iff in Hlbc.
+    remember (lap_compare (lap pa) (lap pb)) as ab eqn:Hcab.
+    symmetry in Hcab.
+    destruct ab; [ | | easy ]; clear Hab. {
+      apply lap_compare_eq_iff in Hcab; [ | easy ].
+      now rewrite Hcab.
+    }
+    remember (List.last (lap pa) 0 ?= 0)%L as laz eqn:Hlaz.
+    symmetry in Hlaz.
+    destruct laz; [ easy | easy | exfalso ].
+    remember (List.last (lap pb) 0 ?= 0)%L as lbz eqn:Hlbz.
+    symmetry in Hlbz.
+    destruct lbz; [ | | easy ]; clear Hbc. {
+      apply (rngl_compare_eq_iff Heo) in Hlbz.
+      apply polyn_last_nz in Hlbz; [ easy | ].
+      now intros H; rewrite H in Hlbc.
+    }
+    move Hcab at bottom.
+    remember (lap pa) as la eqn:Hla.
+    remember (lap pb) as lb eqn:Hlb.
+    clear pa pb pc Hla Hlb Hlbc.
+    revert lb Hlab Hlbz Hcab.
+    induction la as [| a] using List.rev_ind; intros; [ easy | ].
+    rewrite List.last_last in Hlaz.
+    rewrite List.length_app, Nat.add_1_r in Hlab.
+    destruct lb as [| b] using List.rev_ind; [ easy | clear IHlb ].
+    rewrite List.length_app, Nat.add_1_r in Hlab.
+    apply Nat.succ_inj in Hlab.
+    rewrite List.last_last in Hlbz.
+    rewrite lap_compare_app_single in Hcab; [ | easy ].
+    remember (a ?= b)%L as ab eqn:Hab.
+    symmetry in Hab.
+    destruct ab; [ | | easy ]. {
+      apply (rngl_compare_eq_iff Heo) in Hab; subst b.
+      congruence.
+    }
+    clear Hcab.
+    move Hlaz before Hlbz.
+    (* lemma? *)
+    progress unfold rngl_compare in Hlaz.
+    progress unfold rngl_compare in Hlbz.
+    progress unfold rngl_compare in Hab.
+    remember (a =? b)%L as ab eqn:Haeb.
+    symmetry in Haeb.
+    destruct ab; [ easy | ].
+    remember (a ≤? b)%L as ab eqn:Halb.
+    symmetry in Halb.
+    destruct ab; [ clear Hab | easy ].
+    remember (a =? 0)%L as az eqn:Haz.
+    symmetry in Haz.
+    destruct az; [ easy | ].
+    remember (a ≤? 0)%L as az eqn:Halz.
+    symmetry in Halz.
+    destruct az; [ easy | clear Hlaz ].
+    remember (b =? 0)%L as bz eqn:Hbz.
+    symmetry in Hbz.
+    destruct bz; [ easy | ].
+    remember (b ≤? 0)%L as bz eqn:Hblz.
+    symmetry in Hblz.
+    destruct bz; [ clear Hlbz | easy ].
+    apply rngl_leb_le in Halb.
+    apply (rngl_eqb_neq Heo) in Haz, Hbz.
+    apply rngl_leb_nle in Halz.
+    apply rngl_leb_le in Hblz.
+    apply Halz; clear Halz.
+    now apply (rngl_le_trans Hor _ b).
+  }
+}
+...
     move lc before lb.
     move Hlbc before Hlab.
     revert lb lc Hlab Hlbc Hcab Hcbc Hcac.
