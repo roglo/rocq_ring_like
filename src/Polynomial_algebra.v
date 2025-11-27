@@ -4019,6 +4019,41 @@ rewrite List.app_nil_r, lap_add_0_r.
 apply List_map2_rngl_add_0_r.
 Qed.
 
+Theorem lap_last_eq_0_0_eq :
+  rngl_is_ordered T = true →
+  ∀ pa,
+   match (0 ?= List.last (lap pa) 0)%L with
+   | Gt => false
+   | _ => true
+   end = true
+   → match (List.last (lap pa) 0 ?= 0)%L with
+     | Gt => false
+     | _ => true
+     end = true
+   → length (lap pa) = 0.
+Proof.
+intros Hor * Hzla Hlaz.
+remember (0 ?= List.last (lap pa) 0)%L as za eqn:Hza.
+remember (List.last (lap pa) 0 ?= 0)%L as az eqn:Haz.
+symmetry in Hza, Haz.
+destruct (Nat.eq_dec (length (lap pa)) 0) as [Hlz| Hlz]; [ easy | ].
+exfalso.
+destruct za; [ | | easy ]. {
+  apply (rngl_compare_eq_iff Heo) in Hza.
+  symmetry in Hza.
+  apply polyn_last_nz in Hza; [ easy | ].
+  now intros H; rewrite H in Hlz.
+}
+destruct az; [ | | easy ]. {
+  apply (rngl_compare_eq_iff Heo) in Haz.
+  apply polyn_last_nz in Haz; [ easy | ].
+  now intros H; rewrite H in Hlz.
+}
+apply (rngl_compare_lt_lt Hor) in Hza; [ | easy ].
+apply polyn_last_nz in Hza; [ easy | ].
+now intros H; rewrite H in Hlz.
+Qed.
+
 (* to be completed
 Theorem polyn_ord_le_refl :
   rngl_is_ordered T = true →
@@ -4080,23 +4115,11 @@ destruct lab. {
 } {
   cbn in Hba.
   apply Nat.compare_lt_iff in Hlab.
-  remember (0 ?= List.last (lap pb) 0)%L as zb eqn:Hzb.
-  remember (List.last (lap pb) 0 ?= 0)%L as bz eqn:Hbz.
-  symmetry in Hzb, Hbz.
-  destruct zb; [ | | easy ]. {
-    apply (rngl_compare_eq_iff Heo) in Hzb.
-    symmetry in Hzb.
-    apply polyn_last_nz in Hzb; [ easy | ].
-    now intros H; rewrite H in Hlab.
-  }
-  destruct bz; [ | | easy ]. {
-    apply (rngl_compare_eq_iff Heo) in Hbz.
-    apply polyn_last_nz in Hbz; [ easy | ].
-    now intros H; rewrite H in Hlab.
-  }
-  apply (rngl_compare_lt_lt Hor) in Hzb; [ | easy ].
-  apply polyn_last_nz in Hzb; [ easy | ].
-  now intros H; rewrite H in Hlab.
+  assert (Hzlb : 0 < length (lap pb)) by flia Hlab.
+  exfalso.
+  clear - Hab Hba Heo rp Hzlb Hor.
+  apply (lap_last_eq_0_0_eq Hor) in Hab; [ | easy ].
+  now rewrite Hab in Hzlb.
 } {
   cbn in Hba.
   apply Nat.compare_gt_iff in Hlab.
@@ -4236,7 +4259,6 @@ destruct lab. {
       subst lb.
       now rewrite lap_compare_refl in Hbc.
     }
-
     clear Hcac.
     now apply (IHla _ _ Hlab Hlbc).
   } {
@@ -4307,7 +4329,33 @@ destruct lab. {
     apply Halz; clear Halz.
     now apply (rngl_le_trans Hor _ b).
   }
-}
+} {
+  apply Nat.compare_lt_iff in Hlab.
+  remember (length (lap pa) ?= length (lap pc)) as lac eqn:Hlac.
+  symmetry in Hlac.
+  destruct lac. {
+    apply Nat.compare_eq_iff in Hlac.
+    rewrite <- Hlac in Hbc.
+    generalize Hlab; intros H.
+    apply Nat.compare_lt_iff in H.
+    apply (f_equal CompOpp) in H.
+    cbn in H.
+    rewrite <- Nat.compare_antisym in H.
+    rewrite H in Hbc; clear H.
+    apply (lap_last_eq_0_0_eq Hor) in Hab; [ | easy ].
+    now rewrite Hab in Hlab.
+  }
+...
+    remember (0 ?= List.last (lap pb) 0)%L as zb eqn:Hzb.
+...
+    apply Nat.compare_eq_iff in Hlbc.
+    remember (lap_compare (lap pa) (lap pb)) as ab eqn:Hcab.
+    symmetry in Hcab.
+    destruct ab; [ | | easy ]. {
+      apply lap_compare_eq_iff in Hcab; [ | easy ].
+      now rewrite Hcab.
+    }
+    remember (lap_compare (lap pb) (lap pc)) as bc eqn:Hcbc.
 ...
     move lc before lb.
     move Hlbc before Hlab.
