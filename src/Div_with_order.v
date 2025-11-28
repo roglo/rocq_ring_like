@@ -1096,11 +1096,12 @@ Theorem rngl_mul_neg_neg :
   ∀ a b : T, (a < 0)%L → (b < 0)%L → (0 < a * b)%L.
 Proof.
 intros Hop Hiq Hto.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 intros * Haz Hbz.
 rewrite <- (rngl_mul_opp_opp Hop).
 apply (rngl_mul_pos_pos Hop Hiq Hto).
-now apply (rngl_opp_pos_neg Hop Hto).
-now apply (rngl_opp_pos_neg Hop Hto).
+now apply (rngl_opp_pos_neg Hop Hor).
+now apply (rngl_opp_pos_neg Hop Hor).
 Qed.
 
 Theorem rngl_mul_lt_mono_nonneg :

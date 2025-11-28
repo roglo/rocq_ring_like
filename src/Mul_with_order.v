@@ -67,7 +67,7 @@ apply (rngl_opp_le_compat Hop Hor).
 do 2 rewrite <- (rngl_mul_opp_r Hop).
 apply (rngl_mul_le_compat_nonneg Hor); [ easy | ].
 split.
-now apply (rngl_opp_nonneg_nonpos Hop Hto).
+now apply (rngl_opp_nonneg_nonpos Hop Hor).
 now apply -> (rngl_opp_le_compat Hop Hor).
 Qed.
 

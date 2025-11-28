@@ -101,14 +101,16 @@ Theorem rl_sqrt_squ :
   rngl_is_totally_ordered T = true →
   ∀ a, (√a²)%L = rngl_abs a.
 Proof.
-intros Hop Hto *.
+intros Hop Hto.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+intros.
 progress unfold rngl_squ.
 progress unfold rngl_abs.
 progress unfold rl_sqrt.
 remember (a ≤? 0)%L as az eqn:Haz; symmetry in Haz.
 destruct az. {
   apply rngl_leb_le in Haz.
-  apply (rngl_opp_nonneg_nonpos Hop Hto) in Haz.
+  apply (rngl_opp_nonneg_nonpos Hop Hor) in Haz.
   rewrite <- (rngl_mul_opp_opp Hop).
   rewrite rl_nth_root_mul; [ | easy | easy ].
   rewrite fold_rngl_squ.
