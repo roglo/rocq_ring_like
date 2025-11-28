@@ -4283,14 +4283,6 @@ destruct lab. {
     remember (lap pa) as la eqn:Hla.
     remember (lap pb) as lb eqn:Hlb.
     clear pa pb pc Hla Hlb Hlbc.
-(*
-  Hlab : length la = length lb
-  Hlbz : (List.last lb 0 ?= 0)%L = Lt
-  Hlaz : (List.last la 0 ?= 0)%L = Gt
-  Hcab : lap_compare la lb = Lt
-  ============================
-  False
-*)
     revert lb Hlab Hlbz Hcab.
     destruct la as [| a] using List.rev_ind; intros; [ easy | ].
     clear IHla.
@@ -4552,6 +4544,11 @@ Theorem polyn_ord_add_le_mono_l :
   else not_applicable.
 Proof.
 intros Hor; cbn.
+remember (rngl_has_opp_or_psub (polyn T)) as osp eqn:Hosp.
+symmetry in Hosp.
+destruct osp; [ | easy ].
+intros.
+split; intros Hbc. {
 ...
 
 Definition polyn_ring_like_ord (Hor : rngl_is_ordered T = true) :
