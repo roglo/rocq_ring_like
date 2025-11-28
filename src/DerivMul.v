@@ -435,7 +435,7 @@ destruct b. {
         rewrite (rngl_opp_sub_distr Hop) in Hb.
         eapply (rngl_le_lt_trans Hor); [ apply Hb | ].
         apply (rngl_le_lt_trans Hor _ 0); [ | easy ].
-        apply (rngl_mul_nonpos_nonneg Hop Hto); [ easy | ].
+        apply (rngl_mul_nonpos_nonneg Hop Hor); [ easy | ].
         apply (dist_nonneg Hop Hiv Hto dist).
       }
     } {

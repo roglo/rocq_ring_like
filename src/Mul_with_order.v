@@ -54,14 +54,13 @@ Qed.
 
 Theorem rngl_mul_le_compat_nonpos_nonneg :
   rngl_has_opp T = true →
-  rngl_is_totally_ordered T = true →
+  rngl_is_ordered T = true →
   ∀ a b c d,
   (0 ≤ c ≤ a)%L
   → (b ≤ d ≤ 0)%L
   → (a * b ≤ c * d)%L.
 Proof.
-intros Hop Hto.
-specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+intros Hop Hor.
 intros * Had Hcd.
 apply (rngl_opp_le_compat Hop Hor).
 do 2 rewrite <- (rngl_mul_opp_r Hop).
@@ -99,11 +98,10 @@ Qed.
 
 Theorem rngl_mul_nonneg_nonpos :
   rngl_has_opp T = true →
-  rngl_is_totally_ordered T = true →
+  rngl_is_ordered T = true →
   ∀ a b, (0 ≤ a → b ≤ 0 → a * b ≤ 0)%L.
 Proof.
-intros Hop Hto.
-specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+intros Hop Hor.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 intros * Ha Hb.
 specialize (rngl_mul_le_compat_nonneg Hor) as H1.
@@ -125,11 +123,10 @@ Qed.
 
 Theorem rngl_mul_nonpos_nonneg :
   rngl_has_opp T = true →
-  rngl_is_totally_ordered T = true →
+  rngl_is_ordered T = true →
   ∀ a b, (a ≤ 0 → 0 ≤ b → a * b ≤ 0)%L.
 Proof.
-intros Hop Hto.
-specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+intros Hop Hor.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 intros * Ha Hb.
 specialize (rngl_mul_le_compat_nonneg Hor) as H1.
@@ -485,11 +482,10 @@ Qed.
 
 Theorem rngl_mul_le_mono_nonpos_l :
   rngl_has_opp T = true →
-  rngl_is_totally_ordered T = true →
+  rngl_is_ordered T = true →
   ∀ a b c, (a ≤ 0)%L → (b ≤ c)%L → (a * c ≤ a * b)%L.
 Proof.
-intros Hop Hto.
-specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+intros Hop Hor.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 intros * Ha Hbc.
 apply (rngl_lt_eq_cases Hor) in Hbc.
@@ -503,11 +499,10 @@ Qed.
 
 Theorem rngl_mul_le_mono_nonpos_r :
   rngl_has_opp T = true →
-  rngl_is_totally_ordered T = true →
+  rngl_is_ordered T = true →
   ∀ a b c, (c ≤ 0 → a ≤ b → b * c ≤ a * c)%L.
 Proof.
-intros Hop Hto.
-specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+intros Hop Hor.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 intros * Hc Hab.
 apply (rngl_lt_eq_cases Hor) in Hab.
@@ -702,11 +697,10 @@ Qed.
 (* on the usefulness of rngl_ord_mul_le_compat_nonpos *)
 Theorem rngl_ord_mul_le_compat_nonneg_mul_le_compat_nonpos :
   rngl_has_opp T = true →
-  rngl_is_totally_ordered T = true →
+  rngl_is_ordered T = true →
   (∀ a b c d, (c ≤ a ≤ 0)%L → (d ≤ b ≤ 0)%L → (a * b ≤ c * d)%L).
 Proof.
-intros Hop Hto.
-specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+intros Hop Hor.
 intros * Hca Hdb.
 destruct Hca as (Hca, Haz).
 destruct Hdb as (Hdb, Hbz).

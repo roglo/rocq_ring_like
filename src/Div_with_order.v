@@ -58,7 +58,7 @@ destruct (rngl_leb_dec 0 a⁻¹)%L as [H2| H2]. {
 apply rngl_leb_nle in H2.
 apply (rngl_not_le Hto) in H2.
 destruct H2 as (H2, H3).
-specialize (rngl_mul_nonneg_nonpos Hop Hto) as H4.
+specialize (rngl_mul_nonneg_nonpos Hop Hor) as H4.
 assert (H : (0 ≤ a)%L). {
   now apply rngl_le_neq, rngl_lt_le_incl in Hza.
 }
@@ -291,7 +291,7 @@ destruct xz. {
       exfalso; apply Hxy; clear Hxy.
       progress unfold rngl_div.
       rewrite Hiv.
-      apply (rngl_mul_nonpos_nonneg Hop Hto _ _ Hx).
+      apply (rngl_mul_nonpos_nonneg Hop Hor _ _ Hx).
       apply rngl_lt_le_incl.
       now apply (rngl_inv_pos Hop Hiv Hto).
     }
@@ -313,7 +313,7 @@ destruct yz. {
     progress unfold rngl_div.
     rewrite Hiv.
     apply rngl_lt_le_incl in Hx.
-    apply (rngl_mul_nonneg_nonpos Hop Hto _ _ Hx).
+    apply (rngl_mul_nonneg_nonpos Hop Hor _ _ Hx).
     apply rngl_lt_le_incl.
     apply (rngl_inv_neg Hop Hiv Hto).
     apply rngl_le_neq.
@@ -393,7 +393,7 @@ split; intros Hb. {
       apply (rngl_nle_gt Hor) in Habz.
       apply (rngl_nlt_ge_iff Hto).
       intros Hb; apply Habz; clear Habz.
-      apply (rngl_mul_nonpos_nonneg Hop Hto); [ | easy ].
+      apply (rngl_mul_nonpos_nonneg Hop Hor); [ | easy ].
       now apply rngl_lt_le_incl.
     }
     now rewrite Habz in Hzab.
@@ -427,7 +427,7 @@ split; intros Hb. {
       apply (rngl_nle_gt Hor) in Habz.
       apply (rngl_nlt_ge_iff Hto).
       intros Hb; apply Habz; clear Habz.
-      apply (rngl_mul_nonneg_nonpos Hop Hto); [ easy | ].
+      apply (rngl_mul_nonneg_nonpos Hop Hor); [ easy | ].
       now apply rngl_lt_le_incl.
     }
     now rewrite Habz in Hzab.
@@ -936,7 +936,7 @@ specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 intros * Hza Hbz.
 apply rngl_le_neq.
 split. {
-  apply (rngl_mul_nonneg_nonpos Hop Hto).
+  apply (rngl_mul_nonneg_nonpos Hop Hor).
   now apply rngl_lt_le_incl.
   now apply rngl_lt_le_incl.
 }
@@ -1041,7 +1041,7 @@ destruct az. {
   apply (rngl_leb_gt_iff Hto) in Hbz.
   apply rngl_le_neq in Hbz.
   destruct Hbz as (Hbz, Hzb).
-  specialize (rngl_mul_nonpos_nonneg Hop Hto _ _ Haz Hbz) as H1.
+  specialize (rngl_mul_nonpos_nonneg Hop Hor _ _ Haz Hbz) as H1.
   now apply (rngl_nlt_ge Hor) in H1.
 }
 apply (rngl_leb_gt_iff Hto) in Haz.
@@ -1049,7 +1049,7 @@ destruct bz; [ | easy ].
 apply rngl_leb_le in Hbz.
 apply rngl_le_neq in Haz.
 destruct Haz as (Haz, Hza).
-specialize (rngl_mul_nonneg_nonpos Hop Hto _ _ Haz Hbz) as H1.
+specialize (rngl_mul_nonneg_nonpos Hop Hor _ _ Haz Hbz) as H1.
 now apply (rngl_nlt_ge Hor) in H1.
 Qed.
 
