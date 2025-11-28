@@ -352,11 +352,10 @@ Qed.
 Theorem rngl_mul_pos_pos :
   rngl_has_opp T = true →
   rngl_has_inv_or_pdiv T = true →
-  rngl_is_totally_ordered T = true →
+  rngl_is_ordered T = true →
   ∀ a b : T, (0 < a)%L → (0 < b)%L → (0 < a * b)%L.
 Proof.
-intros Hop Hiq Hto.
-specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+intros Hop Hiq Hor.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 intros * Haz Hbz.
 apply rngl_le_neq in Haz.
@@ -401,7 +400,7 @@ split; intros Hb. {
   intros H; subst a.
   now rewrite (rngl_mul_0_l Hos) in Hzab.
 } {
-  now apply (rngl_mul_pos_pos Hop Hiq Hto).
+  now apply (rngl_mul_pos_pos Hop Hiq Hor).
 }
 Qed.
 
@@ -435,7 +434,7 @@ split; intros Hb. {
   intros H; subst b.
   now rewrite (rngl_mul_0_r Hos) in Hzab.
 } {
-  now apply (rngl_mul_pos_pos Hop Hiq Hto).
+  now apply (rngl_mul_pos_pos Hop Hiq Hor).
 }
 Qed.
 
@@ -464,7 +463,7 @@ split; intros Hbc. {
   rewrite <- (rngl_mul_sub_distr_l Hop).
   rewrite (rngl_sub_0_l Hop).
   rewrite (rngl_opp_sub_distr Hop).
-  apply (rngl_mul_pos_pos Hop Hiq Hto); [ easy | ].
+  apply (rngl_mul_pos_pos Hop Hiq Hor); [ easy | ].
   now apply (rngl_lt_0_sub Hop Hor).
 }
 Qed.
@@ -482,7 +481,7 @@ intros * Ha.
 split; intros Hbc. {
   apply (rngl_lt_0_sub Hop Hor).
   rewrite <- (rngl_mul_sub_distr_l Hop).
-  apply (rngl_mul_pos_pos Hop Hiq Hto); [ easy | ].
+  apply (rngl_mul_pos_pos Hop Hiq Hor); [ easy | ].
   now apply (rngl_lt_0_sub Hop Hor).
 } {
   apply (rngl_lt_0_sub Hop Hor) in Hbc.
@@ -517,7 +516,7 @@ intros * Ha.
 split; intros Hbc. {
   apply (rngl_lt_0_sub Hop Hor).
   rewrite <- (rngl_mul_sub_distr_r Hop).
-  apply (rngl_mul_pos_pos Hop Hiq Hto); [ | easy ].
+  apply (rngl_mul_pos_pos Hop Hiq Hor); [ | easy ].
   now apply (rngl_lt_0_sub Hop Hor).
 } {
   apply (rngl_lt_0_sub Hop Hor) in Hbc.
@@ -702,12 +701,13 @@ Theorem rngl_div_pos :
   ∀ a b : T, (0 < a)%L → (0 < b)%L → (0 < a / b)%L.
 Proof.
 intros Hop Hiv Hto.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
 intros * Ha Hb.
 progress unfold rngl_div.
 rewrite Hiv.
-apply (rngl_mul_pos_pos Hop Hiq Hto); [ easy | ].
+apply (rngl_mul_pos_pos Hop Hiq Hor); [ easy | ].
 now apply (rngl_inv_pos Hop Hiv Hto).
 Qed.
 
@@ -871,7 +871,7 @@ destruct (rngl_ltb_dec a 0%L) as [H12| H12]. {
   assert (H : (0 < - a / 2)%L). {
     progress unfold rngl_div.
     rewrite Hiv.
-    apply (rngl_mul_pos_pos Hop Hiq Hto). {
+    apply (rngl_mul_pos_pos Hop Hiq Hor). {
       rewrite <- (rngl_opp_0 Hop).
       now apply -> (rngl_opp_lt_compat Hop Hor).
     }
@@ -903,7 +903,7 @@ destruct (rngl_ltb_dec 0 a) as [H21| H21]. {
   assert (H : (0 < a / 2)%L). {
     progress unfold rngl_div.
     rewrite Hiv.
-    apply (rngl_mul_pos_pos Hop Hiq Hto); [ easy | ].
+    apply (rngl_mul_pos_pos Hop Hiq Hor); [ easy | ].
     apply (rngl_inv_pos Hop Hiv Hto).
     apply (rngl_0_lt_2 Hos Hc1 Hto).
   }
@@ -927,11 +927,10 @@ Qed.
 Theorem rngl_mul_pos_neg :
   rngl_has_opp T = true →
   rngl_has_inv_or_pdiv T = true →
-  rngl_is_totally_ordered T = true →
+  rngl_is_ordered T = true →
   ∀ a b, (0 < a → b < 0 → a * b < 0)%L.
 Proof.
-intros Hop Hiq Hto.
-specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+intros Hop Hiq Hor.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 intros * Hza Hbz.
 apply rngl_le_neq.
@@ -1092,14 +1091,13 @@ Qed.
 Theorem rngl_mul_neg_neg :
   rngl_has_opp T = true →
   rngl_has_inv_or_pdiv T = true →
-  rngl_is_totally_ordered T = true →
+  rngl_is_ordered T = true →
   ∀ a b : T, (a < 0)%L → (b < 0)%L → (0 < a * b)%L.
 Proof.
-intros Hop Hiq Hto.
-specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+intros Hop Hiq Hor.
 intros * Haz Hbz.
 rewrite <- (rngl_mul_opp_opp Hop).
-apply (rngl_mul_pos_pos Hop Hiq Hto).
+apply (rngl_mul_pos_pos Hop Hiq Hor).
 now apply (rngl_opp_pos_neg Hop Hor).
 now apply (rngl_opp_pos_neg Hop Hor).
 Qed.
@@ -1202,7 +1200,7 @@ destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
 }
 intros * Hza.
 induction n; cbn; [ apply (rngl_0_lt_1 Hos Hc1 Hto) | ].
-now apply (rngl_mul_pos_pos Hop Hiq Hto).
+now apply (rngl_mul_pos_pos Hop Hiq Hor).
 Qed.
 
 Theorem rngl_le_0_mul :

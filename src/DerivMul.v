@@ -246,7 +246,7 @@ exists (rngl_min η (ε / (2 * rngl_abs a)))%L.
 split. {
   apply rngl_min_glb_lt; [ easy | ].
   apply (rngl_div_pos Hop Hiv Hto); [ easy | ].
-  apply (rngl_mul_pos_pos Hop Hiq Hto); [ easy | ].
+  apply (rngl_mul_pos_pos Hop Hiq Hor); [ easy | ].
   now apply (rngl_abs_pos Hop Hto).
 }
 intros x Hlt Hdxx.
@@ -324,7 +324,7 @@ destruct b. {
             rewrite <- (rngl_opp_add_distr Hop).
             apply (rngl_opp_pos_neg Hop Hor).
             rewrite <- (rngl_mul_2_l).
-            apply (rngl_mul_pos_neg Hop Hiq Hto); [ easy | ].
+            apply (rngl_mul_pos_neg Hop Hiq Hor); [ easy | ].
             now apply rngl_le_neq.
           }
           apply rngl_lt_le_incl, H2.
@@ -406,7 +406,7 @@ destruct b. {
             rewrite <- (rngl_opp_add_distr Hop).
             apply (rngl_opp_pos_neg Hop Hor).
             rewrite <- (rngl_mul_2_l).
-            apply (rngl_mul_pos_neg Hop Hiq Hto); [ easy | ].
+            apply (rngl_mul_pos_neg Hop Hiq Hor); [ easy | ].
             now apply rngl_le_neq.
           }
           apply rngl_lt_le_incl, H2.
@@ -544,7 +544,7 @@ destruct c. {
       rewrite rngl_mul_assoc.
       rewrite (rngl_mul_comm Hic).
       apply (rngl_le_div_r Hop Hiv Hto). {
-        now apply (rngl_mul_pos_pos Hop Hiq Hto).
+        now apply (rngl_mul_pos_pos Hop Hiq Hor).
       }
       now apply rngl_lt_le_incl.
     } {
@@ -638,7 +638,7 @@ destruct c. {
       rewrite rngl_mul_assoc.
       rewrite (rngl_mul_comm Hic).
       apply (rngl_le_div_r Hop Hiv Hto). {
-        now apply (rngl_mul_pos_pos Hop Hiq Hto).
+        now apply (rngl_mul_pos_pos Hop Hiq Hor).
       }
       now apply rngl_lt_le_incl.
     }
@@ -730,7 +730,7 @@ destruct is_left. {
   specialize (H11 (ε / (3 * K))%L).
   assert (H : (0 < ε / (3 * K))%L). {
     apply (rngl_div_pos Hop Hiv Hto); [ easy | ].
-    apply (rngl_mul_pos_pos Hop Hiq Hto); [ easy | ].
+    apply (rngl_mul_pos_pos Hop Hiq Hor); [ easy | ].
     progress unfold K.
     apply (rngl_add_nonneg_pos Hos Hor).
     apply (rngl_abs_nonneg Hop Hto).
@@ -1019,7 +1019,7 @@ destruct is_left. {
   specialize (H11 (ε / (3 * K))%L).
   assert (H : (0 < ε / (3 * K))%L). {
     apply (rngl_div_pos Hop Hiv Hto); [ easy | ].
-    apply (rngl_mul_pos_pos Hop Hiq Hto); [ easy | ].
+    apply (rngl_mul_pos_pos Hop Hiq Hor); [ easy | ].
     progress unfold K.
     apply (rngl_add_nonneg_pos Hos Hor).
     apply (rngl_abs_nonneg Hop Hto).
@@ -1394,7 +1394,7 @@ destruct H50 as (δ & M & Hδ & HM & H50).
 specialize (Hlfc (ε / (2 * M)))%L as H1.
 assert (H : (0 < ε / (2 * M))%L). {
   apply (rngl_div_pos Hop Hiv Hto); [ easy | ].
-  now apply (rngl_mul_pos_pos Hop Hiq Hto).
+  now apply (rngl_mul_pos_pos Hop Hiq Hor).
 }
 specialize (H1 H); clear H.
 specialize (Hlgc (ε / (2 * rngl_abs u + 1)))%L as H2.
@@ -1467,7 +1467,7 @@ eapply (rngl_le_trans Hor). {
     now apply rngl_lt_le_incl.
   }
   apply (rngl_le_div_l Hop Hiv Hto). {
-    now apply (rngl_mul_pos_pos Hop Hiq Hto).
+    now apply (rngl_mul_pos_pos Hop Hiq Hor).
   }
   rewrite (rngl_div_mul_mul_div Hic Hiv).
   rewrite rngl_mul_1_l.
@@ -1548,9 +1548,9 @@ assert (HM : (0 < M)%L). {
 }
 specialize (Hlfc (ε * M²)%L) as H1.
 assert (H : (0 < ε * M²)%L). {
-  apply (rngl_mul_pos_pos Hop Hiq Hto); [ easy | ].
+  apply (rngl_mul_pos_pos Hop Hiq Hor); [ easy | ].
   (* lemma *)
-  now apply (rngl_mul_pos_pos Hop Hiq Hto).
+  now apply (rngl_mul_pos_pos Hop Hiq Hor).
 }
 specialize (H1 H); clear H.
 destruct H1 as (η & Hη & H1).
@@ -1674,9 +1674,9 @@ assert (Hem : (0 < ε * M² / 2)%L). {
   apply (rngl_div_pos Hop Hiv Hto). 2: {
     apply (rngl_0_lt_2 Hos Hc1 Hto).
   }
-  apply (rngl_mul_pos_pos Hop Hiq Hto); [ easy | ].
+  apply (rngl_mul_pos_pos Hop Hiq Hor); [ easy | ].
   (* lemma *)
-  now apply (rngl_mul_pos_pos Hop Hiq Hto).
+  now apply (rngl_mul_pos_pos Hop Hiq Hor).
 }
 specialize (Hlfr _ Hem).
 destruct Hlfr as (η & Hη & H3).
@@ -1687,9 +1687,9 @@ specialize (Hlfc ε') as H4.
 assert (H : (0 < ε')%L). {
   progress unfold ε'.
   apply (rngl_div_pos Hop Hiv Hto). {
-    now apply (rngl_mul_pos_pos Hop Hiq Hto).
+    now apply (rngl_mul_pos_pos Hop Hiq Hor).
   }
-  apply (rngl_mul_pos_pos Hop Hiq Hto). {
+  apply (rngl_mul_pos_pos Hop Hiq Hor). {
     apply (rngl_0_lt_2 Hos Hc1 Hto).
   }
   apply (rngl_add_nonneg_pos Hos Hor). 2: {
@@ -1900,7 +1900,7 @@ assert (H : (rngl_abs (f x)⁻¹ * M < 1)%L). {
 eapply (rngl_lt_le_trans Hor). {
   rewrite rngl_mul_assoc.
   apply (rngl_mul_lt_mono_pos_l Hop Hiq Hto); [ | apply H ].
-  apply (rngl_mul_pos_pos Hop Hiq Hto). {
+  apply (rngl_mul_pos_pos Hop Hiq Hor). {
     now apply (rngl_abs_pos Hop Hto).
   }
   apply rngl_le_neq.
