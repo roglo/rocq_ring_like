@@ -4549,6 +4549,37 @@ symmetry in Hosp.
 destruct osp; [ | easy ].
 intros.
 split; intros Hbc. {
+  progress unfold rngl_le in Hbc; cbn in Hbc.
+  progress unfold rngl_le; cbn.
+  progress unfold polyn_opt_leb in Hbc.
+  progress unfold polyn_opt_leb.
+  remember (rngl_opt_leb T) as leb eqn:Hleb.
+  symmetry in Hleb.
+  destruct leb as [(leb, tot)| ]; [ | easy ].
+  progress unfold polyn_leb in Hbc.
+  progress unfold polyn_leb.
+  remember (polyn_compare pb pc) as bc eqn:Hpbc.
+  symmetry in Hpbc.
+  destruct bc; [ | | easy ]; clear Hbc. {
+    apply polyn_compare_eq_iff in Hpbc; subst pc.
+    now rewrite polyn_compare_refl.
+  }
+  remember (polyn_compare (pa + pb) (pa + pc)) as abc eqn:Habc.
+  symmetry in Habc.
+  destruct abc; [ easy | easy | exfalso ].
+  progress unfold polyn_compare in Hpbc.
+  progress unfold polyn_compare in Habc.
+  remember (length (lap pb) ?= length (lap pc)) as bc eqn:Hbc.
+  symmetry in Hbc.
+  destruct bc. {
+    apply Nat.compare_eq_iff in Hbc.
+    remember (length (lap _) ?= length (lap _)) as abc eqn:Hlabc.
+    symmetry in Hlabc.
+    destruct abc. {
+      apply Nat.compare_eq_iff in Hlabc.
+      cbn in Habc.
+      cbn in Hlabc.
+(* bon, bin chais pas *)
 ...
 
 Definition polyn_ring_like_ord (Hor : rngl_is_ordered T = true) :
