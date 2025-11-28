@@ -273,8 +273,9 @@ Theorem rngl_opp_1_le_0 :
   (-1 ≤ 0)%L.
 Proof.
 intros Hop Hto.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
-apply (rngl_opp_nonpos_nonneg Hop Hto).
+apply (rngl_opp_nonpos_nonneg Hop Hor).
 apply (rngl_0_le_1 Hos Hto).
 Qed.
 
@@ -285,8 +286,9 @@ Theorem rngl_opp_1_lt_0 :
   (-1 < 0)%L.
 Proof.
 intros Hop Hto Hc1.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
-apply (rngl_opp_neg_pos Hop Hto).
+apply (rngl_opp_neg_pos Hop Hor).
 apply (rngl_0_lt_1 Hos Hc1 Hto).
 Qed.
 

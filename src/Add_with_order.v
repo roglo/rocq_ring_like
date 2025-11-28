@@ -840,8 +840,6 @@ split; intros Ha. {
 }
 Qed.
 
-(***)
-
 Theorem rngl_opp_pos_neg :
   rngl_has_opp T = true →
   rngl_is_ordered T = true →
@@ -857,25 +855,37 @@ split; intros Ha. {
 }
 Qed.
 
-(***)
-
 Theorem rngl_opp_nonpos_nonneg :
   rngl_has_opp T = true →
-  rngl_is_totally_ordered T = true →
+  rngl_is_ordered T = true →
   ∀ a, (- a ≤ 0)%L ↔ (0 ≤ a)%L.
 Proof.
-intros Hop Hto.
-apply (rngl_le_or_lt_opp_0 (rngl_le_lt_comp Hto) Hop).
+intros Hop Hor *.
+split; intros Ha. {
+  apply (rngl_opp_le_compat Hop Hor).
+  now rewrite (rngl_opp_0 Hop).
+} {
+  apply (rngl_opp_le_compat Hop Hor) in Ha.
+  now rewrite (rngl_opp_0 Hop) in Ha.
+}
 Qed.
 
 Theorem rngl_opp_neg_pos :
   rngl_has_opp T = true →
-  rngl_is_totally_ordered T = true →
+  rngl_is_ordered T = true →
   ∀ a, (- a < 0 ↔ 0 < a)%L.
 Proof.
-intros Hop Hto.
-apply (rngl_le_or_lt_opp_0 (rngl_lt_le_comp Hto) Hop).
+intros Hop Hor *.
+split; intros Ha. {
+  apply (rngl_opp_lt_compat Hop Hor).
+  now rewrite (rngl_opp_0 Hop).
+} {
+  apply (rngl_opp_lt_compat Hop Hor) in Ha.
+  now rewrite (rngl_opp_0 Hop) in Ha.
+}
 Qed.
+
+(***)
 
 Theorem rngl_sub_le_mono_l :
   rngl_has_opp T = true →
