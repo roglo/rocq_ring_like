@@ -79,14 +79,15 @@ Theorem rngl_inv_neg :
   ∀ a, (a < 0 → a⁻¹ < 0)%L.
 Proof.
 intros * Hop Hiv Hto.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 intros * Hza.
 specialize (rngl_inv_pos Hop Hiv Hto) as H2.
 specialize (H2 (- a))%L.
-apply (rngl_opp_lt_compat Hop Hto).
+apply (rngl_opp_lt_compat Hop Hor).
 rewrite (rngl_opp_0 Hop).
 rewrite (rngl_opp_inv Hop Hiv); [ | now apply rngl_le_neq ].
 apply H2.
-apply (rngl_opp_lt_compat Hop Hto) in Hza.
+apply (rngl_opp_lt_compat Hop Hor) in Hza.
 now rewrite (rngl_opp_0 Hop) in Hza.
 Qed.
 
@@ -228,10 +229,10 @@ destruct xz. {
       specialize (H1 H); clear H.
       assert (H : (y⁻¹ ≤ 0 ≤ 0)%L). {
         split; [ | apply (rngl_le_refl Hor) ].
-        apply (rngl_opp_le_compat Hop Hto).
+        apply (rngl_opp_le_compat Hop Hor).
         rewrite (rngl_opp_0 Hop).
         rewrite (rngl_opp_inv Hop Hiv _ Hyz).
-        apply (rngl_opp_le_compat Hop Hto) in Hy.
+        apply (rngl_opp_le_compat Hop Hor) in Hy.
         rewrite (rngl_opp_0 Hop) in Hy.
         apply rngl_lt_le_incl.
         apply (rngl_inv_pos Hop Hiv Hto).
@@ -872,7 +873,7 @@ destruct (rngl_ltb_dec a 0%L) as [H12| H12]. {
     rewrite Hiv.
     apply (rngl_mul_pos_pos Hop Hiq Hto). {
       rewrite <- (rngl_opp_0 Hop).
-      now apply -> (rngl_opp_lt_compat Hop Hto).
+      now apply -> (rngl_opp_lt_compat Hop Hor).
     }
     apply (rngl_inv_pos Hop Hiv Hto).
     apply (rngl_0_lt_2 Hos Hc1 Hto).
@@ -894,7 +895,7 @@ destruct (rngl_ltb_dec a 0%L) as [H12| H12]. {
     apply (rngl_0_lt_1 Hos Hc1 Hto).
   }
   rewrite <- (rngl_opp_0 Hop).
-  now apply -> (rngl_opp_lt_compat Hop Hto).
+  now apply -> (rngl_opp_lt_compat Hop Hor).
 }
 destruct (rngl_ltb_dec 0 a) as [H21| H21]. {
   apply (rngl_ltb_lt Heo) in H21.
@@ -1269,6 +1270,7 @@ Theorem rngl_squ_le_abs_le :
   ∀ a b, (a² ≤ b² → rngl_abs a ≤ rngl_abs b)%L.
 Proof.
 intros Hop Hiq Hto.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 intros * Hab.
 progress unfold rngl_squ in Hab.
 progress unfold rngl_abs.
@@ -1282,10 +1284,10 @@ destruct az. {
     rewrite <- (rngl_mul_opp_opp Hop b) in Hab.
     apply (rngl_square_le_simpl_nonneg Hop Hiq Hto) in Hab; [ easy | ].
     rewrite <- (rngl_opp_0 Hop).
-    now apply -> (rngl_opp_le_compat Hop Hto).
+    now apply -> (rngl_opp_le_compat Hop Hor).
   } {
     apply (rngl_leb_gt_iff Hto) in Hbz.
-    apply (rngl_opp_le_compat Hop Hto) in Haz.
+    apply (rngl_opp_le_compat Hop Hor) in Haz.
     rewrite (rngl_opp_0 Hop) in Haz.
     rewrite <- (rngl_mul_opp_opp Hop) in Hab.
     apply (rngl_square_le_simpl_nonneg Hop Hiq Hto) in Hab; [ easy | ].
@@ -1295,7 +1297,7 @@ destruct az. {
   apply (rngl_leb_gt_iff Hto) in Haz.
   destruct bz. {
     apply rngl_leb_le in Hbz.
-    apply (rngl_opp_le_compat Hop Hto) in Hbz.
+    apply (rngl_opp_le_compat Hop Hor) in Hbz.
     rewrite (rngl_opp_0 Hop) in Hbz.
     rewrite <- (rngl_mul_opp_opp Hop b) in Hab.
     now apply (rngl_square_le_simpl_nonneg Hop Hiq Hto) in Hab.

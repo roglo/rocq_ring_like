@@ -1563,14 +1563,14 @@ destruct (is_bound _ _ (- c)) as [Hqc| Hqc]. {
   destruct Hp as (_, Hp).
   specialize (Hp (- c')%L) as H1.
   destruct (is_bound _ P (- c')) as [Hpoc'| Hpoc']. {
-    apply (rngl_opp_le_compat Hop Hto).
+    apply (rngl_opp_le_compat Hop Hor).
     now rewrite (rngl_opp_involutive Hop).
   }
   exfalso.
   destruct Hpoc' as (x, Hx).
   apply Hx; clear Hx.
   intros Hpx.
-  apply (rngl_opp_le_compat Hop Hto).
+  apply (rngl_opp_le_compat Hop Hor).
   rewrite (rngl_opp_involutive Hop).
   apply Hqc'.
   now apply Hpq.
@@ -1579,7 +1579,7 @@ destruct Hqc as (x, Hx).
 exfalso.
 apply Hx; clear Hx.
 intros Hqx.
-apply (rngl_opp_le_compat Hop Hto).
+apply (rngl_opp_le_compat Hop Hor).
 rewrite (rngl_opp_involutive Hop).
 apply Hpc.
 apply Hpq.
@@ -1629,7 +1629,7 @@ destruct H1 as (c & Hc & Hca).
 exists (- c)%L.
 apply (supremum_opp _ P) in Hc; [ | easy ].
 split; [ easy | ].
-apply (rngl_opp_le_compat Hop Hto).
+apply (rngl_opp_le_compat Hop Hor).
 now rewrite (rngl_opp_involutive Hop).
 Qed.
 
@@ -1712,7 +1712,7 @@ assert
 }
 specialize (H1 H a b (- u)%L Hab); clear H.
 assert (H : (- f a ≤ - u ≤ - f b)%L). {
-  now split; apply -> (rngl_opp_le_compat Hop Hto).
+  now split; apply -> (rngl_opp_le_compat Hop Hor).
 }
 specialize (H1 H); clear H.
 destruct H1 as (c & Hacb & Hc).

@@ -63,12 +63,12 @@ Proof.
 intros Hop Hto.
 specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 intros * Had Hcd.
-apply (rngl_opp_le_compat Hop Hto).
+apply (rngl_opp_le_compat Hop Hor).
 do 2 rewrite <- (rngl_mul_opp_r Hop).
 apply (rngl_mul_le_compat_nonneg Hor); [ easy | ].
 split.
 now apply (rngl_opp_nonneg_nonpos Hop Hto).
-now apply -> (rngl_opp_le_compat Hop Hto).
+now apply -> (rngl_opp_le_compat Hop Hor).
 Qed.
 
 Theorem rngl_mul_nonneg_nonneg :
@@ -112,13 +112,13 @@ assert (H : (0 ≤ 0 ≤ a)%L) by now split; [ pauto | ].
 specialize (H1 H); clear H.
 assert (H : (0 ≤ 0 ≤ - b)%L). {
   split; [ pauto | ].
-  apply (rngl_opp_le_compat Hop Hto) in Hb.
+  apply (rngl_opp_le_compat Hop Hor) in Hb.
   now rewrite (rngl_opp_0 Hop) in Hb.
 }
 specialize (H1 H); clear H.
 rewrite (rngl_mul_0_l Hos) in H1.
 rewrite (rngl_mul_opp_r Hop) in H1.
-apply (rngl_opp_le_compat Hop Hto) in H1.
+apply (rngl_opp_le_compat Hop Hor) in H1.
 rewrite (rngl_opp_involutive Hop) in H1.
 now rewrite (rngl_opp_0 Hop) in H1.
 Qed.
@@ -136,7 +136,7 @@ specialize (rngl_mul_le_compat_nonneg Hor) as H1.
 specialize (H1 0 0 (- a) b)%L.
 assert (H : (0 ≤ 0 ≤ - a)%L). {
   split; [ pauto | ].
-  apply (rngl_opp_le_compat Hop Hto) in Ha.
+  apply (rngl_opp_le_compat Hop Hor) in Ha.
   now rewrite (rngl_opp_0 Hop) in Ha.
 }
 specialize (H1 H); clear H.
@@ -144,7 +144,7 @@ assert (H : (0 ≤ 0 ≤ b)%L) by now split; [ pauto | ].
 specialize (H1 H); clear H.
 rewrite (rngl_mul_0_l Hos) in H1.
 rewrite (rngl_mul_opp_l Hop) in H1.
-apply (rngl_opp_le_compat Hop Hto) in H1.
+apply (rngl_opp_le_compat Hop Hor) in H1.
 rewrite (rngl_opp_involutive Hop) in H1.
 now rewrite (rngl_opp_0 Hop) in H1.
 Qed.
@@ -627,11 +627,11 @@ destruct az. {
   apply rngl_leb_le in Haz.
   destruct bz. {
     apply rngl_leb_le in Hbz.
-    apply (rngl_opp_le_compat Hop Hto) in Hab.
+    apply (rngl_opp_le_compat Hop Hor) in Hab.
     now apply (rngl_mul_le_compat_nonpos Hor).
   } {
     apply (rngl_leb_gt_iff Hto) in Hbz.
-    apply (rngl_opp_le_compat Hop Hto) in Haz.
+    apply (rngl_opp_le_compat Hop Hor) in Haz.
     rewrite (rngl_opp_0 Hop) in Haz.
     rewrite <- (rngl_mul_opp_opp Hop).
     apply rngl_lt_le_incl in Hbz.
@@ -641,7 +641,7 @@ destruct az. {
   apply (rngl_leb_gt_iff Hto) in Haz.
   destruct bz. {
     apply rngl_leb_le in Hbz.
-    apply (rngl_opp_le_compat Hop Hto) in Hbz.
+    apply (rngl_opp_le_compat Hop Hor) in Hbz.
     rewrite (rngl_opp_0 Hop) in Hbz.
     rewrite <- (rngl_mul_opp_opp Hop b).
     apply rngl_lt_le_incl in Haz.
@@ -705,7 +705,7 @@ specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 intros * Hca Hdb.
 destruct Hca as (Hca, Haz).
 destruct Hdb as (Hdb, Hbz).
-apply (rngl_opp_le_compat Hop Hto) in Hca, Haz, Hdb, Hbz.
+apply (rngl_opp_le_compat Hop Hor) in Hca, Haz, Hdb, Hbz.
 rewrite (rngl_opp_0 Hop) in Haz, Hbz.
 assert (H3 : (0 ≤ - a ≤ - c)%L) by easy.
 assert (H4 : (0 ≤ - b ≤ - d)%L) by easy.
