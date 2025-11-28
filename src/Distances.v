@@ -409,7 +409,7 @@ rewrite (rngl_abs_nonpos_eq Hop Hto). 2: {
   now apply (rngl_le_trans Hor _ b).
 }
 do 2 rewrite (rngl_opp_sub_distr Hop).
-now apply (rngl_sub_le_mono_r Hop Hto).
+now apply (rngl_sub_le_mono_r Hop Hor).
 Qed.
 
 Theorem rngl_dist_right_mono :

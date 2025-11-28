@@ -299,7 +299,7 @@ induction p; intros. {
   cbn in Ha.
   injection Ha; clear Ha; intros; subst ap bp.
   split. {
-    apply (rngl_sub_le_mono_r Hop Hto).
+    apply (rngl_sub_le_mono_r Hop Hor).
     specialize (Habi a b Hab P q aq bq Hb) as H1.
     destruct H1 as ((H1 & H2 & H3), _).
     now apply (rngl_le_trans Hor _ bq).
@@ -637,7 +637,7 @@ split. {
   rewrite rngl_mul_add_distr_l.
   rewrite rngl_mul_1_r.
   rewrite (rngl_add_sub_assoc Hop).
-  apply (rngl_sub_le_mono_r Hop Hto).
+  apply (rngl_sub_le_mono_r Hop Hor).
   rewrite <- (rngl_add_sub_swap Hop).
   rewrite <- (rngl_add_sub_assoc Hop).
   eapply (rngl_le_trans Hor); [ apply H6 | ].
@@ -830,7 +830,7 @@ assert (Hfu : ∀ x, (a ≤ x < rngl_min (a + η) b → f x < u)%L). {
      apply (rngl_le_0_sub Hop Hor).
      now apply rngl_lt_le_incl.
   }
-  now apply (rngl_sub_lt_mono_r Hop Hto) in H2.
+  now apply (rngl_sub_lt_mono_r Hop Hor) in H2.
 }
 intros H; subst c.
 assert (Haηb : (a < (a + rngl_min (a + η) b) / 2 ≤ b)%L). {
@@ -1129,7 +1129,7 @@ destruct (is_bound _ P lim) as [H1| H1]. {
       rewrite rngl_add_comm.
       apply (rngl_lt_add_lt_sub_l Hop Hto).
       apply (rngl_lt_le_trans Hor _ (lim - c)). 2: {
-        now apply (rngl_sub_le_mono_r Hop Hto).
+        now apply (rngl_sub_le_mono_r Hop Hor).
       }
       apply (rngl_lt_div_l Hop Hiv Hto). {
         apply (rngl_pow_pos_pos Hop Hiv Hto).
@@ -1487,7 +1487,7 @@ assert (H3 : ∀ ε, (0 < ε → u - ε < f c < u + ε)%L). {
     now apply (rngl_lt_sub_lt_add_l Hop Hto).
   } {
     apply (rngl_le_lt_trans Hor _ (f a'' - ε)). {
-      apply (rngl_sub_le_mono_r Hop Hto).
+      apply (rngl_sub_le_mono_r Hop Hor).
       apply (rngl_nlt_ge_iff Hto).
       intros H.
       apply Hpa''.
