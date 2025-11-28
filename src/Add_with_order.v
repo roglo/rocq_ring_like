@@ -58,7 +58,8 @@ Class rngl_order_compatibility {T} {ro : ring_like_op T}
   { roc_dual_1 : ∀ a b, l1 a b ↔ ¬ l2 b a;
     roc_dual_2 : ∀ a b, l2 a b ↔ ¬ l1 b a;
     roc_of_lt : ∀ a b, (a < b)%L → l1 a b;
-    roc_to_le : ∀ a b, l1 a b → (a ≤ b)%L;
+    roc_to_le_1 : ∀ a b, l1 a b → (a ≤ b)%L;
+    roc_to_le_2 : ∀ a b, l2 a b → (a ≤ b)%L;
     roc_mono_l : ∀ a b c, (a ≤ b)%L → l1 b c → l1 a c;
     roc_mono_r : ∀ a b c, l1 a b → (b ≤ c)%L → l1 a c;
     roc_opt_add_ord_compat :
@@ -88,25 +89,22 @@ Tactic Notation "pauto" := progress auto.
 Hint Resolve rngl_le_refl : core.
 
 Theorem rngl_order_compatibility_comm :
-  rngl_is_totally_ordered T = true →
+  rngl_is_ordered T = true →
   ∀ l1 l2, rngl_order_compatibility l1 l2 → rngl_order_compatibility l2 l1.
 Proof.
-intros Hto.
-specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+intros Hor.
 intros * H12.
-split; [ apply roc_dual_2 | apply roc_dual_1 | | | | | ]. {
+split; [ apply roc_dual_2 | apply roc_dual_1 | | | | | | ]. {
   intros * Hab.
   apply roc_dual_2.
   intros H.
   apply (rngl_nle_gt Hor) in Hab.
   apply Hab; clear Hab.
-  now apply roc_to_le.
+  now apply roc_to_le_1.
 } {
-  intros * Hab.
-  apply roc_dual_2 in Hab.
-  apply (rngl_nlt_ge_iff Hto).
-  intros H; apply Hab; clear Hab.
-  now apply roc_of_lt.
+  apply roc_to_le_2.
+} {
+  apply roc_to_le_1.
 } {
   intros * Hab Hbc.
   apply roc_dual_2 in Hbc; apply roc_dual_2.
@@ -211,6 +209,8 @@ split. {
 } {
   easy.
 } {
+  apply rngl_lt_le_incl.
+} {
   intros.
   now apply (rngl_le_trans Hor _ b).
 } {
@@ -242,6 +242,8 @@ split. {
   easy.
 } {
   apply rngl_lt_le_incl.
+} {
+  easy.
 } {
   intros.
   now apply (rngl_le_lt_trans Hor _ b).
@@ -521,7 +523,7 @@ Theorem rngl_sub_le_or_lt_compat {l1 l2} :
 Proof.
 intros Hroc Hop * Hab Hcd.
 apply (roc_mono_l _ (a - c))%L. {
-  apply roc_to_le.
+  apply roc_to_le_1.
   now apply (rngl_sub_le_or_lt_mono_l Hroc Hop).
 } {
   now apply (rngl_sub_le_or_lt_mono_r Hroc Hop).
