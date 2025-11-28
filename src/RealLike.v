@@ -199,8 +199,8 @@ rewrite (rngl_squ_sqrt). 2: {
 rewrite (rngl_squ_sqrt). 2: {
   apply (rngl_add_squ_nonneg Hos Hto).
 }
-apply (rngl_le_sub_le_add_r Hop Hto).
-apply -> (rngl_le_sub_le_add_l Hop Hto).
+apply (rngl_le_sub_le_add_r Hop Hor).
+apply -> (rngl_le_sub_le_add_l Hop Hor).
 do 2 rewrite (rngl_squ_add Hic)%L.
 rewrite rngl_add_assoc.
 rewrite (rngl_sub_add_distr Hos _ c²)%L.

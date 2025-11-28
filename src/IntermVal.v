@@ -682,7 +682,7 @@ split. {
   rewrite <- (rngl_sub_sub_distr Hop).
   apply (rngl_sub_le_mono_l Hop Hor).
   set (bm := snd (AnBn P a b (max M n))) in *.
-  apply (rngl_le_sub_le_add_l Hop Hto).
+  apply (rngl_le_sub_le_add_l Hop Hor).
   apply (rngl_le_trans Hor _ bn); [ easy | ].
   apply (rngl_le_add_l Hos Hor).
   apply (rngl_le_0_sub Hop Hor).
@@ -808,7 +808,7 @@ assert (Hfu : ∀ x, (a ≤ x < rngl_min (a + η) b → f x < u)%L). {
   intros x Hx.
   assert (H : (rngl_abs (x - a) < η)%L). {
     rewrite (rngl_abs_nonneg_eq Hop Hor) by now apply (rngl_le_0_sub Hop Hor).
-    apply (rngl_lt_sub_lt_add_l Hop Hto).
+    apply (rngl_lt_sub_lt_add_l Hop Hor).
     eapply (rngl_lt_le_trans Hor); [ apply Hx | ].
     apply (rngl_le_min_l Hto).
   }
@@ -904,9 +904,9 @@ assert (Hfu : ∀ x, (rngl_max a (b - η) < x ≤ b → u < f x)%L). {
   assert (H : (rngl_abs (x - b) < η)%L). {
     rewrite (rngl_abs_nonpos_eq Hop Hto) by now apply (rngl_le_sub_0 Hop Hor).
     rewrite (rngl_opp_sub_distr Hop).
-    apply (rngl_lt_sub_lt_add_l Hop Hto).
+    apply (rngl_lt_sub_lt_add_l Hop Hor).
     rewrite rngl_add_comm.
-    apply (rngl_lt_sub_lt_add_l Hop Hto).
+    apply (rngl_lt_sub_lt_add_l Hop Hor).
     eapply (rngl_le_lt_trans Hor); [ | apply Hx ].
     apply (rngl_le_max_r Hto).
   }
@@ -963,7 +963,7 @@ apply (rngl_lt_div_l Hop Hiv Hto). {
 rewrite (rngl_mul_2_r).
 apply (rngl_add_lt_mono_r Hos Hor).
 apply rngl_max_lub_lt; [ easy | ].
-apply (rngl_lt_sub_lt_add_l Hop Hto).
+apply (rngl_lt_sub_lt_add_l Hop Hor).
 now apply (rngl_lt_add_l Hos Hto).
 Qed.
 
@@ -1125,9 +1125,9 @@ destruct (is_bound _ P lim) as [H1| H1]. {
       symmetry in H4.
       apply (rngl_add_sub_eq_r Hos) in H4.
       rewrite <- H4.
-      apply (rngl_lt_add_lt_sub_l Hop Hto).
+      apply (rngl_lt_add_lt_sub_l Hop Hor).
       rewrite rngl_add_comm.
-      apply (rngl_lt_add_lt_sub_l Hop Hto).
+      apply (rngl_lt_add_lt_sub_l Hop Hor).
       apply (rngl_lt_le_trans Hor _ (lim - c)). 2: {
         now apply (rngl_sub_le_mono_r Hop Hor).
       }
@@ -1194,7 +1194,7 @@ destruct (is_bound _ P lim) as [H1| H1]. {
     apply (rngl_add_le_mono Hos Hor); [ | apply (rngl_le_refl Hor) ].
     apply (Hl n _ _ Habn).
   }
-  apply (rngl_lt_add_lt_sub_l Hop Hto).
+  apply (rngl_lt_add_lt_sub_l Hop Hor).
   apply (rngl_lt_div_l Hop Hiv Hto). {
     apply (rngl_pow_pos_pos Hop Hiv Hto).
     apply (rngl_0_lt_2 Hos Hc1 Hto).
@@ -1402,7 +1402,7 @@ assert
     }
     apply (rngl_nlt_ge Hor) in H2; apply H2; clear H2.
     progress unfold x.
-    apply (rngl_lt_sub_lt_add_l Hop Hto).
+    apply (rngl_lt_sub_lt_add_l Hop Hor).
     apply (rngl_lt_add_l Hos Hto).
     apply (rngl_lt_div_r Hop Hiv Hto). {
       apply (rngl_0_lt_2 Hos Hc1 Hto).
@@ -1475,16 +1475,16 @@ assert (H3 : ∀ ε, (0 < ε → u - ε < f c < u + ε)%L). {
       now apply (rngl_le_sub_0 Hop Hor).
     }
     rewrite (rngl_opp_sub_distr Hop) in H2.
-    apply (rngl_le_sub_le_add_l Hop Hto).
+    apply (rngl_le_sub_le_add_l Hop Hor).
     apply (rngl_le_trans Hor _ (rngl_abs (f a' - f c))). {
       rewrite <- (rngl_abs_opp Hop Hto).
       rewrite (rngl_opp_sub_distr Hop).
       apply (rngl_le_abs_diag Hop Hto).
     }
     apply rngl_lt_le_incl, H2.
-    apply (rngl_lt_sub_lt_add_l Hop Hto).
+    apply (rngl_lt_sub_lt_add_l Hop Hor).
     rewrite rngl_add_comm.
-    now apply (rngl_lt_sub_lt_add_l Hop Hto).
+    now apply (rngl_lt_sub_lt_add_l Hop Hor).
   } {
     apply (rngl_le_lt_trans Hor _ (f a'' - ε)). {
       apply (rngl_sub_le_mono_r Hop Hor).
@@ -1504,7 +1504,7 @@ assert (H3 : ∀ ε, (0 < ε → u - ε < f c < u + ε)%L). {
           now apply (rngl_add_le_mono_l Hos Hor).
         }
         rewrite rngl_add_comm.
-        apply (rngl_le_add_le_sub_r Hop Hto).
+        apply (rngl_le_add_le_sub_r Hop Hor).
         progress unfold η2.
         apply (rngl_le_min_r Hor).
       }
@@ -1513,14 +1513,14 @@ assert (H3 : ∀ ε, (0 < ε → u - ε < f c < u + ε)%L). {
     rewrite (rngl_abs_nonneg_eq Hop Hor) in H2. 2: {
       now apply (rngl_le_0_sub Hop Hor).
     }
-    apply (rngl_lt_sub_lt_add_l Hop Hto).
+    apply (rngl_lt_sub_lt_add_l Hop Hor).
     rewrite rngl_add_comm.
-    apply (rngl_lt_sub_lt_add_l Hop Hto).
+    apply (rngl_lt_sub_lt_add_l Hop Hor).
     apply (rngl_le_lt_trans Hor _ (rngl_abs (f a'' - f c))). {
       apply (rngl_le_abs_diag Hop Hto).
     }
     apply H2.
-    now apply (rngl_lt_sub_lt_add_l Hop Hto).
+    now apply (rngl_lt_sub_lt_add_l Hop Hor).
   }
 }
 apply (rngl_le_antisymm Hor); apply (rngl_nlt_ge_iff Hto); intros Hu. {
