@@ -304,7 +304,7 @@ induction p; intros. {
     destruct H1 as ((H1 & H2 & H3), _).
     now apply (rngl_le_trans Hor _ bq).
   } {
-    apply (rngl_sub_le_mono_l Hop Hto).
+    apply (rngl_sub_le_mono_l Hop Hor).
     specialize (Habi a b Hab P q aq bq Hb) as H1.
     destruct H1 as ((H1 & H2 & H3), _).
     now apply (rngl_le_trans Hor _ aq).
@@ -680,7 +680,7 @@ split. {
   rewrite rngl_mul_add_distr_l.
   rewrite rngl_mul_1_r.
   rewrite <- (rngl_sub_sub_distr Hop).
-  apply (rngl_sub_le_mono_l Hop Hto).
+  apply (rngl_sub_le_mono_l Hop Hor).
   set (bm := snd (AnBn P a b (max M n))) in *.
   apply (rngl_le_sub_le_add_l Hop Hto).
   apply (rngl_le_trans Hor _ bn); [ easy | ].
@@ -920,7 +920,7 @@ assert (Hfu : ∀ x, (rngl_max a (b - η) < x ≤ b → u < f x)%L). {
       now apply (rngl_le_sub_0 Hop Hor).
     }
     rewrite (rngl_opp_sub_distr Hop) in H2.
-    now apply (rngl_sub_lt_mono_l Hop Hto) in H2.
+    now apply (rngl_sub_lt_mono_l Hop Hor) in H2.
   }
   apply (rngl_leb_gt_iff Hto) in Hfxb.
   now apply (rngl_lt_trans Hor _ (f b)).
@@ -1388,7 +1388,7 @@ assert
         split; [ | easy ].
         eapply (rngl_le_lt_trans Hor _ x); [ | easy ].
         progress unfold x.
-        apply (rngl_sub_le_mono_l Hop Hto).
+        apply (rngl_sub_le_mono_l Hop Hor).
         apply (rngl_le_div_l Hop Hiv Hto). {
           apply (rngl_0_lt_2 Hos Hc1 Hto).
         }
