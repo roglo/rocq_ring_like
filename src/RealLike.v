@@ -176,7 +176,7 @@ specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
 progress unfold rl_modl.
 rewrite <- (rngl_abs_nonneg_eq Hop Hor). 2: {
-  apply (rngl_le_0_add Hos Hto). {
+  apply (rngl_le_0_add Hos Hor). {
     apply rl_sqrt_nonneg.
     apply (rngl_add_squ_nonneg Hos Hto).
   } {

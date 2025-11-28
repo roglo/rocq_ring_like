@@ -379,7 +379,7 @@ split. {
      N = log2 ((b-a)/ε) + 1 should work. *)
   specialize (H1 ((b - a) / ε + 1))%L.
   rewrite (rngl_abs_nonneg_eq Hop Hor) in H1. 2: {
-    apply (rngl_le_0_add Hos Hto). 2: {
+    apply (rngl_le_0_add Hos Hor). 2: {
       apply (rngl_0_le_1 Hos Hto).
     }
     apply (rngl_div_nonneg Hop Hiv Hto); [ | easy ].
@@ -451,7 +451,7 @@ split. {
      N = log2 ((b-a)/ε) + 1 should work. *)
   specialize (H1 ((b - a) / ε + 1))%L.
   rewrite (rngl_abs_nonneg_eq Hop Hor) in H1. 2: {
-    apply (rngl_le_0_add Hos Hto). 2: {
+    apply (rngl_le_0_add Hos Hor). 2: {
       apply (rngl_0_le_1 Hos Hto).
     }
     apply (rngl_div_nonneg Hop Hiv Hto); [ | easy ].
@@ -949,7 +949,7 @@ destruct (is_upper_bound P x) as [Hux| Hux]. 2: {
     rewrite (rngl_mul_2_r).
     apply (rngl_add_le_mono_l Hos Hor).
     apply rngl_max_lub; [ now apply rngl_lt_le_incl| ].
-    apply (rngl_le_sub_l Hop Hto).
+    apply (rngl_le_sub_l Hop Hor).
     now apply rngl_lt_le_incl.
   }
   specialize (H3 H).
@@ -1619,9 +1619,9 @@ rewrite (rngl_opp_involutive Hop) in H1.
 specialize (H1 Ha).
 assert (H : ∀ x, P (- x)%L → (x ≤ - a)%L).  {
   intros x Hx.
-  apply (rngl_le_opp_r Hop Hto).
+  apply (rngl_le_opp_r Hop Hor).
   rewrite rngl_add_comm.
-  apply (rngl_le_opp_r Hop Hto).
+  apply (rngl_le_opp_r Hop Hor).
   now apply Hs.
 }
 specialize (H1 H); clear H.
