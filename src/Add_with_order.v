@@ -1245,8 +1245,6 @@ apply (rngl_lt_le_trans Hor _ a); [ easy | ].
 now apply (rngl_le_add_r Hos Hor).
 Qed.
 
-(***)
-
 (** *** other theorems *)
 
 Theorem rngl_add_lt_compat :
@@ -1294,11 +1292,10 @@ Qed.
 
 Theorem rngl_mul_nat_inj_le :
   rngl_has_opp_or_psub T = true →
-  rngl_is_totally_ordered T = true →
+  rngl_is_ordered T = true →
   ∀ a, (0 < a)%L → ∀ i j, i ≤ j ↔ (rngl_mul_nat a i ≤ rngl_mul_nat a j)%L.
 Proof.
-intros Hos Hto.
-specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+intros Hos Hor.
 intros * Haz *.
 progress unfold rngl_mul_nat.
 progress unfold mul_nat.
@@ -1335,11 +1332,10 @@ Qed.
 
 Theorem rngl_mul_nat_inj_lt :
   rngl_has_opp_or_psub T = true →
-  rngl_is_totally_ordered T = true →
+  rngl_is_ordered T = true →
   ∀ a, (0 < a)%L → ∀ i j, i < j ↔ (rngl_mul_nat a i < rngl_mul_nat a j)%L.
 Proof.
-intros Hos Hto * Haz *.
-specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+intros Hos Hor * Haz *.
 progress unfold rngl_mul_nat.
 progress unfold mul_nat.
 revert j.
@@ -1402,11 +1398,10 @@ Qed.
 
 Theorem rngl_add_neg_nonpos :
   rngl_has_opp T = true →
-  rngl_is_totally_ordered T = true →
+  rngl_is_ordered T = true →
   ∀ a b, (a < 0 → b ≤ 0 → a + b < 0)%L.
 Proof.
-intros Hop Hto * Haz Hbz.
-specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+intros Hop Hor * Haz Hbz.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 eapply (rngl_lt_le_trans Hor); [ | apply Hbz ].
 apply (rngl_lt_add_lt_sub_r Hop Hor).
@@ -1415,12 +1410,12 @@ Qed.
 
 Theorem rngl_add_nonpos_neg :
   rngl_has_opp T = true →
-  rngl_is_totally_ordered T = true →
+  rngl_is_ordered T = true →
   ∀ a b, (a ≤ 0 → b < 0 → a + b < 0)%L.
 Proof.
-intros Hop Hto * Haz Hbz.
+intros Hop Hor * Haz Hbz.
 rewrite rngl_add_comm.
-now apply (rngl_add_neg_nonpos Hop Hto).
+now apply (rngl_add_neg_nonpos Hop Hor).
 Qed.
 
 Theorem rngl_abs_nonneg :
@@ -1475,11 +1470,10 @@ Qed.
 
 Theorem rngl_le_abs_diag :
   rngl_has_opp T = true →
-  rngl_is_totally_ordered T = true →
+  rngl_is_ordered T = true →
   ∀ a, (a ≤ rngl_abs a)%L.
 Proof.
-intros Hop Hto.
-specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+intros Hop Hor.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 intros.
 progress unfold rngl_abs.
@@ -1574,11 +1568,11 @@ intros.
 split; intros Hxy. {
   destruct Hxy as [Hxy| Hxy]. {
     apply (rngl_le_trans Hor _ y); [ easy | ].
-    apply (rngl_le_abs_diag Hop Hto).
+    apply (rngl_le_abs_diag Hop Hor).
   }
   apply (rngl_le_trans Hor _ (- y)); [ easy | ].
   rewrite <- (rngl_abs_opp Hop Hto).
-  apply (rngl_le_abs_diag Hop Hto).
+  apply (rngl_le_abs_diag Hop Hor).
 }
 progress unfold rngl_abs in Hxy.
 destruct (y ≤? 0)%L; [ now right | now left ].

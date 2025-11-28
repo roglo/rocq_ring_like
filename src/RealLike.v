@@ -222,7 +222,7 @@ rewrite <- rngl_mul_add_distr_l.
 apply (rngl_mul_le_mono_nonneg_l Hop Hor). {
   apply (rngl_0_le_2 Hos Hto).
 }
-eapply (rngl_le_trans Hor); [ apply (rngl_le_abs_diag Hop Hto) | ].
+eapply (rngl_le_trans Hor); [ apply (rngl_le_abs_diag Hop Hor) | ].
 rewrite <- (rngl_abs_nonneg_eq Hop Hor). 2: {
   apply (rngl_mul_nonneg_nonneg Hos Hor). {
     apply rl_sqrt_nonneg.

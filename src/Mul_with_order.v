@@ -380,7 +380,8 @@ Theorem rngl_of_nat_inj_le :
   ∀ i j, i ≤ j ↔ (rngl_of_nat i ≤ rngl_of_nat j)%L.
 Proof.
 intros Hos Hc1 Hto *.
-apply (rngl_mul_nat_inj_le Hos Hto).
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+apply (rngl_mul_nat_inj_le Hos Hor).
 apply (rngl_0_lt_1 Hos Hc1 Hto).
 Qed.
 
@@ -391,7 +392,8 @@ Theorem rngl_of_nat_inj_lt :
   ∀ i j, i < j ↔ (rngl_of_nat i < rngl_of_nat j)%L.
 Proof.
 intros Hos Hc1 Hto *.
-apply (rngl_mul_nat_inj_lt Hos Hto).
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+apply (rngl_mul_nat_inj_lt Hos Hor).
 apply (rngl_0_lt_1 Hos Hc1 Hto).
 Qed.
 

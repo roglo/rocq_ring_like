@@ -1479,7 +1479,7 @@ assert (H3 : ∀ ε, (0 < ε → u - ε < f c < u + ε)%L). {
     apply (rngl_le_trans Hor _ (rngl_abs (f a' - f c))). {
       rewrite <- (rngl_abs_opp Hop Hto).
       rewrite (rngl_opp_sub_distr Hop).
-      apply (rngl_le_abs_diag Hop Hto).
+      apply (rngl_le_abs_diag Hop Hor).
     }
     apply rngl_lt_le_incl, H2.
     apply (rngl_lt_sub_lt_add_l Hop Hor).
@@ -1517,7 +1517,7 @@ assert (H3 : ∀ ε, (0 < ε → u - ε < f c < u + ε)%L). {
     rewrite rngl_add_comm.
     apply (rngl_lt_sub_lt_add_l Hop Hor).
     apply (rngl_le_lt_trans Hor _ (rngl_abs (f a'' - f c))). {
-      apply (rngl_le_abs_diag Hop Hto).
+      apply (rngl_le_abs_diag Hop Hor).
     }
     apply H2.
     now apply (rngl_lt_sub_lt_add_l Hop Hor).
