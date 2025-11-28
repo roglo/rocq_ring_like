@@ -633,20 +633,67 @@ Qed.
 
 Theorem rngl_le_0_sub :
   rngl_has_opp T = true →
-  rngl_is_totally_ordered T = true →
+  rngl_is_ordered T = true →
   ∀ a b : T, (0 ≤ b - a ↔ a ≤ b)%L.
 Proof.
-intros Hop Hto.
-apply (rngl_le_or_lt_0_sub (rngl_le_lt_comp Hto) Hop).
+intros Hop Hor.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+intros.
+specialize (rngl_opt_ord T) as rr.
+rewrite Hor in rr.
+move rr before rp.
+intros.
+specialize rngl_ord_add_le_mono_l as H1.
+rewrite Hos in H1.
+split; intros Hab. {
+  apply H1 with (a := (-a)%L).
+  rewrite (rngl_add_opp_l Hop).
+  rewrite (rngl_sub_diag Hos).
+  now rewrite (rngl_add_opp_l Hop).
+} {
+  apply H1 with (a := a).
+  rewrite rngl_add_0_r.
+  rewrite rngl_add_comm.
+  now rewrite (rngl_sub_add Hop).
+}
 Qed.
 
 Theorem rngl_lt_0_sub :
   rngl_has_opp T = true →
-  rngl_is_totally_ordered T = true →
+  rngl_is_ordered T = true →
   ∀ a b : T, (0 < b - a ↔ a < b)%L.
 Proof.
-intros Hop Hto.
-apply (rngl_le_or_lt_0_sub (rngl_lt_le_comp Hto) Hop).
+intros Hop Hor.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+intros.
+specialize (rngl_opt_ord T) as rr.
+rewrite Hor in rr.
+move rr before rp.
+intros.
+specialize rngl_ord_add_le_mono_l as H1.
+rewrite Hos in H1.
+progress unfold rngl_lt.
+split; intros Hab. {
+  split. {
+    apply H1 with (a := (-a)%L).
+    rewrite (rngl_add_opp_l Hop).
+    rewrite (rngl_sub_diag Hos).
+    now rewrite (rngl_add_opp_l Hop).
+  }
+  intros H; subst b.
+  now rewrite (rngl_sub_diag Hos) in Hab.
+} {
+  split. {
+    apply H1 with (a := a).
+    rewrite rngl_add_0_r, rngl_add_comm.
+    now rewrite (rngl_sub_add Hop).
+  }
+  intros H.
+  apply (f_equal (rngl_add a)) in H.
+  rewrite rngl_add_0_r, rngl_add_comm in H.
+  rewrite (rngl_sub_add Hop) in H.
+  now subst b.
+}
 Qed.
 
 Theorem rngl_le_sub_0 :
@@ -1300,7 +1347,7 @@ split. {
     } {
       apply (rngl_le_trans Hor _ 0%L); [ easy | ].
       apply (rngl_le_trans Hor _ (- y)%L); [ | easy ].
-      apply (rngl_le_0_sub Hop Hto) in Hyz.
+      apply (rngl_le_0_sub Hop Hor) in Hyz.
       progress unfold rngl_sub in Hyz.
       rewrite Hop in Hyz.
       now rewrite rngl_add_0_l in Hyz.
@@ -1363,7 +1410,7 @@ split. {
     } {
       apply (rngl_le_lt_trans Hor _ 0%L); [ easy | ].
       apply (rngl_le_lt_trans Hor _ (- y)%L); [ | easy ].
-      apply (rngl_le_0_sub Hop Hto) in Hyz.
+      apply (rngl_le_0_sub Hop Hor) in Hyz.
       progress unfold rngl_sub in Hyz.
       rewrite Hop in Hyz.
       now rewrite rngl_add_0_l in Hyz.

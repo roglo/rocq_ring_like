@@ -450,21 +450,21 @@ intros Hop Hiq Hto * Hc.
 specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 split; intros Hbc. {
-  apply (rngl_mul_le_mono_nonneg_l Hop Hto); [ | easy ].
+  apply (rngl_mul_le_mono_nonneg_l Hop Hor); [ | easy ].
   now apply rngl_lt_le_incl.
 } {
-  apply (rngl_le_0_sub Hop Hto) in Hbc.
+  apply (rngl_le_0_sub Hop Hor) in Hbc.
   rewrite <- (rngl_mul_sub_distr_l Hop) in Hbc.
   apply (rngl_nlt_ge Hor) in Hbc.
   apply (rngl_nlt_ge_iff Hto).
   intros H1; apply Hbc; clear Hbc.
   rewrite <- (rngl_mul_0_r Hos a).
-  apply (rngl_lt_0_sub Hop Hto).
+  apply (rngl_lt_0_sub Hop Hor).
   rewrite <- (rngl_mul_sub_distr_l Hop).
   rewrite (rngl_sub_0_l Hop).
   rewrite (rngl_opp_sub_distr Hop).
   apply (rngl_mul_pos_pos Hop Hiq Hto); [ easy | ].
-  now apply (rngl_lt_0_sub Hop Hto).
+  now apply (rngl_lt_0_sub Hop Hor).
 }
 Qed.
 
@@ -479,25 +479,25 @@ specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 intros * Ha.
 split; intros Hbc. {
-  apply (rngl_lt_0_sub Hop Hto).
+  apply (rngl_lt_0_sub Hop Hor).
   rewrite <- (rngl_mul_sub_distr_l Hop).
   apply (rngl_mul_pos_pos Hop Hiq Hto); [ easy | ].
-  now apply (rngl_lt_0_sub Hop Hto).
+  now apply (rngl_lt_0_sub Hop Hor).
 } {
-  apply (rngl_lt_0_sub Hop Hto) in Hbc.
+  apply (rngl_lt_0_sub Hop Hor) in Hbc.
   rewrite <- (rngl_mul_sub_distr_l Hop) in Hbc.
   apply (rngl_nle_gt Hor) in Hbc.
   apply (rngl_nle_gt_iff Hto).
   intros H1; apply Hbc; clear Hbc.
   rewrite <- (rngl_mul_0_r Hos a).
-  apply (rngl_le_0_sub Hop Hto).
+  apply (rngl_le_0_sub Hop Hor).
   rewrite <- (rngl_mul_sub_distr_l Hop).
   rewrite (rngl_sub_0_l Hop).
   rewrite (rngl_opp_sub_distr Hop).
   apply (rngl_mul_nonneg_nonneg Hos Hor). {
     now apply rngl_lt_le_incl.
   }
-  now apply (rngl_le_0_sub Hop Hto).
+  now apply (rngl_le_0_sub Hop Hor).
 }
 Qed.
 
@@ -510,18 +510,19 @@ Theorem rngl_mul_lt_mono_pos_r :
   ∀ a b c : T, (0 < a)%L → (b < c)%L ↔ (b * a < c * a)%L.
 Proof.
 intros Hop Hiq Hto.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 intros * Ha.
 split; intros Hbc. {
-  apply (rngl_lt_0_sub Hop Hto).
+  apply (rngl_lt_0_sub Hop Hor).
   rewrite <- (rngl_mul_sub_distr_r Hop).
   apply (rngl_mul_pos_pos Hop Hiq Hto); [ | easy ].
-  now apply (rngl_lt_0_sub Hop Hto).
+  now apply (rngl_lt_0_sub Hop Hor).
 } {
-  apply (rngl_lt_0_sub Hop Hto) in Hbc.
+  apply (rngl_lt_0_sub Hop Hor) in Hbc.
   rewrite <- (rngl_mul_sub_distr_r Hop) in Hbc.
   apply (rngl_mul_pos_cancel_r Hop Hiq Hto) in Hbc; [ | easy ].
-  now apply (rngl_lt_0_sub Hop Hto).
+  now apply (rngl_lt_0_sub Hop Hor).
 }
 Qed.
 
@@ -535,10 +536,10 @@ intros Hop Hiq Hto * Hc.
 specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 split; intros Hab. {
-  apply (rngl_mul_le_mono_nonneg_r Hop Hto); [ | easy ].
+  apply (rngl_mul_le_mono_nonneg_r Hop Hor); [ | easy ].
   now apply rngl_lt_le_incl.
 } {
-  apply (rngl_le_0_sub Hop Hto) in Hab.
+  apply (rngl_le_0_sub Hop Hor) in Hab.
   rewrite <- (rngl_mul_sub_distr_r Hop) in Hab.
   apply (rngl_nlt_ge Hor) in Hab.
   apply (rngl_nlt_ge_iff Hto).
@@ -547,7 +548,7 @@ split; intros Hab. {
   apply (rngl_mul_lt_mono_pos_r Hop Hiq Hto); [ easy | ].
   apply (rngl_nle_gt_iff Hto).
   intros H2.
-  apply -> (rngl_le_0_sub Hop Hto) in H2.
+  apply -> (rngl_le_0_sub Hop Hor) in H2.
   now apply (rngl_nlt_ge Hor) in H2.
 }
 Qed.
@@ -638,10 +639,10 @@ specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
 intros * Haz Hbz.
 split; intros Hab. {
-  apply (rngl_mul_le_mono_nonneg_l Hop Hto a) in Hab. 2: {
+  apply (rngl_mul_le_mono_nonneg_l Hop Hor a) in Hab. 2: {
     now apply rngl_lt_le_incl.
   }
-  apply (rngl_mul_le_mono_nonneg_r Hop Hto _ _ b) in Hab. 2: {
+  apply (rngl_mul_le_mono_nonneg_r Hop Hor _ _ b) in Hab. 2: {
     now apply rngl_lt_le_incl.
   }
   rewrite (rngl_mul_inv_diag_r Hiv) in Hab. 2: {
@@ -1110,7 +1111,7 @@ Proof.
 intros Hop Hiq Hto * (Haz, Hab) (Hcz, Hcd).
 specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 apply (rngl_le_lt_trans Hor _ (b * c)%L). {
-  apply (rngl_mul_le_mono_nonneg_r Hop Hto); [ easy | ].
+  apply (rngl_mul_le_mono_nonneg_r Hop Hor); [ easy | ].
   now apply rngl_lt_le_incl.
 }
 apply (rngl_mul_lt_mono_pos_l Hop Hiq Hto); [ | easy ].

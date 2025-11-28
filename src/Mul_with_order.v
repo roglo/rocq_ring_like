@@ -446,37 +446,35 @@ Qed.
 
 Theorem rngl_mul_le_mono_nonneg_l :
   rngl_has_opp T = true →
-  rngl_is_totally_ordered T = true →
+  rngl_is_ordered T = true →
   ∀ a b c, (0 ≤ a)%L → (b ≤ c)%L → (a * b ≤ a * c)%L.
 Proof.
-intros Hop Hto.
-specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+intros Hop Hor.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 intros * Ha Hbc.
 apply (rngl_lt_eq_cases Hor) in Hbc.
 destruct Hbc as [Hbc| Hbc]; [ | subst b; pauto ].
-apply (rngl_le_0_sub Hop Hto).
+apply (rngl_le_0_sub Hop Hor).
 rewrite <- (rngl_mul_sub_distr_l Hop).
 apply (rngl_mul_nonneg_nonneg Hos Hor); [ easy | ].
-apply (rngl_le_0_sub Hop Hto).
+apply (rngl_le_0_sub Hop Hor).
 now apply rngl_lt_le_incl.
 Qed.
 
 Theorem rngl_mul_le_mono_nonneg_r :
   rngl_has_opp T = true →
-  rngl_is_totally_ordered T = true →
+  rngl_is_ordered T = true →
   ∀ a b c, (0 ≤ c → a ≤ b → a * c ≤ b * c)%L.
 Proof.
-intros Hop Hto.
-specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+intros Hop Hor.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 intros * Hc Hab.
 apply (rngl_lt_eq_cases Hor) in Hab.
 destruct Hab as [Hab| Hab]; [ | subst b; pauto ].
-apply (rngl_le_0_sub Hop Hto).
+apply (rngl_le_0_sub Hop Hor).
 rewrite <- (rngl_mul_sub_distr_r Hop).
 apply (rngl_mul_nonneg_nonneg Hos Hor); [ | easy ].
-apply (rngl_le_0_sub Hop Hto).
+apply (rngl_le_0_sub Hop Hor).
 now apply rngl_lt_le_incl.
 Qed.
 
@@ -491,7 +489,7 @@ specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 intros * Ha Hbc.
 apply (rngl_lt_eq_cases Hor) in Hbc.
 destruct Hbc as [Hbc| Hbc]; [ | subst b; pauto ].
-apply (rngl_le_0_sub Hop Hto).
+apply (rngl_le_0_sub Hop Hor).
 rewrite <- (rngl_mul_sub_distr_l Hop).
 apply (rngl_mul_nonpos_nonpos Hos Hor); [ easy | ].
 apply (rngl_le_sub_0 Hop Hto).
@@ -509,7 +507,7 @@ specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 intros * Hc Hab.
 apply (rngl_lt_eq_cases Hor) in Hab.
 destruct Hab as [Hab| Hab]; [ | subst b; pauto ].
-apply (rngl_le_0_sub Hop Hto).
+apply (rngl_le_0_sub Hop Hor).
 rewrite <- (rngl_mul_sub_distr_r Hop).
 apply (rngl_mul_nonpos_nonpos Hos Hor); [ | easy ].
 apply (rngl_le_sub_0 Hop Hto).
@@ -605,7 +603,7 @@ induction m; intros; cbn. {
 }
 destruct n; [ easy | cbn ].
 apply Nat.succ_le_mono in Hmn.
-apply (rngl_mul_le_mono_nonneg_l Hop Hto). {
+apply (rngl_mul_le_mono_nonneg_l Hop Hor). {
   apply (rngl_le_trans Hor _ 1%L); [ | easy ].
   apply (rngl_0_le_1 Hos Hto).
 }
