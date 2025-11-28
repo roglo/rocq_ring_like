@@ -325,17 +325,17 @@ Qed.
 Theorem rngl_le_or_lt_sub_0 {l1 l2} :
   rngl_order_compatibility l1 l2 →
   rngl_has_opp T = true →
-  rngl_is_totally_ordered T = true →
   ∀ a b, ((l1 (a - b) 0) ↔ l1 a b)%L.
 Proof.
-intros Hroc Hop Hto.
+intros Hroc Hop.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 intros.
 split; intros Hab. {
-  apply roc_dual_1 in Hab; apply roc_dual_1.
-  intros Hba; apply Hab; clear Hab.
-  apply (rngl_order_compatibility_comm Hto) in Hroc.
-  now apply (rngl_le_or_lt_0_sub Hroc Hop).
+  specialize roc_opt_add_ord_compat as H1.
+  rewrite Hos in H1.
+  apply (H1 b) in Hab.
+  rewrite rngl_add_comm, (rngl_sub_add Hop) in Hab.
+  now rewrite rngl_add_0_r in Hab.
 }
 apply (roc_add_ord_compat Hos (-b))%L in Hab.
 do 2 rewrite (rngl_add_opp_l Hop) in Hab.
@@ -702,7 +702,7 @@ Theorem rngl_le_sub_0 :
   ∀ a b, (a - b ≤ 0 ↔ a ≤ b)%L.
 Proof.
 intros Hop Hto.
-apply (rngl_le_or_lt_sub_0 (rngl_le_lt_comp Hto) Hop Hto).
+apply (rngl_le_or_lt_sub_0 (rngl_le_lt_comp Hto) Hop).
 Qed.
 
 Theorem rngl_lt_sub_0 :
@@ -711,7 +711,7 @@ Theorem rngl_lt_sub_0 :
   ∀ a b, (a - b < 0 ↔ a < b)%L.
 Proof.
 intros Hop Hto.
-apply (rngl_le_or_lt_sub_0 (rngl_lt_le_comp Hto) Hop Hto).
+apply (rngl_le_or_lt_sub_0 (rngl_lt_le_comp Hto) Hop).
 Qed.
 
 Theorem rngl_opp_le_compat :
