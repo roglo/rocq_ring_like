@@ -4532,27 +4532,16 @@ destruct bc. {
   apply Halc.
   now apply (rngl_le_trans Hor _ 0).
 }
-...
-clear Hab.
-remember (length lb ?= length lc) as lbc eqn:Hlbc.
-symmetry in Hlbc.
-destruct lbc; [ | | easy ]. {
-  apply Nat.compare_eq_iff in Hlbc.
-  rewrite <- Hlbc.
-  now rewrite Hlab.
-}
-clear Hbc.
-apply Nat.compare_lt_iff in Hlab, Hlbc.
-remember (length la ?= length lc) as lac eqn:Hlac.
-symmetry in Hlac.
-destruct lac; [ | easy | ]. {
-  apply Nat.compare_eq_iff in Hlac.
-  rewrite <- Hlac in Hlbc.
+apply Nat.compare_gt_iff in Hlbc.
+remember (length (lap pa) ?= length (lap pc)) as ac eqn:Hac.
+symmetry in Hac.
+destruct ac; [ | | easy ]. {
+  apply Nat.compare_eq_iff in Hac.
+  rewrite Hac in Hlab.
   now apply Nat.lt_asymm in Hlab.
 }
-apply Nat.compare_gt_iff in Hlac.
-apply (Nat.lt_trans _ _ (length lc)) in Hlab; [ | easy ].
-now apply Nat.lt_asymm in Hlab.
+apply Nat.compare_lt_iff in Hac.
+flia Hlab Hlbc Hac.
 Qed.
 
 Theorem polyn_ord_add_le_mono_l :
@@ -4563,12 +4552,6 @@ Theorem polyn_ord_add_le_mono_l :
   else not_applicable.
 Proof.
 intros Hor; cbn.
-(* contre-exemple :
-pb = 0
-pc = -x
-pa = x²
-    ∀ pa pb pc : polyn T, (pb ≤ pc)%L ↔ (pa + pb ≤ pa + pc)%L
-*)
 ...
 
 Definition polyn_ring_like_ord (Hor : rngl_is_ordered T = true) :
@@ -4576,7 +4559,7 @@ Definition polyn_ring_like_ord (Hor : rngl_is_ordered T = true) :
   {| rngl_ord_le_refl := polyn_ord_le_refl Hor;
      rngl_ord_le_antisymm := polyn_ord_le_antisymm Hor;
      rngl_ord_le_trans := polyn_ord_le_trans Hor;
-     rngl_ord_add_le_mono_l := polyn_ord_add_le_mono_l;
+     rngl_ord_add_le_mono_l := polyn_ord_add_le_mono_l Hor;
      rngl_ord_mul_le_compat_nonneg := ?rngl_ord_mul_le_compat_nonneg;
      rngl_ord_mul_le_compat_nonpos := ?rngl_ord_mul_le_compat_nonpos;
      rngl_ord_le_dec := ?rngl_ord_le_dec;
