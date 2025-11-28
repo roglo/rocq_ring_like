@@ -891,7 +891,7 @@ destruct (rngl_ltb_dec a 0%L) as [H12| H12]. {
   rewrite <- (rngl_mul_1_r (- a))%L.
   subst x.
   apply (rngl_mul_lt_mono_pos_l Hop Hiq Hto). 2: {
-    apply (rngl_lt_add_r Hos Hto).
+    apply (rngl_lt_add_r Hos Hor).
     apply (rngl_0_lt_1 Hos Hc1 Hto).
   }
   rewrite <- (rngl_opp_0 Hop).
@@ -918,7 +918,7 @@ destruct (rngl_ltb_dec 0 a) as [H21| H21]. {
   }
   rewrite rngl_mul_add_distr_l.
   rewrite rngl_mul_1_r.
-  now apply (rngl_lt_add_r Hos Hto).
+  now apply (rngl_lt_add_r Hos Hor).
 }
 apply (rngl_ltb_ge_iff Hto) in H12, H21.
 now apply (rngl_le_antisymm Hor).

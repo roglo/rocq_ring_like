@@ -124,7 +124,7 @@ split; intros H1 ε Hε. {
   apply (rngl_le_lt_trans Hor _ (ε / 2)). 2: {
     apply (rngl_lt_div_l Hop Hiv Hto _ _ _ Hz2).
     rewrite (rngl_mul_2_r).
-    apply (rngl_lt_add_l Hos Hto _ _ Hε).
+    apply (rngl_lt_add_l Hos Hor _ _ Hε).
   }
   now apply H1.
 }

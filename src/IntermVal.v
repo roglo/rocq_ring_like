@@ -841,7 +841,7 @@ assert (Haηb : (a < (a + rngl_min (a + η) b) / 2 ≤ b)%L). {
     rewrite (rngl_mul_2_r).
     apply (rngl_add_lt_mono_l Hos Hor).
     apply (rngl_min_glb_lt); [ | easy ].
-    now apply (rngl_lt_add_r Hos Hto).
+    now apply (rngl_lt_add_r Hos Hor).
   } {
     apply (rngl_le_div_l Hop Hiv Hto). {
       apply (rngl_0_lt_2 Hos Hc1 Hto).
@@ -868,7 +868,7 @@ assert (H : P ((a + rngl_min (a + η) b) / 2)%L). {
   rewrite (rngl_mul_2_r).
   apply (rngl_add_lt_mono_r Hos Hor).
   apply (rngl_min_glb_lt); [ | easy ].
-  now apply (rngl_lt_add_r Hos Hto).
+  now apply (rngl_lt_add_r Hos Hor).
 }
 apply Hub1 in H.
 now apply (rngl_nlt_ge Hor) in H.
@@ -964,7 +964,7 @@ rewrite (rngl_mul_2_r).
 apply (rngl_add_lt_mono_r Hos Hor).
 apply rngl_max_lub_lt; [ easy | ].
 apply (rngl_lt_sub_lt_add_l Hop Hor).
-now apply (rngl_lt_add_l Hos Hto).
+now apply (rngl_lt_add_l Hos Hor).
 Qed.
 
 Theorem rngl_not_le_le : ∀ a b, ¬ (a ≤ b)%L → (b ≤ a)%L.
@@ -1403,7 +1403,7 @@ assert
     apply (rngl_nlt_ge Hor) in H2; apply H2; clear H2.
     progress unfold x.
     apply (rngl_lt_sub_lt_add_l Hop Hor).
-    apply (rngl_lt_add_l Hos Hto).
+    apply (rngl_lt_add_l Hos Hor).
     apply (rngl_lt_div_r Hop Hiv Hto). {
       apply (rngl_0_lt_2 Hos Hc1 Hto).
     }
@@ -1447,14 +1447,14 @@ assert
         apply (rngl_0_lt_2 Hos Hc1 Hto).
       }
       rewrite (rngl_mul_2_r).
-      now apply (rngl_lt_add_l Hos Hto).
+      now apply (rngl_lt_add_l Hos Hor).
     }
     specialize (H3 H); clear H.
     apply Hub1 in H3.
     apply (rngl_nlt_ge Hor) in H3.
     apply H3; clear H3.
     progress unfold x.
-    apply (rngl_lt_add_r Hos Hto).
+    apply (rngl_lt_add_r Hos Hor).
     apply (rngl_lt_div_r Hop Hiv Hto). {
       apply (rngl_0_lt_2 Hos Hc1 Hto).
     }

@@ -223,7 +223,7 @@ specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 apply (rngl_le_lt_trans Hor _ 1)%L. {
   apply (rngl_0_le_1 Hos Hto).
 }
-apply (rngl_lt_add_r Hos Hto).
+apply (rngl_lt_add_r Hos Hor).
 apply (rngl_0_lt_1 Hos Hc1 Hto).
 Qed.
 
