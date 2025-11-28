@@ -700,21 +700,67 @@ Qed.
 
 Theorem rngl_le_sub_0 :
   rngl_has_opp T = true →
-  rngl_is_totally_ordered T = true →
+  rngl_is_ordered T = true →
   ∀ a b, (a - b ≤ 0 ↔ a ≤ b)%L.
 Proof.
-intros Hop Hto.
-apply (rngl_le_or_lt_sub_0 (rngl_le_lt_comp Hto) Hop).
+intros Hop Hor.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+intros.
+specialize (rngl_opt_ord T) as rr.
+rewrite Hor in rr.
+move rr before rp.
+intros.
+specialize rngl_ord_add_le_mono_l as H1.
+rewrite Hos in H1.
+split; intros Hab. {
+  apply H1 with (a := (-b)%L).
+  rewrite (rngl_add_opp_l Hop).
+  now rewrite (rngl_add_opp_diag_l Hop).
+} {
+  apply H1 with (a := b).
+  rewrite rngl_add_0_r.
+  rewrite rngl_add_comm.
+  now rewrite (rngl_sub_add Hop).
+}
 Qed.
 
 Theorem rngl_lt_sub_0 :
   rngl_has_opp T = true →
-  rngl_is_totally_ordered T = true →
+  rngl_is_ordered T = true →
   ∀ a b, (a - b < 0 ↔ a < b)%L.
 Proof.
-intros Hop Hto.
-apply (rngl_le_or_lt_sub_0 (rngl_lt_le_comp Hto) Hop).
+intros Hop Hor.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+intros.
+specialize (rngl_opt_ord T) as rr.
+rewrite Hor in rr.
+move rr before rp.
+intros.
+specialize rngl_ord_add_le_mono_l as H1.
+rewrite Hos in H1.
+progress unfold rngl_lt.
+split; intros Hab. {
+  split. {
+    apply H1 with (a := (-b)%L).
+    rewrite (rngl_add_opp_l Hop).
+    now rewrite (rngl_add_opp_diag_l Hop).
+  }
+  intros H; subst b.
+  now rewrite (rngl_sub_diag Hos) in Hab.
+} {
+  split. {
+    apply H1 with (a := b).
+    rewrite rngl_add_0_r, rngl_add_comm.
+    now rewrite (rngl_sub_add Hop).
+  }
+  intros H.
+  apply (f_equal (rngl_add b)) in H.
+  rewrite rngl_add_0_r, rngl_add_comm in H.
+  now rewrite (rngl_sub_add Hop) in H.
+}
 Qed.
+
+(***)
 
 Theorem rngl_opp_le_compat :
   rngl_has_opp T = true →
@@ -1067,13 +1113,13 @@ Qed.
 
 Theorem rngl_leb_sub_0 :
   rngl_has_opp T = true →
-  rngl_is_totally_ordered T = true →
+  rngl_is_ordered T = true →
   ∀ a b, ((a - b ≤? 0) = (a ≤? b))%L.
 Proof.
-intros Hop Hto.
+intros Hop Hor.
 intros.
 apply rngl_le_iff_leb_eq.
-apply (rngl_le_sub_0 Hop Hto).
+apply (rngl_le_sub_0 Hop Hor).
 Qed.
 
 Theorem rngl_eq_add_0 :
@@ -1289,7 +1335,7 @@ progress unfold rngl_abs.
 remember (a ≤? 0)%L as c eqn:Hc; symmetry in Hc.
 destruct c; [ | pauto ].
 apply rngl_leb_le in Hc.
-apply (rngl_le_sub_0 Hop Hto).
+apply (rngl_le_sub_0 Hop Hor).
 rewrite (rngl_sub_opp_r Hop).
 rewrite <- (rngl_add_0_l 0%L).
 now apply (rngl_add_le_mono Hos Hor).

@@ -284,7 +284,7 @@ assert (H2i : ∀ i, (2 ^ i)%L ≠ 0%L). {
 }
 specialize (AnBn_interval Hop Hiv Hto) as Habi.
 rewrite (rngl_abs_nonpos_eq Hop Hto). 2: {
-  apply (rngl_le_sub_0 Hop Hto).
+  apply (rngl_le_sub_0 Hop Hor).
   apply (AnBn_le Hop Hiv Hto a b Hab P p q ap bp aq bq Hpq Ha Hb).
 }
 rewrite (rngl_abs_nonneg_eq Hop Hor). 2: {
@@ -667,7 +667,7 @@ split. {
   cbn in HM.
   progress unfold rngl_dist in HM.
   rewrite (rngl_abs_nonpos_eq Hop Hto) in HM. 2: {
-    apply (rngl_le_sub_0 Hop Hto).
+    apply (rngl_le_sub_0 Hop Hor).
     eapply (rngl_le_trans Hor); [ apply H7 | ].
     now apply rngl_lt_le_incl.
   }
@@ -819,7 +819,7 @@ assert (Hfu : ∀ x, (a ≤ x < rngl_min (a + η) b → f x < u)%L). {
     cbn in H2.
     progress unfold rngl_dist in H2.
     rewrite (rngl_abs_nonpos_eq Hop Hto) in H2. 2: {
-      now apply (rngl_le_sub_0 Hop Hto).
+      now apply (rngl_le_sub_0 Hop Hor).
     }
     now apply (rngl_le_lt_trans Hor _ (f a)).
   }
@@ -902,7 +902,7 @@ destruct H2 as (η & Hη & H2).
 assert (Hfu : ∀ x, (rngl_max a (b - η) < x ≤ b → u < f x)%L). {
   intros x Hx.
   assert (H : (rngl_abs (x - b) < η)%L). {
-    rewrite (rngl_abs_nonpos_eq Hop Hto) by now apply (rngl_le_sub_0 Hop Hto).
+    rewrite (rngl_abs_nonpos_eq Hop Hto) by now apply (rngl_le_sub_0 Hop Hor).
     rewrite (rngl_opp_sub_distr Hop).
     apply (rngl_lt_sub_lt_add_l Hop Hto).
     rewrite rngl_add_comm.
@@ -917,7 +917,7 @@ assert (Hfu : ∀ x, (rngl_max a (b - η) < x ≤ b → u < f x)%L). {
     cbn in H2.
     progress unfold rngl_dist in H2.
     rewrite (rngl_abs_nonpos_eq Hop Hto) in H2. 2: {
-      now apply (rngl_le_sub_0 Hop Hto).
+      now apply (rngl_le_sub_0 Hop Hor).
     }
     rewrite (rngl_opp_sub_distr Hop) in H2.
     now apply (rngl_sub_lt_mono_l Hop Hto) in H2.
@@ -1472,7 +1472,7 @@ assert (H3 : ∀ ε, (0 < ε → u - ε < f c < u + ε)%L). {
     }
     specialize (Hη a') as H2.
     rewrite (rngl_abs_nonpos_eq Hop Hto) in H2. 2: {
-      now apply (rngl_le_sub_0 Hop Hto).
+      now apply (rngl_le_sub_0 Hop Hor).
     }
     rewrite (rngl_opp_sub_distr Hop) in H2.
     apply (rngl_le_sub_le_add_l Hop Hto).

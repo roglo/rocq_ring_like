@@ -49,7 +49,7 @@ progress unfold rngl_dist.
 rewrite <- (rngl_mul_sub_distr_r Hop).
 progress unfold rngl_abs.
 rewrite (rngl_mul_sub_distr_r Hop).
-do 2 rewrite (rngl_leb_sub_0 Hop Hto).
+do 2 rewrite (rngl_leb_sub_0 Hop Hor).
 rewrite <- (rngl_mul_sub_distr_r Hop).
 remember (a ≤? b)%L as ab eqn:Hab.
 remember (a * c ≤? b * c)%L as acbc eqn:Hacbc.
@@ -273,14 +273,14 @@ rewrite (rngl_div_mul Hiv) in Hd; [ | easy ].
 progress unfold rngl_dist in Hd.
 progress unfold rngl_dist.
 progress unfold rngl_abs in Hd at 1.
-rewrite (rngl_leb_sub_0 Hop Hto) in Hd.
+rewrite (rngl_leb_sub_0 Hop Hor) in Hd.
 set (σ := (if is_left then 1 else -1)%L) in Hd.
 remember (σ * (f x₀ - f x) ≤? a * da x x₀)%L as b eqn:Hb.
 symmetry in Hb.
 destruct b. {
   apply rngl_leb_le in Hb.
   progress unfold rngl_abs.
-  rewrite (rngl_leb_sub_0 Hop Hto).
+  rewrite (rngl_leb_sub_0 Hop Hor).
   remember (f x ≤? f x₀)%L as c eqn:Hc.
   symmetry in Hc.
   destruct c. {
@@ -381,7 +381,7 @@ destruct b. {
         rewrite <- (rngl_mul_sub_distr_r Hop) in Hd.
         rewrite (rngl_sub_diag Hos) in Hd.
         rewrite (rngl_mul_0_l Hos) in Hd.
-        apply -> (rngl_lt_sub_0 Hop Hto) in Hd.
+        apply -> (rngl_lt_sub_0 Hop Hor) in Hd.
         now apply (rngl_nlt_ge Hor) in Hd.
       }
     }
@@ -453,7 +453,7 @@ destruct b. {
         rewrite <- (rngl_mul_sub_distr_r Hop) in Hd.
         rewrite (rngl_sub_diag Hos) in Hd.
         rewrite (rngl_mul_0_l Hos) in Hd.
-        apply -> (rngl_lt_sub_0 Hop Hto) in Hd.
+        apply -> (rngl_lt_sub_0 Hop Hor) in Hd.
         apply rngl_lt_le_incl in Hd.
         now apply (rngl_nlt_ge Hor) in Hd.
       } {
@@ -483,7 +483,7 @@ destruct b. {
 }
 apply (rngl_leb_gt_iff Hto) in Hb.
 progress unfold rngl_abs.
-rewrite (rngl_leb_sub_0 Hop Hto).
+rewrite (rngl_leb_sub_0 Hop Hor).
 remember (f x ≤? f x₀)%L as c eqn:Hc.
 symmetry in Hc.
 destruct c. {
@@ -499,7 +499,7 @@ destruct c. {
       rewrite (rngl_add_opp_l Hop) in Hd.
       rewrite (rngl_sub_diag Hos) in Hd.
       rewrite rngl_mul_1_l in Hd.
-      apply -> (rngl_lt_sub_0 Hop Hto) in Hd.
+      apply -> (rngl_lt_sub_0 Hop Hor) in Hd.
       now apply (rngl_nle_gt Hor) in Hd.
     } {
       rewrite <- (rngl_opp_sub_distr Hop) in Hb.
@@ -556,7 +556,7 @@ destruct c. {
         rewrite (rngl_mul_opp_l Hop).
         rewrite rngl_mul_1_l.
         rewrite (rngl_opp_sub_distr Hop).
-        now apply (rngl_le_sub_0 Hop Hto).
+        now apply (rngl_le_sub_0 Hop Hor).
       }
       apply (rngl_mul_nonneg_nonneg Hos Hor).
       now apply rngl_lt_le_incl.
@@ -598,7 +598,7 @@ destruct c. {
       apply Hb; clear Hb.
       apply (rngl_le_trans Hor _ 0). {
         rewrite rngl_mul_1_l.
-        apply (rngl_le_sub_0 Hop Hto).
+        apply (rngl_le_sub_0 Hop Hor).
         now apply rngl_lt_le_incl.
       }
       apply (rngl_mul_nonneg_nonneg Hos Hor).
@@ -618,7 +618,7 @@ destruct c. {
       rewrite (rngl_mul_opp_l Hop) in Hd.
       rewrite rngl_mul_1_l in Hd.
       rewrite (rngl_opp_sub_distr Hop) in Hd.
-      apply -> (rngl_lt_sub_0 Hop Hto) in Hd.
+      apply -> (rngl_lt_sub_0 Hop Hor) in Hd.
       apply rngl_lt_le_incl in Hd.
       now apply (rngl_nle_gt Hor) in Hd.
     } {

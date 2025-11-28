@@ -492,7 +492,7 @@ destruct Hbc as [Hbc| Hbc]; [ | subst b; pauto ].
 apply (rngl_le_0_sub Hop Hor).
 rewrite <- (rngl_mul_sub_distr_l Hop).
 apply (rngl_mul_nonpos_nonpos Hos Hor); [ easy | ].
-apply (rngl_le_sub_0 Hop Hto).
+apply (rngl_le_sub_0 Hop Hor).
 now apply rngl_lt_le_incl.
 Qed.
 
@@ -510,7 +510,7 @@ destruct Hab as [Hab| Hab]; [ | subst b; pauto ].
 apply (rngl_le_0_sub Hop Hor).
 rewrite <- (rngl_mul_sub_distr_r Hop).
 apply (rngl_mul_nonpos_nonpos Hos Hor); [ | easy ].
-apply (rngl_le_sub_0 Hop Hto).
+apply (rngl_le_sub_0 Hop Hor).
 now apply rngl_lt_le_incl.
 Qed.
 

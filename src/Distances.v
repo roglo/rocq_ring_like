@@ -402,10 +402,10 @@ specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 intros * Habc.
 progress unfold rngl_dist.
 rewrite (rngl_abs_nonpos_eq Hop Hto). 2: {
-  now apply (rngl_le_sub_0 Hop Hto).
+  now apply (rngl_le_sub_0 Hop Hor).
 }
 rewrite (rngl_abs_nonpos_eq Hop Hto). 2: {
-  apply (rngl_le_sub_0 Hop Hto).
+  apply (rngl_le_sub_0 Hop Hor).
   now apply (rngl_le_trans Hor _ b).
 }
 do 2 rewrite (rngl_opp_sub_distr Hop).
@@ -424,10 +424,10 @@ specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 intros * Habc.
 progress unfold rngl_dist.
 rewrite (rngl_abs_nonpos_eq Hop Hto). 2: {
-  now apply (rngl_le_sub_0 Hop Hto).
+  now apply (rngl_le_sub_0 Hop Hor).
 }
 rewrite (rngl_abs_nonpos_eq Hop Hto). 2: {
-  apply (rngl_le_sub_0 Hop Hto).
+  apply (rngl_le_sub_0 Hop Hor).
   now apply (rngl_le_trans Hor _ b).
 }
 do 2 rewrite (rngl_opp_sub_distr Hop).
