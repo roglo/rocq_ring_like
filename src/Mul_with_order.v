@@ -696,4 +696,24 @@ split; [ apply (rngl_abs_nonneg Hop Hto) | ].
 now apply rngl_le_neq.
 Qed.
 
+(* on the usefulness of rngl_ord_mul_le_compat_nonpos *)
+Theorem rngl_ord_mul_le_compat_nonneg_mul_le_compat_nonpos :
+  rngl_has_opp T = true →
+  rngl_is_totally_ordered T = true →
+  (∀ a b c d, (c ≤ a ≤ 0)%L → (d ≤ b ≤ 0)%L → (a * b ≤ c * d)%L).
+Proof.
+intros Hop Hto.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+intros * Hca Hdb.
+destruct Hca as (Hca, Haz).
+destruct Hdb as (Hdb, Hbz).
+apply (rngl_opp_le_compat Hop Hto) in Hca, Haz, Hdb, Hbz.
+rewrite (rngl_opp_0 Hop) in Haz, Hbz.
+assert (H3 : (0 ≤ - a ≤ - c)%L) by easy.
+assert (H4 : (0 ≤ - b ≤ - d)%L) by easy.
+rewrite <- (rngl_mul_opp_opp Hop a).
+rewrite <- (rngl_mul_opp_opp Hop c).
+now apply (rngl_mul_le_compat_nonneg Hor).
+Qed.
+
 End a.
