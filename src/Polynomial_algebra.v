@@ -4609,6 +4609,53 @@ split; intros Hbc. {
         }
         rewrite H1, H2 in Habc; clear H1 H2.
         clear Hlabc.
+        destruct pa as (la, Hla).
+        destruct pb as (lb, Hlb).
+        destruct pc as (lc, Hlc).
+        cbn - [ lap_add ] in Hbc, Hpbc, Habc, Hab.
+        progress unfold has_polyn_prop in Hlb, Hlc.
+        apply Bool.orb_true_iff in Hlb, Hlc.
+        destruct Hlb as [Hlb| Hlb]. {
+          now apply is_empty_list_empty in Hlb; subst lb.
+        }
+        destruct Hlc as [Hlc| Hlc]. {
+          apply is_empty_list_empty in Hlc; subst lc.
+          now rewrite Hbc in Hab.
+        }
+        apply Bool.negb_true_iff in Hlb, Hlc.
+        apply (rngl_eqb_neq Heo) in Hlb, Hlc.
+        do 2 rewrite (lap_add_comm la) in Habc.
+(**)
+        clear Hla.
+        revert la lc Hlc Hbc Hpbc Habc Hab.
+        induction lb as [| b] using List.rev_ind; intros; [ easy | ].
+        destruct lc as [| c] using List.rev_ind; intros; [ easy | clear IHlc ].
+        do 2 rewrite List.length_app, Nat.add_1_r in Hbc.
+        apply Nat.succ_inj in Hbc.
+        rewrite List.length_app, Nat.add_1_r in Hab.
+        rewrite lap_add_app_l in Habc; [ | flia Hab ].
+        rewrite lap_add_app_l in Habc; [ | flia Hbc Hab ].
+        rewrite lap_compare_app_single in Hpbc; [ | easy ].
+        rewrite lap_compare_app_single in Habc. 2: {
+          do 2 rewrite lap_add_length.
+          rewrite Nat.max_l; [ | flia Hab ].
+          rewrite Nat.max_l; [ easy | flia Hbc Hab ].
+        }
+        rewrite List.last_last in Hlb, Hlc.
+        remember (b ?= c)%L as bc eqn:Hbec.
+        symmetry in Hbec.
+        destruct bc; [ | easy | easy ].
+        apply (rngl_compare_eq_iff Heo) in Hbec; subst c.
+...
+        revert lb lc Hlb Hlc Hbc Hab Hpbc Habc.
+        clear Hla.
+        induction la as [| a]; intros. {
+          do 2 rewrite lap_add_0_r in Habc.
+          congruence.
+        }
+...
+Search ((List.last _ _ ≠? _)%L.
+Search lap_compare.
 Search (lap_compare (_ + _)).
 ...
 
