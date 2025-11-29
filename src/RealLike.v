@@ -329,11 +329,10 @@ Qed.
 
 Theorem rl_sqrt_pos :
   rngl_has_opp_or_psub T = true →
-  rngl_is_totally_ordered T = true →
+  rngl_is_ordered T = true →
   ∀ a, (0 < a)%L → (0 < √a)%L.
 Proof.
-intros Hos Hto.
-specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+intros Hos Hor.
 intros a Ha.
 apply rngl_le_neq.
 split. {

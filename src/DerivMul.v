@@ -145,7 +145,7 @@ intros * Hlti * dist * Hd.
 rename x into x₀.
 intros ε Hε.
 specialize (Hd √ε).
-assert (Hsε : (0 < √ε)%L) by now apply (rl_sqrt_pos Hos Hto).
+assert (Hsε : (0 < √ε)%L) by now apply (rl_sqrt_pos Hos Hor).
 specialize (Hd Hsε).
 destruct Hd as (η & Hη & Hd).
 exists (rngl_min √ε η).
