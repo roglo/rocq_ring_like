@@ -349,8 +349,7 @@ intros Hor.
 intros.
 progress unfold rngl_min.
 remember (a ≤? b)%L as ab eqn:Hab.
-remember (b ≤? a)%L as ba eqn:Hba.
-symmetry in Hab, Hba.
+symmetry in Hab.
 split; intros H1. {
   destruct ab; [ now apply rngl_leb_le in Hab | subst b ].
   apply (rngl_le_refl Hor).
