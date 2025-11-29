@@ -3991,6 +3991,26 @@ destruct Hpb as [Hpb| Hpb]; [ | easy ].
 now apply is_empty_list_empty in Hpb; subst lb.
 Qed.
 
+Theorem lap_norm_add_when_diff_len :
+  ∀ la lb,
+  has_polyn_prop la = true
+  → has_polyn_prop lb = true
+  → length la ≠ length lb
+  → lap_norm (la + lb) = (la + lb)%lap.
+Proof.
+intros * Hpa Hpb Hlab.
+destruct (lt_dec (length la) (length lb)) as [Hab| Hab]. {
+  now apply lap_norm_add_when_len_lt.
+}
+destruct (lt_dec (length lb) (length la)) as [Hba| Hba]. {
+  rewrite lap_add_comm.
+  now apply lap_norm_add_when_len_lt.
+}
+exfalso.
+apply Nat.nlt_ge in Hab, Hba.
+now apply Hlab, Nat.le_antisymm.
+Qed.
+
 Theorem List_app_lap_add :
   ∀ la lb, la ++ lb = (la + (List.repeat 0%L (length la) ++ lb))%lap.
 Proof.
@@ -4579,7 +4599,17 @@ split; intros Hbc. {
       apply Nat.compare_eq_iff in Hlabc.
       cbn in Habc.
       cbn in Hlabc.
-(* bon, bin chais pas *)
+      destruct (lt_dec (length (lap pa)) (length (lap pb))) as [Hab| Hab]. {
+        assert (H1 : lap_norm (lap pa + lap pb) = (lap pa + lap pb)%lap). {
+          apply lap_norm_add_when_len_lt; [ apply lap_prop | easy ].
+        }
+        assert (H2 : lap_norm (lap pa + lap pc) = (lap pa + lap pc)%lap). {
+          apply lap_norm_add_when_len_lt; [ apply lap_prop | ].
+          congruence.
+        }
+        rewrite H1, H2 in Habc; clear H1 H2.
+        clear Hlabc.
+Search (lap_compare (_ + _)).
 ...
 
 Definition polyn_ring_like_ord (Hor : rngl_is_ordered T = true) :
