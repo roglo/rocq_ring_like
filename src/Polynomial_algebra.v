@@ -4626,11 +4626,13 @@ split; intros Hbc. {
         apply (rngl_eqb_neq Heo) in Hlb, Hlc.
         do 2 rewrite (lap_add_comm la) in Habc.
 (**)
-        clear Hla.
-        revert la lc Hlc Hbc Hpbc Habc Hab.
+...
+        clear Hla Hlb Hlc.
+        revert la lc Hbc Hpbc Habc Hab.
         induction lb as [| b] using List.rev_ind; intros; [ easy | ].
-        destruct lc as [| c] using List.rev_ind; intros; [ easy | clear IHlc ].
-        do 2 rewrite List.length_app, Nat.add_1_r in Hbc.
+        rewrite List.length_app, Nat.add_1_r in Hbc.
+        destruct lc as [| c] using List.rev_ind; [ easy | clear IHlc ].
+        rewrite List.length_app, Nat.add_1_r in Hbc.
         apply Nat.succ_inj in Hbc.
         rewrite List.length_app, Nat.add_1_r in Hab.
         rewrite lap_add_app_l in Habc; [ | flia Hab ].
@@ -4641,11 +4643,22 @@ split; intros Hbc. {
           rewrite Nat.max_l; [ | flia Hab ].
           rewrite Nat.max_l; [ easy | flia Hbc Hab ].
         }
-        rewrite List.last_last in Hlb, Hlc.
         remember (b ?= c)%L as bc eqn:Hbec.
         symmetry in Hbec.
         destruct bc; [ | easy | easy ].
-        apply (rngl_compare_eq_iff Heo) in Hbec; subst c.
+        clear b c Hbec.
+...
+        destruct la as [| a] using List.rev_ind; [ | clear IHla ]. {
+          do 2 rewrite lap_add_0_r in Habc.
+          congruence.
+        }
+        apply IHlb in Habc; [ | easy | easy | ].
+
+        rewrite List.length_app, Nat.add_1_r in Hab.
+        apply Nat.succ_lt_mono in Hab.
+Search (lap_compare (_ + _)).
+...
+        rewrite lap_add_app_r in Habc.
 ...
         revert lb lc Hlb Hlc Hbc Hab Hpbc Habc.
         clear Hla.
