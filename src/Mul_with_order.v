@@ -30,6 +30,28 @@ Context {rp : ring_like_prop T}.
 Tactic Notation "pauto" := progress auto.
 Hint Resolve rngl_le_refl : core.
 
+(* on the usefulness of rngl_ord_mul_le_compat_nonpos *)
+Theorem rngl_ord_mul_le_compat_nonneg_mul_le_compat_nonpos :
+  rngl_has_opp T = true →
+  rngl_is_ordered T = true →
+  (∀ a b c d, (c ≤ a ≤ 0)%L → (d ≤ b ≤ 0)%L → (a * b ≤ c * d)%L).
+Proof.
+intros Hop Hor.
+specialize (rngl_opt_ord T) as rr.
+rewrite Hor in rr.
+move rr after rp.
+intros * Hca Hdb.
+destruct Hca as (Hca, Haz).
+destruct Hdb as (Hdb, Hbz).
+apply (rngl_opp_le_compat Hop Hor) in Hca, Haz, Hdb, Hbz.
+rewrite (rngl_opp_0 Hop) in Haz, Hbz.
+assert (H3 : (0 ≤ - a ≤ - c)%L) by easy.
+assert (H4 : (0 ≤ - b ≤ - d)%L) by easy.
+rewrite <- (rngl_mul_opp_opp Hop a).
+rewrite <- (rngl_mul_opp_opp Hop c).
+now apply rngl_ord_mul_le_compat_nonneg.
+Qed.
+
 Theorem rngl_mul_le_compat_nonneg :
   rngl_is_ordered T = true →
   ∀ a b c d, (0 ≤ a ≤ c)%L → (0 ≤ b ≤ d)%L → (a * b ≤ c * d)%L.
@@ -692,25 +714,6 @@ exists 0; cbn.
 rewrite rngl_add_0_r.
 split; [ apply (rngl_abs_nonneg Hop Hto) | ].
 now apply rngl_le_neq.
-Qed.
-
-(* on the usefulness of rngl_ord_mul_le_compat_nonpos *)
-Theorem rngl_ord_mul_le_compat_nonneg_mul_le_compat_nonpos :
-  rngl_has_opp T = true →
-  rngl_is_ordered T = true →
-  (∀ a b c d, (c ≤ a ≤ 0)%L → (d ≤ b ≤ 0)%L → (a * b ≤ c * d)%L).
-Proof.
-intros Hop Hor.
-intros * Hca Hdb.
-destruct Hca as (Hca, Haz).
-destruct Hdb as (Hdb, Hbz).
-apply (rngl_opp_le_compat Hop Hor) in Hca, Haz, Hdb, Hbz.
-rewrite (rngl_opp_0 Hop) in Haz, Hbz.
-assert (H3 : (0 ≤ - a ≤ - c)%L) by easy.
-assert (H4 : (0 ≤ - b ≤ - d)%L) by easy.
-rewrite <- (rngl_mul_opp_opp Hop a).
-rewrite <- (rngl_mul_opp_opp Hop c).
-now apply (rngl_mul_le_compat_nonneg Hor).
 Qed.
 
 End a.
