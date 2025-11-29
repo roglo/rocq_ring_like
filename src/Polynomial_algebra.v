@@ -4624,9 +4624,32 @@ split; intros Hbc. {
         }
         apply Bool.negb_true_iff in Hlb, Hlc.
         apply (rngl_eqb_neq Heo) in Hlb, Hlc.
-        do 2 rewrite (lap_add_comm la) in Habc.
 (**)
+Theorem glop :
+  ∀ la lb lc, lap_compare (la + lb) (la + lc) = lap_compare lb lc.
+Proof.
+intros la.
+induction la as [| a] using List.rev_ind; intros. {
+  now do 2 rewrite lap_add_0_l.
+}
+destruct (le_dec (length lb) (length la)) as [Hlba| Hlba]. {
+  rewrite lap_add_app_l; [ | easy ].
+  destruct (le_dec (length lc) (length la)) as [Hlca| Hlca]. {
+    rewrite lap_add_app_l; [ | easy ].
+    rewrite lap_compare_app_single. 2: {
+      do 2 rewrite lap_add_length.
+      rewrite Nat.max_l; [ symmetry | easy ].
+      now apply Nat.max_l.
+    }
+    rewrite (rngl_compare_refl Heo).
+    apply IHla.
+  }
+  apply Nat.nle_gt in Hlca.
 ...
+  rewrite (lap_add_comm _ lc).
+Search (_ + (_ ++ _))%lap.
+...
+        do 2 rewrite (lap_add_comm la) in Habc.
         clear Hla Hlb Hlc.
         revert la lc Hbc Hpbc Habc Hab.
         induction lb as [| b] using List.rev_ind; intros; [ easy | ].
