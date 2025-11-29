@@ -226,7 +226,16 @@ apply H3; clear H3.
 now apply rngl_ord_le_antisymm.
 Qed.
 
-(********)
+Theorem rngl_leb_gt :
+  rngl_is_ordered T = true →
+  ∀ a b, (b < a →(a ≤? b) = false)%L.
+Proof.
+intros Hor.
+intros * Hab.
+apply rngl_leb_nle.
+intros H1.
+now apply (rngl_nle_gt Hor) in Hab.
+Qed.
 
 Theorem rngl_le_trans :
   rngl_is_ordered T = true →
@@ -359,17 +368,11 @@ Proof.
 intros Hto.
 specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 intros.
-split; intros Hab. {
-  apply (rngl_not_le Hto) in Hab.
-  apply rngl_le_neq.
-  split; [ easy | ].
-  now apply not_eq_sym.
-} {
-  intros H1.
-  apply rngl_le_neq in Hab.
-  destruct Hab as (H2, H3).
-  now apply H3, (rngl_le_antisymm Hor).
-}
+split; intros Hab; [ | now apply (rngl_nle_gt Hor) ].
+apply (rngl_not_le Hto) in Hab.
+apply rngl_le_neq.
+split; [ easy | ].
+now apply not_eq_sym.
 Qed.
 
 Theorem rngl_nlt_ge :
@@ -391,18 +394,12 @@ Proof.
 intros Hto.
 specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 intros.
-split; intros Hab. {
-  apply rngl_leb_le.
-  destruct (rngl_leb_dec b a) as [H1| H1]; [ easy | ].
-  exfalso; apply Hab; clear Hab.
-  apply rngl_leb_nle in H1.
-  now apply (rngl_nle_gt_iff Hto).
-} {
-  intros H1.
-  apply rngl_le_neq in H1.
-  destruct H1 as (H2, H3).
-  now apply H3, (rngl_le_antisymm Hor).
-}
+split; intros Hab; [ | now apply (rngl_nlt_ge Hor) ].
+apply rngl_leb_le.
+destruct (rngl_leb_dec b a) as [H1| H1]; [ easy | ].
+exfalso; apply Hab; clear Hab.
+apply rngl_leb_nle in H1.
+now apply (rngl_nle_gt_iff Hto).
 Qed.
 
 Theorem rngl_leb_gt_iff :
@@ -412,17 +409,12 @@ Proof.
 intros Hto.
 specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 intros.
-split; intros Hab. {
-  apply rngl_leb_nle in Hab.
-  apply (rngl_not_le Hto) in Hab.
-  apply rngl_le_neq.
-  split; [ easy | ].
-  now apply not_eq_sym.
-} {
-  apply rngl_leb_nle.
-  intros H1.
-  now apply (rngl_nle_gt Hor) in Hab.
-}
+split; intros Hab; [ | now apply (rngl_leb_gt Hor) ].
+apply rngl_leb_nle in Hab.
+apply (rngl_not_le Hto) in Hab.
+apply rngl_le_neq.
+split; [ easy | ].
+now apply not_eq_sym.
 Qed.
 
 Theorem rngl_ltb_ge :
@@ -449,14 +441,9 @@ intros Hto.
 specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
 intros.
-split; intros Hab. {
-  apply (rngl_ltb_nlt Heo) in Hab.
-  now apply (rngl_nlt_ge_iff Hto) in Hab.
-} {
-  apply (rngl_ltb_nlt Heo).
-  intros H1.
-  now apply (rngl_nlt_ge Hor) in Hab.
-}
+split; intros Hab; [ | now apply (rngl_ltb_ge Hor) ].
+apply (rngl_ltb_nlt Heo) in Hab.
+now apply (rngl_nlt_ge_iff Hto) in Hab.
 Qed.
 
 Theorem rngl_eq_le_incl :
@@ -546,7 +533,7 @@ destruct bc; [ now rewrite Hab | ].
 apply (rngl_leb_gt_iff Hto) in Hab, Hbc.
 apply rngl_lt_le_incl in Hbc.
 apply (rngl_le_lt_trans Hor c) in Hab; [ | easy ].
-apply (rngl_leb_gt_iff Hto) in Hab.
+apply (rngl_leb_gt Hor) in Hab.
 now rewrite Hab.
 Qed.
 
@@ -576,22 +563,18 @@ now destruct ac.
 Qed.
 
 Theorem rngl_min_l_iff :
-  rngl_is_totally_ordered T = true →
+  rngl_is_ordered T = true →
   ∀ a b, rngl_min a b = a ↔ (a ≤ b)%L.
 Proof.
-intros Hto.
-specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+intros Hor.
 intros.
 progress unfold rngl_min.
 remember (a ≤? b)%L as ab eqn:Hab.
 remember (b ≤? a)%L as ba eqn:Hba.
 symmetry in Hab, Hba.
 split; intros H1. {
-  destruct ab; [ now apply rngl_leb_le in Hab | ].
-  destruct ba; [ subst b; apply (rngl_le_refl Hor) | ].
-  apply (rngl_leb_gt_iff Hto) in Hab, Hba.
-  apply rngl_lt_le_incl in Hba.
-  now apply (rngl_nlt_ge Hor) in Hba.
+  destruct ab; [ now apply rngl_leb_le in Hab | subst b ].
+  apply (rngl_le_refl Hor).
 } {
   destruct ab; [ easy | ].
   apply rngl_leb_le in H1.
@@ -604,8 +587,9 @@ Theorem rngl_min_r_iff :
   ∀ a b, rngl_min a b = b ↔ (b ≤ a)%L.
 Proof.
 intros Hto *.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 rewrite (rngl_min_comm Hto).
-apply (rngl_min_l_iff Hto).
+apply (rngl_min_l_iff Hor).
 Qed.
 
 Theorem rngl_max_l_iff :
@@ -615,7 +599,7 @@ Proof.
 intros Hto.
 specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 intros.
-specialize (rngl_min_l_iff Hto a b) as H1.
+specialize (rngl_min_l_iff Hor a b) as H1.
 progress unfold rngl_min in H1.
 progress unfold rngl_max.
 remember (a ≤? b)%L as ab eqn:Hab.
@@ -626,6 +610,7 @@ destruct ab. {
   intros Hba.
   apply (rngl_le_antisymm Hor _ _ Hba Hab).
 } {
+  split; [ intros _ | easy ].
   apply (rngl_leb_gt_iff Hto) in Hab.
   apply rngl_lt_le_incl in Hab.
   easy.
