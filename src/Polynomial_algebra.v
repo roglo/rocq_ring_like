@@ -4779,6 +4779,35 @@ destruct (le_dec (length lb) (length la)) as [Hlba| Hlba]. {
     rewrite lap_add_repeat_0_r; [ | easy ].
     easy.
   }
+  cbn - [ lap_add lap_compare ].
+  cbn in Hlbc, Hlba.
+  apply Nat.succ_inj in Hlbc.
+  rewrite Hlbc.
+  do 2 rewrite lap_add_cons_cons.
+Theorem glop :
+  ∀ la lb n,
+  ((la ++ List.repeat 0%L n) + lb =
+   la + lb)%lap.
+Proof.
+intros.
+revert n lb.
+induction la as [| a]; intros. {
+  rewrite List.app_nil_l.
+  rewrite lap_add_0_l.
+...
+rewrite glop.
+...
+  do 2 rewrite lap_compare_cons_cons.
+
+  cbn - [ lap_compare ].
+
+Search (_ + (_ ++ _))%lap.
+Search ((_ ++ _) + _)%lap.
+rewrite lap_add_app_l.
+Search (lap_compare (_ + _)).
+...
+rewrite <- lap_add_norm.
+  rewrite Nat.sub_succ.
 ...
   destruct lc as [| c]; [ easy | ].
   cbn - [ lap_add lap_compare ].
