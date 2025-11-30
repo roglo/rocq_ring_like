@@ -4710,6 +4710,12 @@ destruct (le_dec (length lb) (length la)) as [Hlba| Hlba]. {
   rewrite Nat.sub_diag.
   cbn.
   do 3 rewrite List.app_nil_r.
+(*
+  Hlbc : length lb = length lc
+  Hlba : length lb ≤ length la
+  ============================
+  lap_compare (la + (lb ++ ListDef.repeat 0%L (length la - length lb))) (la + lc) = lap_compare lb lc
+*)
   rewrite (lap_add_norm la lc).
   rewrite Hlbc in Hlba.
   rewrite (proj2 (Nat.sub_0_le (length lc) (length la))); [ | easy ].
@@ -4739,9 +4745,66 @@ destruct (le_dec (length lb) (length la)) as [Hlba| Hlba]. {
   rewrite IHla; [ cbn | easy | easy ].
   destruct (lap_compare lb lc); [ | easy | easy ].
   apply (rngl_compare_add_mono_l Hor).
-}
-apply Nat.nle_gt in Hlba.
+} {
+  apply Nat.nle_gt in Hlba.
+  apply Nat.lt_le_incl in Hlba.
+  rewrite (proj2 (Nat.sub_0_le (length la) (length lb))); [ | easy ].
+  rewrite Nat.add_0_l.
+  rewrite Nat.sub_add; [ | easy ].
+  rewrite Nat.sub_diag.
+  cbn.
+  do 3 rewrite List.app_nil_r.
+(**)
+  rewrite (lap_add_norm la lc).
+  rewrite Hlbc in Hlba.
+  rewrite (proj2 (Nat.sub_0_le (length la) (length lc))); [ | easy ].
+  rewrite List.app_nil_r.
+  rewrite <- Hlbc in Hlba.
+  revert la lc Hlbc Hlba.
+  induction lb as [| b]; intros. {
+    apply Nat.le_0_r in Hlba.
+    symmetry in Hlbc.
+    apply List.length_zero_iff_nil in Hlbc, Hlba.
+    now subst la lc.
+  }
+  destruct lc as [| c]; [ easy | ].
+  destruct la as [| a]. {
+    clear Hlba.
+    cbn in Hlbc.
+    apply Nat.succ_inj in Hlbc.
+    do 2 rewrite List.app_nil_l.
+    do 2 rewrite Nat.sub_0_r.
+    do 2 rewrite (lap_add_comm (List.repeat _ _)).
+    rewrite lap_add_repeat_0_r; [ | easy ].
+    rewrite lap_add_repeat_0_r; [ | easy ].
+    easy.
+  }
 ...
+  destruct lc as [| c]; [ easy | ].
+  cbn - [ lap_add lap_compare ].
+  do 2 rewrite lap_add_cons_cons.
+  rewrite lap_compare_cons_cons.
+  cbn in Hlbc, Hlba.
+  apply Nat.succ_inj in Hlbc.
+  apply Nat.succ_le_mono in Hlba.
+  rewrite Hlbc at 2.
+  rewrite IHla; [ cbn | easy | easy ].
+  destruct (lap_compare lb lc); [ | easy | easy ].
+  apply (rngl_compare_add_mono_l Hor).
+} {
+...
+(*
+  Hlbc : length lb = length lc
+  Hlba : length lb ≤ length la
+  ============================
+  lap_compare (la + (lb ++ ListDef.repeat 0%L (length la - length lb))) (la + lc) = lap_compare lb lc
+*)
+(*
+  Hlbc : length lb = length lc
+  Hlba : length la ≤ length lb
+  ============================
+  lap_compare ((la ++ ListDef.repeat 0%L (length lb - length la)) + lb) (la + lc) = lap_compare lb lc
+*)...
 intros * Hlbc.
 do 2 rewrite lap_add_norm.
 do 2 rewrite List.length_app.
