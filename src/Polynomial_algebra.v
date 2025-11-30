@@ -4630,7 +4630,7 @@ Theorem glop :
   length lb = length lc
   → lap_compare (la + lb) (la + lc) = lap_compare lb lc.
 Proof.
-intros * Hbc.
+intros * Hlbc.
 do 2 rewrite lap_add_norm.
 do 2 rewrite List.length_app.
 do 2 rewrite List.repeat_length.
@@ -4644,26 +4644,47 @@ destruct (le_dec (length lb) (length la)) as [Hlba| Hlba]. {
   cbn.
   do 3 rewrite List.app_nil_r.
   rewrite (lap_add_norm la lc).
-  rewrite Hbc in Hlba.
+  rewrite Hlbc in Hlba.
   rewrite (proj2 (Nat.sub_0_le (length lc) (length la))); [ | easy ].
   rewrite List.app_nil_r.
-  revert lb lc Hbc Hlba.
+  revert lb lc Hlbc Hlba.
   induction la as [| a] using List.rev_ind; intros; cbn. {
     apply Nat.le_0_r in Hlba.
-    rewrite Hlba in Hbc.
-    apply List.length_zero_iff_nil in Hbc, Hlba.
+    rewrite Hlba in Hlbc.
+    apply List.length_zero_iff_nil in Hlbc, Hlba.
     now subst lb lc.
   }
   destruct lb as [| b] using List.rev_ind; [ | clear IHlb ]. {
-    symmetry in Hbc.
-    apply List.length_zero_iff_nil in Hbc; subst lc; clear Hlba; cbn.
+    symmetry in Hlbc.
+    apply List.length_zero_iff_nil in Hlbc; subst lc; clear Hlba; cbn.
     rewrite Nat.sub_0_r.
     rewrite lap_add_repeat_0_r; [ | easy ].
     apply lap_compare_refl.
   }
-  rewrite <- Hbc.
+  rewrite <- Hlbc.
   do 2 rewrite List.length_app, Nat.add_1_r.
   rewrite Nat.sub_succ.
+  rewrite <- Hlbc in Hlba.
+  do 2 rewrite List.length_app, Nat.add_1_r in Hlba.
+  apply Nat.succ_le_mono in Hlba.
+  destruct lc as [| c] using List.rev_ind; [ | clear IHlc ]. {
+    now rewrite List.length_app, Nat.add_1_r in Hlbc.
+  }
+  do 2 rewrite List.length_app, Nat.add_1_r in Hlbc.
+  apply Nat.succ_inj in Hlbc.
+  rewrite lap_compare_app_single; [ | easy ].
+  remember (b ?= c)%L as bc eqn:Hbc.
+  symmetry in Hbc.
+  destruct bc. {
+    apply (rngl_compare_eq_iff Heo) in Hbc; subst c.
+...
+  rewrite (lap_add_app_app _ lc).
+Search ((_ ++ _) + _)%lap.
+rewrite lap_add_app_l.
+Search (_ + (_ ++ _))%lap.
+rewrite List_app_lap_add.
+rewrite lap_add_app_r.
+rewrite lap_add_app_app.
 ...
 intros la.
 induction la as [| a] using List.rev_ind; intros. {
