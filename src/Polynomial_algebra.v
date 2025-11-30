@@ -4660,8 +4660,17 @@ destruct (le_dec (length lb) (length la)) as [Hlba| Hlba]. {
         now rewrite lap_compare_refl.
       }
       clear IHlc.
+      do 2 rewrite List.length_app in Hlca.
+      apply Nat.add_le_mono_r in Hlca.
       rewrite List.length_app, Nat.add_1_r.
       rewrite Nat.sub_succ.
+      destruct (Nat.eq_dec (length la) (length lc)) as [Hac| Hac]. {
+        rewrite Hac, Nat.sub_diag, List.app_nil_r.
+        rewrite lap_add_repeat_0_r. 2: {
+          rewrite List.length_app, Nat.add_1_r.
+          now rewrite Hac.
+        }
+(* manifestement, c'est faux *)
 ...
 intros la.
 induction la as [| a] using List.rev_ind; intros. {
