@@ -4628,6 +4628,41 @@ split; intros Hbc. {
 Theorem glop :
   ∀ la lb lc, lap_compare (la + lb) (la + lc) = lap_compare lb lc.
 Proof.
+intros.
+do 2 rewrite lap_add_norm.
+do 2 rewrite List.length_app.
+do 2 rewrite List.repeat_length.
+rewrite Nat.add_comm.
+rewrite (Nat.add_comm (length la)).
+destruct (le_dec (length lb) (length la)) as [Hlba| Hlba]. {
+  rewrite (proj2 (Nat.sub_0_le (length lb) (length la))); [ | easy ].
+  rewrite Nat.add_0_l.
+  rewrite Nat.sub_add; [ | easy ].
+  rewrite Nat.sub_diag.
+  cbn.
+  do 3 rewrite List.app_nil_r.
+  rewrite (lap_add_norm la lc).
+  destruct (le_dec (length lc) (length la)) as [Hlca| Hlca]. {
+    rewrite (proj2 (Nat.sub_0_le (length lc) (length la))); [ | easy ].
+    rewrite List.app_nil_r.
+    revert lb lc Hlba Hlca.
+    induction la as [| a] using List.rev_ind; intros; cbn. {
+      apply Nat.le_0_r in Hlba, Hlca.
+      apply List.length_zero_iff_nil in Hlba, Hlca.
+      now subst lb lc.
+    }
+    destruct lb as [| b] using List.rev_ind. {
+      cbn; clear Hlba.
+      rewrite Nat.sub_0_r.
+      rewrite List.length_app, Nat.add_1_r.
+      destruct lc as [| c] using List.rev_ind. {
+        cbn.
+        now rewrite lap_compare_refl.
+      }
+      clear IHlc.
+      rewrite List.length_app, Nat.add_1_r.
+      rewrite Nat.sub_succ.
+...
 intros la.
 induction la as [| a] using List.rev_ind; intros. {
   now do 2 rewrite lap_add_0_l.
@@ -4645,6 +4680,8 @@ destruct (le_dec (length lb) (length la)) as [Hlba| Hlba]. {
     apply IHla.
   }
   apply Nat.nle_gt in Hlca.
+  destruct lc as [| c] using List.rev_ind; [ easy | clear IHlc ].
+Search ((_ ++ _) + _)%lap.
 ...
   rewrite (lap_add_comm _ lc).
 Search (_ + (_ ++ _))%lap.
