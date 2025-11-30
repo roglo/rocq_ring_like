@@ -4626,9 +4626,11 @@ split; intros Hbc. {
         apply (rngl_eqb_neq Heo) in Hlb, Hlc.
 (**)
 Theorem glop :
-  ∀ la lb lc, lap_compare (la + lb) (la + lc) = lap_compare lb lc.
+  ∀ la lb lc,
+  length lb = length lc
+  → lap_compare (la + lb) (la + lc) = lap_compare lb lc.
 Proof.
-intros.
+intros * Hbc.
 do 2 rewrite lap_add_norm.
 do 2 rewrite List.length_app.
 do 2 rewrite List.repeat_length.
@@ -4642,35 +4644,26 @@ destruct (le_dec (length lb) (length la)) as [Hlba| Hlba]. {
   cbn.
   do 3 rewrite List.app_nil_r.
   rewrite (lap_add_norm la lc).
-  destruct (le_dec (length lc) (length la)) as [Hlca| Hlca]. {
-    rewrite (proj2 (Nat.sub_0_le (length lc) (length la))); [ | easy ].
-    rewrite List.app_nil_r.
-    revert lb lc Hlba Hlca.
-    induction la as [| a] using List.rev_ind; intros; cbn. {
-      apply Nat.le_0_r in Hlba, Hlca.
-      apply List.length_zero_iff_nil in Hlba, Hlca.
-      now subst lb lc.
-    }
-    destruct lb as [| b] using List.rev_ind. {
-      cbn; clear Hlba.
-      rewrite Nat.sub_0_r.
-      rewrite List.length_app, Nat.add_1_r.
-      destruct lc as [| c] using List.rev_ind. {
-        cbn.
-        now rewrite lap_compare_refl.
-      }
-      clear IHlc.
-      do 2 rewrite List.length_app in Hlca.
-      apply Nat.add_le_mono_r in Hlca.
-      rewrite List.length_app, Nat.add_1_r.
-      rewrite Nat.sub_succ.
-      destruct (Nat.eq_dec (length la) (length lc)) as [Hac| Hac]. {
-        rewrite Hac, Nat.sub_diag, List.app_nil_r.
-        rewrite lap_add_repeat_0_r. 2: {
-          rewrite List.length_app, Nat.add_1_r.
-          now rewrite Hac.
-        }
-(* manifestement, c'est faux *)
+  rewrite Hbc in Hlba.
+  rewrite (proj2 (Nat.sub_0_le (length lc) (length la))); [ | easy ].
+  rewrite List.app_nil_r.
+  revert lb lc Hbc Hlba.
+  induction la as [| a] using List.rev_ind; intros; cbn. {
+    apply Nat.le_0_r in Hlba.
+    rewrite Hlba in Hbc.
+    apply List.length_zero_iff_nil in Hbc, Hlba.
+    now subst lb lc.
+  }
+  destruct lb as [| b] using List.rev_ind; [ | clear IHlb ]. {
+    symmetry in Hbc.
+    apply List.length_zero_iff_nil in Hbc; subst lc; clear Hlba; cbn.
+    rewrite Nat.sub_0_r.
+    rewrite lap_add_repeat_0_r; [ | easy ].
+    apply lap_compare_refl.
+  }
+  rewrite <- Hbc.
+  do 2 rewrite List.length_app, Nat.add_1_r.
+  rewrite Nat.sub_succ.
 ...
 intros la.
 induction la as [| a] using List.rev_ind; intros. {
