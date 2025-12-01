@@ -4815,6 +4815,7 @@ split; intros Hbc. {
           apply (rngl_add_cancel_l Hos) in Habz; subst c.
           now rewrite (rngl_compare_refl Heo) in Hbc.
         }
+        apply (rngl_eqb_neq Heo) in Hacz.
 ...
 Search ((_ ++ _) + _)%lap.
 ...
