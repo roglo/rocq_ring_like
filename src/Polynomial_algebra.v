@@ -4157,6 +4157,28 @@ rewrite List.repeat_app.
 now rewrite <- List_app_lap_add.
 Qed.
 
+Theorem lap_compare_add_add :
+  rngl_is_ordered T = true →
+  ∀ la lb lc,
+  length lb = length lc
+  → lap_compare (la + lb) (la + lc) = lap_compare lb lc.
+Proof.
+intros Hor * Hlbc.
+revert lb lc Hlbc.
+induction la as [| a]; intros; [ now do 2 rewrite lap_add_0_l | ].
+do 2 rewrite lap_add_cons_l.
+destruct lb as [| b]. {
+  destruct lc as [| c]; [ cbn | easy ].
+  rewrite lap_compare_refl.
+  apply (rngl_compare_refl Heo).
+}
+destruct lc as [| c]; [ easy | cbn ].
+cbn in Hlbc.
+rewrite (rngl_compare_add_mono_l Hor).
+apply Nat.succ_inj in Hlbc.
+now rewrite IHla.
+Qed.
+
 (* to be completed
 Theorem polyn_ord_le_refl :
   rngl_is_ordered T = true →
@@ -4707,125 +4729,10 @@ split; intros Hbc. {
         }
         apply Bool.negb_true_iff in Hlb, Hlc.
         apply (rngl_eqb_neq Heo) in Hlb, Hlc.
-(**)
-Theorem glop :
-  rngl_is_ordered T = true →
-  ∀ la lb lc,
-  length lb = length lc
-  → lap_compare (la + lb) (la + lc) = lap_compare lb lc.
-Proof.
-intros Hor * Hlbc.
-do 2 rewrite lap_add_norm.
-do 2 rewrite List.length_app.
-do 2 rewrite List.repeat_length.
-rewrite Nat.add_comm.
-rewrite (Nat.add_comm (length la)).
-destruct (le_dec (length lb) (length la)) as [Hlba| Hlba]. {
-  rewrite (proj2 (Nat.sub_0_le (length lb) (length la))); [ | easy ].
-  rewrite Nat.add_0_l.
-  rewrite Nat.sub_add; [ | easy ].
-  rewrite Nat.sub_diag.
-  cbn.
-  do 3 rewrite List.app_nil_r.
-(*
-  Hlbc : length lb = length lc
-  Hlba : length lb ≤ length la
-  ============================
-  lap_compare (la + (lb ++ ListDef.repeat 0%L (length la - length lb))) (la + lc) = lap_compare lb lc
-*)
-  rewrite (lap_add_norm la lc).
-  rewrite Hlbc in Hlba.
-  rewrite (proj2 (Nat.sub_0_le (length lc) (length la))); [ | easy ].
-  rewrite List.app_nil_r.
-  revert lb lc Hlbc Hlba.
-  induction la as [| a]; intros. {
-    apply Nat.le_0_r in Hlba.
-    rewrite Hlba in Hlbc.
-    apply List.length_zero_iff_nil in Hlbc, Hlba.
-    now subst lb lc.
-  }
-  destruct lb as [| b]. {
-    symmetry in Hlbc.
-    apply List.length_zero_iff_nil in Hlbc; subst lc; clear Hlba.
-    apply lap_compare_refl.
-  }
-  rewrite <- Hlbc.
-  cbn - [ lap_add lap_compare ].
-  destruct lc as [| c]; [ easy | ].
-  cbn - [ lap_add lap_compare ].
-  do 2 rewrite lap_add_cons_cons.
-  rewrite lap_compare_cons_cons.
-  cbn in Hlbc, Hlba.
-  apply Nat.succ_inj in Hlbc.
-  apply Nat.succ_le_mono in Hlba.
-  rewrite Hlbc at 2.
-  rewrite IHla; [ cbn | easy | easy ].
-  destruct (lap_compare lb lc); [ | easy | easy ].
-  apply (rngl_compare_add_mono_l Hor).
-} {
-  apply Nat.nle_gt in Hlba.
-  apply Nat.lt_le_incl in Hlba.
-  rewrite (proj2 (Nat.sub_0_le (length la) (length lb))); [ | easy ].
-  rewrite Nat.add_0_l.
-  rewrite Nat.sub_add; [ | easy ].
-  rewrite Nat.sub_diag.
-  cbn.
-  do 3 rewrite List.app_nil_r.
-(**)
-  rewrite (lap_add_norm la lc).
-  rewrite Hlbc in Hlba.
-  rewrite (proj2 (Nat.sub_0_le (length la) (length lc))); [ | easy ].
-  rewrite List.app_nil_r.
-  rewrite <- Hlbc in Hlba.
-  revert la lc Hlbc Hlba.
-  destruct lb as [| b]; intros. {
-    apply Nat.le_0_r in Hlba.
-    symmetry in Hlbc.
-    apply List.length_zero_iff_nil in Hlbc, Hlba.
-    now subst la lc.
-  }
-  destruct lc as [| c]; [ easy | ].
-  destruct la as [| a]. {
-    clear Hlba.
-    cbn in Hlbc.
-    apply Nat.succ_inj in Hlbc.
-    do 2 rewrite List.app_nil_l.
-    do 2 rewrite Nat.sub_0_r.
-    do 2 rewrite (lap_add_comm (List.repeat _ _)).
-    rewrite lap_add_repeat_0_r; [ | easy ].
-    rewrite lap_add_repeat_0_r; [ | easy ].
-    easy.
-  }
-  cbn - [ lap_add lap_compare ].
-  cbn in Hlbc, Hlba.
-  apply Nat.succ_inj in Hlbc.
-  apply Nat.succ_le_mono in Hlba.
-  rewrite Hlbc.
-  do 2 rewrite lap_add_cons_cons.
-  do 2 rewrite lap_add_app_repeat_l.
-  rewrite Nat.add_comm, <- Hlbc.
-  rewrite Nat.sub_add; [ | easy ].
-  do 2 rewrite <- lap_add_assoc.
-  rewrite lap_add_repeat_0_l; [ | easy ].
-  rewrite Hlbc.
-  rewrite lap_add_repeat_0_l; [ | easy ].
-  do 2 rewrite lap_compare_cons_cons.
-  rewrite (rngl_compare_add_mono_l Hor).
-Theorem lap_compare_add_add :
-  ∀ la lb lc, lap_compare (la + lb) (la + lc) = lap_compare lb lc.
-Proof.
-intros.
-revert lb lc.
-induction la as [| a]; intros; [ now do 2 rewrite lap_add_0_l | ].
-do 2 rewrite lap_add_cons_l.
-destruct lb as [| b]. {
-  destruct lc as [| c]. {
-    cbn.
-    rewrite lap_compare_refl.
-    apply (rngl_compare_refl Heo).
-  }
-  cbn.
-  rewrite lap_add_0_r.
+        rewrite (lap_compare_add_add Hor) in Habc; [ | easy ].
+        congruence.
+      }
+      apply Nat.nlt_ge in Hab.
 ...
 cbn.
 rewrite IHla.
