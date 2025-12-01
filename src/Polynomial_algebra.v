@@ -4816,6 +4816,9 @@ split; intros Hbc. {
           now rewrite (rngl_compare_refl Heo) in Hbc.
         }
         apply (rngl_eqb_neq Heo) in Hacz.
+        clear b Hbc Habz.
+        remember (a + c)%L as ac eqn:H.
+        clear a c H.
 ...
 Search ((_ ++ _) + _)%lap.
 ...
