@@ -4816,9 +4816,25 @@ split; intros Hbc. {
           now rewrite (rngl_compare_refl Heo) in Hbc.
         }
         apply (rngl_eqb_neq Heo) in Hacz.
+(*
         clear b Hbc Habz.
+*)
         remember (a + c)%L as ac eqn:H.
+(*
         clear a c H.
+*)
+(* lap_norm (la + lb) est égal ou plus court que la + lb,
+   donc égal ou plus court que la + lc
+   donc lap_compare de Habc est la comparaison de 0%L et de ac
+   Or, ac, on sait qu'il n'est pas nul, mais on ne sait pas
+   s'il est positif ou négatif
+     Mais si on tient comte de Hbc, on aurait b < c
+   Et avec Habz, on aurait a = -b
+   Donc ac = a + c = c - b > 0
+   Donc ac > 0
+   Donc lap_compare serait Lt, d'où contradiction
+   Mais faudrait peut-être avoir obligatoirement que
+   ce soit un ordre total. *)
 ...
 Search ((_ ++ _) + _)%lap.
 ...
