@@ -4733,6 +4733,38 @@ split; intros Hbc. {
         congruence.
       }
       apply Nat.nlt_ge in Hab.
+      destruct (lt_dec (length (lap pb)) (length (lap pa))) as [Hba| Hba]. {
+        assert (H1 : lap_norm (lap pa + lap pb) = (lap pa + lap pb)%lap). {
+          rewrite lap_add_comm.
+          apply lap_norm_add_when_len_lt; [ apply lap_prop | easy ].
+        }
+        assert (H2 : lap_norm (lap pa + lap pc) = (lap pa + lap pc)%lap). {
+          rewrite lap_add_comm.
+          apply lap_norm_add_when_len_lt; [ apply lap_prop | ].
+          congruence.
+        }
+        rewrite H1, H2 in Habc; clear H1 H2.
+        clear Hlabc.
+        destruct pa as (la, Hla).
+        destruct pb as (lb, Hlb).
+        destruct pc as (lc, Hlc).
+        cbn - [ lap_add ] in Hbc, Hpbc, Habc, Hab, Hba.
+        progress unfold has_polyn_prop in Hlb, Hlc.
+        apply Bool.orb_true_iff in Hlb, Hlc.
+        destruct Hlb as [Hlb| Hlb]. {
+          now apply is_empty_list_empty in Hlb; subst lb.
+        }
+        destruct Hlc as [Hlc| Hlc]. {
+          apply is_empty_list_empty in Hlc; subst lc.
+          now apply List.length_zero_iff_nil in Hbc; subst lb.
+        }
+        apply Bool.negb_true_iff in Hlb, Hlc.
+        apply (rngl_eqb_neq Heo) in Hlb, Hlc.
+        rewrite (lap_compare_add_add Hor) in Habc; [ | easy ].
+        congruence.
+      }
+      apply Nat.nlt_ge in Hba.
+      apply Nat.le_antisymm in Hab; [ clear Hba | easy ].
 ...
 cbn.
 rewrite IHla.
