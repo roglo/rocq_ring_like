@@ -4694,10 +4694,10 @@ split; intros Hbc. {
   destruct abc; [ easy | easy | exfalso ].
   progress unfold polyn_compare in Hpbc.
   progress unfold polyn_compare in Habc.
-  remember (length (lap pb) ?= length (lap pc)) as bc eqn:Hbc.
-  symmetry in Hbc.
-  destruct bc. {
-    apply Nat.compare_eq_iff in Hbc.
+  remember (length (lap pb) ?= length (lap pc)) as lbc eqn:Hlbc.
+  symmetry in Hlbc.
+  destruct lbc. {
+    apply Nat.compare_eq_iff in Hlbc.
     remember (length (lap _) ?= length (lap _)) as abc eqn:Hlabc.
     symmetry in Hlabc.
     destruct abc. {
@@ -4717,7 +4717,7 @@ split; intros Hbc. {
         destruct pa as (la, Hla).
         destruct pb as (lb, Hlb).
         destruct pc as (lc, Hlc).
-        cbn - [ lap_add ] in Hbc, Hpbc, Habc, Hab.
+        cbn - [ lap_add ] in Hlbc, Hpbc, Habc, Hab.
         progress unfold has_polyn_prop in Hlb, Hlc.
         apply Bool.orb_true_iff in Hlb, Hlc.
         destruct Hlb as [Hlb| Hlb]. {
@@ -4725,7 +4725,7 @@ split; intros Hbc. {
         }
         destruct Hlc as [Hlc| Hlc]. {
           apply is_empty_list_empty in Hlc; subst lc.
-          now rewrite Hbc in Hab.
+          now rewrite Hlbc in Hab.
         }
         apply Bool.negb_true_iff in Hlb, Hlc.
         apply (rngl_eqb_neq Heo) in Hlb, Hlc.
@@ -4748,7 +4748,7 @@ split; intros Hbc. {
         destruct pa as (la, Hla).
         destruct pb as (lb, Hlb).
         destruct pc as (lc, Hlc).
-        cbn - [ lap_add ] in Hbc, Hpbc, Habc, Hab, Hba.
+        cbn - [ lap_add ] in Hlbc, Hpbc, Habc, Hab, Hba.
         progress unfold has_polyn_prop in Hlb, Hlc.
         apply Bool.orb_true_iff in Hlb, Hlc.
         destruct Hlb as [Hlb| Hlb]. {
@@ -4756,7 +4756,7 @@ split; intros Hbc. {
         }
         destruct Hlc as [Hlc| Hlc]. {
           apply is_empty_list_empty in Hlc; subst lc.
-          now apply List.length_zero_iff_nil in Hbc; subst lb.
+          now apply List.length_zero_iff_nil in Hlbc; subst lb.
         }
         apply Bool.negb_true_iff in Hlb, Hlc.
         apply (rngl_eqb_neq Heo) in Hlb, Hlc.
@@ -4765,6 +4765,60 @@ split; intros Hbc. {
       }
       apply Nat.nlt_ge in Hba.
       apply Nat.le_antisymm in Hab; [ clear Hba | easy ].
+      rename Hab into Hlab; move Hlab after Hlbc.
+      clear Hlabc.
+      destruct pa as (la, Hla).
+      destruct pb as (lb, Hlb).
+      destruct pc as (lc, Hlc).
+      cbn - [ lap_norm lap_add ] in Hlab, Hlbc, Hpbc, Habc.
+      clear Hla Hlb Hlc leb tot Hleb.
+      revert lb lc Hlab Hlbc Hpbc Habc.
+      induction la as [| a] using List.rev_ind; intros. {
+        rewrite <- Hlab in Hlbc; symmetry in Hlab, Hlbc.
+        now apply List.length_zero_iff_nil in Hlab, Hlbc; subst lb lc.
+      }
+      destruct lb as [| b] using List.rev_ind; [ easy | clear IHlb ].
+      do 2 rewrite List.length_app, Nat.add_1_r in Hlab.
+      rewrite List.length_app, Nat.add_1_r in Hlbc.
+      destruct lc as [| c] using List.rev_ind; [ easy | clear IHlc ].
+      rewrite List.length_app, Nat.add_1_r in Hlbc.
+      apply Nat.succ_inj in Hlab, Hlbc.
+      rewrite lap_add_app_app in Habc; [ | easy ].
+      rewrite lap_add_app_app in Habc; [ | congruence ].
+      cbn in Habc.
+      rewrite lap_compare_app_single in Hpbc; [ | easy ].
+      do 2 rewrite lap_norm_app_single in Habc.
+      remember (b ?= c)%L as bc eqn:Hbc.
+      symmetry in Hbc.
+      destruct bc; [ | | easy ]. {
+        apply (rngl_compare_eq_iff Heo) in Hbc; subst c.
+        remember (a + b =? 0)%L as abz eqn:Habz.
+        symmetry in Habz.
+        destruct abz; [ now apply (IHla lb lc) | ].
+        rewrite lap_compare_app_single in Habc. 2: {
+          do 2 rewrite lap_add_length.
+          now rewrite Hlab, Hlbc.
+        }
+        rewrite (rngl_compare_refl Heo) in Habc.
+        rewrite (lap_compare_add_add Hor) in Habc; [ | easy ].
+        congruence.
+      }
+      clear Hpbc.
+      remember (a + b =? 0)%L as abz eqn:Habz.
+      remember (a + c =? 0)%L as acz eqn:Hacz.
+      symmetry in Habz, Hacz.
+      destruct abz. {
+        apply (rngl_eqb_eq Heo) in Habz.
+        destruct acz. {
+          apply (rngl_eqb_eq Heo) in Hacz.
+          rewrite <- Hacz in Habz.
+          apply (rngl_add_cancel_l Hos) in Habz; subst c.
+          now rewrite (rngl_compare_refl Heo) in Hbc.
+        }
+...
+Search ((_ ++ _) + _)%lap.
+...
+      rewrite lap_add_app_l in Habc.
 ...
 cbn.
 rewrite IHla.
