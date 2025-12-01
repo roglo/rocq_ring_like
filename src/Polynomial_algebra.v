@@ -4140,6 +4140,23 @@ apply (rngl_eqb_neq Heo) in Habc, Hbc.
 now rewrite (rngl_add_leb_mono_l Hor).
 Qed.
 
+Theorem lap_add_app_repeat_l :
+  ∀ la lb n,
+  ((la ++ List.repeat 0%L n) + lb =
+   la + List.repeat 0%L (length la + n) + lb)%lap.
+Proof.
+intros.
+revert n lb.
+induction la as [| a]; intros; [ now rewrite lap_add_0_l | ].
+rewrite <- List.app_comm_cons.
+progress f_equal.
+rewrite lap_add_cons_l; cbn.
+rewrite rngl_add_0_r.
+progress f_equal.
+rewrite List.repeat_app.
+now rewrite <- List_app_lap_add.
+Qed.
+
 (* to be completed
 Theorem polyn_ord_le_refl :
   rngl_is_ordered T = true →
@@ -4761,7 +4778,7 @@ destruct (le_dec (length lb) (length la)) as [Hlba| Hlba]. {
   rewrite List.app_nil_r.
   rewrite <- Hlbc in Hlba.
   revert la lc Hlbc Hlba.
-  induction lb as [| b]; intros. {
+  destruct lb as [| b]; intros. {
     apply Nat.le_0_r in Hlba.
     symmetry in Hlbc.
     apply List.length_zero_iff_nil in Hlbc, Hlba.
@@ -4782,25 +4799,45 @@ destruct (le_dec (length lb) (length la)) as [Hlba| Hlba]. {
   cbn - [ lap_add lap_compare ].
   cbn in Hlbc, Hlba.
   apply Nat.succ_inj in Hlbc.
+  apply Nat.succ_le_mono in Hlba.
   rewrite Hlbc.
   do 2 rewrite lap_add_cons_cons.
-Theorem glop :
-  ∀ la lb n,
-  ((la ++ List.repeat 0%L n) + lb =
-   la + lb)%lap.
+  do 2 rewrite lap_add_app_repeat_l.
+  rewrite Nat.add_comm, <- Hlbc.
+  rewrite Nat.sub_add; [ | easy ].
+  do 2 rewrite <- lap_add_assoc.
+  rewrite lap_add_repeat_0_l; [ | easy ].
+  rewrite Hlbc.
+  rewrite lap_add_repeat_0_l; [ | easy ].
+  do 2 rewrite lap_compare_cons_cons.
+  rewrite (rngl_compare_add_mono_l Hor).
+Theorem lap_compare_add_add :
+  ∀ la lb lc, lap_compare (la + lb) (la + lc) = lap_compare lb lc.
 Proof.
 intros.
-revert n lb.
-induction la as [| a]; intros. {
-  rewrite List.app_nil_l.
-  rewrite lap_add_0_l.
+revert lb lc.
+induction la as [| a]; intros; [ now do 2 rewrite lap_add_0_l | ].
+do 2 rewrite lap_add_cons_l.
+destruct lb as [| b]. {
+  destruct lc as [| c]. {
+    cbn.
+    rewrite lap_compare_refl.
+    apply (rngl_compare_refl Heo).
+  }
+  cbn.
+  rewrite lap_add_0_r.
 ...
-rewrite glop.
+cbn.
+rewrite IHla.
+... ...
+rewrite lap_compare_add_add.
+Search (lap_compare (_ + _)).
+...
+  rewrite lap_add_repeat_0_r.
 ...
   do 2 rewrite lap_compare_cons_cons.
-
+...
   cbn - [ lap_compare ].
-
 Search (_ + (_ ++ _))%lap.
 Search ((_ ++ _) + _)%lap.
 rewrite lap_add_app_l.
