@@ -3016,7 +3016,6 @@ Definition polyn_opt_leb :=
   | None => None
   end.
 *)
-(* relation order not compatible with addition and multiplication *)
 Definition polyn_opt_leb : option ((polyn T → polyn T → bool) * bool) :=
   None.
 (**)
@@ -4816,199 +4815,19 @@ split; intros Hbc. {
           now rewrite (rngl_compare_refl Heo) in Hbc.
         }
         apply (rngl_eqb_neq Heo) in Hacz.
-(*
-        clear b Hbc Habz.
-*)
         remember (a + c)%L as ac eqn:H.
-(*
-        clear a c H.
-*)
-(* lap_norm (la + lb) est égal ou plus court que la + lb,
-   donc égal ou plus court que la + lc
-   donc lap_compare de Habc est la comparaison de 0%L et de ac
-   Or, ac, on sait qu'il n'est pas nul, mais on ne sait pas
-   s'il est positif ou négatif
-     Mais si on tient comte de Hbc, on aurait b < c
-   Et avec Habz, on aurait a = -b
-   Donc ac = a + c = c - b > 0
-   Donc ac > 0
-   Donc lap_compare serait Lt, d'où contradiction
-   Mais faudrait peut-être avoir obligatoirement que
-   ce soit un ordre total. *)
-...
-Search ((_ ++ _) + _)%lap.
-...
-      rewrite lap_add_app_l in Habc.
-...
-cbn.
-rewrite IHla.
-... ...
-rewrite lap_compare_add_add.
-Search (lap_compare (_ + _)).
-...
-  rewrite lap_add_repeat_0_r.
-...
-  do 2 rewrite lap_compare_cons_cons.
-...
-  cbn - [ lap_compare ].
-Search (_ + (_ ++ _))%lap.
-Search ((_ ++ _) + _)%lap.
-rewrite lap_add_app_l.
-Search (lap_compare (_ + _)).
-...
-rewrite <- lap_add_norm.
-  rewrite Nat.sub_succ.
-...
-  destruct lc as [| c]; [ easy | ].
-  cbn - [ lap_add lap_compare ].
-  do 2 rewrite lap_add_cons_cons.
-  rewrite lap_compare_cons_cons.
-  cbn in Hlbc, Hlba.
-  apply Nat.succ_inj in Hlbc.
-  apply Nat.succ_le_mono in Hlba.
-  rewrite Hlbc at 2.
-  rewrite IHla; [ cbn | easy | easy ].
-  destruct (lap_compare lb lc); [ | easy | easy ].
-  apply (rngl_compare_add_mono_l Hor).
-} {
-...
-(*
-  Hlbc : length lb = length lc
-  Hlba : length lb ≤ length la
-  ============================
-  lap_compare (la + (lb ++ ListDef.repeat 0%L (length la - length lb))) (la + lc) = lap_compare lb lc
-*)
-(*
-  Hlbc : length lb = length lc
-  Hlba : length la ≤ length lb
-  ============================
-  lap_compare ((la ++ ListDef.repeat 0%L (length lb - length la)) + lb) (la + lc) = lap_compare lb lc
-*)...
-intros * Hlbc.
-do 2 rewrite lap_add_norm.
-do 2 rewrite List.length_app.
-do 2 rewrite List.repeat_length.
-rewrite Nat.add_comm.
-rewrite (Nat.add_comm (length la)).
-destruct (le_dec (length lb) (length la)) as [Hlba| Hlba]. {
-  rewrite (proj2 (Nat.sub_0_le (length lb) (length la))); [ | easy ].
-  rewrite Nat.add_0_l.
-  rewrite Nat.sub_add; [ | easy ].
-  rewrite Nat.sub_diag.
-  cbn.
-  do 3 rewrite List.app_nil_r.
-  rewrite (lap_add_norm la lc).
-  rewrite Hlbc in Hlba.
-  rewrite (proj2 (Nat.sub_0_le (length lc) (length la))); [ | easy ].
-  rewrite List.app_nil_r.
-  revert lb lc Hlbc Hlba.
-  induction la as [| a] using List.rev_ind; intros; cbn. {
-    apply Nat.le_0_r in Hlba.
-    rewrite Hlba in Hlbc.
-    apply List.length_zero_iff_nil in Hlbc, Hlba.
-    now subst lb lc.
-  }
-  destruct lb as [| b] using List.rev_ind; [ | clear IHlb ]. {
-    symmetry in Hlbc.
-    apply List.length_zero_iff_nil in Hlbc; subst lc; clear Hlba; cbn.
-    rewrite Nat.sub_0_r.
-    rewrite lap_add_repeat_0_r; [ | easy ].
-    apply lap_compare_refl.
-  }
-  rewrite <- Hlbc.
-  do 2 rewrite List.length_app, Nat.add_1_r.
-  rewrite Nat.sub_succ.
-  rewrite <- Hlbc in Hlba.
-  do 2 rewrite List.length_app, Nat.add_1_r in Hlba.
-  apply Nat.succ_le_mono in Hlba.
-  destruct lc as [| c] using List.rev_ind; [ | clear IHlc ]. {
-    now rewrite List.length_app, Nat.add_1_r in Hlbc.
-  }
-  do 2 rewrite List.length_app, Nat.add_1_r in Hlbc.
-  apply Nat.succ_inj in Hlbc.
-  rewrite lap_compare_app_single; [ | easy ].
-  remember (b ?= c)%L as bc eqn:Hbc.
-  symmetry in Hbc.
-  destruct bc. {
-    apply (rngl_compare_eq_iff Heo) in Hbc; subst c.
-    do 2 rewrite <- List.app_assoc.
-    cbn.
-...
-  rewrite (lap_add_app_app _ lc).
-Search ((_ ++ _) + _)%lap.
-rewrite lap_add_app_l.
-Search (_ + (_ ++ _))%lap.
-rewrite List_app_lap_add.
-rewrite lap_add_app_r.
-rewrite lap_add_app_app.
-...
-intros la.
-induction la as [| a] using List.rev_ind; intros. {
-  now do 2 rewrite lap_add_0_l.
-}
-destruct (le_dec (length lb) (length la)) as [Hlba| Hlba]. {
-  rewrite lap_add_app_l; [ | easy ].
-  destruct (le_dec (length lc) (length la)) as [Hlca| Hlca]. {
-    rewrite lap_add_app_l; [ | easy ].
-    rewrite lap_compare_app_single. 2: {
-      do 2 rewrite lap_add_length.
-      rewrite Nat.max_l; [ symmetry | easy ].
-      now apply Nat.max_l.
-    }
-    rewrite (rngl_compare_refl Heo).
-    apply IHla.
-  }
-  apply Nat.nle_gt in Hlca.
-  destruct lc as [| c] using List.rev_ind; [ easy | clear IHlc ].
-Search ((_ ++ _) + _)%lap.
-...
-  rewrite (lap_add_comm _ lc).
-Search (_ + (_ ++ _))%lap.
-...
-        do 2 rewrite (lap_add_comm la) in Habc.
-        clear Hla Hlb Hlc.
-        revert la lc Hbc Hpbc Habc Hab.
-        induction lb as [| b] using List.rev_ind; intros; [ easy | ].
-        rewrite List.length_app, Nat.add_1_r in Hbc.
-        destruct lc as [| c] using List.rev_ind; [ easy | clear IHlc ].
-        rewrite List.length_app, Nat.add_1_r in Hbc.
-        apply Nat.succ_inj in Hbc.
-        rewrite List.length_app, Nat.add_1_r in Hab.
-        rewrite lap_add_app_l in Habc; [ | flia Hab ].
-        rewrite lap_add_app_l in Habc; [ | flia Hbc Hab ].
-        rewrite lap_compare_app_single in Hpbc; [ | easy ].
-        rewrite lap_compare_app_single in Habc. 2: {
-          do 2 rewrite lap_add_length.
-          rewrite Nat.max_l; [ | flia Hab ].
-          rewrite Nat.max_l; [ easy | flia Hbc Hab ].
+        assert (Hac : (0 ?= ac)%L = Lt). {
+          subst ac.
+          rewrite <- (rngl_compare_add_mono_l Hor b).
+          rewrite rngl_add_0_r.
+          rewrite rngl_add_assoc, (rngl_add_comm b).
+          rewrite Habz.
+          now rewrite rngl_add_0_l.
         }
-        remember (b ?= c)%L as bc eqn:Hbec.
-        symmetry in Hbec.
-        destruct bc; [ | easy | easy ].
-        clear b c Hbec.
-...
-        destruct la as [| a] using List.rev_ind; [ | clear IHla ]. {
-          do 2 rewrite lap_add_0_r in Habc.
-          congruence.
-        }
-        apply IHlb in Habc; [ | easy | easy | ].
-
-        rewrite List.length_app, Nat.add_1_r in Hab.
-        apply Nat.succ_lt_mono in Hab.
-Search (lap_compare (_ + _)).
-...
-        rewrite lap_add_app_r in Habc.
-...
-        revert lb lc Hlb Hlc Hbc Hab Hpbc Habc.
-        clear Hla.
-        induction la as [| a]; intros. {
-          do 2 rewrite lap_add_0_r in Habc.
-          congruence.
-        }
-...
-Search ((List.last _ _ ≠? _)%L.
-Search lap_compare.
-Search (lap_compare (_ + _)).
+        (* marche pas si, par exemple la = -lc *)
+        (* théorème faux *)
+        (* ou peut-être, avec IHla ? mais bon, c'est un
+           peu compliqué *)
 ...
 
 Definition polyn_ring_like_ord (Hor : rngl_is_ordered T = true) :
