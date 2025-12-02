@@ -2982,33 +2982,6 @@ Declare Scope polyn_scope.
 Delimit Scope polyn_scope with pol.
 Bind Scope polyn_scope with polyn.
 
-Fixpoint lap_compare la lb :=
-  match (la, lb) with
-  | (a :: la', b :: lb') =>
-      match lap_compare la' lb' with
-      | Eq => rngl_compare a b
-      | c => c
-      end
-  | _ => Eq
-  end.
-
-Arguments lap_compare (la lb)%_lap.
-
-Definition polyn_compare pa pb :=
-  match Nat.compare (length (lap pa)) (length (lap pb)) with
-  | Eq => lap_compare (lap pa) (lap pb)
-  | Lt => rngl_compare 0 (List.last (lap pb) 0%L)
-  | Gt => rngl_compare (List.last (lap pa) 0%L) 0
-  end.
-
-Definition polyn_leb pa pb :=
-  match polyn_compare pa pb with
-  | Lt | Eq => true
-  | Gt => false
-  end.
-
-Arguments polyn_compare (pa pb)%_pol.
-
 Definition polyn_opt_leb : option ((polyn T → polyn T → bool) * bool) :=
   None.
 
@@ -3621,155 +3594,6 @@ rewrite Hop, Hsu in H1.
 f_equal; apply H1.
 Qed.
 
-(* polyn leb *)
-
-Theorem lap_compare_refl : ∀ la, lap_compare la la = Eq.
-Proof.
-intros.
-induction la as [| a]; [ easy | cbn ].
-rewrite IHla.
-progress unfold rngl_compare.
-now rewrite (rngl_eqb_refl Heo).
-Qed.
-
-Theorem rngl_compare_antisym :
-  rngl_is_totally_ordered T = true →
-  ∀ a b : T, (a ?= b)%L = CompOpp (b ?= a)%L.
-Proof.
-intros Hto.
-specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
-intros.
-progress unfold rngl_compare.
-rewrite (rngl_eqb_sym Heo b).
-remember (a =? b)%L as ab eqn:Hab.
-symmetry in Hab.
-destruct ab; [ easy | ].
-apply (rngl_eqb_neq Heo) in Hab.
-remember (a ≤? b)%L as ab eqn:H1.
-remember (b ≤? a)%L as ba eqn:H2.
-symmetry in H1, H2.
-destruct ab; cbn. {
-  destruct ba; [ | easy ].
-  apply rngl_leb_le in H1, H2.
-  exfalso; apply Hab.
-  now apply (rngl_le_antisymm Hor).
-}
-destruct ba; [ easy | ].
-apply (rngl_leb_gt_iff Hto) in H1, H2.
-apply rngl_lt_le_incl in H1, H2.
-exfalso; apply Hab.
-now apply (rngl_le_antisymm Hor).
-Qed.
-
-Theorem lap_compare_antisym :
-  rngl_is_totally_ordered T = true →
-  ∀ la lb : list T, lap_compare la lb = CompOpp (lap_compare lb la).
-Proof.
-intros Hto *.
-revert lb.
-induction la as [| a]; intros; [ now symmetry; destruct lb | cbn ].
-destruct lb as [| b]; [ easy | cbn ].
-rewrite IHla.
-remember (lap_compare lb la) as lba eqn:Hlba.
-symmetry in Hlba.
-destruct lba; [ cbn | easy | easy ].
-apply (rngl_compare_antisym Hto).
-Qed.
-
-Theorem lap_compare_eq_iff :
-  ∀ la lb,
-  length la = length lb
-  → lap_compare la lb = Eq ↔ la = lb.
-Proof.
-intros * Hlab.
-split; intros Hab. {
-  revert lb Hlab Hab.
-  induction la as [| a la]; intros; cbn. {
-    symmetry in Hlab.
-    now apply List.length_zero_iff_nil in Hlab.
-  }
-  destruct lb as [| b lb]; [ easy | ].
-  cbn in Hab, Hlab.
-  apply Nat.succ_inj in Hlab.
-  specialize (IHla lb Hlab) as H1.
-  remember (lap_compare la lb) as lab eqn:Hlab'.
-  symmetry in Hlab'.
-  destruct lab; [ | easy | easy ].
-  specialize (H1 eq_refl); subst lb.
-  apply (rngl_compare_eq_iff Heo) in Hab.
-  now subst b.
-}
-subst lb.
-apply lap_compare_refl.
-Qed.
-
-Theorem rngl_compare_lt_lt :
-  rngl_is_ordered T = true →
-  ∀ a b, (a ?= b)%L = Lt → (b ?= a)%L = Lt → a = b.
-Proof.
-intros Hor.
-specialize (rngl_opt_ord T) as rr.
-rewrite Hor in rr; move rr before rp.
-intros * Hab Hba.
-progress unfold rngl_compare in Hab.
-progress unfold rngl_compare in Hba.
-remember (a =? b)%L as x eqn:Hx.
-remember (a ≤? b)%L as y eqn:Hy.
-symmetry in Hx, Hy.
-destruct x; [ easy | ].
-destruct y; [ | easy ].
-clear Hab.
-remember (b =? a)%L as z eqn:Hz.
-remember (b ≤? a)%L as t eqn:Ht.
-symmetry in Hz, Ht.
-destruct z; [ easy | ].
-destruct t; [ | easy ].
-apply rngl_leb_le in Hy, Ht.
-now apply rngl_ord_le_antisymm.
-Qed.
-
-Theorem lap_compare_lt_lt :
-  rngl_is_ordered T = true →
-  ∀ la lb,
-  length la = length lb
-  → lap_compare la lb = Lt
-  → lap_compare lb la = Lt
-  → la = lb.
-Proof.
-intros Hor.
-specialize (rngl_opt_ord T) as rr.
-rewrite Hor in rr; move rr before rp.
-intros * Hlab Hab Hba.
-revert lb Hlab Hab Hba.
-induction la as [| a]; intros; cbn; [ easy | ].
-destruct lb as [| b]; [ easy | ].
-cbn in Hlab.
-apply Nat.succ_inj in Hlab.
-cbn in Hab, Hba.
-remember (lap_compare la lb) as ab eqn:H1.
-remember (lap_compare lb la) as ba eqn:H2.
-symmetry in H1, H2.
-destruct ab; [ | | easy ]. {
-  apply lap_compare_eq_iff in H1; [ | easy ].
-  subst lb; f_equal.
-  destruct ba; [ | | easy ]. {
-    now apply (rngl_compare_lt_lt Hor).
-  } {
-    now rewrite lap_compare_refl in H2.
-  }
-} {
-  clear Hab.
-  destruct ba; [ | | easy ]. {
-    apply lap_compare_eq_iff in H2; [ | easy ].
-    subst lb; f_equal.
-    now rewrite lap_compare_refl in H1.
-  }
-  specialize (IHla _ Hlab H1 H2) as H3.
-  subst lb; f_equal.
-  now rewrite lap_compare_refl in H1.
-}
-Qed.
-
 Theorem lap_add_0_l : ∀ la, ([] + la)%lap = la.
 Proof.
 intros; cbn.
@@ -3777,28 +3601,6 @@ rewrite Nat.sub_0_r.
 rewrite List.app_nil_r.
 induction la as [| a]; [ easy | cbn ].
 now rewrite rngl_add_0_l; f_equal.
-Qed.
-
-Theorem lap_compare_app_single :
-  ∀ a b la lb,
-  length la = length lb
-  → lap_compare (la ++ [a]) (lb ++ [b]) =
-      match rngl_compare a b with
-      | Eq => lap_compare la lb
-      | c => c
-      end.
-Proof.
-intros * Hlab.
-revert a b lb Hlab.
-induction la as [| a']; intros. {
-  symmetry in Hlab.
-  apply List.length_zero_iff_nil in Hlab; subst lb; cbn.
-  now destruct (a ?= b)%L.
-}
-destruct lb as [| b']; [ easy | cbn ].
-rewrite IHla; [ now destruct (a ?= b)%L | ].
-cbn in Hlab.
-now apply Nat.succ_inj in Hlab.
 Qed.
 
 Theorem lap_norm_app_single :
@@ -3832,43 +3634,6 @@ destruct Hla as [Hla| Hla]. {
 }
 apply Bool.negb_true_iff in Hla.
 now apply (rngl_eqb_neq Heo) in Hla.
-Qed.
-
-Theorem polyn_compare_eq_iff :
-  ∀ pa pb, polyn_compare pa pb = Eq ↔ pa = pb.
-Proof.
-intros.
-split; intros Hab. {
-  progress unfold polyn_compare in Hab.
-  remember (length (lap pa) ?= length (lap pb)) as lab eqn:Hlab.
-  symmetry in Hlab.
-  destruct lab. {
-    apply Nat.compare_eq_iff in Hlab.
-    apply lap_compare_eq_iff in Hab; [ | easy ].
-    now apply eq_polyn_eq.
-  } {
-    apply Nat.compare_lt_iff in Hlab.
-    apply (rngl_compare_eq_iff Heo) in Hab.
-    symmetry in Hab.
-    apply polyn_last_nz in Hab; [ easy | ].
-    now intros H; rewrite H in Hlab.
-  } {
-    apply Nat.compare_gt_iff in Hlab.
-    apply (rngl_compare_eq_iff Heo) in Hab.
-    apply polyn_last_nz in Hab; [ easy | ].
-    now intros H; rewrite H in Hlab.
-  }
-}
-subst pb.
-progress unfold polyn_compare.
-rewrite Nat.compare_refl.
-apply lap_compare_refl.
-Qed.
-
-Theorem polyn_compare_refl : ∀ p, polyn_compare p p = Eq.
-Proof.
-intros.
-now apply polyn_compare_eq_iff.
 Qed.
 
 Theorem length_lap_add :
@@ -4030,60 +3795,8 @@ rewrite List.app_nil_r, lap_add_0_r.
 apply List_map2_rngl_add_0_r.
 Qed.
 
-Theorem lap_last_eq_0_0_eq :
-  rngl_is_ordered T = true →
-  ∀ pa,
-   match (0 ?= List.last (lap pa) 0)%L with
-   | Gt => false
-   | _ => true
-   end = true
-   → match (List.last (lap pa) 0 ?= 0)%L with
-     | Gt => false
-     | _ => true
-     end = true
-   → length (lap pa) = 0.
-Proof.
-intros Hor * Hzla Hlaz.
-remember (0 ?= List.last (lap pa) 0)%L as za eqn:Hza.
-remember (List.last (lap pa) 0 ?= 0)%L as az eqn:Haz.
-symmetry in Hza, Haz.
-destruct (Nat.eq_dec (length (lap pa)) 0) as [Hlz| Hlz]; [ easy | ].
-exfalso.
-destruct za; [ | | easy ]. {
-  apply (rngl_compare_eq_iff Heo) in Hza.
-  symmetry in Hza.
-  apply polyn_last_nz in Hza; [ easy | ].
-  now intros H; rewrite H in Hlz.
-}
-destruct az; [ | | easy ]. {
-  apply (rngl_compare_eq_iff Heo) in Haz.
-  apply polyn_last_nz in Haz; [ easy | ].
-  now intros H; rewrite H in Hlz.
-}
-apply (rngl_compare_lt_lt Hor) in Hza; [ | easy ].
-apply polyn_last_nz in Hza; [ easy | ].
-now intros H; rewrite H in Hlz.
-Qed.
-
 Theorem lap_add_cons_cons :
   ∀ a b la lb, ((a :: la) + (b :: lb) = (a + b)%L :: (la + lb))%lap.
-Proof. easy. Qed.
-
-Theorem lap_compare_cons_cons_diag :
-  ∀ a la lb, lap_compare (a :: la) (a :: lb) = lap_compare la lb.
-Proof.
-intros; cbn.
-destruct (lap_compare la lb); [ | easy | easy ].
-apply (rngl_compare_refl Heo).
-Qed.
-
-Theorem lap_compare_cons_cons :
-  ∀ a b la lb,
-  lap_compare (a :: la) (b :: lb) =
-    match lap_compare la lb with
-    | Eq => (a ?= b)%L
-    | c => c
-    end.
 Proof. easy. Qed.
 
 Theorem rngl_add_leb_mono_l :
@@ -4146,28 +3859,6 @@ rewrite rngl_add_0_r.
 progress f_equal.
 rewrite List.repeat_app.
 now rewrite <- List_app_lap_add.
-Qed.
-
-Theorem lap_compare_add_add :
-  rngl_is_ordered T = true →
-  ∀ la lb lc,
-  length lb = length lc
-  → lap_compare (la + lb) (la + lc) = lap_compare lb lc.
-Proof.
-intros Hor * Hlbc.
-revert lb lc Hlbc.
-induction la as [| a]; intros; [ now do 2 rewrite lap_add_0_l | ].
-do 2 rewrite lap_add_cons_l.
-destruct lb as [| b]. {
-  destruct lc as [| c]; [ cbn | easy ].
-  rewrite lap_compare_refl.
-  apply (rngl_compare_refl Heo).
-}
-destruct lc as [| c]; [ easy | cbn ].
-cbn in Hlbc.
-rewrite (rngl_compare_add_mono_l Hor).
-apply Nat.succ_inj in Hlbc.
-now rewrite IHla.
 Qed.
 
 Definition polyn_ring_like_prop : ring_like_prop (polyn T) :=
