@@ -1052,6 +1052,20 @@ specialize (rngl_mul_nonneg_nonpos Hop Hor _ _ Haz Hbz) as H1.
 now apply (rngl_nlt_ge Hor) in H1.
 Qed.
 
+Theorem rngl_abs_inv :
+  rngl_has_opp T = true →
+  rngl_has_inv T = true →
+  rngl_is_totally_ordered T = true →
+  ∀ a, a ≠ 0%L → (rngl_abs a⁻¹ = (rngl_abs a)⁻¹)%L.
+Proof.
+intros Hop Hiv Hto.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+intros * Haz.
+do 2 rewrite <- (rngl_div_1_l Hiv).
+rewrite (rngl_abs_div Hop Hiv Hto); [ | easy ].
+now rewrite (rngl_abs_1 Hos  Hto).
+Qed.
+
 Theorem eq_rngl_squ_rngl_abs :
   rngl_has_opp T = true →
   rngl_is_totally_ordered T = true →

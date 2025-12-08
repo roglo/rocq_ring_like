@@ -1616,18 +1616,6 @@ apply (rngl_mul_le_compat_nonneg Hor). {
 }
 Qed.
 
-Theorem rngl_abs_inv :
-  rngl_has_inv T = true →
-  ∀ a, a ≠ 0%L → (rngl_abs a⁻¹ = (rngl_abs a)⁻¹)%L.
-Proof.
-intros Hiv.
-specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
-intros * Haz.
-do 2 rewrite <- (rngl_div_1_l Hiv).
-rewrite (rngl_abs_div Hop Hiv Hto); [ | easy ].
-now rewrite (rngl_abs_1 Hos  Hto).
-Qed.
-
 Theorem left_or_right_derivative_inv :
   rngl_mul_is_comm T = true →
   rngl_has_inv T = true →
@@ -1888,7 +1876,7 @@ rewrite (rngl_mul_comm Hic).
 rewrite (rngl_mul_comm Hic (rngl_abs (f x)⁻¹)).
 do 2 rewrite <- rngl_mul_assoc.
 assert (H : (rngl_abs (f x)⁻¹ * M < 1)%L). {
-  rewrite (rngl_abs_inv Hiv); [ | apply Hfz ].
+  rewrite (rngl_abs_inv Hop Hiv Hto); [ | apply Hfz ].
   rewrite (rngl_mul_comm Hic).
   rewrite (rngl_mul_inv_r Hiv).
   apply (rngl_lt_div_l Hop Hiv Hto). {
