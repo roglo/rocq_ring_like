@@ -717,3 +717,5 @@ now apply rngl_le_neq.
 Qed.
 
 End a.
+
+Arguments rngl_mul_le_mono_nonneg_r {T ro rp} Hop Hor (a b c)%_L.
