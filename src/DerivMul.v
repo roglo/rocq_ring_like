@@ -944,7 +944,7 @@ destruct is_left. {
       rewrite H in H'.
       apply (rngl_nlt_ge Hor) in H'.
       apply H'; clear H'.
-      apply (rngl_opp_1_lt_0 Hop Hto Hc1).
+      apply (rngl_opp_1_lt_0 Hop Hc1 Hto).
     }
     rewrite <- (rngl_mul_div_assoc Hiv).
     rewrite <- rngl_mul_assoc.
@@ -1236,7 +1236,7 @@ destruct is_left. {
       rewrite H in H'.
       apply (rngl_nlt_ge Hor) in H'.
       apply H'; clear H'.
-      apply (rngl_opp_1_lt_0 Hop Hto Hc1).
+      apply (rngl_opp_1_lt_0 Hop Hc1 Hto).
     }
     rewrite <- (rngl_mul_div_assoc Hiv).
     rewrite <- rngl_mul_assoc.
