@@ -727,6 +727,21 @@ rewrite Hc in H1; cbn in H1.
 now rewrite rngl_add_0_r in H1.
 Qed.
 
+Theorem rngl_opp_1_neq_0 :
+  rngl_has_opp T = true →
+  rngl_characteristic T ≠ 1 →
+  (-1 ≠ 0)%L.
+Proof.
+intros Hop Hc1.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+intros H.
+apply (f_equal (rngl_add 1)) in H.
+rewrite (rngl_add_opp_r Hop) in H.
+rewrite (rngl_sub_diag Hos), rngl_add_0_r in H.
+symmetry in H; revert H.
+apply (rngl_1_neq_0 Hc1).
+Qed.
+
 Theorem eq_rngl_of_nat_0 :
   rngl_characteristic T = 0 →
   ∀ i, rngl_of_nat i = 0%L → i = 0.
