@@ -23,3 +23,8 @@ Notation "'λ' x .. y , t" := (fun x => .. (fun y => t) ..)
 (* Arithmetic *)
 Notation "x ≤ y" := (le x y) (at level 70, no associativity).
 Notation "x ≥ y" := (ge x y) (at level 70, no associativity).
+
+Notation "∃! x .. y , p" :=
+  (ex (unique (λ x, .. (ex (unique (λ y, p))) ..)))
+    (at level 200, x binder, right associativity)
+  : type_scope.
