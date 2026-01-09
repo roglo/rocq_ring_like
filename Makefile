@@ -1,6 +1,9 @@
 all:
 	cd src; $(MAKE) $(MFLAGS) all
 
+clean:
+	cd src; $(MAKE) $(MFLAGS) clean
+
 install:
 	cd src; $(MAKE) $(MFLAGS) install
 
