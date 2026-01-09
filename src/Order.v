@@ -938,6 +938,60 @@ split; intros H. {
 }
 Qed.
 
+Definition rngl_signp x := (if 0 ≤? x then 1 else -1)%L.
+Definition rngl_sign x := (if x =? 0 then 0 else rngl_signp x)%L.
+
+Theorem rngl_signp_of_pos : ∀ x, (0 ≤ x → rngl_signp x = 1)%L.
+Proof.
+intros * Hx.
+unfold rngl_signp.
+apply rngl_leb_le in Hx.
+now rewrite Hx.
+Qed.
+
+Theorem rngl_signp_of_neg :
+  rngl_is_ordered T = true →
+  ∀ x, (x < 0 → rngl_signp x = -1)%L.
+Proof.
+intros Hor * Hx.
+unfold rngl_signp.
+apply (rngl_nle_gt Hor) in Hx.
+apply rngl_leb_nle in Hx.
+now rewrite Hx.
+Qed.
+
+Theorem rngl_sign_of_pos :
+  rngl_has_eq_dec_or_order T = true →
+  ∀ x, (0 < x → rngl_sign x = 1)%L.
+Proof.
+intros Heo * Hx.
+unfold rngl_sign, rngl_signp.
+destruct (rngl_eqb_dec x 0%L) as [H | H]. {
+  apply (rngl_eqb_eq Heo) in H.
+  now subst; apply rngl_lt_irrefl in Hx.
+}
+apply rngl_lt_le_incl in Hx.
+apply rngl_leb_le in Hx.
+now rewrite H, Hx.
+Qed.
+
+Theorem rngl_sign_of_neg :
+  rngl_is_ordered T = true →
+  ∀ x, (x < 0 → rngl_sign x = -1)%L.
+Proof.
+intros Hor.
+specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
+intros * Hx.
+unfold rngl_sign, rngl_signp.
+destruct (rngl_eqb_dec x 0%L) as [H| H]. {
+  apply (rngl_eqb_eq Heo) in H.
+  now subst; apply rngl_lt_irrefl in Hx.
+}
+apply (rngl_nle_gt Hor) in Hx.
+apply rngl_leb_nle in Hx.
+now rewrite H, Hx.
+Qed.
+
 End a.
 
 Notation "x ?= y" := (rngl_compare x y) : ring_like_scope.
@@ -952,3 +1006,5 @@ Arguments rngl_lt_trans {T ro rp} Hor (a b c)%_L.
 Arguments rngl_ltb_dec {T ro} (a b)%_L.
 Arguments rngl_min {T ro} (a b)%_L.
 Arguments rngl_max {T ro} (a b)%_L.
+Arguments rngl_signp {T ro} x%_L.
+Arguments rngl_sign {T ro} x%_L.
