@@ -259,6 +259,22 @@ intros H; rewrite H in H5.
 now apply rngl_lt_irrefl in H5.
 Qed.
 
+Theorem rngl_opp_1_neq_1 :
+  rngl_has_opp T = true →
+  rngl_characteristic T ≠ 1 →
+  rngl_is_totally_ordered T = true →
+  (-1 ≠ 1)%L.
+Proof.
+intros Hop Hc1 Hto.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+intros H.
+apply (f_equal (rngl_add 1)) in H.
+rewrite (rngl_add_opp_r Hop) in H.
+rewrite (rngl_sub_diag Hos) in H.
+symmetry in H; revert H.
+apply (rngl_2_neq_0 Hos Hc1 Hto).
+Qed.
+
 Theorem rngl_0_lt_3 :
   rngl_has_opp_or_psub T = true →
   rngl_characteristic T ≠ 1 →
