@@ -16,7 +16,7 @@ Class real_like_prop T {ro : ring_like_op T} {rp : ring_like_prop T} :=
       (rl_nth_root n (a * b) = rl_nth_root n a * rl_nth_root n b)%L;
     rl_nth_root_inv :
       ∀ n a, (0 < a → rl_nth_root n a⁻¹ = (rl_nth_root n a)⁻¹)%L;
-    rl_sqrt_nonneg : ∀ a, (0 ≤ a → 0 ≤ rl_nth_root 2 a)%L }.
+    rl_nth_root_2_nonneg : ∀ a, (0 ≤ a → 0 ≤ rl_nth_root 2 a)%L }.
 
 Section a.
 
@@ -38,6 +38,12 @@ Context {T : Type}.
 Context {ro : ring_like_op T}.
 Context {rp : ring_like_prop T}.
 Context {rl : real_like_prop T}.
+
+Theorem rl_sqrt_nonneg : ∀ a, (0 ≤ a → 0 ≤ rl_sqrt a)%L.
+Proof.
+intros * Ha.
+now apply rl_nth_root_2_nonneg.
+Qed.
 
 Theorem rngl_squ_sqrt :
   ∀ a, (0 ≤ a)%L → rngl_squ (√a) = a.
@@ -63,7 +69,6 @@ destruct az; [ | easy ].
 apply rngl_leb_le in Halz.
 apply rl_sqrt_nonneg in Haz.
 apply rngl_le_antisymm in Haz; [ | easy | easy ].
-progress unfold rl_sqrt.
 rewrite Haz.
 apply (rngl_opp_0 Hop).
 Qed.
