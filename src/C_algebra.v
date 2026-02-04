@@ -208,6 +208,7 @@ Instance gc_ring_like_op T {ro : ring_like_op T} {rp : ring_like_prop T} :
      rngl_opt_eq_dec := gc_opt_eq_dec;
      rngl_opt_leb := None |}.
 
+(*
 ...
 
 Definition gc_pow_nat {T}
@@ -2260,3 +2261,4 @@ now apply (rngl_mul_nonpos_nonneg Hop Hor).
 Qed.
 
 End a.
+*)
