@@ -24,11 +24,9 @@ Notation "x ≤ y" := (Z.le x y) : Z_scope.
 
 Class GComplex T := mk_gc {gre : T; gim : T}.
 
-(*
 Declare Scope gc_scope.
 Delimit Scope gc_scope with C.
 Bind Scope gc_scope with GComplex.
-*)
 
 Arguments mk_gc {T} gre%_L gim%_L.
 Arguments gre {T} GComplex%_L.
@@ -45,6 +43,7 @@ Context {T : Type}.
 Context {ro : ring_like_op T}.
 (*
 Context {rp : ring_like_prop T}.
+*)
 
 Theorem eq_gc_eq :
   ∀ a b : GComplex T, gre a = gre b ∧ gim a = gim b ↔ a = b.
@@ -63,6 +62,7 @@ intros H; subst b.
 now destruct Hab.
 Qed.
 
+(*
 Theorem neq_neq_GComplex :
   rngl_has_eq_dec T = true →
   ∀ a b : GComplex T, a ≠ b → gre a ≠ gre b ∨ gim a ≠ gim b.
@@ -215,23 +215,31 @@ Definition gc_pow_nat {T}
     {ro : ring_like_op T} {rp : ring_like_prop T} {rl : real_like_prop T}
     (z : GComplex T) n :=
   @rngl_power (GComplex T) (gc_ring_like_op T) z n.
+*)
 
 Notation "0" := gc_zero : gc_scope.
+(*
 Notation "1" := gc_one : gc_scope.
+*)
 Notation "x + y" := (gc_add x y) : gc_scope.
+(*
 Notation "x - y" := (gc_sub x y) : gc_scope.
+*)
 Notation "x * y" := (gc_mul x y) : gc_scope.
+(*
 Notation " x / y" := (gc_div x y) : gc_scope.
 Notation "- x" := (gc_opp x) : gc_scope.
 Notation "x ⁻¹" := (gc_inv x) : gc_scope.
 Notation "x +ℹ y" := (mk_gc x y) (at level 50) : gc_scope.
 Notation "z ^ n" := (gc_pow_nat z n) : gc_scope.
+*)
 
 Section a.
 
 Context {T : Type}.
 Context {ro : ring_like_op T}.
 Context {rp : ring_like_prop T}.
+(*
 Context {rl : real_like_prop T}.
 Context {ac : angle_ctx T}.
 
@@ -250,6 +258,7 @@ apply (rngl_squ_le_abs_le Hop Hiq Hto) in Ha.
 rewrite (rngl_abs_1 Hos Hto) in Ha.
 now apply (rngl_abs_le Hop Hto) in Ha.
 Qed.
+*)
 
 Theorem gc_add_comm : ∀ a b : GComplex T, (a + b)%L = (b + a)%L.
 Proof.
@@ -272,9 +281,10 @@ Proof.
 intros; cbn.
 progress unfold gc_add; cbn.
 do 2 rewrite rngl_add_0_l.
-now apply eq_gc_eq.
+now destruct a.
 Qed.
 
+(*
 Theorem gc_add_0_r :
   ∀ a : GComplex T, (a + 0)%C = a.
 Proof.
@@ -283,6 +293,7 @@ progress unfold gc_add; cbn.
 do 2 rewrite rngl_add_0_r.
 now apply eq_gc_eq.
 Qed.
+*)
 
 Theorem gc_mul_assoc :
   rngl_has_opp T = true →
@@ -365,6 +376,7 @@ split; [ easy | ].
 apply rngl_add_comm.
 Qed.
 
+(*
 Theorem gc_mul_comm :
   rngl_mul_is_comm T = true →
   ∀ a b, (a * b = b * a)%C.
@@ -373,6 +385,7 @@ intros Hic.
 specialize gc_opt_mul_comm as H1.
 now rewrite Hic in H1.
 Qed.
+*)
 
 Theorem gc_opt_mul_1_r :
   rngl_has_opp_or_psub T = true →
@@ -661,12 +674,6 @@ destruct H2 as [H2| H2]. {
     now right.
   }
 }
-(*
-intros Hic Hop Heo Hio.
-specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
-intros * Hab.
-now right; right; left.
-*)
 Qed.
 
 Theorem gc_characteristic_prop :
@@ -759,6 +766,7 @@ Instance gc_ring_like_prop_not_alg_closed : ring_like_prop (GComplex T) :=
 
 End a.
 
+(*
 Arguments gc_ring_like_prop_not_alg_closed {T ro rp rl} Hic Hop Hiv Hto.
 
 (* algebraically closed *)
