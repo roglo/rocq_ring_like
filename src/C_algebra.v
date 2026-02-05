@@ -3,8 +3,9 @@ Set Nested Proofs Allowed.
 Require Import Stdlib.ZArith.ZArith.
 Require Import Init.Nat.
 Import List.ListNotations.
-Require Import RingLike.Utf8.
-Require Import RingLike.Core.
+
+Require Import Utf8.
+Require Import Core.
 
 (* general complex whose real and imaginary parts are of type T
    that is not necessarily the real numbers *)
@@ -637,7 +638,7 @@ End a.
 
 Arguments gc_ring_like_prop_not_alg_closed {T ro rp} Hic Hop Hiv Hto.
 
-Require Import RingLike.RealLike.
+Require Import RealLike.
 
 Section a.
 

@@ -1,6 +1,6 @@
 Add.vo Add.glob Add.v.beautified Add.required_vo: Add.v Structures.vo Utf8.vo
 Add_with_order.vo Add_with_order.glob Add_with_order.v.beautified Add_with_order.required_vo: Add_with_order.v Add.vo Order.vo Structures.vo Utf8.vo
-C_algebra.vo C_algebra.glob C_algebra.v.beautified C_algebra.required_vo: C_algebra.v
+C_algebra.vo C_algebra.glob C_algebra.v.beautified C_algebra.required_vo: C_algebra.v Core.vo RealLike.vo Utf8.vo
 Core.vo Core.glob Core.v.beautified Core.required_vo: Core.v Add.vo Add_with_order.vo Distances.vo Div.vo Div_with_order.vo Mul.vo Mul_with_order.vo Order.vo Structures.vo
 DerivMul.vo DerivMul.glob DerivMul.v.beautified DerivMul.required_vo: DerivMul.v Core.vo RealLike.vo Utf8.vo
 Distances.vo Distances.glob Distances.v.beautified Distances.required_vo: Distances.v Add.vo Add_with_order.vo Div.vo Div_with_order.vo Mul.vo Mul_with_order.vo Order.vo Structures.vo Utf8.vo
