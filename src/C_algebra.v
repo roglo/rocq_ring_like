@@ -634,3 +634,5 @@ Instance gc_ring_like_prop_not_alg_closed : ring_like_prop (GComplex T) :=
      rngl_characteristic_prop := gc_characteristic_prop |}.
 
 End a.
+
+Arguments gc_ring_like_prop_not_alg_closed {T ro rp} Hic Hop Hiv Hto.
