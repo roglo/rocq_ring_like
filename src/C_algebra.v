@@ -849,12 +849,33 @@ Definition gc_seq_to_div_nat (z : GComplex T) (n k : nat) :=
 Definition gc_eucl_dist z1 z2 := gc_modl (z1 - z2).
 
 (* to be completed
+Theorem gre_lt_gc_eucl_dist_lt :
+  ∀ a α1 α2,
+  (0 ≤ a)%L
+  → (1 - a² / 2 < gre (α2 - α1))%L
+  ↔ (gc_eucl_dist α1 α2 < a)%L.
+Proof.
+...
+
 Theorem gc_seq_to_div_nat_is_Cauchy :
   rngl_is_archimedean T = true →
   ∀ n a, is_Cauchy_sequence gc_eucl_dist (gc_seq_to_div_nat a n).
 Proof.
 intros Har *.
 intros ε Hε.
+enough (H :
+  ∃ N, ∀ p q,
+  N ≤ p
+  → N ≤ q
+  → (1 - ε² / 2 <
+      gre (gc_seq_to_div_nat a n p - gc_seq_to_div_nat a n q))%L). {
+  destruct H as (N, HN).
+  exists N.
+  intros p q Hp Hq.
+  apply rngl_lt_le_incl in Hε.
+  apply gre_lt_gc_eucl_dist_lt; [ easy | ].
+  apply (HN _ _ Hq Hp).
+}
 ...
 *)
 
