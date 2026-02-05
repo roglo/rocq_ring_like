@@ -638,19 +638,22 @@ End a.
 
 Arguments gc_ring_like_prop_not_alg_closed {T ro rp} Hic Hop Hiv Hto.
 
+Require Import RealLike.
+
 Section a.
 
 Context {T : Type}.
 Context {ro : ring_like_op T}.
+Context {rp : ring_like_prop T}.
+Context {rl : real_like_prop T}.
 
 Definition gc_squ z := (z * z)%C.
+Definition gc_pow_nat (z : GComplex T) n := rngl_power z n.
 
 End a.
 
 Notation "x +ℹ y" := (mk_gc x y) (at level 50) : gc_scope.
 Notation "z ²" := (gc_squ z) : gc_scope.
-
-Require Import RealLike.
 
 Section a.
 
@@ -831,11 +834,18 @@ f_equal. {
 }
 Qed.
 
+Fixpoint gc_nth_2_pow_root n z :=
+  match n with
+  | 0 => z
+  | S n' => gc_sqrt (gc_nth_2_pow_root n' z)
+  end.
+
+Definition gc_seq_to_div_nat (z : GComplex T) (n k : nat) :=
+  (gc_nth_2_pow_root k z ^ (2 ^ k / n))%L.
+
 (*
 Definition seq_to_div_nat (z : GComplex T) (n i : nat) :=
   rl_nth_root (2 ^ i) z.
-Definition seq_to_div_nat (z : GComplex T) (n i : nat) :=
-  (rl_nth_root (2 ^ i) z ^ (2 ^ i / n))%L.
 *)
 
 End a.
