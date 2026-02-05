@@ -716,7 +716,27 @@ apply rngl_squ_1.
 apply (rngl_squ_opp_1 Hop).
 Qed.
 
-(* to be completed
+Theorem rngl_mul_signp_abs : ∀ a, (rngl_signp a * rngl_abs a)%L = a.
+Proof.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+intros.
+destruct (rngl_leb_dec 0 a) as [Hza| Hza]. {
+  apply rngl_leb_le in Hza.
+  rewrite rngl_signp_of_pos; [ | easy ].
+  rewrite rngl_mul_1_l.
+  now apply (rngl_abs_nonneg_eq Hop Hor).
+} {
+  apply (rngl_leb_gt_iff Hto) in Hza.
+  rewrite (rngl_signp_of_neg Hor); [ | easy ].
+  rewrite (rngl_mul_opp_l Hop).
+  rewrite rngl_mul_1_l.
+  rewrite <- (rngl_opp_involutive Hop).
+  f_equal.
+  apply (rngl_abs_nonpos_eq Hop Hto).
+  now apply rngl_lt_le_incl.
+}
+Qed.
+
 Theorem gc_squ_sqrt z : gc_squ (gc_sqrt z) = z.
 Proof.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
@@ -766,18 +786,50 @@ f_equal. {
 } {
   rewrite (rngl_mul_comm Hic).
   rewrite <- rngl_mul_assoc.
+  rewrite <- rngl_mul_add_distr_l.
+  rewrite <- rngl_mul_2_l.
   rewrite <- rl_sqrt_mul; cycle 1. {
     apply (rngl_div_nonneg Hop Hiv Hto). 2: {
       apply (rngl_0_lt_2 Hos Hc1 Hto).
     }
     apply rngl_add_modl_nonneg.
+  } {
+    apply (rngl_div_nonneg Hop Hiv Hto). 2: {
+      apply (rngl_0_lt_2 Hos Hc1 Hto).
+    }
+    rewrite <- (rngl_add_opp_r Hop).
+    rewrite <- rl_modl_opp_l.
+    apply rngl_add_modl_nonneg.
   }
-...
-Search (_ ≤ rngl_abs _)%L.
-    progress unfold rngl_abs.
-Search (_ ≤ rngl_abs _)%L.
-...
-*)
+  rewrite (rngl_div_mul_mul_div Hic Hiv).
+  rewrite (rngl_mul_div_assoc Hiv).
+  rewrite (rngl_div_div Hos Hiv).
+  2, 3 : apply (rngl_2_neq_0 Hos Hc1 Hto).
+  rewrite (rngl_squ_sub_squ' Hop).
+  rewrite (rngl_mul_comm Hic x).
+  rewrite (rngl_add_sub Hos).
+  progress unfold rl_modl.
+  rewrite rngl_squ_sqrt; [ | apply (rngl_add_squ_nonneg Hos Hto) ].
+  rewrite (rngl_add_comm x²), (rngl_add_sub Hos).
+  rewrite fold_rngl_squ.
+  rewrite <- (rngl_squ_div Hic Hos Hiv). 2: {
+    apply (rngl_2_neq_0 Hos Hc1 Hto).
+  }
+  rewrite (rl_sqrt_squ Hop Hto).
+  rewrite (rngl_abs_div Hop Hiv Hto). 2: {
+    apply (rngl_2_neq_0 Hos Hc1 Hto).
+  }
+  rewrite (rngl_abs_nonneg_eq Hop Hor 2). 2: {
+    apply (rngl_0_le_2 Hos Hto).
+  }
+  rewrite (rngl_mul_div_assoc Hiv).
+  rewrite (rngl_mul_comm Hic 2).
+  rewrite (rngl_mul_div Hiq). 2: {
+    apply (rngl_2_neq_0 Hos Hc1 Hto).
+  }
+  apply rngl_mul_signp_abs.
+}
+Qed.
 
 (*
 Definition seq_to_div_nat (z : GComplex T) (n i : nat) :=
