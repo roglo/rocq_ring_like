@@ -849,12 +849,32 @@ Definition gc_seq_to_div_nat (z : GComplex T) (n k : nat) :=
 Definition gc_eucl_dist z1 z2 := gc_modl (z1 - z2).
 
 (* to be completed
+Theorem gc_eucl_dist_is_sqrt :
+  ∀ a b, gc_eucl_dist a b = √(2 * (gc_modl (b - a) - gre (b - a)))%L.
+Proof.
+Admitted.
+
 Theorem gre_lt_gc_eucl_dist_lt :
   ∀ a α1 α2,
   (0 ≤ a)%L
   → (1 - a² / 2 < gre (α2 - α1))%L
   ↔ (gc_eucl_dist α1 α2 < a)%L.
 Proof.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+intros * Hza.
+rewrite gc_eucl_dist_is_sqrt.
+rewrite <- (rngl_abs_nonneg_eq Hop Hor √_). 2: {
+  apply rl_sqrt_nonneg.
+  apply (rngl_mul_nonneg_nonneg Hos Hor). {
+    apply (rngl_0_le_2 Hos Hto).
+  }
+  apply (rngl_le_0_sub Hop Hor).
+...
+  apply rngl_cos_bound.
+}
+rewrite <- (rngl_abs_nonneg_eq Hop Hor a) at 2; [ | easy ].
+split. {
 ...
 
 Theorem gc_seq_to_div_nat_is_Cauchy :
