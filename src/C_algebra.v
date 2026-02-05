@@ -636,3 +636,26 @@ Instance gc_ring_like_prop_not_alg_closed : ring_like_prop (GComplex T) :=
 End a.
 
 Arguments gc_ring_like_prop_not_alg_closed {T ro rp} Hic Hop Hiv Hto.
+
+Require Import RingLike.RealLike.
+
+Section a.
+
+Context {T : Type}.
+Context {ro : ring_like_op T}.
+Context {rp : ring_like_prop T}.
+Context {rl : real_like_prop T}.
+
+(* something to do *)
+Definition gc_sqrt (z : GComplex T) :=
+  let (a, b) := z in
+  a.
+
+(*
+Definition seq_to_div_nat (z : GComplex T) (n i : nat) :=
+  rl_nth_root (2 ^ i) z.
+Definition seq_to_div_nat (z : GComplex T) (n i : nat) :=
+  (rl_nth_root (2 ^ i) z ^ (2 ^ i / n))%L.
+*)
+
+End a.
