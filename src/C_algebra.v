@@ -671,6 +671,43 @@ Definition gc_sqrt (z : GComplex T) :=
   let y := √((gc_modl z - gre z)/2) in
   mk_gc x y.
 
+Theorem rl_modl_comm a b : rl_modl a b = rl_modl b a.
+Proof.
+progress unfold rl_modl; f_equal.
+apply rngl_add_comm.
+Qed.
+
+Theorem rl_modl_opp_l x y : rl_modl (- x) y = rl_modl x y.
+Proof.
+progress unfold rl_modl.
+f_equal; f_equal.
+apply (rngl_squ_opp Hop).
+Qed.
+
+Theorem rngl_add_modl_nonneg : ∀ x y, (0 ≤ rl_modl x y + x)%L.
+Proof.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+intros.
+progress unfold rl_modl.
+rewrite rngl_add_comm.
+apply (rngl_le_opp_l Hop Hor).
+apply (rngl_le_trans Hor _ (rngl_abs x)). {
+  apply (rngl_le_abs Hop Hto); right.
+  apply (rngl_le_refl Hor).
+}
+rewrite <- (rngl_abs_sqrt Hop Hor). 2: {
+  apply (rngl_add_squ_nonneg Hos Hto).
+}
+apply (rngl_squ_le_abs_le Hop Hiq Hto).
+rewrite rngl_squ_sqrt. 2: {
+  apply (rngl_add_squ_nonneg Hos Hto).
+}
+apply (rngl_le_add_r Hos Hor).
+apply (rngl_squ_nonneg Hos Hto).
+Qed.
+
 Theorem rngl_squ_signp a : (rngl_signp a)² = 1%L.
 Proof.
 progress unfold rngl_signp.
@@ -679,7 +716,7 @@ apply rngl_squ_1.
 apply (rngl_squ_opp_1 Hop).
 Qed.
 
-(*
+(* to be completed
 Theorem gc_squ_sqrt z : gc_squ (gc_sqrt z) = z.
 Proof.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
@@ -708,43 +745,15 @@ f_equal. {
     apply (rngl_div_nonneg Hop Hiv Hto). 2: {
       apply (rngl_0_lt_2 Hos Hc1 Hto).
     }
-    progress unfold rl_modl.
-    rewrite rngl_add_comm.
-    apply (rngl_le_opp_l Hop Hor).
-    apply (rngl_le_trans Hor _ (rngl_abs x)). {
-      apply (rngl_le_abs Hop Hto); right.
-      apply (rngl_le_refl Hor).
-    }
-    rewrite <- (rngl_abs_sqrt Hop Hor). 2: {
-      apply (rngl_add_squ_nonneg Hos Hto).
-    }
-    apply (rngl_squ_le_abs_le Hop Hiq Hto).
-    rewrite rngl_squ_sqrt. 2: {
-      apply (rngl_add_squ_nonneg Hos Hto).
-    }
-    apply (rngl_le_add_r Hos Hor).
-    apply (rngl_squ_nonneg Hos Hto).
+    apply rngl_add_modl_nonneg.
   }
   rewrite rngl_squ_sqrt. 2: {
     apply (rngl_div_nonneg Hop Hiv Hto). 2: {
       apply (rngl_0_lt_2 Hos Hc1 Hto).
     }
-    progress unfold rl_modl.
-    rewrite rngl_add_comm.
-    apply (rngl_le_0_sub Hop Hor).
-    apply (rngl_le_trans Hor _ (rngl_abs x)). {
-      apply (rngl_le_abs Hop Hto); left.
-      apply (rngl_le_refl Hor).
-    }
-    rewrite <- (rngl_abs_sqrt Hop Hor). 2: {
-      apply (rngl_add_squ_nonneg Hos Hto).
-    }
-    apply (rngl_squ_le_abs_le Hop Hiq Hto).
-    rewrite rngl_squ_sqrt. 2: {
-      apply (rngl_add_squ_nonneg Hos Hto).
-    }
-    apply (rngl_le_add_l Hos Hor).
-    apply (rngl_squ_nonneg Hos Hto).
+    rewrite <- (rngl_add_opp_r Hop).
+    rewrite <- rl_modl_opp_l.
+    apply rngl_add_modl_nonneg.
   }
   rewrite <- (rngl_div_sub_distr_r Hop Hiv).
   rewrite (rngl_sub_sub_distr Hop).
@@ -754,11 +763,18 @@ f_equal. {
   rewrite <- rngl_mul_2_r.
   apply (rngl_mul_div Hiq).
   apply (rngl_2_neq_0 Hos Hc1 Hto).
-}
+} {
+  rewrite (rngl_mul_comm Hic).
+  rewrite <- rngl_mul_assoc.
+  rewrite <- rl_sqrt_mul; cycle 1. {
+    apply (rngl_div_nonneg Hop Hiv Hto). 2: {
+      apply (rngl_0_lt_2 Hos Hc1 Hto).
+    }
+    apply rngl_add_modl_nonneg.
+  }
 ...
 Search (_ ≤ rngl_abs _)%L.
     progress unfold rngl_abs.
-    remember 
 Search (_ ≤ rngl_abs _)%L.
 ...
 *)
