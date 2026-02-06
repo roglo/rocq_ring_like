@@ -853,24 +853,21 @@ Definition gc_eucl_dist z1 z2 := gc_modl (z1 - z2).
 
 Theorem gc_div_re :
   ∀ z1 z2,
-  gc_modl z2 = 1%L
-  → gre (z1 / z2) = (gre z1 * gre z2 + gim z1 * gim z2)%L.
+  gre (z1 / z2) = ((gre z1 * gre z2 + gim z1 * gim z2) / (gc_modl z2)²)%L.
 Proof.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
-specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
-intros * H2m.
-progress unfold gc_modl in H2m.
-progress unfold rl_modl in H2m.
-apply (f_equal rngl_squ) in H2m.
-rewrite rngl_squ_sqrt in H2m; [ | apply (rngl_add_squ_nonneg Hos Hto) ].
+intros.
 progress unfold gc_div; cbn.
 do 2 rewrite fold_rngl_squ.
-rewrite H2m.
-rewrite rngl_squ_1.
-rewrite (rngl_div_1_r Hiq); [ | now left ].
-rewrite (rngl_div_1_r Hiq); [ | now left ].
+progress unfold gc_modl.
+progress unfold rl_modl.
+rewrite rngl_squ_sqrt; [ | apply (rngl_add_squ_nonneg Hos Hto) ].
+remember ((gre z2)² + (gim z2)²)%L as m eqn:Hm.
+rewrite (rngl_div_opp_l Hop Hiv).
 rewrite (rngl_mul_opp_r Hop).
 rewrite (rngl_sub_opp_r Hop).
+do 2 rewrite (rngl_mul_div_assoc Hiv).
+rewrite <- (rngl_div_add_distr_r Hiv).
 easy.
 Qed.
 
@@ -901,7 +898,8 @@ rewrite <- (rngl_abs_nonneg_eq Hop Hor √_). 2: {
   apply (rngl_add_squ_nonneg Hos Hto).
 }
 rewrite <- (rngl_abs_nonneg_eq Hop Hor a) at 2; [ | easy ].
-rewrite gc_div_re; [ | easy ].
+rewrite gc_div_re.
+rewrite H1m, rngl_squ_1, (rngl_div_1_r Hiq); [ | now left ].
 split. {
   intros Hc.
   apply (rngl_squ_lt_abs_lt Hop Hiq Hto).
