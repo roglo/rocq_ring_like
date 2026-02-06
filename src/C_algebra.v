@@ -17,8 +17,8 @@ Delimit Scope gc_scope with C.
 Bind Scope gc_scope with GComplex.
 
 Arguments mk_gc {T} gre%_L gim%_L.
-Arguments gre {T} GComplex%_L.
-Arguments gim {T} GComplex%_L.
+Arguments gre {T} GComplex%_C.
+Arguments gim {T} GComplex%_C.
 
 Section a.
 
@@ -649,12 +649,15 @@ Context {rl : real_like_prop T}.
 
 Definition gc_sub (ca cb : GComplex T) :=
   {| gre := gre ca - gre cb; gim := gim ca - gim cb |}.
+Definition gc_div (ca cb : GComplex T) :=
+  gc_mul ca (gc_inv cb).
 Definition gc_squ z := (z * z)%C.
 Definition gc_pow_nat (z : GComplex T) n := rngl_power z n.
 
 End a.
 
 Notation "x - y" := (gc_sub x y) : gc_scope.
+Notation " x / y" := (gc_div x y) : gc_scope.
 Notation "x +ℹ y" := (mk_gc x y) (at level 50) : gc_scope.
 Notation "z ²" := (gc_squ z) : gc_scope.
 
@@ -849,32 +852,80 @@ Definition gc_seq_to_div_nat (z : GComplex T) (n k : nat) :=
 Definition gc_eucl_dist z1 z2 := gc_modl (z1 - z2).
 
 (* to be completed
-(*
 Theorem gre_lt_gc_eucl_dist_lt :
-  ∀ a α1 α2,
+  ∀ a z1 z2,
   (0 ≤ a)%L
-  → (1 - a² / 2 < gre (α2 - α1))%L
-  ↔ (gc_eucl_dist α1 α2 < a)%L.
+  → gc_modl z1 = 1%L
+  → gc_modl z2 = 1%L
+  → (1 - a² / 2 < gre (z2 / z1))%L
+  ↔ (gc_eucl_dist z1 z2 < a)%L.
 Proof.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
 specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
-intros * Hza.
+destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
+  specialize (rngl_characteristic_1 Hos Hc1) as H1.
+  intros * Hza H1m H2m.
+  rewrite (H1 (_ - _)%L), (H1 (gre _)).
+  rewrite (H1 (gc_eucl_dist _ _)), (H1 a).
+  easy.
+}
+intros * Hza H1m H2m.
 progress unfold gc_eucl_dist.
 progress unfold gc_modl.
 progress unfold rl_modl.
 rewrite <- (rngl_abs_nonneg_eq Hop Hor √_). 2: {
   apply rl_sqrt_nonneg.
-  apply (rngl_mul_nonneg_nonneg Hos Hor). {
-    apply (rngl_0_le_2 Hos Hto).
-  }
-  apply (rngl_le_0_sub Hop Hor).
-...
-  apply rngl_cos_bound.
+  apply (rngl_add_squ_nonneg Hos Hto).
 }
 rewrite <- (rngl_abs_nonneg_eq Hop Hor a) at 2; [ | easy ].
 split. {
+  intros Hc.
+  apply (rngl_squ_lt_abs_lt Hop Hiq Hto).
+  rewrite rngl_squ_sqrt. 2: {
+    apply (rngl_add_squ_nonneg Hos Hto).
+  }
+  cbn.
+  do 2 rewrite (rngl_squ_sub Hop Hic).
+  rewrite rngl_add_assoc.
+  rewrite (rngl_add_sub_assoc Hop).
+  do 4 rewrite <- (rngl_add_sub_swap Hop).
+  rewrite (rngl_add_add_swap (gre z1)²).
+  rewrite <- rngl_add_assoc.
+  progress unfold gc_modl in H1m, H2m.
+  progress unfold rl_modl in H1m, H2m.
+  (* lemma *)
+  apply (f_equal rngl_squ) in H1m, H2m.
+  rewrite rngl_squ_sqrt in H1m; [ | apply (rngl_add_squ_nonneg Hos Hto) ].
+  rewrite rngl_squ_sqrt in H2m; [ | apply (rngl_add_squ_nonneg Hos Hto) ].
+  rewrite H1m, H2m.
+  rewrite rngl_squ_1.
+  rewrite <- (rngl_sub_add_distr Hos).
+  do 2 rewrite <- rngl_mul_assoc.
+  rewrite <- rngl_mul_add_distr_l.
+  rewrite (rngl_sub_mul_r_diag_l Hop).
+  rewrite (rngl_mul_comm Hic).
+  apply (rngl_lt_div_r Hop Hiv Hto); [ apply (rngl_0_lt_2 Hos Hc1 Hto) | ].
+  apply (rngl_lt_sub_lt_add_r Hop Hor).
+  rewrite rngl_add_comm.
+  apply (rngl_lt_sub_lt_add_r Hop Hor).
+  (* make a lemma saying gre (z2 / z1) *)
+  progress unfold gc_div in Hc.
+  cbn in Hc.
+  do 2 rewrite fold_rngl_squ in Hc.
+  rewrite H1m in Hc.
+  rewrite rngl_squ_1 in Hc.
+  rewrite (rngl_div_1_r Hiq) in Hc; [ | now left ].
+  rewrite (rngl_div_1_r Hiq) in Hc; [ | now left ].
+  rewrite (rngl_mul_opp_r Hop) in Hc.
+  rewrite (rngl_sub_opp_r Hop) in Hc.
+  rewrite (rngl_mul_comm Hic (gre z2))  in Hc.
+  rewrite (rngl_mul_comm Hic (gim z2))  in Hc.
+  easy.
+} {
+  intros Ha.
+  apply (rngl_abs_lt_squ_lt Hop Hiq Hto) in Ha. 2: {
 ...
-*)
 
 Theorem gc_seq_to_div_nat_is_Cauchy :
   rngl_is_archimedean T = true →
@@ -892,6 +943,7 @@ enough (H :
   exists N.
   intros p q Hp Hq.
   apply rngl_lt_le_incl in Hε.
+...
   apply gre_lt_gc_eucl_dist_lt; [ easy | ].
   apply (HN _ _ Hq Hp).
 }
