@@ -851,6 +851,29 @@ Definition gc_seq_to_div_nat (z : GComplex T) (n k : nat) :=
 
 Definition gc_eucl_dist z1 z2 := gc_modl (z1 - z2).
 
+Theorem gc_div_re :
+  ∀ z1 z2,
+  gc_modl z2 = 1%L
+  → gre (z1 / z2) = (gre z1 * gre z2 + gim z1 * gim z2)%L.
+Proof.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
+intros * H2m.
+progress unfold gc_modl in H2m.
+progress unfold rl_modl in H2m.
+apply (f_equal rngl_squ) in H2m.
+rewrite rngl_squ_sqrt in H2m; [ | apply (rngl_add_squ_nonneg Hos Hto) ].
+progress unfold gc_div; cbn.
+do 2 rewrite fold_rngl_squ.
+rewrite H2m.
+rewrite rngl_squ_1.
+rewrite (rngl_div_1_r Hiq); [ | now left ].
+rewrite (rngl_div_1_r Hiq); [ | now left ].
+rewrite (rngl_mul_opp_r Hop).
+rewrite (rngl_sub_opp_r Hop).
+easy.
+Qed.
+
 Theorem gre_lt_gc_eucl_dist_lt :
   ∀ a z1 z2,
   (0 ≤ a)%L
@@ -878,6 +901,7 @@ rewrite <- (rngl_abs_nonneg_eq Hop Hor √_). 2: {
   apply (rngl_add_squ_nonneg Hos Hto).
 }
 rewrite <- (rngl_abs_nonneg_eq Hop Hor a) at 2; [ | easy ].
+rewrite gc_div_re; [ | easy ].
 split. {
   intros Hc.
   apply (rngl_squ_lt_abs_lt Hop Hiq Hto).
@@ -891,7 +915,6 @@ split. {
   rewrite <- rngl_add_assoc.
   progress unfold gc_modl in H1m, H2m.
   progress unfold rl_modl in H1m, H2m.
-  (* lemma *)
   apply (f_equal rngl_squ) in H1m, H2m.
   rewrite rngl_squ_sqrt in H1m; [ | apply (rngl_add_squ_nonneg Hos Hto) ].
   rewrite rngl_squ_sqrt in H2m; [ | apply (rngl_add_squ_nonneg Hos Hto) ].
@@ -906,18 +929,8 @@ split. {
   apply (rngl_lt_sub_lt_add_r Hop Hor).
   rewrite rngl_add_comm.
   apply (rngl_lt_sub_lt_add_r Hop Hor).
-  (* make a lemma saying gre (z2 / z1) *)
-  progress unfold gc_div in Hc.
-  cbn in Hc.
-  do 2 rewrite fold_rngl_squ in Hc.
-  rewrite H1m in Hc.
-  rewrite rngl_squ_1 in Hc.
-  rewrite (rngl_div_1_r Hiq) in Hc; [ | now left ].
-  rewrite (rngl_div_1_r Hiq) in Hc; [ | now left ].
-  rewrite (rngl_mul_opp_r Hop) in Hc.
-  rewrite (rngl_sub_opp_r Hop) in Hc.
-  rewrite (rngl_mul_comm Hic (gre z2))  in Hc.
-  rewrite (rngl_mul_comm Hic (gim z2))  in Hc.
+  rewrite (rngl_mul_comm Hic (gre z1)).
+  rewrite (rngl_mul_comm Hic (gim z1)).
   easy.
 } {
   intros Ha.
@@ -950,16 +963,6 @@ split. {
   apply (rngl_lt_sub_lt_add_r Hop Hor) in Ha.
   rewrite rngl_add_comm in Ha.
   apply (rngl_lt_sub_lt_add_r Hop Hor) in Ha.
-  (* make a lemma saying gre (z2 / z1) *)
-  progress unfold gc_div.
-  cbn.
-  do 2 rewrite fold_rngl_squ.
-  rewrite H1m.
-  rewrite rngl_squ_1.
-  rewrite (rngl_div_1_r Hiq); [ | now left ].
-  rewrite (rngl_div_1_r Hiq); [ | now left ].
-  rewrite (rngl_mul_opp_r Hop).
-  rewrite (rngl_sub_opp_r Hop).
   rewrite (rngl_mul_comm Hic (gre z2)).
   rewrite (rngl_mul_comm Hic (gim z2)).
   easy.
