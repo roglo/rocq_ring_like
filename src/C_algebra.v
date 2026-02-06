@@ -851,7 +851,6 @@ Definition gc_seq_to_div_nat (z : GComplex T) (n k : nat) :=
 
 Definition gc_eucl_dist z1 z2 := gc_modl (z1 - z2).
 
-(* to be completed
 Theorem gre_lt_gc_eucl_dist_lt :
   ∀ a z1 z2,
   (0 ≤ a)%L
@@ -882,9 +881,7 @@ rewrite <- (rngl_abs_nonneg_eq Hop Hor a) at 2; [ | easy ].
 split. {
   intros Hc.
   apply (rngl_squ_lt_abs_lt Hop Hiq Hto).
-  rewrite rngl_squ_sqrt. 2: {
-    apply (rngl_add_squ_nonneg Hos Hto).
-  }
+  rewrite rngl_squ_sqrt; [ | apply (rngl_add_squ_nonneg Hos Hto) ].
   cbn.
   do 2 rewrite (rngl_squ_sub Hop Hic).
   rewrite rngl_add_assoc.
@@ -925,8 +922,51 @@ split. {
 } {
   intros Ha.
   apply (rngl_abs_lt_squ_lt Hop Hiq Hto) in Ha. 2: {
-...
+    apply (rngl_mul_comm Hic).
+  }
+  rewrite rngl_squ_sqrt in Ha; [ | apply (rngl_add_squ_nonneg Hos Hto) ].
+  cbn in Ha.
+  do 2 rewrite (rngl_squ_sub Hop Hic) in Ha.
+  rewrite rngl_add_assoc in Ha.
+  rewrite (rngl_add_sub_assoc Hop) in Ha.
+  do 4 rewrite <- (rngl_add_sub_swap Hop) in Ha.
+  rewrite (rngl_add_add_swap (gre z1)²) in Ha.
+  rewrite <- rngl_add_assoc in Ha.
+  progress unfold gc_modl in H1m, H2m.
+  progress unfold rl_modl in H1m, H2m.
+  apply (f_equal rngl_squ) in H1m, H2m.
+  rewrite rngl_squ_sqrt in H1m; [ | apply (rngl_add_squ_nonneg Hos Hto) ].
+  rewrite rngl_squ_sqrt in H2m; [ | apply (rngl_add_squ_nonneg Hos Hto) ].
+  rewrite H1m, H2m in Ha.
+  rewrite rngl_squ_1 in Ha.
+  rewrite <- (rngl_sub_add_distr Hos) in Ha.
+  do 2 rewrite <- rngl_mul_assoc in Ha.
+  rewrite <- rngl_mul_add_distr_l in Ha.
+  rewrite (rngl_sub_mul_r_diag_l Hop) in Ha.
+  rewrite (rngl_mul_comm Hic) in Ha.
+  apply (rngl_lt_div_r Hop Hiv Hto) in Ha. 2: {
+    apply (rngl_0_lt_2 Hos Hc1 Hto).
+  }
+  apply (rngl_lt_sub_lt_add_r Hop Hor) in Ha.
+  rewrite rngl_add_comm in Ha.
+  apply (rngl_lt_sub_lt_add_r Hop Hor) in Ha.
+  (* make a lemma saying gre (z2 / z1) *)
+  progress unfold gc_div.
+  cbn.
+  do 2 rewrite fold_rngl_squ.
+  rewrite H1m.
+  rewrite rngl_squ_1.
+  rewrite (rngl_div_1_r Hiq); [ | now left ].
+  rewrite (rngl_div_1_r Hiq); [ | now left ].
+  rewrite (rngl_mul_opp_r Hop).
+  rewrite (rngl_sub_opp_r Hop).
+  rewrite (rngl_mul_comm Hic (gre z2)).
+  rewrite (rngl_mul_comm Hic (gim z2)).
+  easy.
+}
+Qed.
 
+(* to be completed
 Theorem gc_seq_to_div_nat_is_Cauchy :
   rngl_is_archimedean T = true →
   ∀ n a, is_Cauchy_sequence gc_eucl_dist (gc_seq_to_div_nat a n).
@@ -943,8 +983,7 @@ enough (H :
   exists N.
   intros p q Hp Hq.
   apply rngl_lt_le_incl in Hε.
-...
-  apply gre_lt_gc_eucl_dist_lt; [ easy | ].
+  apply gre_lt_gc_eucl_dist_lt; [ easy | | | ].
   apply (HN _ _ Hq Hp).
 }
 ...
