@@ -854,7 +854,7 @@ Definition gc_eucl_dist z1 z2 := gc_modulus (z1 - z2).
 
 Theorem gc_div_re :
   ∀ z1 z2,
-  gre (z1 / z2) = ((gre z1 * gre z2 + gim z1 * gim z2) / (gc_modulus z2)²)%L.
+  gre (z1 / z2) = ((gre z1 * gre z2 + gim z1 * gim z2) / (‖ z2 ‖)²)%L.
 Proof.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 intros.
