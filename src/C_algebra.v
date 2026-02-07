@@ -653,6 +653,7 @@ Definition gc_div (ca cb : GComplex T) :=
   gc_mul ca (gc_inv cb).
 Definition gc_squ z := (z * z)%C.
 Definition gc_pow_nat (z : GComplex T) n := rngl_power z n.
+Definition gc_modl (z : GComplex T) := rl_modl (gre z) (gim z).
 
 End a.
 
@@ -660,6 +661,7 @@ Notation "x - y" := (gc_sub x y) : gc_scope.
 Notation " x / y" := (gc_div x y) : gc_scope.
 Notation "x +ℹ y" := (mk_gc x y) (at level 50) : gc_scope.
 Notation "z ²" := (gc_squ z) : gc_scope.
+Notation "‖ x ‖" := (gc_modl x) (at level 35, x at level 30).
 
 Section a.
 
@@ -672,8 +674,6 @@ Context {Hic : rngl_mul_is_comm T = true}.
 Context {Hop : rngl_has_opp T = true}.
 Context {Hiv : rngl_has_inv T = true}.
 Context {Hto : rngl_is_totally_ordered T = true}.
-
-Definition gc_modl (z : GComplex T) := rl_modl (gre z) (gim z).
 
 Definition gc_sqrt (z : GComplex T) :=
   let x := (rngl_signp (gim z) * √((gc_modl z + gre z)/2))%L in
