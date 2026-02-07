@@ -986,15 +986,12 @@ Qed.
 Theorem fold_gc_modulus : ∀ z, rl_modl (gre z) (gim z) = ‖ z ‖.
 Proof. easy. Qed.
 
-Theorem gc_re_le_modulus : ∀ z, (gre z ≤ ‖ z ‖)%L.
+Theorem gc_abs_re_le_modulus : ∀ z, (rngl_abs (gre z) ≤ ‖ z ‖)%L.
 Proof.
 intros.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
 specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
-apply (rngl_le_trans Hor _ (rngl_abs (gre z))). {
-  apply (rngl_le_abs_diag Hop Hor).
-}
 progress unfold gc_modulus.
 progress unfold rl_modl.
 rewrite <- (rngl_abs_sqrt Hop Hor). 2: {
@@ -1008,27 +1005,6 @@ apply (rngl_le_add_r Hos Hor).
 apply (rngl_squ_nonneg Hos Hto).
 Qed.
 
-(* to be completed
-Theorem gc_seq_to_div_nat_is_Cauchy :
-  rngl_is_archimedean T = true →
-  ∀ n a, is_Cauchy_sequence gc_eucl_dist (gc_seq_to_div_nat a n).
-Proof.
-intros Har *.
-intros ε Hε.
-enough (H :
-  ∃ N, ∀ p q,
-  N ≤ p
-  → N ≤ q
-  → (1 - ε² / 2 <
-      gre (gc_seq_to_div_nat a n p - gc_seq_to_div_nat a n q))%L). {
-  destruct H as (N, HN).
-  exists N.
-  intros p q Hp Hq.
-  apply rngl_lt_le_incl in Hε.
-  apply gre_lt_gc_eucl_dist_lt; [ easy | | | ].
-progress unfold gc_seq_to_div_nat.
-Print gc_nth_2_pow_root.
-Print gc_sqrt.
 Theorem gc_sqrt_modulus : ∀ z, ‖ √z ‖ = √ ‖ z ‖.
 Proof.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
@@ -1049,9 +1025,12 @@ rewrite rngl_squ_sqrt. 2: {
     apply (rngl_0_lt_2 Hos Hc1 Hto).
   }
   apply (rngl_le_0_sub Hop Hor).
+  apply (rngl_le_trans Hor _ (rngl_abs (gre z))). {
+    apply (rngl_le_abs_diag Hop Hor).
+  }
   rewrite fold_rl_modl.
   rewrite fold_gc_modulus.
-  apply gc_re_le_modulus.
+  apply gc_abs_re_le_modulus.
 }
 rewrite fold_rl_modl.
 rewrite fold_gc_modulus.
@@ -1068,9 +1047,8 @@ rewrite rngl_squ_sqrt. 2: {
     rewrite <- (rngl_abs_opp Hop Hto).
     apply (rngl_le_abs_diag Hop Hor).
   }
-Inspect 1.
+  apply gc_abs_re_le_modulus.
 }
-...
 rewrite (rngl_div_add_distr_r Hiv).
 rewrite (rngl_div_sub_distr_r Hop Hiv).
 rewrite (rngl_add_sub_assoc Hop).
@@ -1080,6 +1058,32 @@ rewrite <- rngl_mul_2_l.
 rewrite (rngl_mul_comm Hic).
 apply (rngl_div_mul Hiv).
 apply (rngl_2_neq_0 Hos Hc1 Hto).
+Qed.
+
+(* to be completed
+Theorem gc_seq_to_div_nat_is_Cauchy :
+  rngl_is_archimedean T = true →
+  ∀ n a, is_Cauchy_sequence gc_eucl_dist (gc_seq_to_div_nat a n).
+Proof.
+intros Har *.
+intros ε Hε.
+enough (H :
+  ∃ N, ∀ p q,
+  N ≤ p
+  → N ≤ q
+  → (1 - ε² / 2 <
+      gre (gc_seq_to_div_nat a n p - gc_seq_to_div_nat a n q))%L). {
+  destruct H as (N, HN).
+  exists N.
+  intros p q Hp Hq.
+  apply rngl_lt_le_incl in Hε.
+  apply gre_lt_gc_eucl_dist_lt; [ easy | | | ].
+  progress unfold gc_seq_to_div_nat.
+Inspect 1.
+...
+Print gc_nth_2_pow_root.
+Print gc_sqrt.
+Inspect 1.
 ...
 rewrite rl_sqrt_mul.
 
