@@ -872,6 +872,19 @@ rewrite <- (rngl_div_add_distr_r Hiv).
 easy.
 Qed.
 
+Theorem rl_modl_squ : ∀ a b, (a² + b²)%L = (rl_modl a b)².
+Proof.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+intros.
+progress unfold rl_modl.
+symmetry.
+apply rngl_squ_sqrt.
+apply (rngl_add_squ_nonneg Hos Hto).
+Qed.
+
+Theorem fold_gc_modulus : ∀ z, rl_modl (gre z) (gim z) = ‖ z ‖.
+Proof. easy. Qed.
+
 Theorem gre_lt_gc_eucl_dist_lt :
   ∀ a z1 z2,
   (0 ≤ a)%L
@@ -900,7 +913,6 @@ rewrite <- (rngl_abs_nonneg_eq Hop Hor √_). 2: {
 }
 rewrite <- (rngl_abs_nonneg_eq Hop Hor a) at 2; [ | easy ].
 rewrite gc_div_re.
-rewrite H1m, rngl_squ_1, (rngl_div_1_r Hiq); [ | now left ].
 split. {
   intros Hc.
   apply (rngl_squ_lt_abs_lt Hop Hiq Hto).
@@ -912,16 +924,12 @@ split. {
   do 4 rewrite <- (rngl_add_sub_swap Hop).
   rewrite (rngl_add_add_swap (gre z1)²).
   rewrite <- rngl_add_assoc.
-  progress unfold gc_modulus in H1m, H2m.
-  progress unfold rl_modl in H1m, H2m.
-  apply (f_equal rngl_squ) in H1m, H2m.
-  rewrite rngl_squ_sqrt in H1m; [ | apply (rngl_add_squ_nonneg Hos Hto) ].
-  rewrite rngl_squ_sqrt in H2m; [ | apply (rngl_add_squ_nonneg Hos Hto) ].
-  rewrite H1m, H2m.
-  rewrite rngl_squ_1.
   rewrite <- (rngl_sub_add_distr Hos).
   do 2 rewrite <- rngl_mul_assoc.
   rewrite <- rngl_mul_add_distr_l.
+  do 2 rewrite rl_modl_squ.
+  do 2 rewrite fold_gc_modulus.
+  rewrite H1m, H2m, rngl_squ_1.
   rewrite (rngl_sub_mul_r_diag_l Hop).
   rewrite (rngl_mul_comm Hic).
   apply (rngl_lt_div_r Hop Hiv Hto); [ apply (rngl_0_lt_2 Hos Hc1 Hto) | ].
@@ -930,6 +938,8 @@ split. {
   apply (rngl_lt_sub_lt_add_r Hop Hor).
   rewrite (rngl_mul_comm Hic (gre z1)).
   rewrite (rngl_mul_comm Hic (gim z1)).
+  rewrite H1m, rngl_squ_1 in Hc.
+  rewrite (rngl_div_1_r Hiq) in Hc; [ | now left ].
   easy.
 } {
   intros Ha.
@@ -944,16 +954,12 @@ split. {
   do 4 rewrite <- (rngl_add_sub_swap Hop) in Ha.
   rewrite (rngl_add_add_swap (gre z1)²) in Ha.
   rewrite <- rngl_add_assoc in Ha.
-  progress unfold gc_modulus in H1m, H2m.
-  progress unfold rl_modl in H1m, H2m.
-  apply (f_equal rngl_squ) in H1m, H2m.
-  rewrite rngl_squ_sqrt in H1m; [ | apply (rngl_add_squ_nonneg Hos Hto) ].
-  rewrite rngl_squ_sqrt in H2m; [ | apply (rngl_add_squ_nonneg Hos Hto) ].
-  rewrite H1m, H2m in Ha.
-  rewrite rngl_squ_1 in Ha.
   rewrite <- (rngl_sub_add_distr Hos) in Ha.
   do 2 rewrite <- rngl_mul_assoc in Ha.
   rewrite <- rngl_mul_add_distr_l in Ha.
+  do 2 rewrite rl_modl_squ in Ha.
+  do 2 rewrite fold_gc_modulus in Ha.
+  rewrite H1m, H2m, rngl_squ_1 in Ha.
   rewrite (rngl_sub_mul_r_diag_l Hop) in Ha.
   rewrite (rngl_mul_comm Hic) in Ha.
   apply (rngl_lt_div_r Hop Hiv Hto) in Ha. 2: {
@@ -964,6 +970,7 @@ split. {
   apply (rngl_lt_sub_lt_add_r Hop Hor) in Ha.
   rewrite (rngl_mul_comm Hic (gre z2)).
   rewrite (rngl_mul_comm Hic (gim z2)).
+  rewrite H1m, rngl_squ_1, (rngl_div_1_r Hiq); [ | now left ].
   easy.
 }
 Qed.
@@ -982,9 +989,6 @@ apply rl_sqrt_mul. {
   apply (rngl_add_squ_nonneg Hos Hto).
 }
 Qed.
-
-Theorem fold_gc_modulus : ∀ z, rl_modl (gre z) (gim z) = ‖ z ‖.
-Proof. easy. Qed.
 
 Theorem gc_abs_re_le_modulus : ∀ z, (rngl_abs (gre z) ≤ ‖ z ‖)%L.
 Proof.
