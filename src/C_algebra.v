@@ -1071,6 +1071,16 @@ apply (rngl_div_mul Hiv).
 apply (rngl_2_neq_0 Hos Hc1 Hto).
 Qed.
 
+Theorem gc_modulus_nonneg : ∀ z, (0 ≤ ‖ z ‖)%L.
+Proof.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+intros.
+progress unfold gc_modulus.
+progress unfold rl_modl.
+apply rl_sqrt_nonneg.
+apply (rngl_add_squ_nonneg Hos Hto).
+Qed.
+
 (* to be completed
 Theorem gc_seq_to_div_nat_is_Cauchy :
   rngl_is_archimedean T = true →
@@ -1094,18 +1104,30 @@ Print gc_nth_2_pow_root.
 Inspect 1.
 Print rl_sqrt.
 Theorem gc_nth_root_2_pow_root_modulus :
-  ∀ n z, ‖ gc_nth_2_pow_root n z ‖ = rl_nth_root (S n) (‖ z ‖).
+  ∀ n z, ‖ gc_nth_2_pow_root n z ‖ = rl_nth_root (2 ^ n) (‖ z ‖).
 Proof.
 intros.
-(* bon, c'est peut-être 2^n qu'il faut mettre, pas "S n" *)
 induction n. {
   cbn; symmetry.
   rewrite <- (rl_nth_root_pow 1); [ symmetry; apply rngl_pow_1_r | ].
-  progress unfold gc_modulus.
-  progress unfold rl_modl.
-...
+  apply gc_modulus_nonneg.
 }
-cbn.
+rewrite Nat.pow_succ_r'.
+Search (rl_nth_root).
+Theorem rl_nth_root_mul_l :
+  ∀ m n a, rl_nth_root (m * n) a = rl_nth_root m (rl_nth_root n a).
+Proof.
+intros.
+Search rl_nth_root.
+Print rl_nth_root.
+Print real_like_prop.
+(* peut-être manque-t-il rl_nth_root_mul_l comme axiome ?
+   alors il faudrait renommer rl_nth_root_mul : rl_nth_root_mul_r *)
+...
+  rewrite rl_nth_root_mul_l.
+Print rl_sqrt.
+  rewrite fold_rl_sqrt.
+...
 rewrite gc_sqrt_modulus.
 Search rl_nth_root.
 rewrite rl_nth_root_
