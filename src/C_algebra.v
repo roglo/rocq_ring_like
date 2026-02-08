@@ -1139,9 +1139,12 @@ enough (H :
 Check rngl_pow_neq_0.
 Theorem glop :
   rngl_characteristic T ≠ 1 →
-  ∀ z n, (z ^ n)%L ≠ 0%C.
+  ∀ z n, z ≠ 0%C → (z ^ n)%L ≠ 0%C.
 Proof.
-intros Hc1 *.
+intros Hc1.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
+intros * Hzz.
 induction n; cbn. {
   progress unfold gc_zero.
   progress unfold gc_one.
@@ -1150,6 +1153,21 @@ induction n; cbn. {
   apply (rngl_1_neq_0 Hc1).
 }
 intros H; apply IHn; clear IHn.
+specialize (@rngl_eq_mul_0_l (GComplex T)) as H1.
+specialize (H1 (gc_ring_like_op T)).
+specialize (H1 (gc_ring_like_prop_not_alg_closed Hic Hop Hiv Hto)).
+apply H1 in H; [ easy | | | ].
+3: {
+(* bin ça marche pas, ça *)
+...
+  induction n; cbn.
+  rewrite rngl_pow_0_l.
+specialize (H1 gc_ring_like_prop).
+rngl_eq_mul_0_l:
+  ∀ {T : Type} {ro : ring_like_op T},
+    ring_like_prop T
+    → rngl_has_opp_or_psub T = true
+      → rngl_has_inv_or_pdiv T = true → ∀ a b : T, (a * b)%L = 0%L → b ≠ 0%L → a = 0%L
 injection H; clear H; intros H1 H2.
 ...
 apply glop.
