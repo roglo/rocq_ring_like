@@ -1136,6 +1136,23 @@ enough (H :
   apply rngl_lt_le_incl in Hε.
   apply gre_lt_gc_eucl_dist_lt; [ easy | | ]. {
     progress unfold gc_seq_to_div_nat.
+Check rngl_pow_neq_0.
+Theorem glop :
+  rngl_characteristic T ≠ 1 →
+  ∀ z n, (z ^ n)%L ≠ 0%C.
+Proof.
+intros Hc1 *.
+induction n; cbn. {
+  progress unfold gc_zero.
+  progress unfold gc_one.
+  intros H.
+  injection H; clear H.
+  apply (rngl_1_neq_0 Hc1).
+}
+intros H; apply IHn; clear IHn.
+injection H; clear H; intros H1 H2.
+...
+apply glop.
 ...
 Print gc_nth_2_pow_root.
 Inspect 1.
