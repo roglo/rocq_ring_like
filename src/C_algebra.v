@@ -1090,7 +1090,26 @@ enough (H :
   apply rngl_lt_le_incl in Hε.
   apply gre_lt_gc_eucl_dist_lt; [ easy | | | ].
   progress unfold gc_seq_to_div_nat.
+Print gc_nth_2_pow_root.
 Inspect 1.
+Print rl_sqrt.
+Theorem gc_nth_root_2_pow_root_modulus :
+  ∀ n z, ‖ gc_nth_2_pow_root n z ‖ = rl_nth_root (S n) (‖ z ‖).
+Proof.
+intros.
+(* bon, c'est peut-être 2^n qu'il faut mettre, pas "S n" *)
+induction n. {
+  cbn; symmetry.
+  rewrite <- (rl_nth_root_pow 1); [ symmetry; apply rngl_pow_1_r | ].
+  progress unfold gc_modulus.
+  progress unfold rl_modl.
+...
+}
+cbn.
+rewrite gc_sqrt_modulus.
+Search rl_nth_root.
+rewrite rl_nth_root_
+rewrite IHn.
 ...
 Print gc_nth_2_pow_root.
 Print gc_sqrt.
