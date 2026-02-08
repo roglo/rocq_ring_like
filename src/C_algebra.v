@@ -665,6 +665,7 @@ End a.
 Notation "x - y" := (gc_sub x y) : gc_scope.
 Notation " x / y" := (gc_div x y) : gc_scope.
 Notation "x +ℹ y" := (mk_gc x y) (at level 50) : gc_scope.
+Notation "x ⁻¹" := (gc_inv x) : gc_scope.
 Notation "z ²" := (gc_squ z) : gc_scope.
 Notation "√ z" := (gc_sqrt z) : gc_scope.
 Notation "‖ x ‖" := (gc_modulus x) (at level 35, x at level 30).
