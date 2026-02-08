@@ -1142,8 +1142,10 @@ Theorem glop :
   ∀ z n, z ≠ 0%C → (z ^ n)%L ≠ 0%C.
 Proof.
 intros Hc1.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
+specialize (rngl_integral_or_inv_pdiv_eq_dec_order Hiv Hor) as Hio.
 intros * Hzz.
 induction n; cbn. {
   progress unfold gc_zero.
@@ -1153,12 +1155,20 @@ induction n; cbn. {
   apply (rngl_1_neq_0 Hc1).
 }
 intros H; apply IHn; clear IHn.
-specialize (@rngl_eq_mul_0_l (GComplex T)) as H1.
+specialize (@rngl_integral (GComplex T)) as H1.
 specialize (H1 (gc_ring_like_op T)).
 specialize (H1 (gc_ring_like_prop_not_alg_closed Hic Hop Hiv Hto)).
-apply H1 in H; [ easy | | | ].
-3: {
-(* bin ça marche pas, ça *)
+apply H1 in H; [ now destruct H | | ]. {
+  cbn.
+  progress unfold rngl_has_opp_or_psub; cbn.
+  progress unfold rngl_has_opp_or_psub in Hos.
+  progress unfold gc_opt_opp_or_psub.
+  destruct (rngl_opt_opp_or_psub T); [ | easy ].
+  now destruct s.
+} {
+  cbn.
+  apply Bool.andb_true_iff.
+  split. {
 ...
   induction n; cbn.
   rewrite rngl_pow_0_l.
