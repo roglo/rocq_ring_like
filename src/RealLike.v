@@ -11,7 +11,9 @@ Require Import Core.
 Class real_like_prop T {ro : ring_like_op T} {rp : ring_like_prop T} :=
   { rl_nth_root : nat → T → T;
     rl_nth_root_pow : ∀ n a, (0 ≤ a → rl_nth_root n a ^ n = a)%L;
-    rl_nth_root_mul :
+    rl_nth_root_mul_l :
+      ∀ m n a, rl_nth_root (m * n) a = rl_nth_root m (rl_nth_root n a);
+    rl_nth_root_mul_r :
       ∀ n a b, (0 ≤ a)%L → (0 ≤ b)%L →
       (rl_nth_root n (a * b) = rl_nth_root n a * rl_nth_root n b)%L;
     rl_nth_root_inv :
@@ -81,7 +83,7 @@ Theorem rl_sqrt_mul :
 Proof.
 intros * Ha Hb.
 progress unfold rl_sqrt.
-now rewrite rl_nth_root_mul.
+now rewrite rl_nth_root_mul_r.
 Qed.
 
 Theorem rl_sqrt_div :
@@ -117,14 +119,14 @@ destruct az. {
   apply rngl_leb_le in Haz.
   apply (rngl_opp_nonneg_nonpos Hop Hor) in Haz.
   rewrite <- (rngl_mul_opp_opp Hop).
-  rewrite rl_nth_root_mul; [ | easy | easy ].
+  rewrite rl_nth_root_mul_r; [ | easy | easy ].
   rewrite fold_rngl_squ.
   rewrite (rngl_squ_pow_2).
   now apply rl_nth_root_pow.
 } {
   apply (rngl_leb_gt_iff Hto) in Haz.
   apply rngl_lt_le_incl in Haz.
-  rewrite rl_nth_root_mul; [ | easy | easy ].
+  rewrite rl_nth_root_mul_r; [ | easy | easy ].
   rewrite fold_rngl_squ.
   rewrite (rngl_squ_pow_2).
   now apply rl_nth_root_pow.
