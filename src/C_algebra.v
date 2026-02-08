@@ -682,25 +682,29 @@ Context {Hop : rngl_has_opp T = true}.
 Context {Hiv : rngl_has_inv T = true}.
 Context {Hto : rngl_is_totally_ordered T = true}.
 
-(* to be completed ... and fixed
-Theorem glop : ∀ a, gc_inv a = rngl_inv a.
+Theorem gc_inv_rngl_inv : ∀ a, gc_inv a = rngl_inv a.
 Proof.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 intros.
-progress unfold rngl_inv.
 progress unfold gc_inv.
+progress unfold rngl_div.
+rewrite Hiv.
+progress unfold rngl_inv.
 cbn.
 progress unfold gc_opt_inv_or_pdiv.
 rewrite Hic.
-cbn.
-remember (rngl_opt_inv_or_pdiv T) as ip eqn:Hip.
-symmetry in Hip.
-destruct ip as [inv| ]. {
-  destruct inv; [ easy | ].
-  admit.
+progress unfold gc_inv.
+progress unfold rngl_div.
+progress unfold rngl_inv.
+rewrite Hiv.
+remember (rngl_opt_inv_or_pdiv T) as iq' eqn:Hiq'.
+symmetry in Hiq'.
+destruct iq' as [inv| ]. {
+  destruct inv as [inv| ]; [ easy | ].
+  now do 2 rewrite (rngl_mul_0_r Hos).
 }
-admit.
-...
-*)
+now do 2 rewrite (rngl_mul_0_r Hos).
+Qed.
 
 Theorem rl_modl_comm a b : rl_modl a b = rl_modl b a.
 Proof.
