@@ -913,30 +913,50 @@ Proof. easy. Qed.
 Theorem gre_lt_gc_eucl_dist_lt :
   ∀ a z1 z2,
   (0 ≤ a)%L
-  → gc_modulus z1 = 1%L
-  → gc_modulus z2 = 1%L
-  → (1 - a² / 2 < gre (z2 / z1))%L
+  → z1 ≠ 0%C
+  → (((‖ z1 ‖)² + (‖ z2 ‖)²) / 2 - a² / 2 < gre (z2 / z1) * (‖ z1 ‖)²)%L
   ↔ (gc_eucl_dist z1 z2 < a)%L.
 Proof.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
 specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+specialize (rngl_integral_or_inv_pdiv_eq_dec_order Hiv Hor) as Hio.
+specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
 destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
   specialize (rngl_characteristic_1 Hos Hc1) as H1.
-  intros * Hza H1m H2m.
-  rewrite (H1 (_ - _)%L), (H1 (gre _)).
+  intros * Hza H1z.
+  rewrite (H1 (_ - _)%L), (H1 (gre _ * _)%L).
   rewrite (H1 (gc_eucl_dist _ _)), (H1 a).
   easy.
 }
-intros * Hza H1m H2m.
+intros * Hza H1z.
 progress unfold gc_eucl_dist.
 progress unfold gc_modulus.
 progress unfold rl_modl.
+symmetry.
 rewrite <- (rngl_abs_nonneg_eq Hop Hor √_). 2: {
   apply rl_sqrt_nonneg.
   apply (rngl_add_squ_nonneg Hos Hto).
 }
+symmetry.
 rewrite <- (rngl_abs_nonneg_eq Hop Hor a) at 2; [ | easy ].
+rewrite fold_rl_modl.
+rewrite fold_gc_modulus.
+rewrite gc_div_re.
+rewrite (rngl_div_mul Hiv). 2: {
+  intros H.
+  apply (eq_rngl_squ_0 Hos Hio) in H.
+  (* lemma *)
+  progress unfold gc_modulus in H.
+  progress unfold rl_modl in H.
+  apply (eq_rl_sqrt_0 Hos) in H. 2: {
+    apply (rngl_add_squ_nonneg Hos Hto).
+  }
+  apply (eq_rngl_add_square_0 Hop Hiq Hto) in H.
+  destruct z1 as (x, y).
+  cbn in H.
+  now destruct H; subst x y.
+}
 split. {
   intros Hc.
   apply (rngl_squ_lt_abs_lt Hop Hiq Hto).
@@ -964,12 +984,7 @@ split. {
   apply (rngl_lt_sub_lt_add_r Hop Hor).
   rewrite (rngl_mul_comm Hic (gre z1)).
   rewrite (rngl_mul_comm Hic (gim z1)).
-  rewrite gc_div_re in Hc.
-(**)
-  rewrite H1m, rngl_squ_1 in Hc.
-  rewrite (rngl_div_1_r Hiq) in Hc; [ | now left ].
-  rewrite H1m, H2m, rngl_squ_1, (rngl_div_diag Hiq); [ easy | ].
-  apply (rngl_2_neq_0 Hos Hc1 Hto).
+  easy.
 } {
   intros Ha.
   apply (rngl_abs_lt_squ_lt Hop Hiq Hto) in Ha. 2: {
@@ -999,11 +1014,7 @@ split. {
   apply (rngl_lt_sub_lt_add_r Hop Hor) in Ha.
   rewrite (rngl_mul_comm Hic (gre z1)) in Ha.
   rewrite (rngl_mul_comm Hic (gim z1)) in Ha.
-  rewrite gc_div_re.
-(**)
-  rewrite H1m, rngl_squ_1, (rngl_div_1_r Hiq); [ | now left ].
-  rewrite H1m, H2m, rngl_squ_1, (rngl_div_diag Hiq) in Ha; [ easy | ].
-  apply (rngl_2_neq_0 Hos Hc1 Hto).
+  easy.
 }
 Qed.
 
@@ -1123,8 +1134,9 @@ enough (H :
   exists N.
   intros p q Hp Hq.
   apply rngl_lt_le_incl in Hε.
-  apply gre_lt_gc_eucl_dist_lt; [ easy | | | ].
-  progress unfold gc_seq_to_div_nat.
+  apply gre_lt_gc_eucl_dist_lt; [ easy | | ]. {
+    progress unfold gc_seq_to_div_nat.
+...
 Print gc_nth_2_pow_root.
 Inspect 1.
 Print rl_sqrt.
