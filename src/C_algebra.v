@@ -682,6 +682,23 @@ Context {Hop : rngl_has_opp T = true}.
 Context {Hiv : rngl_has_inv T = true}.
 Context {Hto : rngl_is_totally_ordered T = true}.
 
+(* to be completed ... and fixed
+Theorem glop : ∀ a, gc_inv a = rngl_inv a.
+Proof.
+intros.
+progress unfold rngl_inv.
+cbn.
+progress unfold gc_opt_inv_or_pdiv.
+rewrite Hic.
+cbn.
+remember (rngl_opt_inv_or_pdiv T) as ip eqn:Hip.
+symmetry in Hip.
+destruct ip as [inv| ]. {
+  destruct inv; [ easy | ].
+...
+}
+*)
+
 Theorem rl_modl_comm a b : rl_modl a b = rl_modl b a.
 Proof.
 progress unfold rl_modl; f_equal.
