@@ -912,7 +912,6 @@ rewrite <- (rngl_abs_nonneg_eq Hop Hor √_). 2: {
   apply (rngl_add_squ_nonneg Hos Hto).
 }
 rewrite <- (rngl_abs_nonneg_eq Hop Hor a) at 2; [ | easy ].
-rewrite gc_div_re.
 split. {
   intros Hc.
   apply (rngl_squ_lt_abs_lt Hop Hiq Hto).
@@ -929,18 +928,23 @@ split. {
   rewrite <- rngl_mul_add_distr_l.
   do 2 rewrite rl_modl_squ.
   do 2 rewrite fold_gc_modulus.
-  rewrite H1m, H2m, rngl_squ_1.
-  rewrite (rngl_sub_mul_r_diag_l Hop).
+  apply (rngl_div_lt_mono_pos_r Hop Hiv Hto 2). {
+    apply (rngl_0_lt_2 Hos Hc1 Hto).
+  }
+  rewrite (rngl_div_sub_distr_r Hop Hiv).
   rewrite (rngl_mul_comm Hic).
-  apply (rngl_lt_div_r Hop Hiv Hto); [ apply (rngl_0_lt_2 Hos Hc1 Hto) | ].
+  rewrite (rngl_mul_div Hiq); [ | apply (rngl_2_neq_0 Hos Hc1 Hto) ].
   apply (rngl_lt_sub_lt_add_r Hop Hor).
-  rewrite rngl_add_comm.
+  rewrite (rngl_add_comm (_ / _)).
   apply (rngl_lt_sub_lt_add_r Hop Hor).
   rewrite (rngl_mul_comm Hic (gre z1)).
   rewrite (rngl_mul_comm Hic (gim z1)).
+  rewrite gc_div_re in Hc.
+(**)
   rewrite H1m, rngl_squ_1 in Hc.
   rewrite (rngl_div_1_r Hiq) in Hc; [ | now left ].
-  easy.
+  rewrite H1m, H2m, rngl_squ_1, (rngl_div_diag Hiq); [ easy | ].
+  apply (rngl_2_neq_0 Hos Hc1 Hto).
 } {
   intros Ha.
   apply (rngl_abs_lt_squ_lt Hop Hiq Hto) in Ha. 2: {
@@ -959,19 +963,22 @@ split. {
   rewrite <- rngl_mul_add_distr_l in Ha.
   do 2 rewrite rl_modl_squ in Ha.
   do 2 rewrite fold_gc_modulus in Ha.
-  rewrite H1m, H2m, rngl_squ_1 in Ha.
-  rewrite (rngl_sub_mul_r_diag_l Hop) in Ha.
-  rewrite (rngl_mul_comm Hic) in Ha.
-  apply (rngl_lt_div_r Hop Hiv Hto) in Ha. 2: {
+  apply (rngl_div_lt_mono_pos_r Hop Hiv Hto 2) in Ha. 2: {
     apply (rngl_0_lt_2 Hos Hc1 Hto).
   }
+  rewrite (rngl_div_sub_distr_r Hop Hiv) in Ha.
+  rewrite (rngl_mul_comm Hic) in Ha.
+  rewrite (rngl_mul_div Hiq) in Ha; [ | apply (rngl_2_neq_0 Hos Hc1 Hto) ].
   apply (rngl_lt_sub_lt_add_r Hop Hor) in Ha.
-  rewrite rngl_add_comm in Ha.
+  rewrite (rngl_add_comm (_ / _)) in Ha.
   apply (rngl_lt_sub_lt_add_r Hop Hor) in Ha.
-  rewrite (rngl_mul_comm Hic (gre z2)).
-  rewrite (rngl_mul_comm Hic (gim z2)).
+  rewrite (rngl_mul_comm Hic (gre z1)) in Ha.
+  rewrite (rngl_mul_comm Hic (gim z1)) in Ha.
+  rewrite gc_div_re.
+(**)
   rewrite H1m, rngl_squ_1, (rngl_div_1_r Hiq); [ | now left ].
-  easy.
+  rewrite H1m, H2m, rngl_squ_1, (rngl_div_diag Hiq) in Ha; [ easy | ].
+  apply (rngl_2_neq_0 Hos Hc1 Hto).
 }
 Qed.
 

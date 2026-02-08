@@ -1524,6 +1524,7 @@ End a.
 
 Arguments rngl_div_le_mono_pos_l {T ro rp} Hop Hiv Hor (a b c)%_L.
 Arguments rngl_div_le_mono_pos_r {T ro rp} Hop Hiv Hor (a b c)%_L.
+Arguments rngl_div_lt_mono_pos_r {T ro rp} Hop Hiv Hto (a b c)%_L.
 Arguments rngl_middle_sub_r {T ro rp} Hop Hiv Hor (a b)%_L.
 Arguments rngl_mul_le_mono_pos_l {T ro rp} Hop Hiq Hor (a b c)%_L.
 Arguments rngl_mul_le_mono_pos_r {T ro rp} Hop Hiq Hor (a b c)%_L.
