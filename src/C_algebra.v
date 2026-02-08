@@ -687,6 +687,7 @@ Theorem glop : ∀ a, gc_inv a = rngl_inv a.
 Proof.
 intros.
 progress unfold rngl_inv.
+progress unfold gc_inv.
 cbn.
 progress unfold gc_opt_inv_or_pdiv.
 rewrite Hic.
@@ -695,8 +696,10 @@ remember (rngl_opt_inv_or_pdiv T) as ip eqn:Hip.
 symmetry in Hip.
 destruct ip as [inv| ]. {
   destruct inv; [ easy | ].
-...
+  admit.
 }
+admit.
+...
 *)
 
 Theorem rl_modl_comm a b : rl_modl a b = rl_modl b a.
