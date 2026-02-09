@@ -1155,6 +1155,15 @@ induction n; cbn. {
   apply (rngl_1_neq_0 Hc1).
 }
 intros H; apply IHn; clear IHn.
+apply (gc_integral Hic Hop Hio) in H.
+destruct H as [H| H]; [ easy | ].
+destruct H as [H| H]; [ easy | ].
+destruct H as [H| H]. {
+  cbn in H.
+Search (_² + _² = 0)%L.
+  apply eq_rngl_add_squ_0 in H.
+...
+Theorem gc_integral : ∀ z1 z2, (z1 * z2 = 0 → z1 = 0 ∨ z2 = 0)%C.
 specialize (@rngl_integral (GComplex T)) as H1.
 specialize (H1 (gc_ring_like_op T)).
 specialize (H1 (gc_ring_like_prop_not_alg_closed Hic Hop Hiv Hto)).
