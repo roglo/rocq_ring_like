@@ -1172,6 +1172,19 @@ rewrite rngl_add_0_l.
 apply (rl_sqrt_0 Hop Hto Hii).
 Qed.
 
+Theorem gc_modulus_1 : ‖ 1 ‖ = 1%L.
+Proof.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
+progress unfold gc_modulus.
+progress unfold rl_modl.
+cbn.
+rewrite rngl_squ_1.
+rewrite (rngl_squ_0 Hos).
+rewrite rngl_add_0_r.
+apply (rl_sqrt_1 Hop Hiq Hto).
+Qed.
+
 Theorem gc_mul_0_l :
   rngl_has_opp_or_psub T = true →
   ∀ z : GComplex T, (0 * z = 0)%C.
@@ -1193,6 +1206,32 @@ apply eq_gc_eq; cbn.
 do 2 rewrite (rngl_mul_0_r Hos).
 rewrite (rngl_sub_0_r Hos).
 rewrite rngl_add_0_l.
+easy.
+Qed.
+
+Theorem gc_sqrt_1 : (√1 = 1)%C.
+Proof.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
+specialize (rngl_int_dom_or_inv_pdiv Hiv) as Hii.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
+  specialize (rngl_characteristic_1 Hos Hc1) as H1.
+  apply eq_gc_eq.
+  do 2 rewrite (H1 (gre _)) ,(H1 (gim _)).
+  easy.
+}
+progress unfold gc_sqrt; cbn.
+rewrite gc_modulus_1.
+rewrite (rngl_sub_diag Hos).
+rewrite (rngl_div_diag Hiq); [ | apply (rngl_2_neq_0 Hos Hc1 Hto) ].
+rewrite (rngl_div_0_l Hos Hiq); [ | apply (rngl_2_neq_0 Hos Hc1 Hto) ].
+rewrite (rl_sqrt_1 Hop Hiq Hto).
+rewrite (rl_sqrt_0 Hop Hto Hii).
+(* lemma *)
+progress unfold rngl_signp.
+rewrite (rngl_leb_refl Hor).
+rewrite rngl_mul_1_l.
 easy.
 Qed.
 
@@ -1253,8 +1292,16 @@ Theorem gc_seq_to_div_nat_0_l :
   ∀ n k, 0 < 2 ^ k / n → gc_seq_to_div_nat 0 n k = 0%C.
 Proof.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
 specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+specialize (rngl_int_dom_or_inv_pdiv Hiv) as Hii.
 specialize (rngl_integral_or_inv_pdiv_eq_dec_order Hiv Hor) as Hio.
+destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
+  specialize (rngl_characteristic_1 Hos Hc1) as H1.
+  intros * Hkn.
+  apply eq_gc_eq; cbn.
+  now rewrite (H1 (gre _)), (H1 (gim _)).
+}
 intros * Hkn.
 progress unfold gc_seq_to_div_nat.
 remember (2 ^ k / n) as m eqn:Hm.
@@ -1263,6 +1310,43 @@ destruct n; [ easy | clear Hkn ].
 induction k; cbn; [ apply (gc_mul_0_l Hos) | ].
 cbn in IHk.
 apply (gc_integral Hic Hop Hio) in IHk.
+destruct IHk as [H| H]. {
+  rewrite H.
+  (* lemma *)
+  progress unfold gc_sqrt; cbn.
+  rewrite rngl_add_0_r.
+  rewrite gc_modulus_0.
+  rewrite (rngl_sub_diag Hos).
+  rewrite (rngl_div_0_l Hos Hiq); [ | apply (rngl_2_neq_0 Hos Hc1 Hto) ].
+  rewrite (rl_sqrt_0 Hop Hto Hii).
+  rewrite (rngl_mul_0_r Hos).
+  apply (gc_mul_0_l Hos).
+}
+destruct H as [H| H]. {
+Theorem gc_sqrt_pow :
+  ∀ n z, (gc_sqrt z ^ n)%L = gc_sqrt (z ^ n)%L.
+Proof.
+intros.
+induction n. {
+  cbn; symmetry.
+  apply gc_sqrt_1.
+}
+cbn.
+rewrite IHn.
+Search (√ (_ * _))%C.
+Search (√ (_ * _))%L.
+rewrite rl_sqrt_mul.
+...
+  rewrite H.
+  (* lemma *)
+  progress unfold gc_sqrt; cbn.
+  rewrite rngl_add_0_r.
+  rewrite gc_modulus_0.
+  rewrite (rngl_sub_diag Hos).
+  rewrite (rngl_div_0_l Hos Hiq); [ | apply (rngl_2_neq_0 Hos Hc1 Hto) ].
+  rewrite (rl_sqrt_0 Hop Hto Hii).
+  rewrite (rngl_mul_0_r Hos).
+  apply (gc_mul_0_l Hos).
 ...
 enough (H :
   ∃ N, ∀ p q,
