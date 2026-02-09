@@ -1167,20 +1167,35 @@ destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
 }
 intros *.
 intros ε Hε.
+(*
+Check gre_lt_gc_eucl_dist_lt.
+...
+  → (1 - a² / 2 < rngl_cos (α2 - α1))%L
+  ↔ (angle_eucl_dist α1 α2 < a)%L.
+...
+*)
 enough (H :
   ∃ N, ∀ p q,
   N ≤ p
   → N ≤ q
   → (1 - ε² / 2 <
-      gre (gc_seq_to_div_nat a n p - gc_seq_to_div_nat a n q))%L). {
+      gre (gc_seq_to_div_nat a n p / gc_seq_to_div_nat a n q))%L). {
   destruct H as (N, HN).
   exists N.
   intros p q Hp Hq.
+(*
   apply rngl_lt_le_incl in Hε.
-  apply gre_lt_gc_eucl_dist_lt; [ easy | | ]. {
+*)
+Search gc_seq_to_div_nat.
+...
+  apply gre_lt_gc_eucl_dist_lt; [ now apply rngl_lt_le_incl | | ]. {
     progress unfold gc_seq_to_div_nat.
     apply (gc_pow_neq_0 Hc1).
+    intros H.
 Print gc_nth_2_pow_root.
+...
+    induction p; cbn in H. 2: {
+      subst a.
 ...
 specialize (@rngl_integral (GComplex T)) as H1.
 specialize (H1 (gc_ring_like_op T)).
