@@ -1152,6 +1152,26 @@ apply H1; [ | | easy ]. {
 }
 Qed.
 
+Theorem gc_sub_diag : ∀ z, (z - z = 0)%C.
+Proof.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+intros.
+progress unfold gc_sub.
+now do 2 rewrite (rngl_sub_diag Hos).
+Qed.
+
+Theorem gc_modulus_0 : (‖ 0 ‖ = 0)%L.
+Proof.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+specialize (rngl_int_dom_or_inv_pdiv Hiv) as Hii.
+progress unfold gc_modulus.
+progress unfold rl_modl.
+cbn.
+rewrite (rngl_squ_0 Hos).
+rewrite rngl_add_0_l.
+apply (rl_sqrt_0 Hop Hto Hii).
+Qed.
+
 (* to be completed
 Theorem gc_seq_to_div_nat_is_Cauchy :
   rngl_is_archimedean T = true →
@@ -1159,6 +1179,8 @@ Theorem gc_seq_to_div_nat_is_Cauchy :
 Proof.
 intros Har.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
 destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
   specialize (rngl_characteristic_1 Hos Hc1) as H1.
   intros * ε Hε.
@@ -1174,6 +1196,46 @@ Check gre_lt_gc_eucl_dist_lt.
   ↔ (angle_eucl_dist α1 α2 < a)%L.
 ...
 *)
+destruct (gc_eq_dec Heo a 0) as [Haz| Haz]. {
+  subst a.
+  exists (Nat.log2_up n).
+  intros * Hp Hq.
+  destruct (Nat.eq_dec n 0) as [Hnz| Hnz]. {
+    subst n.
+    progress unfold gc_seq_to_div_nat; cbn.
+    (* lemma *)
+    progress unfold gc_eucl_dist.
+    rewrite gc_sub_diag.
+    now rewrite gc_modulus_0.
+  }
+...
+specialize (@rngl_sub_diag (GComplex T)) as H1.
+specialize (H1 (gc_ring_like_op T)).
+specialize (H1 (gc_ring_like_prop_not_alg_closed Hic Hop Hiv Hto)).
+progress unfold gc_sub.
+cbn.
+cbn in H1.
+apply H1.
+...
+    rewrite gc_sub_diag.
+    rewrite gc_eucl_dist_diag.
+...
+  apply Nat.log2_up_le_pow2 in Hp.
+Print gc_seq_to_div_nat.
+  progress unfold gc_seq_to_div_nat.
+Search (Nat.log2_up _ ≤ _).
+Search (_ ^ _ = 0).
+Theorem gc_seq_to_div_nat_0_l : ∀ n k, gc_seq_to_div_nat 0 n k = 0%C.
+Proof.
+intros.
+progress unfold gc_seq_to_div_nat.
+remember (2 ^ k / n) as m eqn:Hm.
+clear n Hm; rename m into n.
+induction n; cbn.
+induction k; cbn. {
+  induction n; cbn. {
+
+...
 enough (H :
   ∃ N, ∀ p q,
   N ≤ p
@@ -1186,8 +1248,6 @@ enough (H :
 (*
   apply rngl_lt_le_incl in Hε.
 *)
-Search gc_seq_to_div_nat.
-...
   apply gre_lt_gc_eucl_dist_lt; [ now apply rngl_lt_le_incl | | ]. {
     progress unfold gc_seq_to_div_nat.
     apply (gc_pow_neq_0 Hc1).
