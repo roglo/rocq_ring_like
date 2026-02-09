@@ -469,8 +469,8 @@ Theorem gc_integral :
      rngl_has_inv_or_pdiv T && rngl_has_eq_dec_or_order T)%bool =
      true →
   ∀ a b : GComplex T,
-  (a * b)%L = 0%L
-  → a = 0%L ∨ b = 0%L ∨ rngl_is_zero_divisor a ∨ rngl_is_zero_divisor b.
+  (a * b)%C = 0%C
+  → a = 0%C ∨ b = 0%C ∨ rngl_is_zero_divisor a ∨ rngl_is_zero_divisor b.
 Proof.
 intros Hic Hop Hio.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
@@ -1172,6 +1172,30 @@ rewrite rngl_add_0_l.
 apply (rl_sqrt_0 Hop Hto Hii).
 Qed.
 
+Theorem gc_mul_0_l :
+  rngl_has_opp_or_psub T = true →
+  ∀ z : GComplex T, (0 * z = 0)%C.
+Proof.
+intros Hos *.
+apply eq_gc_eq; cbn.
+do 2 rewrite (rngl_mul_0_l Hos).
+rewrite (rngl_sub_0_r Hos).
+rewrite rngl_add_0_l.
+easy.
+Qed.
+
+Theorem gc_mul_0_r :
+  rngl_has_opp_or_psub T = true →
+  ∀ z : GComplex T, (z * 0 = 0)%C.
+Proof.
+intros Hos *.
+apply eq_gc_eq; cbn.
+do 2 rewrite (rngl_mul_0_r Hos).
+rewrite (rngl_sub_0_r Hos).
+rewrite rngl_add_0_l.
+easy.
+Qed.
+
 (* to be completed
 Theorem gc_seq_to_div_nat_is_Cauchy :
   rngl_is_archimedean T = true →
@@ -1208,6 +1232,7 @@ destruct (gc_eq_dec Heo a 0) as [Haz| Haz]. {
     rewrite gc_sub_diag.
     now rewrite gc_modulus_0.
   }
+(*
 ...
 specialize (@rngl_sub_diag (GComplex T)) as H1.
 specialize (H1 (gc_ring_like_op T)).
@@ -1220,21 +1245,24 @@ apply H1.
     rewrite gc_sub_diag.
     rewrite gc_eucl_dist_diag.
 ...
-  apply Nat.log2_up_le_pow2 in Hp.
-Print gc_seq_to_div_nat.
+*)
+  apply Nat.log2_up_le_pow2 in Hp; [ | now apply Nat.neq_0_lt_0 ].
+  apply Nat.log2_up_le_pow2 in Hq; [ | now apply Nat.neq_0_lt_0 ].
   progress unfold gc_seq_to_div_nat.
-Search (Nat.log2_up _ ≤ _).
-Search (_ ^ _ = 0).
-Theorem gc_seq_to_div_nat_0_l : ∀ n k, gc_seq_to_div_nat 0 n k = 0%C.
+Theorem gc_seq_to_div_nat_0_l :
+  ∀ n k, 0 < 2 ^ k / n → gc_seq_to_div_nat 0 n k = 0%C.
 Proof.
-intros.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+specialize (rngl_integral_or_inv_pdiv_eq_dec_order Hiv Hor) as Hio.
+intros * Hkn.
 progress unfold gc_seq_to_div_nat.
 remember (2 ^ k / n) as m eqn:Hm.
 clear n Hm; rename m into n.
-induction n; cbn.
-induction k; cbn. {
-  induction n; cbn. {
-
+destruct n; [ easy | clear Hkn ].
+induction k; cbn; [ apply (gc_mul_0_l Hos) | ].
+cbn in IHk.
+apply (gc_integral Hic Hop Hio) in IHk.
 ...
 enough (H :
   ∃ N, ∀ p q,
@@ -1341,3 +1369,5 @@ progress f_equal.
 End a.
 
 Arguments gc_modulus_0 {T ro rp rl} Hop Hiv Hto.
+Arguments gc_mul_0_l {T ro rp} Hos z%_C.
+Arguments gc_mul_0_r {T ro rp} Hos z%_C.
