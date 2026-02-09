@@ -1339,3 +1339,5 @@ progress f_equal.
 *)
 
 End a.
+
+Arguments gc_modulus_0 {T ro rp rl} Hop Hiv Hto.
