@@ -1117,12 +1117,55 @@ apply rl_sqrt_nonneg.
 apply (rngl_add_squ_nonneg Hos Hto).
 Qed.
 
+Theorem eq_rngl_add_squ_0 : ∀ a b, (a² + b² = 0 → a = 0 ∧ b = 0)%L.
+Proof.
+specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
+apply (eq_rngl_add_square_0 Hop Hiq Hto).
+Qed.
+
+Theorem gc_pow_neq_0 :
+  rngl_characteristic T ≠ 1 →
+  ∀ z n, z ≠ 0%C → (z ^ n)%L ≠ 0%C.
+Proof.
+intros Hc1.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
+specialize (rngl_integral_or_inv_pdiv_eq_dec_order Hiv Hor) as Hio.
+intros * Hzz.
+specialize (@rngl_pow_neq_0 (GComplex T)) as H1.
+specialize (H1 (gc_ring_like_op T)).
+specialize (H1 (gc_ring_like_prop_not_alg_closed Hic Hop Hiv Hto)).
+apply H1; [ | | easy ]. {
+  progress unfold rngl_has_opp_or_psub; cbn.
+  progress unfold rngl_has_opp_or_psub in Hos.
+  progress unfold gc_opt_opp_or_psub.
+  destruct (rngl_opt_opp_or_psub T); [ | easy ].
+  now destruct s.
+} {
+  progress unfold rngl_has_inv in Hiv.
+  progress unfold rngl_has_inv_or_pdiv; cbn.
+  progress unfold gc_opt_inv_or_pdiv.
+  rewrite Hic.
+  destruct (rngl_opt_inv_or_pdiv T); [ | easy ].
+  now destruct s.
+}
+Qed.
+
 (* to be completed
 Theorem gc_seq_to_div_nat_is_Cauchy :
   rngl_is_archimedean T = true →
   ∀ n a, is_Cauchy_sequence gc_eucl_dist (gc_seq_to_div_nat a n).
 Proof.
-intros Har *.
+intros Har.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
+  specialize (rngl_characteristic_1 Hos Hc1) as H1.
+  intros * ε Hε.
+  rewrite H1 in Hε.
+  now apply rngl_lt_irrefl in Hε.
+}
+intros *.
 intros ε Hε.
 enough (H :
   ∃ N, ∀ p q,
@@ -1136,34 +1179,9 @@ enough (H :
   apply rngl_lt_le_incl in Hε.
   apply gre_lt_gc_eucl_dist_lt; [ easy | | ]. {
     progress unfold gc_seq_to_div_nat.
-Check rngl_pow_neq_0.
-Theorem glop :
-  rngl_characteristic T ≠ 1 →
-  ∀ z n, z ≠ 0%C → (z ^ n)%L ≠ 0%C.
-Proof.
-intros Hc1.
-specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
-specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
-specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
-specialize (rngl_integral_or_inv_pdiv_eq_dec_order Hiv Hor) as Hio.
-intros * Hzz.
-induction n; cbn. {
-  progress unfold gc_zero.
-  progress unfold gc_one.
-  intros H.
-  injection H; clear H.
-  apply (rngl_1_neq_0 Hc1).
-}
-intros H; apply IHn; clear IHn.
-apply (gc_integral Hic Hop Hio) in H.
-destruct H as [H| H]; [ easy | ].
-destruct H as [H| H]; [ easy | ].
-destruct H as [H| H]. {
-  cbn in H.
-Search (_² + _² = 0)%L.
-  apply eq_rngl_add_squ_0 in H.
+    apply (gc_pow_neq_0 Hc1).
+Print gc_nth_2_pow_root.
 ...
-Theorem gc_integral : ∀ z1 z2, (z1 * z2 = 0 → z1 = 0 ∨ z2 = 0)%C.
 specialize (@rngl_integral (GComplex T)) as H1.
 specialize (H1 (gc_ring_like_op T)).
 specialize (H1 (gc_ring_like_prop_not_alg_closed Hic Hop Hiv Hto)).
