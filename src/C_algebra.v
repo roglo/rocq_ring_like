@@ -1172,10 +1172,12 @@ rewrite rngl_add_0_l.
 apply (rl_sqrt_0 Hop Hto Hii).
 Qed.
 
-Theorem gc_modulus_1 : ‖ 1 ‖ = 1%L.
+Theorem gc_modulus_1 :
+  rngl_has_inv_or_pdiv T = true →
+  ‖ 1 ‖ = 1%L.
 Proof.
+intros Hiq.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
-specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
 progress unfold gc_modulus.
 progress unfold rl_modl.
 cbn.
@@ -1222,7 +1224,7 @@ destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
   easy.
 }
 progress unfold gc_sqrt; cbn.
-rewrite gc_modulus_1.
+rewrite (gc_modulus_1 Hiq).
 rewrite (rngl_sub_diag Hos).
 rewrite (rngl_div_diag Hiq); [ | apply (rngl_2_neq_0 Hos Hc1 Hto) ].
 rewrite (rngl_div_0_l Hos Hiq); [ | apply (rngl_2_neq_0 Hos Hc1 Hto) ].
@@ -1453,5 +1455,6 @@ progress f_equal.
 End a.
 
 Arguments gc_modulus_0 {T ro rp rl} Hop Hiv Hto.
+Arguments gc_modulus_1 {T ro rp rl} Hop Hto Hiq.
 Arguments gc_mul_0_l {T ro rp} Hos z%_C.
 Arguments gc_mul_0_r {T ro rp} Hos z%_C.
