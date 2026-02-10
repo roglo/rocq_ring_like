@@ -1344,7 +1344,12 @@ progress f_equal. {
   remember (0 ≤? gim (a * b))%L as iab eqn:Hiab.
   symmetry in Hiab.
   destruct iab. {
+    apply rngl_leb_le in Hiab.
     rewrite rngl_mul_1_l.
+    rewrite rngl_mul_assoc.
+    rewrite (rngl_mul_mul_swap Hic (rngl_signp (gim a))).
+Search (gre (_ * _)).
+Search (gim (_ * _)).
 ... ...
 Search (√ (_ * _))%C.
 Search (√ (_ * _))%L.
