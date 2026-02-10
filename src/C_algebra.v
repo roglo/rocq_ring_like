@@ -648,8 +648,10 @@ Context {rp : ring_like_prop T}.
 Context {rl : real_like_prop T}.
 
 Definition gc_opp (c : GComplex T) := {| gre := - gre c; gim := - gim c |}.
-Definition gc_sub (ca cb : GComplex T) := gc_add ca (gc_opp cb).
-Definition gc_div (ca cb : GComplex T) := gc_mul ca (gc_inv cb).
+Definition gc_sub (ca cb : GComplex T) :=
+  {| gre := gre ca - gre cb; gim := gim ca - gim cb |}.
+Definition gc_div (ca cb : GComplex T) :=
+  gc_mul ca (gc_inv cb).
 Definition gc_squ z := (z * z)%C.
 Definition gc_pow_nat (z : GComplex T) n := rngl_power z n.
 Definition gc_modulus (z : GComplex T) := rl_modl (gre z) (gim z).
@@ -1122,7 +1124,6 @@ split. {
   apply (rngl_squ_lt_abs_lt Hop Hiq Hto).
   rewrite rngl_squ_sqrt; [ | apply (rngl_add_squ_nonneg Hos Hto) ].
   cbn.
-  do 2 rewrite (rngl_add_opp_r Hop).
   do 2 rewrite (rngl_squ_sub Hop Hic).
   rewrite rngl_add_assoc.
   rewrite (rngl_add_sub_assoc Hop).
@@ -1153,7 +1154,6 @@ split. {
   }
   rewrite rngl_squ_sqrt in Ha; [ | apply (rngl_add_squ_nonneg Hos Hto) ].
   cbn in Ha.
-  do 2 rewrite (rngl_add_opp_r Hop) in Ha.
   do 2 rewrite (rngl_squ_sub Hop Hic) in Ha.
   rewrite rngl_add_assoc in Ha.
   rewrite (rngl_add_sub_assoc Hop) in Ha.
@@ -1281,15 +1281,17 @@ apply H1; [ | | easy ]. {
 Qed.
 
 Theorem gc_add_opp_r : ∀ z1 z2, (z1 + - z2 = z1 - z2)%C.
-Proof. easy. Qed.
+Proof.
+intros.
+apply eq_gc_eq; cbn.
+now do 2 rewrite (rngl_add_opp_r Hop).
+Qed.
 
 Theorem gc_sub_diag : ∀ z, (z - z = 0)%C.
 Proof.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 intros.
 progress unfold gc_sub.
-progress unfold gc_add; cbn.
-do 2 rewrite (rngl_add_opp_r Hop).
 now do 2 rewrite (rngl_sub_diag Hos).
 Qed.
 
