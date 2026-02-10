@@ -1464,8 +1464,3 @@ progress f_equal.
 *)
 
 End a.
-
-Arguments gc_modulus_0 {T ro rp rl} Hop Hi Hto.
-Arguments gc_modulus_1 {T ro rp rl} Hop Hiq Hto.
-Arguments gc_mul_0_l {T ro rp} Hos z%_C.
-Arguments gc_mul_0_r {T ro rp} Hos z%_C.
