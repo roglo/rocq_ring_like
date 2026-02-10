@@ -1376,6 +1376,22 @@ apply (rngl_integral Hos Hio) in Ha.
 now destruct Ha.
 Qed.
 
+Theorem rngl_squ_pos :
+  rngl_has_opp_or_psub T = true →
+  rngl_is_totally_ordered T = true →
+  (rngl_is_integral_domain T
+   || rngl_has_inv_or_pdiv T && rngl_has_eq_dec_or_order T)%bool =
+    true →
+  ∀ a, a ≠ 0%L → (0 < a²)%L.
+Proof.
+intros Hos Hto Hio * Haz.
+apply rngl_le_neq.
+split; [ apply (rngl_mul_diag_nonneg Hos Hto) | ].
+intros H; symmetry in H.
+apply Haz; clear Haz.
+now apply (eq_rngl_squ_0 Hos Hio) in H.
+Qed.
+
 Theorem rngl_le_squ_le :
   rngl_has_opp T = true →
   rngl_has_inv_or_pdiv T = true →

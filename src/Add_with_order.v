@@ -975,6 +975,24 @@ rewrite <- (rngl_add_0_l 0%L).
 now apply (rngl_add_le_mono Hos Hor).
 Qed.
 
+Theorem rngl_le_opp_abs_diag :
+  rngl_has_opp T = true →
+  rngl_is_totally_ordered T = true →
+  ∀ a, (- a ≤ rngl_abs a)%L.
+Proof.
+intros Hop Hto.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+intros.
+progress unfold rngl_abs.
+remember (a ≤? 0)%L as c eqn:Hc; symmetry in Hc.
+destruct c; [ pauto | ].
+apply (rngl_leb_gt_iff Hto) in Hc.
+apply (rngl_le_opp_l Hop Hor).
+apply rngl_lt_le_incl in Hc.
+now apply (rngl_le_0_add Hos Hor).
+Qed.
+
 Theorem rngl_abs_nonneg_eq :
   rngl_has_opp T = true →
   rngl_is_ordered T = true →

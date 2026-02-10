@@ -647,10 +647,9 @@ Context {ro : ring_like_op T}.
 Context {rp : ring_like_prop T}.
 Context {rl : real_like_prop T}.
 
-Definition gc_sub (ca cb : GComplex T) :=
-  {| gre := gre ca - gre cb; gim := gim ca - gim cb |}.
-Definition gc_div (ca cb : GComplex T) :=
-  gc_mul ca (gc_inv cb).
+Definition gc_opp (c : GComplex T) := {| gre := - gre c; gim := - gim c |}.
+Definition gc_sub (ca cb : GComplex T) := gc_add ca (gc_opp cb).
+Definition gc_div (ca cb : GComplex T) := gc_mul ca (gc_inv cb).
 Definition gc_squ z := (z * z)%C.
 Definition gc_pow_nat (z : GComplex T) n := rngl_power z n.
 Definition gc_modulus (z : GComplex T) := rl_modl (gre z) (gim z).
@@ -662,6 +661,7 @@ Definition gc_sqrt (z : GComplex T) :=
 
 End a.
 
+Notation "- x" := (gc_opp x) : gc_scope.
 Notation "x - y" := (gc_sub x y) : gc_scope.
 Notation " x / y" := (gc_div x y) : gc_scope.
 Notation "x +ℹ y" := (mk_gc x y) (at level 50) : gc_scope.
@@ -728,6 +728,96 @@ apply rl_sqrt_mul. {
 } {
   apply (rngl_add_squ_nonneg Hos Hto).
 }
+Qed.
+
+Theorem gc_abs_re_le_modulus :
+  rngl_has_opp T = true →
+  rngl_has_inv_or_pdiv T = true →
+  rngl_is_totally_ordered T = true →
+  ∀ z, (rngl_abs (gre z) ≤ ‖ z ‖)%L.
+Proof.
+intros Hop Hiq Hto.
+intros.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+progress unfold gc_modulus.
+progress unfold rl_modl.
+rewrite <- (rngl_abs_sqrt Hop Hor). 2: {
+  apply (rngl_add_squ_nonneg Hos Hto).
+}
+apply (rngl_squ_le_abs_le Hop Hiq Hto).
+rewrite rngl_squ_sqrt. 2: {
+  apply (rngl_add_squ_nonneg Hos Hto).
+}
+apply (rngl_le_add_r Hos Hor).
+apply (rngl_squ_nonneg Hos Hto).
+Qed.
+
+Theorem gre_opp : ∀ z, gre (- z) = (- gre z)%L.
+Proof. easy. Qed.
+
+Theorem gc_modulus_opp :
+  rngl_has_opp T = true →
+  ∀ z, (‖ - z ‖ = ‖ z ‖)%C.
+Proof.
+intros Hop.
+intros.
+progress unfold gc_modulus; cbn.
+progress unfold rl_modl; cbn.
+now do 2 rewrite (rngl_squ_opp Hop).
+Qed.
+
+Theorem gc_add_modulus_re :
+  rngl_has_opp T = true →
+  rngl_has_inv T = true →
+  rngl_is_totally_ordered T = true →
+  ∀ z, (0 ≤ ‖ z ‖ + gre z)%L.
+Proof.
+intros Hop Hiv Hto.
+specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+intros.
+rewrite rngl_add_comm.
+apply (rngl_le_opp_l Hop Hor).
+apply (rngl_le_trans Hor _ (rngl_abs (gre z))). {
+  apply (rngl_le_opp_abs_diag Hop Hto).
+}
+apply (gc_abs_re_le_modulus Hop Hiq Hto).
+Qed.
+
+Theorem gc_modulus_add_re_div_2_nonneg :
+  rngl_has_opp T = true →
+  rngl_has_inv T = true →
+  rngl_is_totally_ordered T = true →
+  ∀ z, (0 ≤ (‖ z ‖ + gre z) / 2)%L.
+Proof.
+intros Hop Hiv Hto.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
+  specialize (rngl_characteristic_1 Hos Hc1) as H1.
+  intros.
+  rewrite (H1 (_ / 2)%L).
+  apply (rngl_le_refl Hor).
+}
+intros.
+apply (rngl_div_nonneg Hop Hiv Hto); [ | apply (rngl_0_lt_2 Hos Hc1 Hto) ].
+apply (gc_add_modulus_re Hop Hiv Hto).
+Qed.
+
+Theorem gc_modulus_sub_re_div_2_nonneg :
+  rngl_has_opp T = true →
+  rngl_has_inv T = true →
+  rngl_is_totally_ordered T = true →
+  ∀ z, (0 ≤ (‖ z ‖ - gre z) / 2)%L.
+Proof.
+intros Hop Hiv Hto.
+intros.
+rewrite <- (rngl_add_opp_r Hop).
+rewrite <- gre_opp.
+rewrite <- (gc_modulus_opp Hop).
+apply (gc_modulus_add_re_div_2_nonneg Hop Hiv Hto).
 Qed.
 
 Context {Hic : rngl_mul_is_comm T = true}.
@@ -1015,6 +1105,7 @@ split. {
   apply (rngl_squ_lt_abs_lt Hop Hiq Hto).
   rewrite rngl_squ_sqrt; [ | apply (rngl_add_squ_nonneg Hos Hto) ].
   cbn.
+  do 2 rewrite (rngl_add_opp_r Hop).
   do 2 rewrite (rngl_squ_sub Hop Hic).
   rewrite rngl_add_assoc.
   rewrite (rngl_add_sub_assoc Hop).
@@ -1045,6 +1136,7 @@ split. {
   }
   rewrite rngl_squ_sqrt in Ha; [ | apply (rngl_add_squ_nonneg Hos Hto) ].
   cbn in Ha.
+  do 2 rewrite (rngl_add_opp_r Hop) in Ha.
   do 2 rewrite (rngl_squ_sub Hop Hic) in Ha.
   rewrite rngl_add_assoc in Ha.
   rewrite (rngl_add_sub_assoc Hop) in Ha.
@@ -1069,25 +1161,6 @@ split. {
   rewrite (rngl_mul_comm Hic (gim z1)) in Ha.
   easy.
 }
-Qed.
-
-Theorem gc_abs_re_le_modulus : ∀ z, (rngl_abs (gre z) ≤ ‖ z ‖)%L.
-Proof.
-intros.
-specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
-specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
-specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
-progress unfold gc_modulus.
-progress unfold rl_modl.
-rewrite <- (rngl_abs_sqrt Hop Hor). 2: {
-  apply (rngl_add_squ_nonneg Hos Hto).
-}
-apply (rngl_squ_le_abs_le Hop Hiq Hto).
-rewrite rngl_squ_sqrt. 2: {
-  apply (rngl_add_squ_nonneg Hos Hto).
-}
-apply (rngl_le_add_r Hos Hor).
-apply (rngl_squ_nonneg Hos Hto).
 Qed.
 
 Theorem gc_sqrt_modulus : ∀ z, ‖ √z ‖ = √ ‖ z ‖.
@@ -1115,7 +1188,7 @@ rewrite rngl_squ_sqrt. 2: {
   }
   rewrite fold_rl_modl.
   rewrite fold_gc_modulus.
-  apply gc_abs_re_le_modulus.
+  apply (gc_abs_re_le_modulus Hop Hiq Hto).
 }
 rewrite fold_rl_modl.
 rewrite fold_gc_modulus.
@@ -1132,7 +1205,7 @@ rewrite rngl_squ_sqrt. 2: {
     rewrite <- (rngl_abs_opp Hop Hto).
     apply (rngl_le_abs_diag Hop Hor).
   }
-  apply gc_abs_re_le_modulus.
+  apply (gc_abs_re_le_modulus Hop Hiq Hto).
 }
 rewrite (rngl_div_add_distr_r Hiv).
 rewrite (rngl_div_sub_distr_r Hop Hiv).
@@ -1190,11 +1263,16 @@ apply H1; [ | | easy ]. {
 }
 Qed.
 
+Theorem gc_add_opp_r : ∀ z1 z2, (z1 + - z2 = z1 - z2)%C.
+Proof. easy. Qed.
+
 Theorem gc_sub_diag : ∀ z, (z - z = 0)%C.
 Proof.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 intros.
 progress unfold gc_sub.
+progress unfold gc_add; cbn.
+do 2 rewrite (rngl_add_opp_r Hop).
 now do 2 rewrite (rngl_sub_diag Hos).
 Qed.
 
@@ -1335,8 +1413,16 @@ cbn.
 rewrite IHn.
 Theorem gc_sqrt_mul : ∀ a b, (√(a * b) = √a * √b)%C.
 Proof.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+specialize (rngl_integral_or_inv_pdiv_eq_dec_order Hiv Hor) as Hio.
+destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
+  specialize (rngl_characteristic_1 Hos Hc1) as H1.
+  intros.
+  apply eq_gc_eq.
+  now do 2 rewrite (H1 (gre _)), (H1 (gim _)).
+}
 intros.
-Print gc_sqrt.
 progress unfold gc_sqrt; cbn - [ gc_mul ].
 progress unfold gc_mul at 6; cbn - [ gc_mul ].
 progress f_equal. {
@@ -1348,6 +1434,25 @@ progress f_equal. {
     rewrite rngl_mul_1_l.
     rewrite rngl_mul_assoc.
     rewrite (rngl_mul_mul_swap Hic (rngl_signp (gim a))).
+    rewrite <- rngl_mul_assoc.
+    rewrite <- rl_sqrt_mul.
+    2, 3: apply (gc_modulus_add_re_div_2_nonneg Hop Hiv Hto).
+    rewrite <- rl_sqrt_mul.
+    2, 3: apply (gc_modulus_sub_re_div_2_nonneg Hop Hiv Hto).
+    do 2 rewrite (rngl_div_mul_mul_div Hic Hiv).
+    do 2 rewrite (rngl_mul_div_assoc Hiv).
+    rewrite (rngl_div_div Hos Hiv).
+    rewrite (rngl_div_div Hos Hiv).
+    2, 3, 4, 5: apply (rngl_2_neq_0 Hos Hc1 Hto).
+    rewrite fold_rngl_squ.
+    rewrite (rl_sqrt_div Hop Hiv Hto _ 2²); cycle 1. {
+      apply (rngl_mul_nonneg_nonneg Hos Hor).
+      1, 2: apply (gc_add_modulus_re Hop Hiv Hto).
+    } {
+      apply (rngl_squ_pos Hos Hto Hio).
+      apply (rngl_2_neq_0 Hos Hc1 Hto).
+    }
+...
 Search (gre (_ * _)).
 Search (gim (_ * _)).
 ... ...
