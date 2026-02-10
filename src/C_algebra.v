@@ -785,6 +785,23 @@ apply (rngl_le_trans Hor _ (rngl_abs (gre z))). {
 apply (gc_abs_re_le_modulus Hop Hiq Hto).
 Qed.
 
+Theorem gc_sub_modulus_re :
+  rngl_has_opp T = true →
+  rngl_has_inv T = true →
+  rngl_is_totally_ordered T = true →
+  ∀ z, (0 ≤ ‖ z ‖ - gre z)%L.
+Proof.
+intros Hop Hiv Hto.
+specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+intros.
+apply (rngl_le_0_sub Hop Hor).
+apply (rngl_le_trans Hor _ (rngl_abs (gre z))). {
+  apply (rngl_le_abs_diag Hop Hor).
+}
+apply (gc_abs_re_le_modulus Hop Hiq Hto).
+Qed.
+
 Theorem gc_modulus_add_re_div_2_nonneg :
   rngl_has_opp T = true →
   rngl_has_inv T = true →
@@ -1452,6 +1469,19 @@ progress f_equal. {
       apply (rngl_squ_pos Hos Hto Hio).
       apply (rngl_2_neq_0 Hos Hc1 Hto).
     }
+    rewrite (rl_sqrt_div Hop Hiv Hto _ 2²); cycle 1. {
+      apply (rngl_mul_nonneg_nonneg Hos Hor).
+      1, 2: apply (gc_sub_modulus_re Hop Hiv Hto).
+    } {
+      apply (rngl_squ_pos Hos Hto Hio).
+      apply (rngl_2_neq_0 Hos Hc1 Hto).
+    }
+    rewrite (rl_sqrt_squ Hop Hto).
+    rewrite (rngl_abs_nonneg_eq Hop Hor); [ | apply (rngl_0_le_2 Hos Hto) ].
+    rewrite (rngl_mul_div_assoc Hiv).
+    rewrite <- (rngl_div_sub_distr_r Hop Hiv).
+(* ah merde, la racine est à l'intérieur du truc :
+   c'est quoi, ce bordel ? *)
 ...
 Search (gre (_ * _)).
 Search (gim (_ * _)).
