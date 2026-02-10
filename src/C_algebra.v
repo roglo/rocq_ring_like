@@ -677,6 +677,59 @@ Context {ro : ring_like_op T}.
 Context {rp : ring_like_prop T}.
 Context {rl : real_like_prop T}.
 
+Theorem gc_modulus_0 :
+  rngl_has_opp T = true →
+  (rngl_is_integral_domain T || rngl_has_inv_or_pdiv T)%bool = true →
+  rngl_is_totally_ordered T = true →
+  (‖ 0 ‖ = 0)%L.
+Proof.
+intros Hop Hii Hto.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+progress unfold gc_modulus.
+progress unfold rl_modl.
+cbn.
+rewrite (rngl_squ_0 Hos).
+rewrite rngl_add_0_l.
+apply (rl_sqrt_0 Hop Hto Hii).
+Qed.
+
+Theorem gc_modulus_1 :
+  rngl_has_opp T = true →
+  rngl_has_inv_or_pdiv T = true →
+  rngl_is_totally_ordered T = true →
+  ‖ 1 ‖ = 1%L.
+Proof.
+intros Hop Hiq Hto.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+progress unfold gc_modulus.
+progress unfold rl_modl.
+cbn.
+rewrite rngl_squ_1.
+rewrite (rngl_squ_0 Hos).
+rewrite rngl_add_0_r.
+apply (rl_sqrt_1 Hop Hiq Hto).
+Qed.
+
+Theorem gc_modulus_mul :
+  rngl_mul_is_comm T = true →
+  rngl_has_opp T = true →
+  rngl_is_totally_ordered T = true →
+  ∀ z1 z2, ‖ z1 * z2 ‖ = (‖ z1 ‖ * ‖ z2 ‖)%L.
+Proof.
+intros Hic Hop Hto.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+intros.
+progress unfold gc_modulus.
+progress unfold rl_modl; cbn.
+rewrite (rngl_add_comm (gim z1 * gre z2)).
+rewrite <- (Brahmagupta_Fibonacci_identity Hic Hop).
+apply rl_sqrt_mul. {
+  apply (rngl_add_squ_nonneg Hos Hto).
+} {
+  apply (rngl_add_squ_nonneg Hos Hto).
+}
+Qed.
+
 Context {Hic : rngl_mul_is_comm T = true}.
 Context {Hop : rngl_has_opp T = true}.
 Context {Hiv : rngl_has_inv T = true}.
@@ -1018,21 +1071,6 @@ split. {
 }
 Qed.
 
-Theorem gc_modulus_mul : ∀ z1 z2, ‖ z1 * z2 ‖ = (‖ z1 ‖ * ‖ z2 ‖)%L.
-Proof.
-specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
-intros.
-progress unfold gc_modulus.
-progress unfold rl_modl; cbn.
-rewrite (rngl_add_comm (gim z1 * gre z2)).
-rewrite <- (Brahmagupta_Fibonacci_identity Hic Hop).
-apply rl_sqrt_mul. {
-  apply (rngl_add_squ_nonneg Hos Hto).
-} {
-  apply (rngl_add_squ_nonneg Hos Hto).
-}
-Qed.
-
 Theorem gc_abs_re_le_modulus : ∀ z, (rngl_abs (gre z) ≤ ‖ z ‖)%L.
 Proof.
 intros.
@@ -1160,33 +1198,6 @@ progress unfold gc_sub.
 now do 2 rewrite (rngl_sub_diag Hos).
 Qed.
 
-Theorem gc_modulus_0 : (‖ 0 ‖ = 0)%L.
-Proof.
-specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
-specialize (rngl_int_dom_or_inv_pdiv Hiv) as Hii.
-progress unfold gc_modulus.
-progress unfold rl_modl.
-cbn.
-rewrite (rngl_squ_0 Hos).
-rewrite rngl_add_0_l.
-apply (rl_sqrt_0 Hop Hto Hii).
-Qed.
-
-Theorem gc_modulus_1 :
-  rngl_has_inv_or_pdiv T = true →
-  ‖ 1 ‖ = 1%L.
-Proof.
-intros Hiq.
-specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
-progress unfold gc_modulus.
-progress unfold rl_modl.
-cbn.
-rewrite rngl_squ_1.
-rewrite (rngl_squ_0 Hos).
-rewrite rngl_add_0_r.
-apply (rl_sqrt_1 Hop Hiq Hto).
-Qed.
-
 Theorem gc_mul_0_l :
   rngl_has_opp_or_psub T = true →
   ∀ z : GComplex T, (0 * z = 0)%C.
@@ -1224,7 +1235,7 @@ destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
   easy.
 }
 progress unfold gc_sqrt; cbn.
-rewrite (gc_modulus_1 Hiq).
+rewrite (gc_modulus_1 Hop Hiq Hto).
 rewrite (rngl_sub_diag Hos).
 rewrite (rngl_div_diag Hiq); [ | apply (rngl_2_neq_0 Hos Hc1 Hto) ].
 rewrite (rngl_div_0_l Hos Hiq); [ | apply (rngl_2_neq_0 Hos Hc1 Hto) ].
@@ -1454,7 +1465,7 @@ progress f_equal.
 
 End a.
 
-Arguments gc_modulus_0 {T ro rp rl} Hop Hiv Hto.
-Arguments gc_modulus_1 {T ro rp rl} Hop Hto Hiq.
+Arguments gc_modulus_0 {T ro rp rl} Hop Hi Hto.
+Arguments gc_modulus_1 {T ro rp rl} Hop Hiq Hto.
 Arguments gc_mul_0_l {T ro rp} Hos z%_C.
 Arguments gc_mul_0_r {T ro rp} Hos z%_C.
