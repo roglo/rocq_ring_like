@@ -1547,14 +1547,20 @@ progress f_equal. {
     rewrite (rngl_mul_div_assoc Hiv).
     rewrite <- (rngl_div_sub_distr_r Hop Hiv).
     rewrite (gc_modulus_mul Hic Hop Hto).
-...
     rewrite rngl_mul_add_distr_l.
     do 2 rewrite rngl_mul_add_distr_r.
     rewrite rngl_add_assoc.
     rewrite (rngl_mul_sub_distr_l Hop).
     do 2 rewrite (rngl_mul_sub_distr_r Hop).
     rewrite (rngl_sub_sub_distr Hop).
-    cbn.
+cbn in Hiab.
+rewrite <- (rngl_mul_signp_abs (gim a)) in Hiab.
+rewrite <- (rngl_mul_signp_abs (gim b)) in Hiab.
+    enough (H : ‖ a ‖ = 1%L ∧ ‖ b ‖ = 1%L).
+    destruct H as (Ha, Hb).
+    rewrite Ha, Hb.
+    do 2 rewrite rngl_mul_1_l.
+    rewrite rngl_mul_1_r.
 ...
     progress unfold gc_modulus.
     progress unfold rl_modl.
