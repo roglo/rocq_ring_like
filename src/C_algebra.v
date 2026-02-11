@@ -1561,6 +1561,17 @@ rewrite <- (rngl_mul_signp_abs (gim b)) in Hiab.
     rewrite Ha, Hb.
     do 2 rewrite rngl_mul_1_l.
     rewrite rngl_mul_1_r.
+    cbn.
+rewrite <- (rngl_mul_signp_abs (gim a)) at 1.
+rewrite <- (rngl_mul_signp_abs (gim b)) at 1.
+    rewrite (rngl_mul_mul_swap Hic (rngl_signp (gim a))).
+    rewrite rngl_mul_assoc.
+    remember (rngl_signp (gim a) * rngl_signp (gim b))%L as sab eqn:Hsab.
+    symmetry in Hsab.
+    destruct (rngl_eqb_dec sab 1) as [Hs1| Hs1]. {
+      apply (rngl_eqb_eq Heo) in Hs1; move Hs1 at top; subst sab.
+      do 2 rewrite rngl_mul_1_l.
+      rewrite (rngl_add_sub_assoc Hop).
 ...
     progress unfold gc_modulus.
     progress unfold rl_modl.
