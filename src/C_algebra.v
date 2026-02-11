@@ -1345,6 +1345,69 @@ rewrite rngl_mul_1_l.
 easy.
 Qed.
 
+Theorem rngl_signp_mul :
+  ∀ a b,
+  (a * b ≠ 0)%L
+  → rngl_signp (a * b) = (rngl_signp a * rngl_signp b)%L.
+Proof.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+intros * Habz.
+progress unfold rngl_signp.
+remember (0 ≤? a)%L as za eqn:Hza.
+remember (0 ≤? b)%L as zb eqn:Hzb.
+remember (0 ≤? a * b)%L as zab eqn:Hzab.
+symmetry in Hza, Hzb, Hzab.
+destruct za, zb, zab. {
+  symmetry; apply rngl_mul_1_l.
+} {
+  exfalso.
+  apply rngl_leb_le in Hza, Hzb.
+  apply Bool.not_true_iff_false in Hzab.
+  apply Hzab; clear Hzab.
+  apply rngl_leb_le.
+  now apply (rngl_mul_nonneg_nonneg Hos Hor).
+} {
+  exfalso.
+  apply rngl_leb_le in Hza, Hzab.
+  apply Bool.not_true_iff_false in Hzb.
+  apply Hzb; clear Hzb.
+  apply rngl_leb_le.
+  apply (rngl_le_0_mul Hop Hiq Hto) in Hzab.
+  destruct Hzab as [| Hzab]; [ easy | ].
+  destruct Hzab as (Haz, _).
+  apply (rngl_le_antisymm Hor) in Haz; [ | easy ].
+  now subst a; rewrite (rngl_mul_0_l Hos) in Habz.
+} {
+  symmetry; apply rngl_mul_1_l.
+} {
+  exfalso.
+  apply rngl_leb_le in Hzb, Hzab.
+  apply Bool.not_true_iff_false in Hza.
+  apply Hza; clear Hza.
+  apply rngl_leb_le.
+  apply (rngl_le_0_mul Hop Hiq Hto) in Hzab.
+  destruct Hzab as [| Hzab]; [ easy | ].
+  destruct Hzab as (_, Hbz).
+  apply (rngl_le_antisymm Hor) in Hbz; [ | easy ].
+  now subst b; rewrite (rngl_mul_0_r Hos) in Habz.
+} {
+  symmetry; apply rngl_mul_1_r.
+} {
+  symmetry; apply (rngl_squ_opp_1 Hop).
+} {
+  exfalso.
+  apply (rngl_leb_gt_iff Hto) in Hza, Hzb, Hzab.
+  apply (rngl_lt_mul_0_if Hos Hto) in Hzab.
+  destruct Hzab as [(_, Hbz)| (Haz, _)]. {
+    now apply (rngl_lt_asymm Hor) in Hbz.
+  } {
+    now apply (rngl_lt_asymm Hor) in Haz.
+  }
+}
+Qed.
+
 (* to be completed
 Theorem gc_seq_to_div_nat_is_Cauchy :
   rngl_is_archimedean T = true →
@@ -1434,6 +1497,7 @@ Theorem gc_sqrt_mul : ∀ a b, (√(a * b) = √a * √b)%C.
 Proof.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
 specialize (rngl_integral_or_inv_pdiv_eq_dec_order Hiv Hor) as Hio.
 destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
   specialize (rngl_characteristic_1 Hos Hc1) as H1.
@@ -1482,8 +1546,12 @@ progress f_equal. {
     rewrite (rngl_abs_nonneg_eq Hop Hor); [ | apply (rngl_0_le_2 Hos Hto) ].
     rewrite (rngl_mul_div_assoc Hiv).
     rewrite <- (rngl_div_sub_distr_r Hop Hiv).
-(* ah merde, la racine est à l'intérieur du truc :
-   c'est quoi, ce bordel ? *)
+    destruct (rngl_eqb_dec (gim a * gim b)%L 0) as [Habz| Habz]. {
+      apply (rngl_eqb_eq Heo) in Habz.
+(* c'est un vrai bordel, ce truc *)
+...
+    rewrite <- rngl_signp_mul. 2: {
+      cbn in Hiab.
 ...
 Search (gre (_ * _)).
 Search (gim (_ * _)).
