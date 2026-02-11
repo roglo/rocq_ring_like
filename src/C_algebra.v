@@ -1546,9 +1546,48 @@ progress f_equal. {
     rewrite (rngl_abs_nonneg_eq Hop Hor); [ | apply (rngl_0_le_2 Hos Hto) ].
     rewrite (rngl_mul_div_assoc Hiv).
     rewrite <- (rngl_div_sub_distr_r Hop Hiv).
+    rewrite (gc_modulus_mul Hic Hop Hto).
+...
+    rewrite rngl_mul_add_distr_l.
+    do 2 rewrite rngl_mul_add_distr_r.
+    rewrite rngl_add_assoc.
+    rewrite (rngl_mul_sub_distr_l Hop).
+    do 2 rewrite (rngl_mul_sub_distr_r Hop).
+    rewrite (rngl_sub_sub_distr Hop).
+    cbn.
+...
+    progress unfold gc_modulus.
+    progress unfold rl_modl.
+    rewrite <- rl_sqrt_mul.
+...
     destruct (rngl_eqb_dec (gim a * gim b)%L 0) as [Habz| Habz]. {
       apply (rngl_eqb_eq Heo) in Habz.
-(* c'est un vrai bordel, ce truc *)
+cbn.
+progress unfold gc_modulus; cbn.
+progress unfold rl_modl.
+Check Brahmagupta_Fibonacci_identity.
+rewrite (rngl_add_comm (gim a * gre b)).
+rewrite <- (Brahmagupta_Fibonacci_identity Hic Hop).
+Theorem glop :
+  ∀ a b,
+  gc_modulus (a * b) =
+  √ (((gre a)² + (gim a)²) * ((gre b)² + (gim b)²))%L.
+Proof.
+intros.
+rewrite rl_sqrt_mul.
+do 2 rewrite fold_rl_modl.
+do 2 rewrite fold_gc_modulus.
+Search (‖ (_ * _) ‖)%L.
+About gc_modulus_mul.
+...
+progress unfold gc_modulus; cbn.
+progress unfold rl_modl.
+rewrite (rngl_add_comm (gim a * gre b)).
+rewrite (Brahmagupta_Fibonacci_identity Hic Hop).
+easy.
+...
+progress unfold rl_modl.
+rewrite <- (Brahmagupta_Fibonacci_identity Hic Hop).
 ...
     rewrite <- rngl_signp_mul. 2: {
       cbn in Hiab.
