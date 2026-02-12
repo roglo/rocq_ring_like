@@ -1408,6 +1408,41 @@ destruct za, zb, zab. {
 }
 Qed.
 
+Theorem gre_bound : ∀ z, (- ‖ z ‖ ≤ gre z ≤ ‖ z ‖)%L.
+Proof.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+intros.
+progress unfold gc_modulus.
+progress unfold rl_modl.
+split. {
+  apply (rngl_opp_le_compat Hop Hor).
+  rewrite (rngl_opp_involutive Hop).
+  rewrite <- (rngl_abs_sqrt Hop Hor). 2: {
+    apply (rngl_add_squ_nonneg Hos Hto).
+  }
+  apply (rngl_le_trans Hor _ (rngl_abs (gre z))). {
+    apply (rngl_le_opp_abs_diag Hop Hto).
+  }
+  apply (rngl_squ_le_abs_le Hop Hiq Hto).
+  rewrite rngl_squ_sqrt; [ | apply (rngl_add_squ_nonneg Hos Hto) ].
+  apply (rngl_le_add_r Hos Hor).
+  apply (rngl_squ_nonneg Hos Hto).
+} {
+  rewrite <- (rngl_abs_sqrt Hop Hor). 2: {
+    apply (rngl_add_squ_nonneg Hos Hto).
+  }
+  apply (rngl_le_trans Hor _ (rngl_abs (gre z))). {
+    apply (rngl_le_abs_diag Hop Hor).
+  }
+  apply (rngl_squ_le_abs_le Hop Hiq Hto).
+  rewrite rngl_squ_sqrt; [ | apply (rngl_add_squ_nonneg Hos Hto) ].
+  apply (rngl_le_add_r Hos Hor).
+  apply (rngl_squ_nonneg Hos Hto).
+}
+Qed.
+
 (* to be completed
 Theorem gc_seq_to_div_nat_is_Cauchy :
   rngl_is_archimedean T = true →
@@ -1496,6 +1531,7 @@ rewrite IHn.
 Theorem gc_sqrt_mul : ∀ a b, (√(a * b) = √a * √b)%C.
 Proof.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
 specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
 specialize (rngl_integral_or_inv_pdiv_eq_dec_order Hiv Hor) as Hio.
@@ -1547,20 +1583,13 @@ progress f_equal. {
     rewrite (rngl_mul_div_assoc Hiv).
     rewrite <- (rngl_div_sub_distr_r Hop Hiv).
     rewrite (gc_modulus_mul Hic Hop Hto).
-    rewrite rngl_mul_add_distr_l.
-    do 2 rewrite rngl_mul_add_distr_r.
-    rewrite rngl_add_assoc.
-    rewrite (rngl_mul_sub_distr_l Hop).
-    do 2 rewrite (rngl_mul_sub_distr_r Hop).
-    rewrite (rngl_sub_sub_distr Hop).
 cbn in Hiab.
 rewrite <- (rngl_mul_signp_abs (gim a)) in Hiab.
 rewrite <- (rngl_mul_signp_abs (gim b)) in Hiab.
     enough (H : ‖ a ‖ = 1%L ∧ ‖ b ‖ = 1%L).
     destruct H as (Ha, Hb).
     rewrite Ha, Hb.
-    do 2 rewrite rngl_mul_1_l.
-    rewrite rngl_mul_1_r.
+    rewrite rngl_mul_1_l.
     cbn.
 rewrite <- (rngl_mul_signp_abs (gim a)) at 1.
 rewrite <- (rngl_mul_signp_abs (gim b)) at 1.
@@ -1572,10 +1601,22 @@ rewrite <- (rngl_mul_signp_abs (gim b)) at 1.
       apply (rngl_eqb_eq Heo) in Hs1; move Hs1 at top; subst sab.
       do 2 rewrite rngl_mul_1_l.
       rewrite (rngl_add_sub_assoc Hop).
-...
-    progress unfold gc_modulus.
-    progress unfold rl_modl.
-    rewrite <- rl_sqrt_mul.
+      apply (rngl_mul_move_r Hiq); [ apply (rngl_2_neq_0 Hos Hc1 Hto) | ].
+      symmetry.
+      apply (rngl_add_sub_eq_l Hos).
+      rewrite <- (rngl_abs_nonneg_eq Hop Hor (_ + _)). 2: {
+        apply (rngl_le_0_add Hos Hor). {
+          apply rl_sqrt_nonneg.
+          apply (rngl_mul_nonneg_nonneg Hos Hor). {
+            apply (rngl_le_0_sub Hop Hor).
+            rewrite <- Ha.
+            apply gre_bound.
+          } {
+            apply (rngl_le_0_sub Hop Hor).
+            rewrite <- Hb.
+            apply gre_bound.
+          }
+        }
 ...
     destruct (rngl_eqb_dec (gim a * gim b)%L 0) as [Habz| Habz]. {
       apply (rngl_eqb_eq Heo) in Habz.
