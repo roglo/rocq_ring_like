@@ -1537,6 +1537,7 @@ specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
 specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
 specialize (rngl_integral_or_inv_pdiv_eq_dec_order Hiv Hor) as Hio.
+specialize (rngl_int_dom_or_inv_pdiv Hiv) as Hii.
 destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
   specialize (rngl_characteristic_1 Hos Hc1) as H1.
   intros.
@@ -1584,7 +1585,6 @@ progress f_equal. {
     rewrite (rngl_abs_nonneg_eq Hop Hor); [ | apply (rngl_0_le_2 Hos Hto) ].
     rewrite (rngl_mul_div_assoc Hiv).
     rewrite <- (rngl_div_sub_distr_r Hop Hiv).
-    rewrite (gc_modulus_mul Hic Hop Hto).
 (**)
     apply (rngl_mul_move_r Hiq); [ apply (rngl_2_neq_0 Hos Hc1 Hto) | ].
     symmetry.
@@ -1608,9 +1608,66 @@ progress f_equal. {
           apply (rngl_0_lt_2 Hos Hc1 Hto).
         }
         apply (rngl_le_0_add Hos Hor); [ | easy ].
-        apply (rngl_mul_nonneg_nonneg Hos Hor).
-        1, 2: apply gc_modulus_nonneg.
+        apply gc_modulus_nonneg.
       }
+      remember (rngl_signp _ * _)%L as ab eqn:Hab.
+      symmetry in Hab.
+      destruct (rngl_eqb_dec ab 1) as [H| H]. {
+        apply (rngl_eqb_eq Heo) in H; move H at top; subst ab.
+        rewrite rngl_mul_1_l.
+        rewrite <- (rngl_abs_sqrt Hop Hor ((_ + gre a) * _)%L). 2: {
+          apply (rngl_mul_nonneg_nonneg Hos Hor).
+          1, 2: apply rngl_add_modl_nonneg.
+        }
+        apply (eq_rngl_squ_rngl_abs Hop Hto Hii). {
+          apply (rngl_mul_comm Hic).
+        }
+        rewrite rngl_squ_sqrt. 2: {
+          apply (rngl_mul_nonneg_nonneg Hos Hor).
+          1, 2: apply (gc_add_modulus_re Hop Hiv Hto).
+        }
+        rewrite (rngl_squ_add Hic).
+        rewrite rngl_squ_sqrt. 2: {
+          apply (rngl_mul_nonneg_nonneg Hos Hor).
+          1, 2: apply (gc_sub_modulus_re Hop Hiv Hto).
+        }
+        rewrite (rngl_squ_mul Hic).
+        rewrite rngl_squ_sqrt. 2: {
+          apply (rngl_div_nonneg Hop Hiv Hto). 2: {
+            apply (rngl_0_lt_2 Hos Hc1 Hto).
+          }
+          apply (gc_add_modulus_re Hop Hiv Hto).
+        }
+        progress unfold rngl_squ.
+        rewrite (rngl_mul_assoc _ 2 2).
+        rewrite (rngl_div_mul Hiv); [ | apply (rngl_2_neq_0 Hos Hc1 Hto) ].
+        rewrite rngl_add_add_swap.
+        rewrite (rngl_mul_mul_swap Hic).
+        rewrite rngl_mul_assoc.
+        rewrite (rngl_mul_mul_swap Hic _ _ 2).
+(*
+        replace (2 * 2)%L with 4%L. 2: {
+          rewrite rngl_mul_add_distr_l.
+          now rewrite rngl_mul_1_r, rngl_add_assoc.
+        }
+*)
+        rewrite <- rngl_mul_assoc.
+        rewrite <- rl_sqrt_mul; cycle 1. {
+          apply (rngl_div_nonneg Hop Hiv Hto). 2: {
+            apply (rngl_0_lt_2 Hos Hc1 Hto).
+          }
+          apply (gc_add_modulus_re Hop Hiv Hto).
+        } {
+          apply (rngl_mul_nonneg_nonneg Hos Hor).
+          1, 2: apply (gc_sub_modulus_re Hop Hiv Hto).
+        }
+        rewrite (rngl_div_mul_mul_div Hic Hiv).
+        rewrite rngl_add_comm.
+        apply (rngl_add_move_r Hop).
+        rewrite (rngl_sub_add_distr Hos).
+        rewrite (rngl_mul_comm Hic (2 * 2)).
+...
+    rewrite (gc_modulus_mul Hic Hop Hto).
       rewrite <- (rngl_abs_nonneg_eq Hop Hor (_ * _ * _)). 2: {
         apply (rngl_mul_nonneg_nonneg Hos Hor). {
 (**)
