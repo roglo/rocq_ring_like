@@ -1666,6 +1666,33 @@ progress f_equal. {
         apply (rngl_add_move_r Hop).
         rewrite (rngl_sub_add_distr Hos).
         rewrite (rngl_mul_comm Hic (2 * 2)).
+        rewrite (rngl_mul_add_distr_l (gc_modulus a + _)%L).
+        rewrite (rngl_mul_add_distr_r _ _ (gc_modulus b)).
+        rewrite (rngl_mul_add_distr_r _ _ (gre b)).
+        rewrite rngl_add_assoc.
+        rewrite (rngl_mul_sub_distr_l Hop (gc_modulus a - _)%L).
+        rewrite (rngl_mul_sub_distr_r Hop _ _ (gc_modulus b)).
+        rewrite (rngl_mul_sub_distr_r Hop _ _ (gre b)).
+        rewrite (rngl_sub_sub_distr Hop).
+        rewrite (rngl_sub_add_distr Hos).
+        rewrite (rngl_sub_sub_distr Hop).
+        rewrite (rngl_sub_sub_distr Hop).
+        do 3 rewrite (rngl_add_sub_swap Hop _ _ (gc_modulus a * _)%L).
+        rewrite (rngl_sub_diag Hos), rngl_add_0_l.
+        do 2 rewrite (rngl_add_sub_swap Hop _ _ (gre a * gre b)).
+        rewrite (rngl_add_sub Hos).
+        rewrite (rngl_add_add_swap (gre a * _)).
+        rewrite <- (rngl_mul_2_l (gre a * _)).
+        rewrite <- rngl_add_assoc.
+        rewrite <- (rngl_mul_2_l (_ * gre b)).
+        rewrite <- rngl_mul_add_distr_l.
+        rewrite (rngl_mul_comm Hic _ (_ * _ + _)).
+        rewrite <- (rngl_mul_sub_distr_r Hop).
+        rewrite <- (rngl_mul_sub_distr_r Hop).
+        rewrite rngl_mul_assoc.
+        progress f_equal.
+        rewrite (rngl_sub_add_distr Hos).
+(* bon, fait chier *)
 ...
     rewrite (gc_modulus_mul Hic Hop Hto).
       rewrite <- (rngl_abs_nonneg_eq Hop Hor (_ * _ * _)). 2: {
