@@ -1617,6 +1617,14 @@ rewrite <- (rngl_mul_signp_abs (gim b)) at 1.
             apply gre_bound.
           }
         }
+        apply (rngl_mul_nonneg_nonneg Hos Hor). 2: {
+          apply (rngl_0_le_2 Hos Hto).
+        }
+        apply rl_sqrt_nonneg.
+        apply (rngl_div_nonneg Hop Hiv Hto). 2: {
+          apply (rngl_0_lt_2 Hos Hc1 Hto).
+        }
+        apply (rngl_le_0_sub Hop Hor).
 ...
     destruct (rngl_eqb_dec (gim a * gim b)%L 0) as [Habz| Habz]. {
       apply (rngl_eqb_eq Heo) in Habz.
