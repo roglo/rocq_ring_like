@@ -1595,11 +1595,9 @@ progress f_equal. {
         apply (rngl_le_0_add Hos Hor). {
           apply rl_sqrt_nonneg.
           apply (rngl_mul_nonneg_nonneg Hos Hor). {
-            apply (rngl_le_0_sub Hop Hor).
-            apply gre_bound.
+            apply (rngl_le_0_sub Hop Hor), gre_bound.
           } {
-            apply (rngl_le_0_sub Hop Hor).
-            apply gre_bound.
+            apply (rngl_le_0_sub Hop Hor), gre_bound.
           }
         }
         apply (rngl_mul_nonneg_nonneg Hos Hor). 2: {
