@@ -1039,6 +1039,7 @@ Definition gc_seq_to_div_nat (z : GComplex T) (n k : nat) :=
 
 Definition gc_eucl_dist z1 z2 := gc_modulus (z1 - z2).
 
+(* trigonometry equivalent to cos (a - b) formula *)
 Theorem gc_div_re :
   ∀ z1 z2,
   gre (z1 / z2) = ((gre z1 * gre z2 + gim z1 * gim z2) / (‖ z2 ‖)²)%L.
@@ -1408,6 +1409,7 @@ destruct za, zb, zab. {
 }
 Qed.
 
+(* trigonometry equivalent to cos bound *)
 Theorem gre_bound : ∀ z, (- ‖ z ‖ ≤ gre z ≤ ‖ z ‖)%L.
 Proof.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
@@ -1583,6 +1585,34 @@ progress f_equal. {
     rewrite (rngl_mul_div_assoc Hiv).
     rewrite <- (rngl_div_sub_distr_r Hop Hiv).
     rewrite (gc_modulus_mul Hic Hop Hto).
+(**)
+    apply (rngl_mul_move_r Hiq); [ apply (rngl_2_neq_0 Hos Hc1 Hto) | ].
+    symmetry.
+    apply (rngl_add_sub_eq_l Hos).
+    rewrite <- (rngl_abs_nonneg_eq Hop Hor (_ + _)). 2: {
+      apply (rngl_le_0_add Hos Hor). {
+        apply rl_sqrt_nonneg.
+        apply (rngl_mul_nonneg_nonneg Hos Hor). {
+          apply (rngl_le_0_sub Hop Hor).
+          apply gre_bound.
+        } {
+          apply (rngl_le_0_sub Hop Hor).
+          apply gre_bound.
+        }
+      }
+      apply (rngl_mul_nonneg_nonneg Hos Hor). 2: {
+        apply (rngl_0_le_2 Hos Hto).
+      }
+      apply rl_sqrt_nonneg.
+      apply (rngl_div_nonneg Hop Hiv Hto). 2: {
+        apply (rngl_0_lt_2 Hos Hc1 Hto).
+      }
+      apply (rngl_le_0_add Hos Hor). {
+        apply (rngl_mul_nonneg_nonneg Hos Hor).
+        1, 2: apply gc_modulus_nonneg.
+      }
+      (* ah ouais, faut que 0 ≤ gre (a * b) *)
+...
 cbn in Hiab.
 rewrite <- (rngl_mul_signp_abs (gim a)) in Hiab.
 rewrite <- (rngl_mul_signp_abs (gim b)) in Hiab.
