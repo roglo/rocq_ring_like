@@ -1589,29 +1589,34 @@ progress f_equal. {
     apply (rngl_mul_move_r Hiq); [ apply (rngl_2_neq_0 Hos Hc1 Hto) | ].
     symmetry.
     apply (rngl_add_sub_eq_l Hos).
-    rewrite <- (rngl_abs_nonneg_eq Hop Hor (_ + _)). 2: {
-      apply (rngl_le_0_add Hos Hor). {
-        apply rl_sqrt_nonneg.
-        apply (rngl_mul_nonneg_nonneg Hos Hor). {
-          apply (rngl_le_0_sub Hop Hor).
-          apply gre_bound.
-        } {
-          apply (rngl_le_0_sub Hop Hor).
-          apply gre_bound.
+    destruct (rngl_leb_dec 0 (gre (a * b))) as [Hrab| Hrab]. {
+      apply rngl_leb_le in Hrab.
+      rewrite <- (rngl_abs_nonneg_eq Hop Hor (_ + _)). 2: {
+        apply (rngl_le_0_add Hos Hor). {
+          apply rl_sqrt_nonneg.
+          apply (rngl_mul_nonneg_nonneg Hos Hor). {
+            apply (rngl_le_0_sub Hop Hor).
+            apply gre_bound.
+          } {
+            apply (rngl_le_0_sub Hop Hor).
+            apply gre_bound.
+          }
         }
-      }
-      apply (rngl_mul_nonneg_nonneg Hos Hor). 2: {
-        apply (rngl_0_le_2 Hos Hto).
-      }
-      apply rl_sqrt_nonneg.
-      apply (rngl_div_nonneg Hop Hiv Hto). 2: {
-        apply (rngl_0_lt_2 Hos Hc1 Hto).
-      }
-      apply (rngl_le_0_add Hos Hor). {
+        apply (rngl_mul_nonneg_nonneg Hos Hor). 2: {
+          apply (rngl_0_le_2 Hos Hto).
+        }
+        apply rl_sqrt_nonneg.
+        apply (rngl_div_nonneg Hop Hiv Hto). 2: {
+          apply (rngl_0_lt_2 Hos Hc1 Hto).
+        }
+        apply (rngl_le_0_add Hos Hor); [ | easy ].
         apply (rngl_mul_nonneg_nonneg Hos Hor).
         1, 2: apply gc_modulus_nonneg.
       }
-      (* ah ouais, faut que 0 ≤ gre (a * b) *)
+      rewrite <- (rngl_abs_nonneg_eq Hop Hor (_ * _ * _)). 2: {
+        apply (rngl_mul_nonneg_nonneg Hos Hor). {
+          rewrite <- rngl_signp_mul.
+          (* mmm.... chais pas... *)
 ...
 cbn in Hiab.
 rewrite <- (rngl_mul_signp_abs (gim a)) in Hiab.
