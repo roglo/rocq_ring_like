@@ -1615,8 +1615,31 @@ progress f_equal. {
       }
       rewrite <- (rngl_abs_nonneg_eq Hop Hor (_ * _ * _)). 2: {
         apply (rngl_mul_nonneg_nonneg Hos Hor). {
-          rewrite <- rngl_signp_mul.
-          (* mmm.... chais pas... *)
+(**)
+          progress unfold rngl_signp.
+          remember (0 ≤? gim a)%L as zia eqn:Hzia.
+          remember (0 ≤? gim b)%L as zib eqn:Hzib.
+          symmetry in Hzia, Hzib.
+          destruct zia. {
+            destruct zib; [ | exfalso ]. {
+              rewrite rngl_mul_1_l.
+              apply (rngl_0_le_1 Hos Hto).
+            }
+            apply rngl_leb_le in Hzia.
+            apply (rngl_leb_gt_iff Hto) in Hzib.
+            apply (rngl_nle_gt Hor) in Hzib.
+            apply Hzib; clear Hzib.
+(* contre-exemple : a=i, b=-i *)
+...
+          apply (rngl_mul_nonneg_nonneg Hos Hor). {
+            progress unfold rngl_signp.
+            remember (0 ≤? gim a)%L as zia eqn:Hzia.
+            symmetry in Hzia.
+            destruct zia; [ apply (rngl_0_le_1 Hos Hto) | exfalso ].
+            apply (rngl_leb_gt_iff Hto) in Hzia.
+            apply (rngl_nle_gt Hor) in Hzia.
+            apply Hzia; clear Hzia.
+(* contre-exemple : a=-i, b=-i *)
 ...
 cbn in Hiab.
 rewrite <- (rngl_mul_signp_abs (gim a)) in Hiab.
