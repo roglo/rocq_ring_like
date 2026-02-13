@@ -1532,6 +1532,12 @@ cbn.
 rewrite IHn.
 Theorem gc_sqrt_mul : ∀ a b, (√(a * b) = √a * √b)%C.
 Proof.
+(* contre-exemple : a=b=-i car on a √a=√b=(-1+i)/√2
+   √(ab)=√(-i)²=√(-1)=i
+   √a√b=(-1+i)²/2=(-2i)/2=-i
+   donc √(ab)≠√a√b
+ *)
+...
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
 specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
@@ -1544,6 +1550,7 @@ destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
   apply eq_gc_eq.
   now do 2 rewrite (H1 (gre _)), (H1 (gim _)).
 }
+(**)
 intros.
 progress unfold gc_sqrt; cbn - [ gc_mul ].
 progress unfold gc_mul at 6; cbn - [ gc_mul ].
