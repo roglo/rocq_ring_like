@@ -682,6 +682,15 @@ Context {ro : ring_like_op T}.
 Context {rp : ring_like_prop T}.
 Context {rl : real_like_prop T}.
 
+Theorem gc_mul_comm :
+  rngl_mul_is_comm T = true →
+  ∀ a b, (a * b = b * a)%C.
+Proof.
+intros Hic.
+specialize gc_opt_mul_comm as H1.
+now rewrite Hic in H1.
+Qed.
+
 Theorem gc_modulus_0 :
   rngl_has_opp T = true →
   (rngl_is_integral_domain T || rngl_has_inv_or_pdiv T)%bool = true →
@@ -1448,7 +1457,6 @@ split. {
 }
 Qed.
 
-
 (*
 Search ((_ + _)/₂)%A.
 Print angle_add_overflow.
@@ -1511,8 +1519,22 @@ destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
   apply eq_gc_eq.
   now do 2 rewrite (H1 (Re _)), (H1 (Im _)).
 }
-(**)
 intros.
+(**)
+assert (H : (√(a * b))²%C = (√a * √b)²%C). {
+  rewrite gc_squ_sqrt.
+Search ((_ * _)²)%C.
+Search ((_ * _)²)%L.
+Theorem gc_squ_mul : ∀ a b, ((a * b)² = a² * b²)%C.
+Proof.
+intros.
+progress unfold gc_squ.
+do 2 rewrite (gc_mul_assoc Hop).
+progress f_equal.
+do 2 rewrite <- (gc_mul_assoc Hop).
+progress f_equal.
+apply (gc_mul_comm Hic).
+...
 progress unfold gc_sqrt; cbn - [ gc_mul ].
 progress unfold gc_mul at 6; cbn - [ gc_mul ].
 progress f_equal. {
