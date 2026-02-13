@@ -691,6 +691,30 @@ specialize gc_opt_mul_comm as H1.
 now rewrite Hic in H1.
 Qed.
 
+Theorem gc_sub_diag :
+  rngl_has_opp_or_psub T = true →
+  ∀ z, (z - z = 0)%C.
+Proof.
+intros Hos *.
+progress unfold gc_sub.
+now do 2 rewrite (rngl_sub_diag Hos).
+Qed.
+
+Theorem gc_sub_move_0_r :
+  rngl_has_opp T = true →
+  ∀ a b, (a - b = 0)%C ↔ a = b.
+Proof.
+intros Hop.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+intros.
+split; intros Hab; [ | subst; apply (gc_sub_diag Hos) ].
+progress unfold gc_sub in Hab.
+injection Hab; clear Hab; intros H1 H2.
+apply -> (rngl_sub_move_0_r Hop) in H1.
+apply -> (rngl_sub_move_0_r Hop) in H2.
+now apply eq_gc_eq.
+Qed.
+
 Theorem gc_squ_mul :
   rngl_mul_is_comm T = true →
   rngl_has_opp T = true →
@@ -1314,14 +1338,6 @@ apply eq_gc_eq; cbn.
 now do 2 rewrite (rngl_add_opp_r Hop).
 Qed.
 
-Theorem gc_sub_diag : ∀ z, (z - z = 0)%C.
-Proof.
-specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
-intros.
-progress unfold gc_sub.
-now do 2 rewrite (rngl_sub_diag Hos).
-Qed.
-
 Theorem gc_mul_0_l :
   rngl_has_opp_or_psub T = true →
   ∀ z : GComplex T, (0 * z = 0)%C.
@@ -1540,6 +1556,16 @@ assert (H : (√(a * b))²%C = (√a * √b)²%C). {
   rewrite (gc_squ_mul Hic Hop).
   now do 2 rewrite gc_squ_sqrt.
 }
+Search (_² = _²)%L.
+Theorem gc_eq_cases : ∀ a b, (a² = b² → a = b ∨ a = - b)%C.
+Proof.
+intros * Hab.
+apply (gc_sub_move_0_r Hop) in Hab.
+Search (_² - _²)%L.
+Search (_² - _²)%C.
+... ...
+apply gc_eq_cases in H.
+destruct H as [H| H]; [ easy | ].
 ...
 progress unfold gc_sqrt; cbn - [ gc_mul ].
 progress unfold gc_mul at 6; cbn - [ gc_mul ].
