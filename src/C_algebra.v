@@ -656,6 +656,8 @@ Definition gc_squ z := (z * z)%C.
 Definition gc_pow_nat (z : GComplex T) n := rngl_power z n.
 Definition gc_modulus (z : GComplex T) := rl_modl (gre z) (gim z).
 
+(* square root of a complex number is defined as the complex number whose
+   imaginary part is non negative *)
 Definition gc_sqrt (z : GComplex T) :=
   let x := (rngl_signp (gim z) * √((gc_modulus z + gre z)/2))%L in
   let y := √((gc_modulus z - gre z)/2) in
