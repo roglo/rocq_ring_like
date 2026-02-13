@@ -152,7 +152,7 @@ Context {T : Type}.
 Context {ro : ring_like_op T}.
 Context {rp : ring_like_prop T}.
 
-Theorem gc_add_comm : ∀ a b : GComplex T, (a + b)%L = (b + a)%L.
+Theorem gc_add_comm : ∀ a b : GComplex T, (a + b)%C = (b + a)%C.
 Proof.
 intros; cbn.
 progress unfold gc_add.
@@ -613,7 +613,7 @@ Instance gc_ring_like_prop_not_alg_closed : ring_like_prop (GComplex T) :=
      rngl_is_archimedean := true;
      rngl_is_alg_closed := false;
      rngl_characteristic := rngl_characteristic T;
-     rngl_add_comm := gc_add_comm;
+     rngl_add_comm a b := gc_add_comm a b;
      rngl_add_assoc := gc_add_assoc;
      rngl_add_0_l := gc_add_0_l;
      rngl_mul_assoc := gc_mul_assoc Hop;
@@ -698,6 +698,35 @@ Proof.
 intros Hos *.
 progress unfold gc_sub.
 now do 2 rewrite (rngl_sub_diag Hos).
+Qed.
+
+Theorem gc_add_opp_r :
+  rngl_has_opp T = true →
+  ∀ z1 z2, (z1 + - z2 = z1 - z2)%C.
+Proof.
+intros Hop *.
+apply eq_gc_eq; cbn.
+now do 2 rewrite (rngl_add_opp_r Hop).
+Qed.
+
+Theorem gc_add_move_0_r :
+  rngl_has_opp T = true →
+  ∀ a b, (a + b = 0)%C ↔ a = (- b)%C.
+Proof.
+intros Hop.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+intros.
+(**)
+split; intros Hab. {
+  apply eq_gc_eq in Hab; cbn in Hab.
+  apply eq_gc_eq.
+  destruct Hab as (H1, H2).
+  apply (rngl_add_move_0_r Hop) in H1, H2.
+  now rewrite H1, H2.
+}
+rewrite gc_add_comm; subst.
+rewrite (gc_add_opp_r Hop).
+apply (gc_sub_diag Hos).
 Qed.
 
 Theorem gc_sub_move_0_r :
@@ -1341,13 +1370,6 @@ apply H1; [ | | easy ]. {
 }
 Qed.
 
-Theorem gc_add_opp_r : ∀ z1 z2, (z1 + - z2 = z1 - z2)%C.
-Proof.
-intros.
-apply eq_gc_eq; cbn.
-now do 2 rewrite (rngl_add_opp_r Hop).
-Qed.
-
 Theorem gc_mul_0_l :
   rngl_has_opp_or_psub T = true →
   ∀ z : GComplex T, (0 * z = 0)%C.
@@ -1497,6 +1519,38 @@ split. {
 }
 Qed.
 
+Theorem gc_eq_cases : ∀ a b, (a² = b² → a = b ∨ a = - b)%C.
+Proof.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+specialize (rngl_integral_or_inv_pdiv_eq_dec_order Hiv Hor) as Hio.
+intros * Hab.
+apply (gc_sub_move_0_r Hop) in Hab.
+rewrite gc_squ_sub_squ in Hab.
+apply (gc_integral Hic Hop Hio) in Hab.
+destruct Hab as [H| H]. {
+  apply (gc_add_move_0_r Hop) in H.
+  now right.
+}
+destruct H as [H| H]. {
+  apply -> (gc_sub_move_0_r Hop a) in H.
+  now left.
+}
+destruct H as [H| H]; cbn in H. {
+  apply eq_rngl_add_squ_0 in H.
+  destruct H as (H1, H2).
+  apply (rngl_add_move_0_r Hop) in H1, H2.
+  right.
+  now apply eq_gc_eq.
+} {
+  apply eq_rngl_add_squ_0 in H.
+  destruct H as (H1, H2).
+  apply -> (rngl_sub_move_0_r Hop) in H1.
+  apply -> (rngl_sub_move_0_r Hop) in H2.
+  left.
+  now apply eq_gc_eq.
+}
+Qed.
+
 (*
 Search ((_ + _)/₂)%A.
 Print angle_add_overflow.
@@ -1566,13 +1620,6 @@ assert (H : (√(a * b))²%C = (√a * √b)²%C). {
   rewrite (gc_squ_mul Hic Hop).
   now do 2 rewrite gc_squ_sqrt.
 }
-Search (_² = _²)%L.
-Theorem gc_eq_cases : ∀ a b, (a² = b² → a = b ∨ a = - b)%C.
-Proof.
-intros * Hab.
-apply (gc_sub_move_0_r Hop) in Hab.
-rewrite gc_squ_sub_squ in Hab.
-... ...
 apply gc_eq_cases in H.
 destruct H as [H| H]; [ easy | ].
 ...
