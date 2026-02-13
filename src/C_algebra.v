@@ -894,6 +894,16 @@ Context {Hop : rngl_has_opp T = true}.
 Context {Hiv : rngl_has_inv T = true}.
 Context {Hto : rngl_is_totally_ordered T = true}.
 
+Add Ring rngl_ring : (rngl_ring_theory Hic Hop).
+
+Theorem gc_squ_sub_squ : ∀ a b, (a² - b² = (a + b) * (a - b))%C.
+Proof.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+intros.
+apply eq_gc_eq.
+split; cbn; ring.
+Qed.
+
 Theorem gc_inv_rngl_inv : ∀ a, gc_inv a = rngl_inv a.
 Proof.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
@@ -1561,8 +1571,7 @@ Theorem gc_eq_cases : ∀ a b, (a² = b² → a = b ∨ a = - b)%C.
 Proof.
 intros * Hab.
 apply (gc_sub_move_0_r Hop) in Hab.
-Search (_² - _²)%L.
-Search (_² - _²)%C.
+rewrite gc_squ_sub_squ in Hab.
 ... ...
 apply gc_eq_cases in H.
 destruct H as [H| H]; [ easy | ].
