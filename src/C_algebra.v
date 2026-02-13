@@ -691,6 +691,20 @@ specialize gc_opt_mul_comm as H1.
 now rewrite Hic in H1.
 Qed.
 
+Theorem gc_squ_mul :
+  rngl_mul_is_comm T = true →
+  rngl_has_opp T = true →
+  ∀ a b, ((a * b)² = a² * b²)%C.
+Proof.
+intros Hic Hop *.
+progress unfold gc_squ.
+do 2 rewrite (gc_mul_assoc Hop).
+progress f_equal.
+do 2 rewrite <- (gc_mul_assoc Hop).
+progress f_equal.
+apply (gc_mul_comm Hic).
+Qed.
+
 Theorem gc_modulus_0 :
   rngl_has_opp T = true →
   (rngl_is_integral_domain T || rngl_has_inv_or_pdiv T)%bool = true →
@@ -1523,17 +1537,9 @@ intros.
 (**)
 assert (H : (√(a * b))²%C = (√a * √b)²%C). {
   rewrite gc_squ_sqrt.
-Search ((_ * _)²)%C.
-Search ((_ * _)²)%L.
-Theorem gc_squ_mul : ∀ a b, ((a * b)² = a² * b²)%C.
-Proof.
-intros.
-progress unfold gc_squ.
-do 2 rewrite (gc_mul_assoc Hop).
-progress f_equal.
-do 2 rewrite <- (gc_mul_assoc Hop).
-progress f_equal.
-apply (gc_mul_comm Hic).
+  rewrite (gc_squ_mul Hic Hop).
+  now do 2 rewrite gc_squ_sqrt.
+}
 ...
 progress unfold gc_sqrt; cbn - [ gc_mul ].
 progress unfold gc_mul at 6; cbn - [ gc_mul ].
