@@ -1448,6 +1448,47 @@ split. {
 }
 Qed.
 
+
+(*
+Search ((_ + _)/₂)%A.
+Print angle_add_overflow.
+angle_add_overflow =
+λ (T : Type) (ro : ring_like_op T) (rp : ring_like_prop T)
+  (ac : angle_ctx T) (α1 α2 : angle T), ((α1 ≠? 0)%A && (- α1 ≤? α2)%A)%bool
+     : ∀ {T : Type} {ro : ring_like_op T} {rp : ring_like_prop T},
+         angle_ctx T → angle T → angle T → bool
+*)
+Definition gc_leb a b :=
+  if (0 ≤? gim a)%L then
+    if (0 ≤? gim b)%L then
+      (gre b / gc_modulus b ≤? gre a / gc_modulus a)%L
+    else true
+  else
+    if (0 ≤? gim b)%L then false
+    else
+      (gre a / gc_modulus a ≤? gre b / gc_modulus b)%L.
+(*
+ou :
+Definition gc_leb a b :=
+  if (gc_modulus a =? gc_modulus b)%L then
+    if (0 ≤? gim a)%L then
+      if (0 ≤? gim b)%L then (gre b ≤? gre a)%L else true
+    else
+      if (0 ≤? gim b)%L then false else (gre a ≤? gre b)%L
+  else
+    chais pas.
+*)
+
+Definition gc_conj z := mk_gc (gre z) (- gim z).
+
+(*
+Print angle_opp.
+-a1 ≤ a2
+la condition pour que "ça déborde" serait, si ça marche comme pour
+les angles :
+gc_leb (gc_conj a) b
+*)
+
 (* to be completed
 (* trigonometry equivalent to (θ₁+θ₂)/2 = θ₁/2 + θ₂/2, which
    works only if θ₁+θ₂ < 2π. Otherwise π has to be added. *)
