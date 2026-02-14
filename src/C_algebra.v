@@ -1551,6 +1551,14 @@ destruct H as [H| H]; cbn in H. {
 }
 Qed.
 
+Theorem gc_squ_sqrt_mul : ∀ a b, (√(a * b))²%C = (√a * √b)²%C.
+Proof.
+intros.
+rewrite gc_squ_sqrt.
+rewrite (gc_squ_mul Hic Hop).
+now do 2 rewrite gc_squ_sqrt.
+Qed.
+
 (*
 Search ((_ + _)/₂)%A.
 Print angle_add_overflow.
@@ -1601,6 +1609,7 @@ Proof.
    √a√b=(-1+i)²/2=(-2i)/2=-i
    donc √(ab)≠√a√b
  *)
+(*
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
 specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
@@ -1613,13 +1622,9 @@ destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
   apply eq_gc_eq.
   now do 2 rewrite (H1 (Re _)), (H1 (Im _)).
 }
+*)
 intros.
-(**)
-assert (H : (√(a * b))²%C = (√a * √b)²%C). {
-  rewrite gc_squ_sqrt.
-  rewrite (gc_squ_mul Hic Hop).
-  now do 2 rewrite gc_squ_sqrt.
-}
+specialize (gc_squ_sqrt_mul a b) as H.
 apply gc_eq_cases in H.
 destruct H as [H| H]; [ easy | ].
 ...
