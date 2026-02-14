@@ -1850,6 +1850,14 @@ destruct ov. {
         now apply rngl_lt_irrefl in Hzib.
       }
     }
+    apply (rngl_leb_gt_iff Hto) in Hziab.
+    generalize Hziab; intros H.
+    apply (rngl_signp_of_neg Hor) in H.
+    rewrite H in H1; clear H.
+    rewrite (rngl_mul_opp_l Hop) in H1.
+    rewrite rngl_mul_1_l in H1.
+    apply (f_equal rngl_opp) in H1.
+    do 2 rewrite (rngl_opp_involutive Hop) in H1.
 ...
 progress unfold gc_sqrt; cbn - [ gc_mul ].
 progress unfold gc_mul at 6; cbn - [ gc_mul ].
