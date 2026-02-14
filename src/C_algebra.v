@@ -1714,6 +1714,7 @@ destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
   apply eq_gc_eq.
   now do 2 rewrite (H1 (Re _)), (H1 (Im _)).
 }
+specialize (rngl_2_neq_0 Hos Hc1 Hto) as H2z.
 intros.
 destruct (gc_eq_dec Heo a 0) as [Haz| Haz]. {
   subst a.
@@ -1806,9 +1807,7 @@ destruct ov. {
           apply (gc_modulus_sub_re_div_2_nonneg Hop Hiv Hto).
         }
         apply (f_equal (λ a, (a * 2)%L)) in H4.
-        rewrite (rngl_div_mul Hiv) in H4. 2: {
-          apply (rngl_2_neq_0 Hos Hc1 Hto).
-        }
+        rewrite (rngl_div_mul Hiv) in H4; [ | easy ].
         rewrite (rngl_mul_0_l Hos) in H4.
         apply eq_rngl_sub_modulus_re_0 in H4.
         destruct H4 as (H4, H5).
@@ -1820,9 +1819,7 @@ destruct ov. {
         apply (gc_modulus_sub_re_div_2_nonneg Hop Hiv Hto).
       }
       apply (f_equal (λ a, (a * 2)%L)) in H4.
-      rewrite (rngl_div_mul Hiv) in H4. 2: {
-        apply (rngl_2_neq_0 Hos Hc1 Hto).
-      }
+      rewrite (rngl_div_mul Hiv) in H4; [ | easy ].
       rewrite (rngl_mul_0_l Hos) in H4.
       apply eq_rngl_sub_modulus_re_0 in H4.
       destruct H4 as (H4, H5).
@@ -1832,33 +1829,27 @@ destruct ov. {
           apply (gc_modulus_add_re_div_2_nonneg Hop Hiv Hto).
         }
         apply (f_equal (λ a, (a * 2)%L)) in H3.
-        rewrite (rngl_div_mul Hiv) in H3. 2: {
-          apply (rngl_2_neq_0 Hos Hc1 Hto).
-        }
+        rewrite (rngl_div_mul Hiv) in H3; [ | easy ].
         rewrite (rngl_mul_0_l Hos) in H3.
         apply eq_rngl_add_modulus_re_0 in H3.
         destruct H3 as (H3, _).
         apply (rngl_le_antisymm Hor) in H4; [ clear H3 | easy ].
         exfalso; apply Haz.
         now apply eq_gc_eq.
-      }
-...
-        apply (rngl_mul_nonneg_nonneg Hos Hor).
-        subst aa; apply rl_sqrt_add_mod_re_div_2_nonneg.
-        subst ab; apply rl_sqrt_add_mod_re_div_2_nonneg.
       } {
-        apply (rngl_mul_nonneg_nonneg Hos Hor).
-        subst sa; apply rl_sqrt_sub_mod_re_div_2_nonneg.
-        subst sb; apply rl_sqrt_sub_mod_re_div_2_nonneg.
+        rewrite Hab in H3.
+        apply (eq_rl_sqrt_0 Hos) in H3. 2: {
+          apply (gc_modulus_add_re_div_2_nonneg Hop Hiv Hto).
+        }
+        apply (f_equal (λ a, (a * 2)%L)) in H3.
+        rewrite (rngl_div_mul Hiv) in H3; [ | easy ].
+        rewrite (rngl_mul_0_l Hos) in H3.
+        apply eq_rngl_add_modulus_re_0 in H3.
+        destruct H3 as (H3, H6).
+        rewrite H6 in Hzib.
+        now apply rngl_lt_irrefl in Hzib.
       }
-
-Search (_ / _ = 0)%L.
-Search (_ / _ = 0).
-Theorem rngl_div_small_iff : ∀ a b, (a
-          apply eq_rngl_div_0 in H3.
-...
-        subst aa; apply rl_sqrt_add_mod_re_div_2_nonneg.
-        subst ab; apply rl_sqrt_add_mod_re_div_2_nonneg.
+    }
 ...
 progress unfold gc_sqrt; cbn - [ gc_mul ].
 progress unfold gc_mul at 6; cbn - [ gc_mul ].
