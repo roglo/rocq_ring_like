@@ -1576,8 +1576,8 @@ Theorem gc_sqrt_mul :
   ∀ a b,
   (√(a * b) = if gc_add_overflow a b then - (√a * √b) else √a * √b)%C.
 Proof.
-(*
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+(*
 specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
 *)
 specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
@@ -1585,13 +1585,13 @@ specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
 specialize (rngl_integral_or_inv_pdiv_eq_dec_order Hiv Hor) as Hio.
 specialize (rngl_int_dom_or_inv_pdiv Hiv) as Hii.
+*)
 destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
   specialize (rngl_characteristic_1 Hos Hc1) as H1.
   intros.
   apply eq_gc_eq.
   now do 2 rewrite (H1 (Re _)), (H1 (Im _)).
 }
-*)
 intros.
 specialize (gc_squ_sqrt_mul a b) as H.
 apply gc_eq_cases in H.
@@ -1628,7 +1628,57 @@ destruct ov. {
     remember √((‖ a ‖ - Re a) / 2) as sa eqn:Hsa.
     remember √((‖ b ‖ - Re b) / 2) as sb eqn:Hsb.
     move ab before aa; move sa before ab; move sb before sa.
-(* ça va être le bordel, comme pour ma trigonométrie *)
+    destruct (rngl_leb_dec 0 (Im (a * b))) as [Hziab| Hziab]. {
+      apply rngl_leb_le in Hziab.
+      apply (rngl_add_move_0_r Hop) in H1.
+      apply (rngl_eq_add_0 Hos Hor) in H1; cycle 1. {
+        apply (rngl_mul_nonneg_nonneg Hos Hor). {
+          apply rngl_signp_of_pos in Hziab.
+          rewrite Hziab.
+          apply (rngl_0_le_1 Hos Hto).
+        }
+        apply rl_sqrt_nonneg.
+        apply (rngl_div_nonneg Hop Hiv Hto). 2: {
+          apply (rngl_0_lt_2 Hos Hc1 Hto).
+        }
+        apply (gc_add_modulus_re Hop Hiv Hto).
+      } {
+        apply (rngl_le_0_add Hos Hor). {
+          apply (rngl_mul_nonneg_nonneg Hos Hor). {
+            subst aa.
+            apply rl_sqrt_nonneg.
+            apply (rngl_div_nonneg Hop Hiv Hto). 2: {
+              apply (rngl_0_lt_2 Hos Hc1 Hto).
+            }
+            apply (gc_add_modulus_re Hop Hiv Hto).
+          } {
+            subst ab.
+            apply rl_sqrt_nonneg.
+            apply (rngl_div_nonneg Hop Hiv Hto). 2: {
+              apply (rngl_0_lt_2 Hos Hc1 Hto).
+            }
+            apply (gc_add_modulus_re Hop Hiv Hto).
+          }
+        } {
+          apply (rngl_mul_nonneg_nonneg Hos Hor). {
+            subst sa.
+            apply rl_sqrt_nonneg.
+            apply (rngl_div_nonneg Hop Hiv Hto). 2: {
+              apply (rngl_0_lt_2 Hos Hc1 Hto).
+            }
+            apply (gc_sub_modulus_re Hop Hiv Hto).
+          } {
+            subst sb.
+            apply rl_sqrt_nonneg.
+            apply (rngl_div_nonneg Hop Hiv Hto). 2: {
+              apply (rngl_0_lt_2 Hos Hc1 Hto).
+            }
+            apply (gc_sub_modulus_re Hop Hiv Hto).
+          }
+        }
+      }
+      destruct H1 as (H1, H3).
+      move H3 at bottom.
 ...
 progress unfold gc_sqrt; cbn - [ gc_mul ].
 progress unfold gc_mul at 6; cbn - [ gc_mul ].
