@@ -1559,60 +1559,29 @@ rewrite (gc_squ_mul Hic Hop).
 now do 2 rewrite gc_squ_sqrt.
 Qed.
 
-(*
-Search ((_ + _)/₂)%A.
-Print angle_add_overflow.
-angle_add_overflow =
-λ (T : Type) (ro : ring_like_op T) (rp : ring_like_prop T)
-  (ac : angle_ctx T) (α1 α2 : angle T), ((α1 ≠? 0)%A && (- α1 ≤? α2)%A)%bool
-     : ∀ {T : Type} {ro : ring_like_op T} {rp : ring_like_prop T},
-         angle_ctx T → angle T → angle T → bool
-*)
-Definition gc_leb a b :=
+Definition gc_add_overflow a b :=
   if (0 ≤? Im a)%L then
-    if (0 ≤? Im b)%L then
-      (Re b / gc_modulus b ≤? Re a / gc_modulus a)%L
-    else true
-  else
     if (0 ≤? Im b)%L then false
     else
-      (Re a / gc_modulus a ≤? Re b / gc_modulus b)%L.
-(*
-ou :
-Definition gc_leb a b :=
-  if (gc_modulus a =? gc_modulus b)%L then
-    if (0 ≤? Im a)%L then
-      if (0 ≤? Im b)%L then (Re b ≤? Re a)%L else true
-    else
-      if (0 ≤? Im b)%L then false else (Re a ≤? Re b)%L
+      (0 ≤? Re a / gc_modulus a + Re b / gc_modulus b)%L
   else
-    chais pas.
-*)
-
-Definition gc_conj z := mk_gc (Re z) (- Im z).
-
-(*
-Print angle_opp.
--a1 ≤ a2
-la condition pour que "ça déborde" serait, si ça marche comme pour
-les angles :
-gc_leb (gc_conj a) b
-*)
+    if (0 ≤? Im b)%L then
+      (Re a / gc_modulus a + Re b / gc_modulus b ≤? 0)%L
+    else true.
 
 (* to be completed
 (* trigonometry equivalent to (θ₁+θ₂)/2 = θ₁/2 + θ₂/2, which
    works only if θ₁+θ₂ < 2π. Otherwise π has to be added. *)
-Theorem gc_sqrt_mul : ∀ a b, (√(a * b) = √a * √b)%C.
+Theorem gc_sqrt_mul :
+  ∀ a b,
+  (√(a * b) = if gc_add_overflow a b then - (√a * √b) else √a * √b)%C.
 Proof.
-(* contre-exemple : a=b=-i car on a √a=√b=(-1+i)/√2
-   √(ab)=√(-i)²=√(-1)=i
-   √a√b=(-1+i)²/2=(-2i)/2=-i
-   donc √(ab)≠√a√b
- *)
 (*
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
+*)
 specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+(*
 specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
 specialize (rngl_integral_or_inv_pdiv_eq_dec_order Hiv Hor) as Hio.
 specialize (rngl_int_dom_or_inv_pdiv Hiv) as Hii.
@@ -1626,7 +1595,40 @@ destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
 intros.
 specialize (gc_squ_sqrt_mul a b) as H.
 apply gc_eq_cases in H.
-destruct H as [H| H]; [ easy | ].
+remember (gc_add_overflow a b) as ov eqn:Hov.
+symmetry in Hov.
+destruct ov. {
+  destruct H as [H| H]; [ | easy ].
+  exfalso.
+  apply Bool.not_false_iff_true in Hov.
+  apply Hov; clear Hov.
+  progress unfold gc_add_overflow.
+  progress unfold gc_sqrt in H.
+  remember (0 ≤? Im a)%L as zia eqn:Hzia.
+  remember (0 ≤? Im b)%L as zib eqn:Hzib.
+  symmetry in Hzia, Hzib.
+  destruct zia. {
+    destruct zib; [ easy | ].
+    apply rngl_leb_le in Hzia.
+    apply (rngl_leb_gt_iff Hto) in Hzib.
+    apply (rngl_leb_gt Hor).
+    rewrite (rngl_signp_of_pos (Im a)) in H; [ | easy ].
+    rewrite (rngl_signp_of_neg Hor (Im b)) in H; [ | easy ].
+    rewrite (rngl_mul_opp_l Hop) in H.
+    do 2 rewrite rngl_mul_1_l in H.
+    progress unfold gc_mul in H at 6.
+    remember (a * b)%C as ab.
+    cbn in H.
+    injection H; clear H; intros H2 H1; subst ab.
+    rewrite (rngl_mul_opp_r Hop) in H1, H2.
+    rewrite <- (rngl_opp_add_distr Hop) in H1.
+    rewrite (rngl_add_opp_l Hop) in H2.
+    remember √((‖ a ‖ + Re a) / 2) as aa eqn:Haa.
+    remember √((‖ b ‖ + Re b) / 2) as ab eqn:Hab.
+    remember √((‖ a ‖ - Re a) / 2) as sa eqn:Hsa.
+    remember √((‖ b ‖ - Re b) / 2) as sb eqn:Hsb.
+    move ab before aa; move sa before ab; move sb before sa.
+(* ça va être le bordel, comme pour ma trigonométrie *)
 ...
 progress unfold gc_sqrt; cbn - [ gc_mul ].
 progress unfold gc_mul at 6; cbn - [ gc_mul ].
