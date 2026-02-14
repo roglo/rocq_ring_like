@@ -1559,6 +1559,41 @@ rewrite (gc_squ_mul Hic Hop).
 now do 2 rewrite gc_squ_sqrt.
 Qed.
 
+Theorem rngl_signp_0 : rngl_signp 0 = 1%L.
+Proof.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+progress unfold rngl_signp.
+now rewrite (rngl_leb_refl Hor).
+Qed.
+
+Theorem gc_sqrt_0 : (√0 = 0)%C.
+Proof.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
+specialize (rngl_int_dom_or_inv_pdiv Hiv) as Hii.
+destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
+  specialize (rngl_characteristic_1 Hos Hc1) as H1.
+  intros.
+  apply eq_gc_eq.
+  now do 2 rewrite (H1 (Re _)), (H1 (Im _)).
+}
+apply eq_gc_eq; cbn.
+rewrite rngl_signp_0, rngl_mul_1_l.
+rewrite (gc_modulus_0 Hop Hii Hto).
+rewrite rngl_add_0_l.
+rewrite (rngl_sub_diag Hos).
+rewrite (rngl_div_0_l Hos Hiq). 2: {
+  apply (rngl_2_neq_0 Hos Hc1 Hto).
+}
+split; apply (rl_sqrt_0 Hop Hto Hii).
+Qed.
+
+Theorem gc_opp_0 : (- 0)%C = 0%C.
+Proof.
+apply eq_gc_eq; cbn.
+split; apply (rngl_opp_0 Hop).
+Qed.
+
 Definition gc_add_overflow a b :=
   if (0 ≤? Im a)%L then
     if (0 ≤? Im b)%L then false
@@ -1581,8 +1616,8 @@ specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
 *)
 specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
-(*
 specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
+(*
 specialize (rngl_integral_or_inv_pdiv_eq_dec_order Hiv Hor) as Hio.
 specialize (rngl_int_dom_or_inv_pdiv Hiv) as Hii.
 *)
@@ -1593,6 +1628,22 @@ destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
   now do 2 rewrite (H1 (Re _)), (H1 (Im _)).
 }
 intros.
+destruct (gc_eq_dec Heo a 0) as [Haz| Haz]. {
+  subst a.
+  rewrite (gc_mul_0_l Hos).
+  rewrite gc_sqrt_0.
+  rewrite (gc_mul_0_l Hos).
+  rewrite gc_opp_0.
+  now destruct (gc_add_overflow _ _).
+}
+destruct (gc_eq_dec Heo b 0) as [Hbz| Hbz]. {
+  subst b.
+  rewrite (gc_mul_0_r Hos).
+  rewrite gc_sqrt_0.
+  rewrite (gc_mul_0_r Hos).
+  rewrite gc_opp_0.
+  now destruct (gc_add_overflow _ _).
+}
 specialize (gc_squ_sqrt_mul a b) as H.
 apply gc_eq_cases in H.
 remember (gc_add_overflow a b) as ov eqn:Hov.
@@ -1679,6 +1730,7 @@ destruct ov. {
       }
       destruct H1 as (H1, H3).
       move H3 at bottom.
+      apply (rngl_eq_add_0 Hos Hor) in H3; cycle 1. {
 ...
 progress unfold gc_sqrt; cbn - [ gc_mul ].
 progress unfold gc_mul at 6; cbn - [ gc_mul ].
