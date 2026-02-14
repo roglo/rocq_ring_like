@@ -1699,9 +1699,7 @@ Theorem gc_sqrt_mul :
   (√(a * b) = if gc_add_overflow a b then - (√a * √b) else √a * √b)%C.
 Proof.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
-(*
 specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
-*)
 specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
 specialize (rngl_integral_or_inv_pdiv_eq_dec_order Hiv Hor) as Hio.
@@ -1858,6 +1856,30 @@ destruct ov. {
     rewrite rngl_mul_1_l in H1.
     apply (f_equal rngl_opp) in H1.
     do 2 rewrite (rngl_opp_involutive Hop) in H1.
+cbn in Hziab.
+...
+    generalize H1; intros H3.
+    generalize H2; intros H4.
+    apply (f_equal rngl_squ) in H3, H4.
+    rewrite rngl_squ_sqrt in H3. 2: {
+      apply (gc_modulus_add_re_div_2_nonneg Hop Hiv Hto).
+    }
+    rewrite rngl_squ_sqrt in H4. 2: {
+      apply (gc_modulus_sub_re_div_2_nonneg Hop Hiv Hto).
+    }
+    apply (rngl_add_compat_r _ _ (aa * sb - sa * ab)²) in H3.
+    rewrite <- H4 in H3 at 1.
+    rewrite <- (Brahmagupta_Fibonacci_identity_2 Hic Hop) in H3.
+    rewrite <- (rngl_div_add_distr_r Hiv) in H3.
+    rewrite (rngl_add_sub_assoc Hop) in H3.
+    rewrite (rngl_add_sub_swap Hop) in H3.
+    rewrite (rngl_add_sub Hos) in H3.
+    rewrite <- rngl_mul_2_l in H3.
+    rewrite (rngl_mul_comm Hic) in H3.
+    rewrite (rngl_mul_div Hiq) in H3; [ | easy ].
+Search (‖ (_ * _) ‖)%C.
+Check Brahmagupta_Fibonacci_identity.
+Check Brahmagupta_Fibonacci_identity_2.
 ...
 progress unfold gc_sqrt; cbn - [ gc_mul ].
 progress unfold gc_mul at 6; cbn - [ gc_mul ].
