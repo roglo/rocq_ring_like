@@ -834,7 +834,10 @@ apply (rngl_le_add_r Hos Hor).
 apply (rngl_squ_nonneg Hos Hto).
 Qed.
 
-Theorem gre_opp : ∀ z, Re (- z) = (- Re z)%L.
+Theorem Re_opp : ∀ z, Re (- z) = (- Re z)%L.
+Proof. easy. Qed.
+
+Theorem Im_opp : ∀ z, Im (- z) = (- Im z)%L.
 Proof. easy. Qed.
 
 Theorem gc_modulus_opp :
@@ -913,7 +916,7 @@ Proof.
 intros Hop Hiv Hto.
 intros.
 rewrite <- (rngl_add_opp_r Hop).
-rewrite <- gre_opp.
+rewrite <- Re_opp.
 rewrite <- (gc_modulus_opp Hop).
 apply (gc_modulus_add_re_div_2_nonneg Hop Hiv Hto).
 Qed.
@@ -1681,6 +1684,24 @@ apply (rngl_abs_nonneg_eq_iff Hop Hto) in Hzz.
 now apply (eq_rngl_squ_0 Hos Hio) in H1.
 Qed.
 
+Theorem gc_opp_involutive : ∀ z, (- - z)%C = z.
+Proof.
+intros.
+apply eq_gc_eq; cbn.
+now do 2 rewrite (rngl_opp_involutive Hop).
+Qed.
+
+Theorem gc_mul_opp_r : ∀ z1 z2, (z1 * - z2 = - (z1 * z2))%C.
+Proof.
+intros.
+apply eq_gc_eq; cbn.
+do 4 rewrite (rngl_mul_opp_r Hop).
+rewrite (rngl_sub_opp_r Hop), (rngl_add_opp_r Hop).
+rewrite (rngl_add_opp_l Hop), (rngl_opp_sub_distr Hop).
+rewrite (rngl_opp_add_distr Hop).
+easy.
+Qed.
+
 Definition gc_add_overflow a b :=
   if (0 ≤? Im a)%L then
     if (0 ≤? Im b)%L then false
@@ -1856,7 +1877,29 @@ destruct ov. {
     rewrite rngl_mul_1_l in H1.
     apply (f_equal rngl_opp) in H1.
     do 2 rewrite (rngl_opp_involutive Hop) in H1.
-cbn in Hziab.
+    remember (-b)%C as b' eqn:Hb.
+    apply (f_equal gc_opp) in Hb.
+    rewrite gc_opp_involutive in Hb.
+    subst b; rename b' into b; move b before a.
+    move Hsb before Hsa.
+    assert (H : b ≠ 0%C). {
+      intros H; apply Hbz; subst b.
+      apply gc_opp_0.
+    }
+    move H before Hbz; clear Hbz; rename H into Hbz.
+    cbn in Hzib, Hab.
+    rewrite gc_mul_opp_r in Hziab.
+    rewrite Im_opp in Hziab.
+    rewrite (rngl_add_opp_r Hop) in Hab.
+    apply (rngl_opp_neg_pos Hop Hor) in Hzib, Hziab.
+    rewrite gc_mul_opp_r in H1, H2.
+    rewrite (gc_modulus_opp Hop) in Hab, H1, H2, Hsb |-*.
+    rewrite Re_opp in H1, H2, Hsb |-*.
+    rewrite (rngl_div_opp_l Hop Hiv).
+    rewrite (rngl_add_opp_r Hop) in H1 |-*.
+    rewrite (rngl_sub_opp_r Hop) in H2, Hsb.
+    apply (rngl_lt_sub_0 Hop Hor).
+    move Hziab before Hzib; move H1 after H2.
 ...
     generalize H1; intros H3.
     generalize H2; intros H4.
