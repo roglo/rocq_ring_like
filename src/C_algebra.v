@@ -1769,6 +1769,21 @@ destruct ov. {
     apply rngl_leb_le in Hzia.
     apply (rngl_leb_gt_iff Hto) in Hzib.
     apply (rngl_leb_gt Hor).
+Definition neg_gc_sqrt (z : GComplex T) :=
+  let x := (rngl_signp (- Im z) * √((gc_modulus z - Re z)/2))%L in
+  let y := √((gc_modulus z + Re z)/2) in
+  mk_gc x y.
+Theorem gc_sqrt_neg :
+  ∀ z, (√(-z))%C = neg_gc_sqrt z.
+Proof.
+intros.
+progress unfold gc_sqrt.
+progress unfold neg_gc_sqrt; cbn.
+rewrite (rngl_add_opp_r Hop).
+rewrite (rngl_sub_opp_r Hop).
+rewrite (gc_modulus_opp Hop).
+easy.
+...
 Theorem gc_sqrt_neg :
   ∀ z,
   z ≠ 0%C
@@ -1793,6 +1808,7 @@ f_equal. {
       apply rngl_leb_le in Hzi.
       exfalso; apply Hzz; clear Hzz.
       apply (rngl_le_antisymm Hor) in Hzi; [ clear Hiz | easy ].
+Print gc_sqrt.
 (* bon, c'est pas ça *)
 ... ...
     }
