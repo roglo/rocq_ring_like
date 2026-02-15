@@ -1702,6 +1702,37 @@ rewrite (rngl_opp_add_distr Hop).
 easy.
 Qed.
 
+Theorem rngl_abs_signp : ∀ a, ∣ rngl_signp a ∣ = 1%L.
+Proof.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
+  specialize (rngl_characteristic_1 Hos Hc1) as H1.
+  intros.
+  now rewrite (H1 (rngl_abs _)), (H1 1%L).
+}
+intros.
+progress unfold rngl_abs.
+progress unfold rngl_signp.
+destruct (0 ≤? a)%L. {
+  remember (1 ≤? 0)%L as x eqn:Hx.
+  symmetry in Hx.
+  destruct x; [ exfalso | easy ].
+  apply rngl_leb_le in Hx.
+  apply (rngl_nlt_ge Hor) in Hx.
+  apply Hx; clear Hx.
+  apply (rngl_0_lt_1 Hos Hc1 Hto).
+}
+remember (-1 ≤? 0)%L as x eqn:Hx.
+symmetry in Hx.
+rewrite (rngl_opp_involutive Hop).
+destruct x; [ easy | exfalso ].
+apply Bool.not_true_iff_false in Hx.
+apply Hx; clear Hx.
+apply rngl_leb_le.
+apply (rngl_opp_1_le_0 Hop Hto).
+Qed.
+
 Definition gc_add_overflow a b :=
   if (0 ≤? Im a)%L then
     if (0 ≤? Im b)%L then false
@@ -1769,20 +1800,23 @@ destruct ov. {
     apply rngl_leb_le in Hzia.
     apply (rngl_leb_gt_iff Hto) in Hzib.
     apply (rngl_leb_gt Hor).
+Print gc_sqrt.
 Definition neg_gc_sqrt (z : GComplex T) :=
   let x := (rngl_signp (- Im z) * √((gc_modulus z - Re z)/2))%L in
-  let y := √((gc_modulus z + Re z)/2) in
+  let y := rngl_abs (Re (gc_sqrt z)) in
   mk_gc x y.
 Theorem gc_sqrt_neg :
   ∀ z, (√(-z))%C = neg_gc_sqrt z.
 Proof.
+specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
 intros.
 progress unfold gc_sqrt.
 progress unfold neg_gc_sqrt; cbn.
 rewrite (rngl_add_opp_r Hop).
 rewrite (rngl_sub_opp_r Hop).
 rewrite (gc_modulus_opp Hop).
-easy.
+rewrite (rngl_abs_mul Hop Hiq Hto).
+rewrite rngl_abs_signp, rngl_mul_1_l.
 ...
 Theorem gc_sqrt_neg :
   ∀ z,
