@@ -1819,7 +1819,26 @@ destruct ov. {
     apply rngl_leb_le in Hzia.
     apply (rngl_leb_gt_iff Hto) in Hzib.
     apply (rngl_leb_gt Hor).
+(**)
 Check gc_sqrt_neg.
+    remember (-b)%C as b' eqn:Hb.
+    apply (f_equal gc_opp) in Hb.
+    rewrite gc_opp_involutive in Hb.
+    subst b; rename b' into b; move b before a.
+    assert (H' : b ≠ 0%C). {
+      intros H'; apply Hbz; subst b.
+      apply gc_opp_0.
+    }
+    move H' before Hbz; clear Hbz; rename H' into Hbz.
+    move Hbz before Haz.
+    rewrite gc_mul_opp_r in H.
+    do 2 rewrite gc_sqrt_neg in H.
+    remember (a * b)%C as x.
+    injection H; clear H; intros H1 H2; subst x.
+    remember √((‖ a ‖ + Re a) / 2) as aa eqn:Haa.
+    remember √((‖ b ‖ + Re b) / 2) as ab eqn:Hab.
+    remember √((‖ a ‖ - Re a) / 2) as sa eqn:Hsa.
+    remember √((‖ b ‖ - Re b) / 2) as sb eqn:Hsb.
 ...
     progress unfold gc_sqrt in H.
     rewrite (rngl_signp_of_pos (Im a)) in H; [ | easy ].
