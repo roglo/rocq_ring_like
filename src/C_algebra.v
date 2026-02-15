@@ -1769,6 +1769,45 @@ destruct ov. {
     apply rngl_leb_le in Hzia.
     apply (rngl_leb_gt_iff Hto) in Hzib.
     apply (rngl_leb_gt Hor).
+Theorem gc_sqrt_neg :
+  ∀ z,
+  z ≠ 0%C
+  → (√(-z))%C = mk_gc (- rngl_signp (Im z) * Im √z) (- Re √z).
+Proof.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+intros * Hzz.
+progress unfold gc_sqrt; cbn.
+rewrite (rngl_add_opp_r Hop).
+rewrite (rngl_sub_opp_r Hop).
+rewrite (gc_modulus_opp Hop).
+f_equal. {
+  f_equal.
+  progress unfold rngl_signp.
+  rewrite (rngl_leb_0_opp Hop Hto).
+  remember (Im z ≤? 0)%L as iz eqn:Hiz.
+  remember (0 ≤? Im z)%L as zi eqn:Hzi.
+  symmetry in Hiz, Hzi.
+  destruct iz. {
+    apply rngl_leb_le in Hiz.
+    destruct zi. {
+      apply rngl_leb_le in Hzi.
+      exfalso; apply Hzz; clear Hzz.
+      apply (rngl_le_antisymm Hor) in Hzi; [ clear Hiz | easy ].
+(* bon, c'est pas ça *)
+... ...
+    }
+    symmetry; apply (rngl_opp_involutive Hop).
+  }
+  apply (rngl_leb_gt_iff Hto) in Hiz.
+  destruct zi; [ easy | exfalso ].
+  apply (rngl_leb_gt_iff Hto) in Hzi.
+  now apply (rngl_lt_asymm Hor) in Hzi.
+}
+...
+  destruct iz, zi; [ | | easy | ]. {
+    apply rngl_leb_le in Hiz, Hzi.
+Print rngl_sign.
+...
     progress unfold gc_sqrt in H.
     rewrite (rngl_signp_of_pos (Im a)) in H; [ | easy ].
     rewrite (rngl_signp_of_neg Hor (Im b)) in H; [ | easy ].
