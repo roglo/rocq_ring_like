@@ -1761,7 +1761,6 @@ destruct ov. {
   apply Bool.not_false_iff_true in Hov.
   apply Hov; clear Hov.
   progress unfold gc_add_overflow.
-  progress unfold gc_sqrt in H.
   remember (0 ≤? Im a)%L as zia eqn:Hzia.
   remember (0 ≤? Im b)%L as zib eqn:Hzib.
   symmetry in Hzia, Hzib.
@@ -1770,6 +1769,7 @@ destruct ov. {
     apply rngl_leb_le in Hzia.
     apply (rngl_leb_gt_iff Hto) in Hzib.
     apply (rngl_leb_gt Hor).
+    progress unfold gc_sqrt in H.
     rewrite (rngl_signp_of_pos (Im a)) in H; [ | easy ].
     rewrite (rngl_signp_of_neg Hor (Im b)) in H; [ | easy ].
     rewrite (rngl_mul_opp_l Hop) in H.
