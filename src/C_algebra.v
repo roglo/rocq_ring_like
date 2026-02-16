@@ -1766,6 +1766,78 @@ intros; cbn.
 apply rl_sqrt_sub_mod_re_div_2_nonneg.
 Qed.
 
+Theorem eq_gc_sqrt_add_modulus_Re_div_2_0 :
+  ∀ z, √((‖ z ‖ + Re z) / 2) = 0%L → (Re z ≤ 0)%L ∧ Im z = 0%L.
+Proof.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
+  specialize (rngl_characteristic_1 Hos Hc1) as H1.
+  intros (x, y) _.
+  rewrite (H1 x), (H1 y).
+  split; [ | easy ].
+  apply (rngl_le_refl Hor).
+}
+specialize (rngl_2_neq_0 Hos Hc1 Hto) as H2z.
+intros * H.
+apply eq_rngl_add_modulus_re_0.
+apply (eq_rl_sqrt_0 Hos) in H. {
+  apply (f_equal (λ a, (a * 2)%L)) in H.
+  rewrite (rngl_div_mul Hiv) in H; [ | easy ].
+  now rewrite (rngl_mul_0_l Hos) in H.
+}
+apply (gc_modulus_add_re_div_2_nonneg Hop Hiv Hto).
+Qed.
+
+Theorem eq_gc_sqrt_sub_modulus_Re_div_2_0 :
+  ∀ z, √((‖ z ‖ - Re z) / 2) = 0%L → (0 ≤ Re z)%L ∧ Im z = 0%L.
+Proof.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+intros * Hzz.
+remember (-z)%C as z' eqn:Hz'.
+apply (f_equal gc_opp) in Hz'.
+rewrite gc_opp_involutive in Hz'.
+subst z; rename z' into z.
+cbn in Hzz.
+rewrite (gc_modulus_opp Hop) in Hzz.
+rewrite (rngl_sub_opp_r Hop) in Hzz.
+apply eq_gc_sqrt_add_modulus_Re_div_2_0 in Hzz.
+cbn.
+split.
+now apply (rngl_opp_nonneg_nonpos Hop Hor).
+rewrite (proj2 Hzz).
+apply (rngl_opp_0 Hop).
+Qed.
+
+Theorem eq_gc_sqrt_0: ∀ z, (√z = 0 → z = 0)%C.
+Proof.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+specialize (rngl_integral_or_inv_pdiv_eq_dec_order Hiv Hor) as Hio.
+destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
+  specialize (rngl_characteristic_1 Hos Hc1) as H1.
+  intros (x, y) _.
+  now rewrite (H1 x), (H1 y).
+}
+intros * Hzz.
+progress unfold gc_sqrt in Hzz.
+injection Hzz; clear Hzz; intros H2 H1.
+move H1 after H2.
+apply (rngl_integral Hos Hio) in H1.
+destruct H1 as [H1| H1]. {
+  progress unfold rngl_signp in H1.
+  destruct (0 ≤? Im z)%L.
+  now apply (rngl_1_neq_0 Hc1) in H1.
+  now apply (rngl_opp_1_neq_0 Hop Hc1) in H1.
+}
+apply eq_gc_sqrt_add_modulus_Re_div_2_0 in H1.
+apply eq_gc_sqrt_sub_modulus_Re_div_2_0 in H2.
+destruct H1 as (H1, _).
+destruct H2 as (H2, H3).
+apply (rngl_le_antisymm Hor) in H2; [ | easy ].
+now apply eq_gc_eq.
+Qed.
+
 Definition gc_add_overflow a b :=
   if (0 ≤? Im a)%L then
     if (0 ≤? Im b)%L then false
@@ -1888,13 +1960,7 @@ destruct ov. {
       apply rngl_le_neq.
       split; [ apply rl_sqrt_add_mod_re_div_2_nonneg | ].
       clear H; intros H; symmetry in H.
-      apply (eq_rl_sqrt_0 Hos) in H. 2: {
-        apply (gc_modulus_add_re_div_2_nonneg Hop Hiv Hto).
-      }
-      apply (f_equal (λ a, (a * 2)%L)) in H.
-      rewrite (rngl_div_mul Hiv) in H; [ | easy ].
-      rewrite (rngl_mul_0_l Hos) in H.
-      apply eq_rngl_add_modulus_re_0 in H.
+      apply eq_gc_sqrt_add_modulus_Re_div_2_0 in H.
       destruct H as (_, H).
       rewrite H in Hzib.
       now apply rngl_lt_irrefl in Hzib.
@@ -1948,7 +2014,24 @@ destruct ov. {
           destruct (√a)%C as (x, y).
           now cbn in Hiaz, H3; subst x y.
         }
-Search (√_ = 0)%C.
+        now apply eq_gc_sqrt_0 in H.
+      }
+...
+Search (rngl_signp (Im _)).
+Theorem rngl_sigmp_Im : ∀ z, rngl_signp (Im z) = 1%L.
+Proof.
+intros.
+apply rngl_signp_of_nonneg.
+Search (0 ≤? Im _)%L.
+specialize (Im
+progress unfold rngl_signp.
+remember
+...
+rewrite rngl_signp_
+destruct z as (x, y).
+
+apply eq_gc_eq; cbn.
+
 ...
     progress unfold gc_sqrt in H.
     rewrite (rngl_signp_of_nonneg (Im a)) in H; [ | easy ].
