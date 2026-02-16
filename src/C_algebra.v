@@ -2035,6 +2035,15 @@ destruct ov. {
     }
     rewrite (rngl_mul_opp_l Hop), rngl_mul_1_l in H2.
     apply (rngl_opp_inj Hop) in H2.
+    apply (rngl_leb_gt_iff Hto) in Hiabz.
+    move Hiabz before Hrabz.
+    destruct rabz. {
+      apply rngl_leb_le in Hrabz.
+      symmetry in H1.
+      apply (rngl_sub_move_r Hop) in H1.
+      rewrite (rngl_add_opp_l Hop) in H1.
+      symmetry in H1.
+      apply (rngl_sub_move_r Hop) in H1.
 ...
 Theorem rngl_sigmp_Im : ∀ z, rngl_signp (Im z) = 1%L.
 Proof.
