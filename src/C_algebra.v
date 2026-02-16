@@ -2006,16 +2006,24 @@ destruct ov. {
       move Hiaz before Hzib.
       rewrite Hiaz in H1, H2.
       rewrite (rngl_mul_0_l Hos) in H1, H2.
-      rewrite rngl_sub_0_r in H1.
+      rewrite (rngl_sub_0_r Hos) in H1.
       rewrite rngl_add_0_r in H2.
       apply (rngl_integral Hos Hio) in H3.
-      destruct H3 as [H3| H3]. {
+      destruct H3 as [H3| Hibz]. {
         assert (H : (√a = 0)%C). {
           destruct (√a)%C as (x, y).
           now cbn in Hiaz, H3; subst x y.
         }
         now apply eq_gc_sqrt_0 in H.
       }
+      move Hibz before Hiaz.
+      rewrite Hibz, (rngl_mul_0_r Hos), (rngl_opp_0 Hop) in H2.
+      clear Hiabz; rename H2 into Hiabz.
+      move Hiabz before Hibz.
+      destruct rabz.{
+          apply rngl_leb_le in Hrabz.
+Search (Re √(_ * _)).
+Search (√(_ * _))%C.
 ...
 Search (rngl_signp (Im _)).
 Theorem rngl_sigmp_Im : ∀ z, rngl_signp (Im z) = 1%L.
