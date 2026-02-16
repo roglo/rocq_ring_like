@@ -1833,6 +1833,20 @@ Check gc_sqrt_neg.
     move Hbz before Haz.
     rewrite gc_mul_opp_r in H.
     do 2 rewrite gc_sqrt_neg in H.
+(**)
+    remember (_ * _)%L as x in H.
+    remember (rngl_abs _)%L as y in H.
+    remember (_ * _)%L as z in H.
+    remember (rngl_abs _) as t in H.
+    remember (gc_sqrt _) as u in H.
+    injection H; clear H; intros H1 H2; subst x y z t u.
+    move H1 after H2.
+(*
+  H2 :
+    (rngl_signp (- Im (a * b)) * Im √(a * b))%L =
+    (Re √a * (rngl_signp (- Im b) * Im √b) - Im √a * ∣ Re √b ∣)%L
+  H1 : ∣ Re √(a * b) ∣ = (Im √a * (rngl_signp (- Im b) * Im √b) + Re √a * ∣ Re √b ∣)%L
+...
     remember (a * b)%C as x.
     injection H; clear H; intros H1 H2; subst x.
     remember √((‖ a ‖ + Re a) / 2) as aa eqn:Haa.
@@ -1840,7 +1854,8 @@ Check gc_sqrt_neg.
     remember √((‖ a ‖ - Re a) / 2) as sa eqn:Hsa.
     remember √((‖ b ‖ - Re b) / 2) as sb eqn:Hsb.
     move ab before aa; move sa before ab; move sb before sa.
-    cbn in Hzib, Hab.
+*)
+    cbn in Hzib(*, Hab*).
     rewrite (gc_modulus_opp Hop).
     rewrite Re_opp.
     rewrite (rngl_div_opp_l Hop Hiv).
@@ -1849,23 +1864,64 @@ Check gc_sqrt_neg.
     rewrite (rngl_signp_of_neg Hor (- Im b)%L) in H1; [ | easy ].
     rewrite (rngl_signp_of_neg Hor (- Im b)%L) in H2; [ | easy ].
     apply (rngl_opp_neg_pos Hop Hor) in Hzib.
+(*
     rewrite (rngl_signp_of_pos (Im a)) in H1; [ | easy ].
     rewrite (rngl_signp_of_pos (Im a)) in H2; [ | easy ].
     generalize Hzib; intros H; apply rngl_lt_le_incl in H.
     rewrite (rngl_signp_of_pos (Im b)) in H1; [ | easy ].
     rewrite (rngl_signp_of_pos (Im b)) in H2; [ | easy ].
     clear H.
+*)
     rewrite (rngl_mul_opp_l Hop) in H1, H2.
-    do 3 rewrite rngl_mul_1_l in H1, H2.
+    rewrite rngl_mul_1_l in H1, H2.
+(*
     rewrite (rngl_abs_nonneg_eq Hop Hor ab) in H1. 2: {
       rewrite Hab; apply rl_sqrt_add_mod_re_div_2_nonneg.
     }
     rewrite (rngl_abs_nonneg_eq Hop Hor ab) in H2. 2: {
       rewrite Hab; apply rl_sqrt_add_mod_re_div_2_nonneg.
     }
+*)
     rewrite (rngl_mul_opp_r Hop) in H1, H2.
     rewrite (rngl_add_opp_l Hop) in H1.
     rewrite <- (rngl_opp_add_distr Hop) in H2.
+(*
+    rewrite (rngl_abs_mul Hop Hiq Hto) in H1.
+    rewrite rngl_abs_signp, rngl_mul_1_l in H1.
+    rewrite (rngl_abs_sqrt Hop Hor) in H1. 2: {
+      apply (gc_modulus_add_re_div_2_nonneg Hop Hiv Hto).
+    }
+*)
+    progress unfold rngl_signp in H2.
+    rewrite (rngl_leb_0_opp Hop Hto) in H2.
+    assert (Hzra : (0 ≤ Re √a)%L). {
+      symmetry in H1.
+      apply (rngl_sub_move_r Hop) in H1.
+      apply (rngl_mul_le_mono_pos_r Hop Hiq Hto _ _ (rngl_abs (Re √b))). {
+        apply rngl_le_neq.
+        split; [ apply (rngl_abs_nonneg Hop Hto) | ].
+        intros H; symmetry in H.
+        apply (eq_rngl_abs_0 Hop) in H.
+        cbn in H.
+        apply (rngl_integral Hos Hio) in H.
+        destruct H as [H| H]. {
+          progress unfold rngl_signp in H.
+          destruct (0 ≤? Im b)%L.
+          now apply (rngl_1_neq_0 Hc1) in H.
+          now apply (rngl_opp_1_neq_0 Hop Hc1) in H.
+        }
+        apply (eq_rl_sqrt_0 Hos) in H. 2: {
+          apply (gc_modulus_add_re_div_2_nonneg Hop Hiv Hto).
+        }
+(* ah, fait chier, l'autre enculé, là...
+   ah non, faut pas dire "enculé", c'est homophobe...
+   ah, fait chier, l'autre con, là...
+   ça non plus, le mot "con" veut dire "vagin", étymologiquement,
+   c'est donc sexiste...
+   ah, fait chier, l'autre idiot, là...
+   bon, là, ça passe, mais ça a perdu sa vertu provocatrice...
+   remarque, j'entends souvent des jeunes femmes dire "ça me casse
+   les couilles" *)
 ...
     progress unfold gc_sqrt in H.
     rewrite (rngl_signp_of_pos (Im a)) in H; [ | easy ].
