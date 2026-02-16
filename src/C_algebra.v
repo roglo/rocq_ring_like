@@ -1838,6 +1838,13 @@ apply (rngl_le_antisymm Hor) in H2; [ | easy ].
 now apply eq_gc_eq.
 Qed.
 
+Theorem eq_Im_sqrt_0 : ∀ z, Im √z = 0%L → (0 ≤ Re z)%L ∧ Im z = 0%L.
+Proof.
+intros * Hiz.
+cbn in Hiz.
+now apply eq_gc_sqrt_sub_modulus_Re_div_2_0 in Hiz.
+Qed.
+
 Definition gc_add_overflow a b :=
   if (0 ≤? Im a)%L then
     if (0 ≤? Im b)%L then false
@@ -2000,11 +2007,10 @@ destruct ov. {
       }
       destruct H as (H3, H4).
       apply (rngl_integral Hos Hio) in H4.
-      destruct H4 as [Hiaz| H4]. 2: {
+      destruct H4 as [H4| H4]. 2: {
         now rewrite H4 in Hrbz; apply rngl_lt_irrefl in Hrbz.
       }
-      move Hiaz before Hzib.
-      rewrite Hiaz in H1, H2.
+      rewrite H4 in H1, H2.
       rewrite (rngl_mul_0_l Hos) in H1, H2.
       rewrite (rngl_sub_0_r Hos) in H1.
       rewrite rngl_add_0_r in H2.
@@ -2012,20 +2018,24 @@ destruct ov. {
       destruct H3 as [H3| Hibz]. {
         assert (H : (√a = 0)%C). {
           destruct (√a)%C as (x, y).
-          now cbn in Hiaz, H3; subst x y.
+          now cbn in H4, H3; subst x y.
         }
         now apply eq_gc_sqrt_0 in H.
       }
+      apply eq_Im_sqrt_0 in H4.
+      destruct H4 as (Hzra, Hiaz).
+      move Hzra after Hrbz.
+      move Hiaz before Hzia; clear Hzia.
       move Hibz before Hiaz.
       rewrite Hibz, (rngl_mul_0_r Hos), (rngl_opp_0 Hop) in H2.
-      clear Hiabz; rename H2 into Hiabz.
-      move Hiabz before Hibz.
-      destruct rabz.{
-          apply rngl_leb_le in Hrabz.
-Search (Re √(_ * _)).
-Search (√(_ * _))%C.
+      apply eq_Im_sqrt_0 in Hibz.
+      destruct Hibz as (_, Hibz).
+      rewrite Hibz in Hzib.
+      now apply rngl_lt_irrefl in Hzib.
+    }
+    rewrite (rngl_mul_opp_l Hop), rngl_mul_1_l in H2.
+    apply (rngl_opp_inj Hop) in H2.
 ...
-Search (rngl_signp (Im _)).
 Theorem rngl_sigmp_Im : ∀ z, rngl_signp (Im z) = 1%L.
 Proof.
 intros.
