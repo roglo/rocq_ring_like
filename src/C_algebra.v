@@ -1923,6 +1923,32 @@ destruct ov. {
         }
       }
       intros H; symmetry in H.
+      apply (rngl_eq_add_0 Hos Hor) in H; cycle 1. {
+        apply (rngl_mul_nonneg_nonneg Hos Hor).
+        now apply Re_sqrt_nonneg.
+        apply Im_sqrt_nonneg.
+      } {
+        apply (rngl_mul_nonneg_nonneg Hos Hor).
+        apply Im_sqrt_nonneg.
+        now apply Re_sqrt_nonneg, rngl_lt_le_incl.
+      }
+      destruct H as (H3, H4).
+      apply (rngl_integral Hos Hio) in H4.
+      destruct H4 as [Hiaz| H4]. 2: {
+        now rewrite H4 in Hrbz; apply rngl_lt_irrefl in Hrbz.
+      }
+      move Hiaz before Hzib.
+      rewrite Hiaz in H1, H2.
+      rewrite (rngl_mul_0_l Hos) in H1, H2.
+      rewrite rngl_sub_0_r in H1.
+      rewrite rngl_add_0_r in H2.
+      apply (rngl_integral Hos Hio) in H3.
+      destruct H3 as [H3| H3]. {
+        assert (H : (√a = 0)%C). {
+          destruct (√a)%C as (x, y).
+          now cbn in Hiaz, H3; subst x y.
+        }
+Search (√_ = 0)%C.
 ...
     progress unfold gc_sqrt in H.
     rewrite (rngl_signp_of_nonneg (Im a)) in H; [ | easy ].
