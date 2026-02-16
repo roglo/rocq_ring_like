@@ -2039,11 +2039,21 @@ destruct ov. {
     move Hiabz before Hrabz.
     destruct rabz. {
       apply rngl_leb_le in Hrabz.
+Theorem glop : ∀ z, (Re √z ≤ 0)%L → rngl_signp (Im z) = (-1)%L.
+Admitted.
+apply glop in Hrabz.
+Search (rngl_signp).
+...
       symmetry in H1.
       apply (rngl_sub_move_r Hop) in H1.
       rewrite (rngl_add_opp_l Hop) in H1.
       symmetry in H1.
       apply (rngl_sub_move_r Hop) in H1.
+...
+progress unfold gc_modulus.
+progress unfold rl_modl.
+Search (Re √_).
+cbn - [ gc_mul ] in Hrabz.
 ...
 Theorem rngl_sigmp_Im : ∀ z, rngl_signp (Im z) = 1%L.
 Proof.
