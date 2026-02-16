@@ -1839,6 +1839,33 @@ Check gc_sqrt_neg.
     remember √((‖ b ‖ + Re b) / 2) as ab eqn:Hab.
     remember √((‖ a ‖ - Re a) / 2) as sa eqn:Hsa.
     remember √((‖ b ‖ - Re b) / 2) as sb eqn:Hsb.
+    move ab before aa; move sa before ab; move sb before sa.
+    cbn in Hzib, Hab.
+    rewrite (gc_modulus_opp Hop).
+    rewrite Re_opp.
+    rewrite (rngl_div_opp_l Hop Hiv).
+    rewrite (rngl_add_opp_r Hop).
+    apply (rngl_lt_sub_0 Hop Hor).
+    rewrite (rngl_signp_of_neg Hor (- Im b)%L) in H1; [ | easy ].
+    rewrite (rngl_signp_of_neg Hor (- Im b)%L) in H2; [ | easy ].
+    apply (rngl_opp_neg_pos Hop Hor) in Hzib.
+    rewrite (rngl_signp_of_pos (Im a)) in H1; [ | easy ].
+    rewrite (rngl_signp_of_pos (Im a)) in H2; [ | easy ].
+    generalize Hzib; intros H; apply rngl_lt_le_incl in H.
+    rewrite (rngl_signp_of_pos (Im b)) in H1; [ | easy ].
+    rewrite (rngl_signp_of_pos (Im b)) in H2; [ | easy ].
+    clear H.
+    rewrite (rngl_mul_opp_l Hop) in H1, H2.
+    do 3 rewrite rngl_mul_1_l in H1, H2.
+    rewrite (rngl_abs_nonneg_eq Hop Hor ab) in H1. 2: {
+      rewrite Hab; apply rl_sqrt_add_mod_re_div_2_nonneg.
+    }
+    rewrite (rngl_abs_nonneg_eq Hop Hor ab) in H2. 2: {
+      rewrite Hab; apply rl_sqrt_add_mod_re_div_2_nonneg.
+    }
+    rewrite (rngl_mul_opp_r Hop) in H1, H2.
+    rewrite (rngl_add_opp_l Hop) in H1.
+    rewrite <- (rngl_opp_add_distr Hop) in H2.
 ...
     progress unfold gc_sqrt in H.
     rewrite (rngl_signp_of_pos (Im a)) in H; [ | easy ].
