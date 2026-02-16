@@ -941,7 +941,7 @@ Qed.
 Definition rngl_signp x := (if 0 ≤? x then 1 else -1)%L.
 Definition rngl_sign x := (if x =? 0 then 0 else rngl_signp x)%L.
 
-Theorem rngl_signp_of_pos : ∀ x, (0 ≤ x → rngl_signp x = 1)%L.
+Theorem rngl_signp_of_nonneg : ∀ x, (0 ≤ x → rngl_signp x = 1)%L.
 Proof.
 intros * Hx.
 unfold rngl_signp.

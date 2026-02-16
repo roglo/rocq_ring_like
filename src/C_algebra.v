@@ -1011,7 +1011,7 @@ specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 intros.
 destruct (rngl_leb_dec 0 a) as [Hza| Hza]. {
   apply rngl_leb_le in Hza.
-  rewrite rngl_signp_of_pos; [ | easy ].
+  rewrite rngl_signp_of_nonneg; [ | easy ].
   rewrite rngl_mul_1_l.
   now apply (rngl_abs_nonneg_eq Hop Hor).
 } {
@@ -1752,6 +1752,20 @@ apply (rngl_abs_sqrt Hop Hor).
 apply (gc_modulus_add_re_div_2_nonneg Hop Hiv Hto).
 Qed.
 
+Theorem Re_sqrt_nonneg : ∀ z, (0 ≤ Im z)%L → (0 ≤ Re √z)%L.
+Proof.
+intros * Hiz; cbn.
+rewrite rngl_signp_of_nonneg; [ | easy ].
+rewrite rngl_mul_1_l.
+apply rl_sqrt_add_mod_re_div_2_nonneg.
+Qed.
+
+Theorem Im_sqrt_nonneg : ∀ z, (0 ≤ Im √z)%L.
+Proof.
+intros; cbn.
+apply rl_sqrt_sub_mod_re_div_2_nonneg.
+Qed.
+
 Definition gc_add_overflow a b :=
   if (0 ≤? Im a)%L then
     if (0 ≤? Im b)%L then false
@@ -1867,7 +1881,7 @@ destruct ov. {
       cbn in Hrbz.
       generalize Hzib; intros H.
       apply rngl_lt_le_incl in H.
-      rewrite rngl_signp_of_pos in Hrbz; [ | easy ].
+      rewrite rngl_signp_of_nonneg in Hrbz; [ | easy ].
       rewrite rngl_mul_1_l in Hrbz.
       apply (rngl_nlt_ge Hor) in Hrbz.
       exfalso; apply Hrbz; clear Hrbz.
@@ -1887,9 +1901,31 @@ destruct ov. {
     }
     apply (rngl_leb_gt_iff Hto) in Hrbz.
     move Hrbz after Hzia.
+    destruct iabz. {
+      apply rngl_leb_le in Hiabz.
+      move Hiabz before Hrabz.
+      rewrite rngl_mul_1_l in H2.
+      specialize (Im_sqrt_nonneg (a * b)) as H.
+      rewrite H2 in H.
+      apply (rngl_opp_nonneg_nonpos Hop Hor) in H.
+      apply (rngl_nlt_ge Hor) in H.
+      exfalso; apply H; clear H.
+      apply rngl_le_neq.
+      split. {
+        apply (rngl_le_0_add Hos Hor). {
+          apply (rngl_mul_nonneg_nonneg Hos Hor).
+          now apply Re_sqrt_nonneg.
+          apply Im_sqrt_nonneg.
+        } {
+          apply (rngl_mul_nonneg_nonneg Hos Hor).
+          apply Im_sqrt_nonneg.
+          now apply Re_sqrt_nonneg, rngl_lt_le_incl.
+        }
+      }
+      intros H; symmetry in H.
 ...
     progress unfold gc_sqrt in H.
-    rewrite (rngl_signp_of_pos (Im a)) in H; [ | easy ].
+    rewrite (rngl_signp_of_nonneg (Im a)) in H; [ | easy ].
     rewrite (rngl_signp_of_neg Hor (Im b)) in H; [ | easy ].
     rewrite (rngl_mul_opp_l Hop) in H.
     do 2 rewrite rngl_mul_1_l in H.
@@ -1910,7 +1946,7 @@ destruct ov. {
       apply (rngl_add_move_0_r Hop) in H1.
       apply (rngl_eq_add_0 Hos Hor) in H1; cycle 1. {
         apply (rngl_mul_nonneg_nonneg Hos Hor). {
-          apply rngl_signp_of_pos in Hziab.
+          apply rngl_signp_of_nonneg in Hziab.
           rewrite Hziab.
           apply (rngl_0_le_1 Hos Hto).
         }
