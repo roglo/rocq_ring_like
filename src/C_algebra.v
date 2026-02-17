@@ -1845,6 +1845,53 @@ cbn in Hiz.
 now apply eq_gc_sqrt_sub_modulus_Re_div_2_0 in Hiz.
 Qed.
 
+Theorem Re_neg_signp_Im_opp_1 : ∀ z, (Re √z < 0)%L → rngl_signp (Im z) = (-1)%L.
+Proof.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+intros * Hzz.
+cbn in Hzz.
+progress unfold rngl_signp in Hzz.
+progress unfold rngl_signp.
+remember (0 ≤? Im z)%L as zi eqn:Hzi.
+symmetry in Hzi.
+destruct zi; [ exfalso | easy ].
+rewrite rngl_mul_1_l in Hzz.
+apply (rngl_nle_gt Hor) in Hzz.
+apply Hzz; clear Hzz.
+apply rl_sqrt_add_mod_re_div_2_nonneg.
+Qed.
+
+Theorem rngl_signp_neq_0 :
+  rngl_characteristic T ≠ 1 →
+  ∀ a, rngl_signp a ≠ 0%L.
+Proof.
+intros Hc1 *.
+progress unfold rngl_signp.
+destruct (0 ≤? a)%L.
+apply (rngl_1_neq_0 Hc1).
+apply (rngl_opp_1_neq_0 Hop Hc1).
+Qed.
+
+Theorem eq_Re_sqrt_0 : ∀ z, Re √z = 0%L → (Re z ≤ 0)%L ∧ Im z = 0%L.
+Proof.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+specialize (rngl_integral_or_inv_pdiv_eq_dec_order Hiv Hor) as Hio.
+destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
+  specialize (rngl_characteristic_1 Hos Hc1) as H1.
+  intros.
+  split; [ | apply H1 ].
+  rewrite (H1 (Re z)).
+  apply (rngl_le_refl Hor).
+}
+intros * Hrz.
+cbn in Hrz.
+apply (rngl_integral Hos Hio) in Hrz.
+destruct Hrz as [Hrz| Hrz]; [ now apply (rngl_signp_neq_0 Hc1) in Hrz | ].
+now apply eq_gc_sqrt_add_modulus_Re_div_2_0 in Hrz.
+Qed.
+
 Definition gc_add_overflow a b :=
   if (0 ≤? Im a)%L then
     if (0 ≤? Im b)%L then false
@@ -2039,21 +2086,29 @@ destruct ov. {
     move Hiabz before Hrabz.
     destruct rabz. {
       apply rngl_leb_le in Hrabz.
-Theorem glop : ∀ z, (Re √z ≤ 0)%L → rngl_signp (Im z) = (-1)%L.
-Admitted.
-apply glop in Hrabz.
-Search (rngl_signp).
-...
+      apply (rngl_lt_eq_cases Hor) in Hrabz.
+      destruct Hrabz as [Hrabz| Hrabz]. {
+        apply Re_neg_signp_Im_opp_1 in Hrabz.
+        apply rngl_lt_le_incl in Hiabz.
+        apply rngl_signp_of_nonneg in Hiabz.
+        rewrite Hrabz in Hiabz.
+        now apply (rngl_opp_1_neq_1 Hop Hc1 Hto) in Hiabz.
+      }
+      rewrite Hrabz, (rngl_opp_0 Hop) in H1.
       symmetry in H1.
-      apply (rngl_sub_move_r Hop) in H1.
-      rewrite (rngl_add_opp_l Hop) in H1.
-      symmetry in H1.
-      apply (rngl_sub_move_r Hop) in H1.
-...
-progress unfold gc_modulus.
-progress unfold rl_modl.
+      apply eq_Re_sqrt_0 in Hrabz.
+      destruct Hrabz as (_, H).
+      rewrite H in Hiabz.
+      now apply rngl_lt_irrefl in Hiabz.
+    }
+    apply (rngl_leb_gt_iff Hto) in Hrabz.
+Search (0 < Re √_)%L.
 Search (Re √_).
-cbn - [ gc_mul ] in Hrabz.
+...
+Search (rngl_signp _ = 0)%L.
+Print gc_sqrt.
+Search (Re _ = 0)%L.
+Search (Re √_).
 ...
 Theorem rngl_sigmp_Im : ∀ z, rngl_signp (Im z) = 1%L.
 Proof.
