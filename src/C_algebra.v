@@ -1767,26 +1767,41 @@ apply rl_sqrt_sub_mod_re_div_2_nonneg.
 Qed.
 
 Theorem eq_gc_sqrt_add_modulus_Re_div_2_0 :
-  ∀ z, √((‖ z ‖ + Re z) / 2) = 0%L → (Re z ≤ 0)%L ∧ Im z = 0%L.
+  ∀ z, √((‖ z ‖ + Re z) / 2) = 0%L ↔ (Re z ≤ 0)%L ∧ Im z = 0%L.
 Proof.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
+specialize (rngl_int_dom_or_inv_pdiv Hiv) as Hii.
 specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
   specialize (rngl_characteristic_1 Hos Hc1) as H1.
-  intros (x, y) _.
-  rewrite (H1 x), (H1 y).
+  intros (x, y).
+  rewrite (H1 (√_)%L), (H1 x), (H1 y); cbn.
+  split; [ intros | easy ].
   split; [ | easy ].
   apply (rngl_le_refl Hor).
 }
 specialize (rngl_2_neq_0 Hos Hc1 Hto) as H2z.
-intros * H.
-apply eq_rngl_add_modulus_re_0.
-apply (eq_rl_sqrt_0 Hos) in H. {
-  apply (f_equal (λ a, (a * 2)%L)) in H.
-  rewrite (rngl_div_mul Hiv) in H; [ | easy ].
-  now rewrite (rngl_mul_0_l Hos) in H.
+intros.
+split; intros H. {
+  apply eq_rngl_add_modulus_re_0.
+  apply (eq_rl_sqrt_0 Hos) in H. {
+    apply (f_equal (λ a, (a * 2)%L)) in H.
+    rewrite (rngl_div_mul Hiv) in H; [ | easy ].
+    now rewrite (rngl_mul_0_l Hos) in H.
+  }
+  apply (gc_modulus_add_re_div_2_nonneg Hop Hiv Hto).
+} {
+  destruct H as (H1, H2); cbn.
+  progress unfold gc_modulus.
+  progress unfold rl_modl.
+  rewrite H2, (rngl_squ_0 Hos), rngl_add_0_r.
+  rewrite (rl_sqrt_squ Hop Hto).
+  rewrite (rngl_abs_nonpos_eq Hop Hto); [ | easy ].
+  rewrite (rngl_add_opp_l Hop), (rngl_sub_diag Hos).
+  rewrite (rngl_div_0_l Hos Hiq); [ | easy ].
+  apply (rl_sqrt_0 Hop Hto Hii).
 }
-apply (gc_modulus_add_re_div_2_nonneg Hop Hiv Hto).
 Qed.
 
 Theorem eq_gc_sqrt_sub_modulus_Re_div_2_0 :
@@ -1873,7 +1888,7 @@ apply (rngl_1_neq_0 Hc1).
 apply (rngl_opp_1_neq_0 Hop Hc1).
 Qed.
 
-Theorem eq_Re_sqrt_0 : ∀ z, Re √z = 0%L → (Re z ≤ 0)%L ∧ Im z = 0%L.
+Theorem eq_Re_sqrt_0 : ∀ z, Re √z = 0%L ↔ (Re z ≤ 0)%L ∧ Im z = 0%L.
 Proof.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
@@ -1881,15 +1896,23 @@ specialize (rngl_integral_or_inv_pdiv_eq_dec_order Hiv Hor) as Hio.
 destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
   specialize (rngl_characteristic_1 Hos Hc1) as H1.
   intros.
-  split; [ | apply H1 ].
-  rewrite (H1 (Re z)).
+  rewrite (H1 (Re z)), (H1 (Im z)), (H1 (Re √z)).
+  split; [ intros | easy ].
+  split; [ | easy ].
   apply (rngl_le_refl Hor).
 }
-intros * Hrz.
-cbn in Hrz.
-apply (rngl_integral Hos Hio) in Hrz.
-destruct Hrz as [Hrz| Hrz]; [ now apply (rngl_signp_neq_0 Hc1) in Hrz | ].
-now apply eq_gc_sqrt_add_modulus_Re_div_2_0 in Hrz.
+intros.
+split; intros Hrz. {
+  cbn in Hrz.
+  apply (rngl_integral Hos Hio) in Hrz.
+  destruct Hrz as [Hrz| Hrz]; [ now apply (rngl_signp_neq_0 Hc1) in Hrz | ].
+  now apply eq_gc_sqrt_add_modulus_Re_div_2_0 in Hrz.
+} {
+  destruct Hrz as (H1, H2).
+  cbn; rewrite H2.
+  rewrite rngl_signp_0, rngl_mul_1_l.
+  now apply eq_gc_sqrt_add_modulus_Re_div_2_0.
+}
 Qed.
 
 Definition gc_add_overflow a b :=
@@ -2102,6 +2125,10 @@ destruct ov. {
       now apply rngl_lt_irrefl in Hiabz.
     }
     apply (rngl_leb_gt_iff Hto) in Hrabz.
+    cbn in Hrbz.
+    rewrite rngl_signp_of_nonneg in Hrbz; [ | now apply rngl_lt_le_incl ].
+    rewrite rngl_mul_1_l in Hrbz.
+Search Re.
 Search (0 < Re √_)%L.
 Search (Re √_).
 ...
@@ -2110,20 +2137,9 @@ Print gc_sqrt.
 Search (Re _ = 0)%L.
 Search (Re √_).
 ...
-Theorem rngl_sigmp_Im : ∀ z, rngl_signp (Im z) = 1%L.
-Proof.
-intros.
-apply rngl_signp_of_nonneg.
-Search (0 ≤? Im _)%L.
-specialize (Im
-progress unfold rngl_signp.
-remember
-...
 rewrite rngl_signp_
 destruct z as (x, y).
-
 apply eq_gc_eq; cbn.
-
 ...
     progress unfold gc_sqrt in H.
     rewrite (rngl_signp_of_nonneg (Im a)) in H; [ | easy ].
