@@ -1934,6 +1934,13 @@ apply (eq_rngl_add_square_0 Hop Hiq Hto) in Hz.
 now apply eq_gc_eq.
 Qed.
 
+Theorem Re_mul : ∀ z1 z2, Re (z1 * z2) = (Re z1 * Re z2 - Im z1 * Im z2)%L.
+Proof. easy. Qed.
+
+Theorem Im_mul : ∀ z1 z2, Im (z1 * z2) = (Im z1 * Re z2 + Re z1 * Im z2)%L.
+Proof. easy. Qed.
+
+
 Definition gc_add_overflow a b :=
   if (0 ≤? Im a)%L then
     if (0 ≤? Im b)%L then false
@@ -1988,7 +1995,7 @@ apply gc_eq_cases in H.
 remember (gc_add_overflow a b) as ov eqn:Hov.
 symmetry in Hov.
 destruct ov. {
-  destruct H as [H| H]; [ | easy ].
+  destruct H as [Hab| H]; [ | easy ].
   exfalso.
   apply Bool.not_false_iff_true in Hov.
   apply Hov; clear Hov.
@@ -2012,6 +2019,7 @@ destruct ov. {
     }
     move H' before Hbz; clear Hbz; rename H' into Hbz.
     move Hbz before Haz.
+...
     rewrite gc_mul_opp_r in H.
     do 2 rewrite gc_sqrt_neg in H.
     remember (_ * _)%L as x in H.
@@ -2145,7 +2153,7 @@ destruct ov. {
     }
     apply (rngl_leb_gt_iff Hto) in Hrabz.
     (* apparently, (0 < Im b) implies (0 < Re √b) *)
-    (* clear Hrbz Hrabz. *)
+    (**) clear Hrbz Hrabz. (**)
     apply (rngl_lt_div_l Hop Hiv Hto). {
       apply rngl_le_neq.
       split; [ apply gc_modulus_nonneg | ].
@@ -2161,6 +2169,8 @@ destruct ov. {
     }
     progress unfold gc_modulus.
     progress unfold rl_modl.
+    rewrite <- Re_mul in H1.
+    rewrite rngl_add_comm, <- Im_mul in H2.
 ...
     progress unfold gc_sqrt in H.
     rewrite (rngl_signp_of_nonneg (Im a)) in H; [ | easy ].
