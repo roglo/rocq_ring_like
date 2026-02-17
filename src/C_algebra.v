@@ -1915,6 +1915,25 @@ split; intros Hrz. {
 }
 Qed.
 
+Theorem rngl_neq_symm : ∀ a b : T, (a ≠ b → b ≠ a)%L.
+Proof. easy. Qed.
+
+Theorem eq_gc_modulus_0 : ∀ z, (‖ z ‖ = 0)%L ↔ z = 0%C.
+Proof.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
+specialize (rngl_int_dom_or_inv_pdiv Hiv) as Hii.
+intros.
+split; intros Hz; [ | subst; apply (gc_modulus_0 Hop Hii Hto) ].
+progress unfold gc_modulus in Hz.
+progress unfold rl_modl in Hz.
+apply (eq_rl_sqrt_0 Hos) in Hz. 2: {
+  apply (rngl_add_squ_nonneg Hos Hto).
+}
+apply (eq_rngl_add_square_0 Hop Hiq Hto) in Hz.
+now apply eq_gc_eq.
+Qed.
+
 Definition gc_add_overflow a b :=
   if (0 ≤? Im a)%L then
     if (0 ≤? Im b)%L then false
@@ -2125,21 +2144,23 @@ destruct ov. {
       now apply rngl_lt_irrefl in Hiabz.
     }
     apply (rngl_leb_gt_iff Hto) in Hrabz.
-    cbn in Hrbz.
-    rewrite rngl_signp_of_nonneg in Hrbz; [ | now apply rngl_lt_le_incl ].
-    rewrite rngl_mul_1_l in Hrbz.
-Search Re.
-Search (0 < Re √_)%L.
-Search (Re √_).
-...
-Search (rngl_signp _ = 0)%L.
-Print gc_sqrt.
-Search (Re _ = 0)%L.
-Search (Re √_).
-...
-rewrite rngl_signp_
-destruct z as (x, y).
-apply eq_gc_eq; cbn.
+    (* apparently, (0 < Im b) implies (0 < Re √b) *)
+    (* clear Hrbz Hrabz. *)
+    apply (rngl_lt_div_l Hop Hiv Hto). {
+      apply rngl_le_neq.
+      split; [ apply gc_modulus_nonneg | ].
+      intros H; symmetry in H.
+      now apply eq_gc_modulus_0 in H.
+    }
+    rewrite (rngl_div_mul_mul_div Hic Hiv).
+    apply (rngl_lt_div_r Hop Hiv Hto). {
+      apply rngl_le_neq.
+      split; [ apply gc_modulus_nonneg | ].
+      intros H; symmetry in H.
+      now apply eq_gc_modulus_0 in H.
+    }
+    progress unfold gc_modulus.
+    progress unfold rl_modl.
 ...
     progress unfold gc_sqrt in H.
     rewrite (rngl_signp_of_nonneg (Im a)) in H; [ | easy ].
