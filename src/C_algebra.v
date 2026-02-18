@@ -1940,7 +1940,6 @@ Proof. easy. Qed.
 Theorem Im_mul : ∀ z1 z2, Im (z1 * z2) = (Im z1 * Re z2 + Re z1 * Im z2)%L.
 Proof. easy. Qed.
 
-
 Definition gc_add_overflow a b :=
   if (0 ≤? Im a)%L then
     if (0 ≤? Im b)%L then false
@@ -1952,6 +1951,56 @@ Definition gc_add_overflow a b :=
     else true.
 
 (* to be completed
+Theorem gc_sqrt_mul_of_nonneg_Im :
+  ∀ a b,
+  (0 ≤ Im a)%L
+  → (0 ≤ Im b)%L
+  → (√(a * b) = √a * √b)%C.
+Proof.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
+  specialize (rngl_characteristic_1 Hos Hc1) as H1.
+  intros.
+  apply eq_gc_eq.
+  now do 2 rewrite (H1 (Re _)), (H1 (Im _)).
+}
+specialize (rngl_integral_or_inv_pdiv_eq_dec_order Hiv Hor) as Hio.
+specialize (rngl_2_neq_0 Hos Hc1 Hto) as H2z.
+intros * Ha Hb.
+progress unfold gc_sqrt.
+rewrite (rngl_signp_of_nonneg (Im a)); [ | easy ].
+rewrite (rngl_signp_of_nonneg (Im b)); [ | easy ].
+do 2 rewrite rngl_mul_1_l.
+remember (a * b)%C as c.
+progress unfold gc_mul; cbn.
+f_equal. {
+  rewrite <- rl_sqrt_mul.
+  2, 3: apply (gc_modulus_add_re_div_2_nonneg Hop Hiv Hto).
+  rewrite <- rl_sqrt_mul.
+  2, 3: apply (gc_modulus_sub_re_div_2_nonneg Hop Hiv Hto).
+  do 2 rewrite (rngl_div_mul_mul_div Hic Hiv).
+  do 2 rewrite (rngl_mul_div_assoc Hiv).
+  rewrite (rngl_div_div Hos Hiv); [ | easy | easy ].
+  rewrite (rngl_div_div Hos Hiv); [ | easy | easy ].
+  rewrite fold_rngl_squ.
+  rewrite (rl_sqrt_div Hop Hiv Hto _ 2²); cycle 1. {
+    apply (rngl_mul_nonneg_nonneg Hos Hor).
+    1, 2: apply (gc_add_modulus_re Hop Hiv Hto).
+  } {
+    now apply (rngl_squ_pos Hos Hto Hio).
+  }
+  rewrite (rl_sqrt_div Hop Hiv Hto _ 2²); cycle 1. {
+    apply (rngl_mul_nonneg_nonneg Hos Hor).
+    1, 2: apply (gc_sub_modulus_re Hop Hiv Hto).
+  } {
+    now apply (rngl_squ_pos Hos Hto Hio).
+  }
+  rewrite (rl_sqrt_squ Hop Hto).
+  rewrite (rngl_abs_2 Hos Hto).
+  rewrite <- (rngl_div_sub_distr_r Hop Hiv).
+...
+
 (* trigonometry equivalent to (θ₁+θ₂)/2 = θ₁/2 + θ₂/2, which
    works only if θ₁+θ₂ < 2π. Otherwise π has to be added. *)
 Theorem gc_sqrt_mul :
