@@ -694,7 +694,7 @@ Qed.
 Theorem gc_sub_diag :
   rngl_has_opp_or_psub T = true →
   ∀ z, (z - z = 0)%C.
-Proof.
+Proof using rp.
 intros Hos *.
 progress unfold gc_sub.
 now do 2 rewrite (rngl_sub_diag Hos).
@@ -712,11 +712,10 @@ Qed.
 Theorem gc_add_move_0_r :
   rngl_has_opp T = true →
   ∀ a b, (a + b = 0)%C ↔ a = (- b)%C.
-Proof.
+Proof using rp.
 intros Hop.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 intros.
-(**)
 split; intros Hab. {
   apply eq_gc_eq in Hab; cbn in Hab.
   apply eq_gc_eq.
