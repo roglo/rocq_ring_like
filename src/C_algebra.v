@@ -2252,7 +2252,24 @@ destruct H4 as [H4| H4]. {
   destruct H4 as (H4, H6).
   move H6 before Hb; clear Hb; rename H6 into Hb.
   apply (rngl_integral Hos Hio) in H5.
-  destruct H5 as [H5| H5]. {
+  destruct H5 as [H5| H5]; cycle 1. {
+    rewrite H5, (rngl_mul_0_r Hos) in H1.
+    apply eq_gc_sqrt_add_modulus_Re_div_2_0 in H1.
+    destruct H1 as (H1, _).
+    apply (rngl_le_antisymm Hor) in H2; [ clear H1 | easy ].
+    assert (H : c = 0%C) by now apply eq_gc_eq.
+    rewrite Heqc in H.
+    apply (gc_integral Hic Hop Hio) in H.
+    destruct H as [| H]; [ easy | ].
+    destruct H as [| H]; [ easy | ].
+    destruct H as [H| H]; cbn in H. {
+      apply eq_rngl_add_squ_0 in H.
+      now apply Haz, eq_gc_eq.
+    } {
+      apply eq_rngl_add_squ_0 in H.
+      now apply Hbz, eq_gc_eq.
+    }
+  } {
     apply eq_gc_sqrt_add_modulus_Re_div_2_0 in H5.
     destruct H5 as (H5, H6).
     move H6 before Ha; clear Ha; rename H6 into Ha.
@@ -2278,22 +2295,6 @@ destruct H4 as [H4| H4]. {
       apply rngl_add_0_l.
     }
     clear H.
-(* bon, chais pas *)
-`...
-    assert (H : ((‖ a ‖ - Re a) / 2 = - Re a)%L). {
-      specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
-      apply (rngl_mul_cancel_r Hiq _ _ 2 H2z).
-      rewrite (rngl_div_mul Hiv _ _ H2z).
-      apply (rngl_sub_move_r Hop).
-      rewrite rngl_mul_2_r.
-      rewrite (rngl_add_opp_r Hop).
-      rewrite (rngl_sub_add Hop).
-      progress unfold gc_modulus.
-      progress unfold rl_modl.
-      rewrite Ha, (rngl_squ_0 Hos), rngl_add_0_r.
-      rewrite (rl_sqrt_squ Hop Hto).
-      now apply (rngl_abs_nonpos_eq Hop Hto).
-    }
 ...
 apply (f_equal rngl_squ) in Hx.
 rewrite rngl_squ_sqrt in Hx; cycle 1. {
