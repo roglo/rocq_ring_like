@@ -2091,10 +2091,10 @@ Definition gc_add_overflow a b :=
       (Re a / gc_modulus a + Re b / gc_modulus b ≤? 0)%L
     else true.
 
-(* to be completed
 Theorem gc_sqrt_mul_of_nonneg_Im :
   ∀ a b,
-  (0 ≤ Im a)%L
+  (0 ≤ Re a)%L ∨ (0 ≤ Re b)%L
+  → (0 ≤ Im a)%L
   → (0 ≤ Im b)%L
   → (√(a * b) = √a * √b)%C.
 Proof.
@@ -2109,7 +2109,7 @@ destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
 }
 specialize (rngl_integral_or_inv_pdiv_eq_dec_order Hiv Hor) as Hio.
 specialize (rngl_2_neq_0 Hos Hc1 Hto) as H2z.
-intros * Ha Hb.
+intros * Hrab Ha Hb.
 (**)
 destruct (gc_eq_dec Heo a 0) as [Haz| Haz]. {
   subst a.
@@ -2240,6 +2240,10 @@ destruct H4 as [H4| H4]. {
   rewrite (rngl_opp_involutive Hop) in H1.
   apply eq_gc_sqrt_add_modulus_Re_div_2_0 in H4.
   destruct H4 as (H4, H6).
+  destruct Hrab as [Hrab| Hrab]; cycle 1. {
+    apply (rngl_le_antisymm Hor) in Hrab; [ | easy ].
+    now apply Hbz, eq_gc_eq.
+  }
   move H6 before Hb; clear Hb; rename H6 into Hb.
   apply (rngl_integral Hos Hio) in H5.
   destruct H5 as [H5| H5]; cycle 1. {
@@ -2262,91 +2266,15 @@ destruct H4 as [H4| H4]. {
   } {
     apply eq_gc_sqrt_add_modulus_Re_div_2_0 in H5.
     destruct H5 as (H5, H6).
-    move H6 before Ha; clear Ha; rename H6 into Ha.
-    specialize (proj2 (eq_gc_modulus_sub_re_div_2_opp_re a)) as H.
-    rewrite H in H1; [ clear H | easy ].
-    specialize (proj2 (eq_gc_modulus_sub_re_div_2_opp_re b)) as H.
-    rewrite H in H1; [ clear H | easy ].
-    rewrite <- rl_sqrt_mul in H1.
-    2, 3: now apply (rngl_opp_nonneg_nonpos Hop Hor).
-    rewrite (rngl_mul_opp_opp Hop) in H1.
-    generalize H1; intros H6.
-    apply (f_equal rngl_squ) in H6.
-    rewrite rngl_squ_sqrt in H6.
-    2: apply (gc_modulus_add_re_div_2_nonneg Hop Hiv Hto).
-    rewrite rngl_squ_sqrt in H6.
-    2: now apply (rngl_mul_nonpos_nonpos Hos Hor).
-    specialize (proj2 (eq_gc_modulus_add_re_div_2_opp_re c)) as H.
-    rewrite H in H6; cycle 1. {
-      split; [ easy | ].
-      rewrite Heqc; cbn.
-      rewrite Ha, Hb, (rngl_mul_0_l Hos), (rngl_mul_0_r Hos).
-      apply rngl_add_0_l.
-    }
-    clear H.
-...
-apply (f_equal rngl_squ) in Hx.
-rewrite rngl_squ_sqrt in Hx; cycle 1. {
-  apply (gc_modulus_sub_re_div_2_nonneg Hop Hiv Hto).
-}
-apply (f_equal (rngl_mul 2)) in Hx.
-rewrite (rngl_mul_comm Hic) in Hx.
-rewrite (rngl_div_mul Hiv) in Hx; [ | easy ].
-apply (rngl_sub_move_r Hop) in Hx.
-apply (f_equal rngl_squ) in Hx.
-progress unfold gc_modulus in Hx.
-progress unfold rl_modl in Hx.
-rewrite rngl_squ_sqrt in Hx; cycle 1. {
-  apply (rngl_add_squ_nonneg Hos Hto).
-}
-rewrite (rngl_squ_add Hic) in Hx.
-rewrite rngl_add_comm in Hx.
-apply (rngl_add_cancel_r Hos) in Hx.
-rewrite Ha, (rngl_squ_0 Hos) in Hx.
-rewrite rngl_mul_assoc, fold_rngl_squ in Hx.
-rewrite (rngl_squ_mul Hic) in Hx.
-progress unfold rngl_squ in Hx at 2.
-rewrite rngl_mul_assoc in Hx.
-rewrite <- rngl_mul_add_distr_l in Hx.
-symmetry in Hx.
-......
-progress unfold gc_sqrt.
-rewrite (rngl_signp_of_nonneg (Im a)); [ | easy ].
-rewrite (rngl_signp_of_nonneg (Im b)); [ | easy ].
-do 2 rewrite rngl_mul_1_l.
-remember (a * b)%C as c.
-progress unfold gc_mul; cbn.
-f_equal. {
-  rewrite <- rl_sqrt_mul.
-  2, 3: apply (gc_modulus_add_re_div_2_nonneg Hop Hiv Hto).
-  rewrite <- rl_sqrt_mul.
-  2, 3: apply (gc_modulus_sub_re_div_2_nonneg Hop Hiv Hto).
-  do 2 rewrite (rngl_div_mul_mul_div Hic Hiv).
-  do 2 rewrite (rngl_mul_div_assoc Hiv).
-  rewrite (rngl_div_div Hos Hiv); [ | easy | easy ].
-  rewrite (rngl_div_div Hos Hiv); [ | easy | easy ].
-  rewrite fold_rngl_squ.
-  rewrite (rl_sqrt_div Hop Hiv Hto _ 2²); cycle 1. {
-    apply (rngl_mul_nonneg_nonneg Hos Hor).
-    1, 2: apply (gc_add_modulus_re Hop Hiv Hto).
-  } {
-    now apply (rngl_squ_pos Hos Hto Hio).
+    apply (rngl_le_antisymm Hor) in Hrab; [ | easy ].
+    now apply Haz, eq_gc_eq.
   }
-  rewrite (rl_sqrt_div Hop Hiv Hto _ 2²); cycle 1. {
-    apply (rngl_mul_nonneg_nonneg Hos Hor).
-    1, 2: apply (gc_sub_modulus_re Hop Hiv Hto).
-  } {
-    now apply (rngl_squ_pos Hos Hto Hio).
-  }
-  rewrite (rl_sqrt_squ Hop Hto).
-  rewrite (rngl_abs_2 Hos Hto).
-  rewrite <- (rngl_div_sub_distr_r Hop Hiv).
-subst c.
-cbn.
-...
+}
+Qed.
 
 (* trigonometry equivalent to (θ₁+θ₂)/2 = θ₁/2 + θ₂/2, which
    works only if θ₁+θ₂ < 2π. Otherwise π has to be added. *)
+(* to be completed
 Theorem gc_sqrt_mul :
   ∀ a b,
   (√(a * b) = if gc_add_overflow a b then - (√a * √b) else √a * √b)%C.
