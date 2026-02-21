@@ -2123,16 +2123,6 @@ destruct (gc_eq_dec Heo b 0) as [Hbz| Hbz]. {
   rewrite gc_sqrt_0.
   symmetry; apply (gc_mul_0_r Hos).
 }
-(*
-destruct (rngl_eqb_dec (Im a) 0) as [Hiaz| Hiaz]. {
-  apply (rngl_eqb_eq Heo) in Hiaz.
-  progress unfold gc_sqrt; cbn.
-  rewrite Hiaz.
-  rewrite (rngl_mul_0_l Hos), rngl_add_0_l.
-  rewrite (rngl_mul_0_l Hos), (rngl_sub_0_r Hos).
-  rewrite rngl_signp_0, rngl_mul_1_l.
-...
-*)
 specialize (gc_squ_sqrt_mul a b) as Hab.
 apply gc_eq_cases in Hab.
 destruct Hab as [| Hab]; [ easy | exfalso ].
@@ -2273,7 +2263,6 @@ destruct H4 as [H4| H4]. {
     apply eq_gc_sqrt_add_modulus_Re_div_2_0 in H5.
     destruct H5 as (H5, H6).
     move H6 before Ha; clear Ha; rename H6 into Ha.
-    clear H3.
     specialize (proj2 (eq_gc_modulus_sub_re_div_2_opp_re a)) as H.
     rewrite H in H1; [ clear H | easy ].
     specialize (proj2 (eq_gc_modulus_sub_re_div_2_opp_re b)) as H.
@@ -2281,14 +2270,14 @@ destruct H4 as [H4| H4]. {
     rewrite <- rl_sqrt_mul in H1.
     2, 3: now apply (rngl_opp_nonneg_nonpos Hop Hor).
     rewrite (rngl_mul_opp_opp Hop) in H1.
-    generalize H1; intros H3.
-    apply (f_equal rngl_squ) in H3.
-    rewrite rngl_squ_sqrt in H3.
+    generalize H1; intros H6.
+    apply (f_equal rngl_squ) in H6.
+    rewrite rngl_squ_sqrt in H6.
     2: apply (gc_modulus_add_re_div_2_nonneg Hop Hiv Hto).
-    rewrite rngl_squ_sqrt in H3.
+    rewrite rngl_squ_sqrt in H6.
     2: now apply (rngl_mul_nonpos_nonpos Hos Hor).
     specialize (proj2 (eq_gc_modulus_add_re_div_2_opp_re c)) as H.
-    rewrite H in H3; cycle 1. {
+    rewrite H in H6; cycle 1. {
       split; [ easy | ].
       rewrite Heqc; cbn.
       rewrite Ha, Hb, (rngl_mul_0_l Hos), (rngl_mul_0_r Hos).
