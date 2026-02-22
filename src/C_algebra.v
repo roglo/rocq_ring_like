@@ -2132,22 +2132,8 @@ specialize (H4 (gc_modulus_sub_re_div_2_nonneg Hop Hiv Hto _)).
 apply (rngl_nlt_ge Hor) in H4.
 apply H4; clear H4.
 rewrite H2.
-apply (rngl_opp_neg_pos Hop Hor).
-(*
-problème de nommage :
-
-rngl_add_nonneg_pos:
-  ∀ {T : Type} {ro : ring_like_op T},
-    ring_like_prop T
-    → rngl_has_opp_or_psub T = true
-      → rngl_is_ordered T = true → ∀ a b : T, (0 ≤ a)%L → (0 < b)%L → (0 < a + b)%L
-rngl_lt_0_add:
-  ∀ {T : Type} {ro : ring_like_op T},
-    ring_like_prop T
-    → rngl_has_opp_or_psub T = true
-      → rngl_is_ordered T = true → ∀ a b : T, (0 < a)%L → (0 ≤ b)%L → (0 < a + b)%L
-*)
 apply rngl_le_neq.
+apply (rngl_opp_neg_pos Hop Hor).
 split. {
   apply (rngl_le_0_add Hos Hor). {
     apply (rngl_mul_nonneg_nonneg Hos Hor).
@@ -2273,9 +2259,44 @@ Definition gc_add_overflow a b :=
       (Re a / gc_modulus a + Re b / gc_modulus b ≤? 0)%L
     else true.
 
+(* to be completed
+Check rngl_le_0_add.
+Check rngl_le_0_mul.
+Check rngl_mul_nonneg_nonneg.
+Check rngl_mul_nonpos_nonpos.
+Check rngl_add_nonneg_pos.
+Check rngl_mul_pos_pos.
+Check rngl_lt_0_add.
+Search (0 ≤ _ * _)%L.
+Search (0 ≤ _ + _)%L.
+(* est-ce qu'il faut que je renomme rngl_0_le_2 en rngl_2_nonneg ? *)
+(* et gc_add_modulus_re en gc_add_modulus_Re_nonneg ? *)
+...
+(*
+problèmes de nommage :
+rngl_mul_nonneg_nonneg
+     : rngl_has_opp_or_psub T = true
+       → rngl_is_ordered T = true
+         → ∀ a b : T, (0 ≤ a)%L → (0 ≤ b)%L → (0 ≤ a * b)%L
+rngl_le_0_add
+     : rngl_has_opp_or_psub T = true
+       → rngl_is_ordered T = true
+         → ∀ a b : T, (0 ≤ a)%L → (0 ≤ b)%L → (0 ≤ a + b)%L
+...
+rngl_add_nonneg_pos:
+  ∀ {T : Type} {ro : ring_like_op T},
+    ring_like_prop T
+    → rngl_has_opp_or_psub T = true
+      → rngl_is_ordered T = true → ∀ a b : T, (0 ≤ a)%L → (0 < b)%L → (0 < a + b)%L
+rngl_lt_0_add:
+  ∀ {T : Type} {ro : ring_like_op T},
+    ring_like_prop T
+    → rngl_has_opp_or_psub T = true
+      → rngl_is_ordered T = true → ∀ a b : T, (0 < a)%L → (0 ≤ b)%L → (0 < a + b)%L
+*)
+
 (* trigonometry equivalent to (θ₁+θ₂)/2 = θ₁/2 + θ₂/2, which
    works only if θ₁+θ₂ < 2π. Otherwise π has to be added. *)
-(* to be completed
 Theorem gc_sqrt_mul :
   ∀ a b,
   (√(a * b) = if gc_add_overflow a b then - (√a * √b) else √a * √b)%C.
