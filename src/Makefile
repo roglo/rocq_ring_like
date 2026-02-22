@@ -24,7 +24,7 @@ uninstall:
 	@rm -rf $(OPAM_SWITCH_PREFIX)/lib/coq/user-contrib/RingLike
 
 local_opam_pin_add:
-	opam remove --force rocq-ring-like 2>/dev/null || true
+	opam remove --force rocq-ring-like -y 2>/dev/null || true
 	opam pin add rocq-ring-like ../ -n -y
 	opam reinstall rocq-ring-like -y -w
 
