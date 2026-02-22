@@ -2260,20 +2260,6 @@ Definition gc_add_overflow a b :=
     else true.
 
 (* to be completed
-(*
-problèmes de nommage :
-rngl_add_nonneg_pos:
-  ∀ {T : Type} {ro : ring_like_op T},
-    ring_like_prop T
-    → rngl_has_opp_or_psub T = true
-      → rngl_is_ordered T = true → ∀ a b : T, (0 ≤ a)%L → (0 < b)%L → (0 < a + b)%L
-rngl_lt_0_add:
-  ∀ {T : Type} {ro : ring_like_op T},
-    ring_like_prop T
-    → rngl_has_opp_or_psub T = true
-      → rngl_is_ordered T = true → ∀ a b : T, (0 < a)%L → (0 ≤ b)%L → (0 < a + b)%L
-*)
-
 (* trigonometry equivalent to (θ₁+θ₂)/2 = θ₁/2 + θ₂/2, which
    works only if θ₁+θ₂ < 2π. Otherwise π has to be added. *)
 Theorem gc_sqrt_mul :
