@@ -481,7 +481,7 @@ Proof.
 intros Hos Hto.
 specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 intros *.
-apply (rngl_le_0_add Hos Hor); apply (rngl_squ_nonneg Hos Hto).
+apply (rngl_add_nonneg_nonneg Hos Hor); apply (rngl_squ_nonneg Hos Hto).
 Qed.
 
 Theorem rngl_mul_le_mono_nonneg_l :

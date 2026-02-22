@@ -2135,7 +2135,7 @@ rewrite H2.
 apply rngl_le_neq.
 apply (rngl_opp_neg_pos Hop Hor).
 split. {
-  apply (rngl_le_0_add Hos Hor). {
+  apply (rngl_add_nonneg_nonneg Hos Hor). {
     apply (rngl_mul_nonneg_nonneg Hos Hor).
     apply rl_sqrt_sub_mod_re_div_2_nonneg.
     apply rl_sqrt_add_mod_re_div_2_nonneg.
@@ -2260,29 +2260,8 @@ Definition gc_add_overflow a b :=
     else true.
 
 (* to be completed
-Check rngl_le_0_add.
-Check rngl_le_0_mul.
-Check rngl_mul_nonneg_nonneg.
-Check rngl_mul_nonpos_nonpos.
-Check rngl_add_nonneg_pos.
-Check rngl_mul_pos_pos.
-Check rngl_lt_0_add.
-Search (0 ≤ _ * _)%L.
-Search (0 ≤ _ + _)%L.
-(* est-ce qu'il faut que je renomme rngl_0_le_2 en rngl_2_nonneg ? *)
-(* et gc_add_modulus_re en gc_add_modulus_Re_nonneg ? *)
-...
 (*
 problèmes de nommage :
-rngl_mul_nonneg_nonneg
-     : rngl_has_opp_or_psub T = true
-       → rngl_is_ordered T = true
-         → ∀ a b : T, (0 ≤ a)%L → (0 ≤ b)%L → (0 ≤ a * b)%L
-rngl_le_0_add
-     : rngl_has_opp_or_psub T = true
-       → rngl_is_ordered T = true
-         → ∀ a b : T, (0 ≤ a)%L → (0 ≤ b)%L → (0 ≤ a + b)%L
-...
 rngl_add_nonneg_pos:
   ∀ {T : Type} {ro : ring_like_op T},
     ring_like_prop T
@@ -2425,7 +2404,7 @@ destruct ov. {
       exfalso; apply H; clear H.
       apply rngl_le_neq.
       split. {
-        apply (rngl_le_0_add Hos Hor). {
+        apply (rngl_add_nonneg_nonneg Hos Hor). {
           apply (rngl_mul_nonneg_nonneg Hos Hor).
           now apply Re_sqrt_nonneg.
           apply Im_sqrt_nonneg.
@@ -2543,7 +2522,7 @@ destruct ov. {
         }
         apply rl_sqrt_add_mod_re_div_2_nonneg.
       } {
-        apply (rngl_le_0_add Hos Hor). {
+        apply (rngl_add_nonneg_nonneg Hos Hor). {
           apply (rngl_mul_nonneg_nonneg Hos Hor).
           subst aa; apply rl_sqrt_add_mod_re_div_2_nonneg.
           subst ab; apply rl_sqrt_add_mod_re_div_2_nonneg.
@@ -2717,7 +2696,7 @@ progress f_equal. {
     destruct (rngl_leb_dec 0 (Re (a * b))) as [Hrab| Hrab]. {
       apply rngl_leb_le in Hrab.
       rewrite <- (rngl_abs_nonneg_eq Hop Hor (_ + _)). 2: {
-        apply (rngl_le_0_add Hos Hor). {
+        apply (rngl_add_nonneg_nonneg Hos Hor). {
           apply rl_sqrt_nonneg.
           apply (rngl_mul_nonneg_nonneg Hos Hor). {
             apply (rngl_le_0_sub Hop Hor), gre_bound.
@@ -2732,7 +2711,7 @@ progress f_equal. {
         apply (rngl_div_nonneg Hop Hiv Hto). 2: {
           apply (rngl_0_lt_2 Hos Hc1 Hto).
         }
-        apply (rngl_le_0_add Hos Hor); [ | easy ].
+        apply (rngl_add_nonneg_nonneg Hos Hor); [ | easy ].
         apply gc_modulus_nonneg.
       }
       remember (rngl_signp _ * _)%L as ab eqn:Hab.
@@ -2956,7 +2935,7 @@ rewrite <- (rngl_mul_signp_abs (Im b)) at 1.
       symmetry.
       apply (rngl_add_sub_eq_l Hos).
       rewrite <- (rngl_abs_nonneg_eq Hop Hor (_ + _)). 2: {
-        apply (rngl_le_0_add Hos Hor). {
+        apply (rngl_add_nonneg_nonneg Hos Hor). {
           apply rl_sqrt_nonneg.
           apply (rngl_mul_nonneg_nonneg Hos Hor). {
             apply (rngl_le_0_sub Hop Hor).

@@ -713,7 +713,7 @@ apply iff_sym.
 apply (rngl_lt_add_lt_sub_r Hop Hor).
 Qed.
 
-Theorem rngl_le_0_add :
+Theorem rngl_add_nonneg_nonneg :
   rngl_has_opp_or_psub T = true →
   rngl_is_ordered T = true →
   ∀ a b, (0 ≤ a → 0 ≤ b → 0 ≤ a + b)%L.
@@ -990,7 +990,7 @@ destruct c; [ pauto | ].
 apply (rngl_leb_gt_iff Hto) in Hc.
 apply (rngl_le_opp_l Hop Hor).
 apply rngl_lt_le_incl in Hc.
-now apply (rngl_le_0_add Hos Hor).
+now apply (rngl_add_nonneg_nonneg Hos Hor).
 Qed.
 
 Theorem rngl_abs_nonneg_eq :
