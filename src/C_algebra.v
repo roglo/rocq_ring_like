@@ -2341,6 +2341,16 @@ destruct ov. {
     }
     move H' before Hbz; clear Hbz; rename H' into Hbz.
     move Hbz before Haz.
+    cbn.
+    rewrite (rngl_div_opp_l Hop Hiv).
+    rewrite (rngl_add_opp_r Hop).
+    rewrite (gc_modulus_opp Hop).
+    apply (rngl_lt_sub_0 Hop Hor).
+    rewrite gc_mul_opp_r in Hab.
+Search (√(- _))%C.
+specialize (gc_sqrt_neg b) as H.
+Search (rngl_signp (- _)).
+Print rngl_signp.
 ...
     rewrite gc_mul_opp_r in H.
     do 2 rewrite gc_sqrt_neg in H.
