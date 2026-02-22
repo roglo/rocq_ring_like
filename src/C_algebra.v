@@ -2082,16 +2082,6 @@ progress unfold rngl_signp.
 now destruct (0 ≤? a)%L; [ right | left ].
 Qed.
 
-Definition gc_add_overflow a b :=
-  if (0 ≤? Im a)%L then
-    if (0 ≤? Im b)%L then false
-    else
-      (0 ≤? Re a / gc_modulus a + Re b / gc_modulus b)%L
-  else
-    if (0 ≤? Im b)%L then
-      (Re a / gc_modulus a + Re b / gc_modulus b ≤? 0)%L
-    else true.
-
 Theorem gc_sqrt_mul_of_nonneg_Im :
   ∀ a b,
   (0 ≤ Re a)%L ∨ (0 ≤ Re b)%L
@@ -2272,6 +2262,16 @@ destruct H4 as [H4| H4]. {
   }
 }
 Qed.
+
+Definition gc_add_overflow a b :=
+  if (0 ≤? Im a)%L then
+    if (0 ≤? Im b)%L then false
+    else
+      (0 ≤? Re a / gc_modulus a + Re b / gc_modulus b)%L
+  else
+    if (0 ≤? Im b)%L then
+      (Re a / gc_modulus a + Re b / gc_modulus b ≤? 0)%L
+    else true.
 
 (* trigonometry equivalent to (θ₁+θ₂)/2 = θ₁/2 + θ₂/2, which
    works only if θ₁+θ₂ < 2π. Otherwise π has to be added. *)
