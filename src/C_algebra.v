@@ -1,4 +1,5 @@
 Set Nested Proofs Allowed.
+Unset Suggest Proof Using.
 
 Require Import Stdlib.ZArith.ZArith.
 Require Import Init.Nat.
@@ -694,7 +695,7 @@ Qed.
 Theorem gc_sub_diag :
   rngl_has_opp_or_psub T = true →
   ∀ z, (z - z = 0)%C.
-Proof using rp.
+Proof.
 intros Hos *.
 progress unfold gc_sub.
 now do 2 rewrite (rngl_sub_diag Hos).
@@ -712,7 +713,7 @@ Qed.
 Theorem gc_add_move_0_r :
   rngl_has_opp T = true →
   ∀ a b, (a + b = 0)%C ↔ a = (- b)%C.
-Proof using rp.
+Proof.
 intros Hop.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 intros.
@@ -731,7 +732,7 @@ Qed.
 Theorem gc_sub_move_0_r :
   rngl_has_opp T = true →
   ∀ a b, (a - b = 0)%C ↔ a = b.
-Proof using rp.
+Proof.
 intros Hop.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 intros.
@@ -928,7 +929,7 @@ Context {Hto : rngl_is_totally_ordered T = true}.
 Add Ring rngl_ring : (rngl_ring_theory Hic Hop).
 
 Theorem gc_squ_sub_squ : ∀ a b, (a² - b² = (a + b) * (a - b))%C.
-Proof using Hic Hop.
+Proof.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 intros.
 apply eq_gc_eq.
