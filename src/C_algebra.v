@@ -2084,7 +2084,7 @@ Qed.
 
 Theorem gc_sqrt_mul_of_nonneg_Im :
   ∀ a b,
-  (0 ≤ Re a)%L ∨ (0 ≤ Re b)%L
+  (Im a ≠ 0 ∨ Im b ≠ 0 ∨ 0 ≤ Re a ∨ 0 ≤ Re b)%L
   → (0 ≤ Im a)%L
   → (0 ≤ Im b)%L
   → (√(a * b) = √a * √b)%C.
@@ -2258,6 +2258,8 @@ move H5 after Hia; rename H5 into Hra.
 move H4 after Hia; rename H4 into Hrb.
 move H3 before Hib; rename H3 into Hid.
 move H2 before Hrb; rename H2 into Hrc.
+destruct Hrab as [Hrab| Hrab]; [ easy | ].
+destruct Hrab as [Hrab| Hrab]; [ easy | ].
 destruct Hrab as [Hrab| Hrab]. {
   apply (rngl_le_antisymm Hor) in Hrab; [ | easy ].
   now apply Haz, eq_gc_eq.
