@@ -732,6 +732,31 @@ split; [ apply (rngl_abs_nonneg Hop Hto) | ].
 now apply rngl_le_neq.
 Qed.
 
+Theorem rngl_mul_signp_abs :
+  rngl_has_opp T = true →
+  rngl_is_totally_ordered T = true →
+  ∀ a : T, (rngl_signp a * ∣ a ∣)%L = a.
+Proof.
+intros Hop Hto.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+intros.
+destruct (rngl_leb_dec 0%L a) as [Hza| Hza]. {
+  apply rngl_leb_le in Hza.
+  rewrite rngl_signp_of_nonneg; [ | easy ].
+  rewrite rngl_mul_1_l.
+  now apply (rngl_abs_nonneg_eq Hop Hor).
+} {
+  apply (rngl_leb_gt_iff Hto) in Hza.
+  rewrite (rngl_signp_of_neg Hor); [ | easy ].
+  rewrite (rngl_mul_opp_l Hop).
+  rewrite rngl_mul_1_l.
+  rewrite <- (rngl_opp_involutive Hop).
+  f_equal.
+  apply (rngl_abs_nonpos_eq Hop Hto).
+  now apply rngl_lt_le_incl.
+}
+Qed.
+
 End a.
 
 Arguments rngl_mul_le_mono_nonneg_r {T ro rp} Hop Hor (a b c)%_L.
