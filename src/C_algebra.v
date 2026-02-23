@@ -2163,7 +2163,6 @@ now intros H; apply H1z; apply eq_gc_eq.
 now intros H; apply H2z; apply eq_gc_eq.
 Qed.
 
-(* to be completed
 Theorem gc_sqrt_mul_of_neg_Im :
   ∀ z₁ z₂,
   (Im z₁ < 0)%L
@@ -2281,54 +2280,16 @@ destruct H4 as [H4| H4]. {
   } {
     apply eq_gc_sqrt_sub_modulus_Re_div_2_0 in H5.
     destruct H5 as (H5, H6).
-    move H6 before Hi2; clear Hi2; rename H6 into Hi2.
-...
-    apply (rngl_add_move_0_r Hop) in H1.
-    apply (rngl_eq_add_0 Hos Hor) in H1; cycle 1.
-    apply rl_sqrt_add_mod_re_div_2_nonneg.
-    apply (rngl_mul_nonneg_nonneg Hos Hor). {
-      rewrite Hi1, rngl_signp_0, rngl_mul_1_l.
-      rewrite Hi2, rngl_signp_0, rngl_mul_1_l.
-      apply rl_sqrt_add_mod_re_div_2_nonneg.
-    } {
-      apply rl_sqrt_add_mod_re_div_2_nonneg.
-    }
-    destruct H1 as (H1, H6).
-    apply eq_gc_sqrt_add_modulus_Re_div_2_0 in H1.
-    destruct H1 as (H1, _).
-    apply (rngl_le_antisymm Hor) in H2; [ clear H1 | easy ].
-    assert (H : z = 0%C) by now apply eq_gc_eq.
-    rewrite Heqz in H.
-    now apply gc_integral' in H; destruct H.
+    rewrite H6 in Hi2.
+    now apply rngl_lt_irrefl in Hi2.
   }
 }
 rewrite H4, (rngl_mul_0_r Hos), (rngl_sub_0_l Hop) in H1.
-rewrite (rngl_opp_involutive Hop) in H1.
 apply eq_gc_sqrt_add_modulus_Re_div_2_0 in H4.
 destruct H4 as (Hrb, H6).
-clear Hi2; rename H6 into Hi2.
-apply (rngl_integral Hos Hio) in H5.
-destruct H5 as [H5| H5]; cycle 1. {
-  rewrite H5, (rngl_mul_0_r Hos) in H1.
-  apply eq_gc_sqrt_add_modulus_Re_div_2_0 in H1.
-  destruct H1 as (H1, _).
-  apply (rngl_le_antisymm Hor) in H2; [ clear H1 | easy ].
-  assert (H : z = 0%C) by now apply eq_gc_eq.
-  rewrite Heqz in H.
-  now apply gc_integral' in H; destruct H.
-}
-clear z Heqz H1 H2 H3.
-apply (rngl_integral Hos Hio) in H5.
-destruct H5 as [H5| H5]; [ now apply (rngl_signp_neq_0 Hop Hc1) in H5 | ].
-apply eq_gc_sqrt_add_modulus_Re_div_2_0 in H5.
-destruct H5 as (Hra, Hia).
-progress unfold gc_negative_real in Hrab.
-destruct Hrab as [H| H]; apply H; clear H.
-1, 2: split; [ apply rngl_le_neq; split | easy ]; [ easy | ].
-now intros H; apply H1z; apply eq_gc_eq.
-now intros H; apply H2z; apply eq_gc_eq.
+rewrite H6 in Hi2.
+now apply rngl_lt_irrefl in Hi2.
 Qed.
-*)
 
 Definition gc_add_overflow z₁ z₂ :=
   if (0 ≤? Im z₁)%L then
