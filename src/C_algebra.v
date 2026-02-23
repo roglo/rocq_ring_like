@@ -2005,13 +2005,13 @@ Proof. easy. Qed.
 Theorem Im_mul : ∀ z₁ z2, Im (z₁ * z2) = (Im z₁ * Re z2 + Re z₁ * Im z2)%L.
 Proof. easy. Qed.
 
-Definition negative_real z := (Re z < 0 ∧ Im z = 0)%L.
+Definition gc_negative_real z := (Re z < 0 ∧ Im z = 0)%L.
 
 Theorem gc_sqrt_mul_of_nonneg_Im :
   ∀ z₁ z₂,
   (0 ≤ Im z₁)%L
   → (0 ≤ Im z₂)%L
-  → (¬ negative_real z₁ ∨ ¬ negative_real z₂)
+  → (¬ gc_negative_real z₁ ∨ ¬ gc_negative_real z₂)
   → (√(z₁ * z₂) = √z₁ * √z₂)%C.
 Proof.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
@@ -2157,7 +2157,7 @@ apply (rngl_integral Hos Hio) in H5.
 destruct H5 as [H5| H5]; [ now apply (rngl_signp_neq_0 Hop Hc1) in H5 | ].
 apply eq_gc_sqrt_add_modulus_Re_div_2_0 in H5.
 destruct H5 as (Hra, Hia).
-progress unfold negative_real in Hrab.
+progress unfold gc_negative_real in Hrab.
 destruct Hrab as [H| H]; apply H; clear H.
 1, 2: split; [ apply rngl_le_neq; split | easy ]; [ easy | ].
 now intros H; apply H1z; apply eq_gc_eq.
