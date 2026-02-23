@@ -757,6 +757,17 @@ destruct (rngl_leb_dec 0%L a) as [Hza| Hza]. {
 }
 Qed.
 
+Theorem rngl_squ_signp :
+  rngl_has_opp T = true →
+  ∀ a, (rngl_signp a)² = 1%L.
+Proof.
+intros Hop *.
+progress unfold rngl_signp.
+destruct (0 ≤? a)%L.
+apply rngl_squ_1.
+apply (rngl_squ_opp_1 Hop).
+Qed.
+
 End a.
 
 Arguments rngl_mul_le_mono_nonneg_r {T ro rp} Hop Hor (a b c)%_L.

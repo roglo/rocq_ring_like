@@ -998,15 +998,7 @@ apply (rngl_le_add_r Hos Hor).
 apply (rngl_squ_nonneg Hos Hto).
 Qed.
 
-Theorem rngl_squ_signp a : (rngl_signp a)² = 1%L.
-Proof.
-progress unfold rngl_signp.
-destruct (0 ≤? a)%L.
-apply rngl_squ_1.
-apply (rngl_squ_opp_1 Hop).
-Qed.
-
-(**)
+(*****)
 
 Theorem gc_squ_sqrt z : gc_squ (gc_sqrt z) = z.
 Proof.
@@ -1030,7 +1022,7 @@ f_equal. {
   rewrite rngl_mul_assoc.
   rewrite (rngl_mul_mul_swap Hic (rngl_signp y)).
   rewrite fold_rngl_squ.
-  rewrite rngl_squ_signp, rngl_mul_1_l.
+  rewrite (rngl_squ_signp Hop), rngl_mul_1_l.
   do 2 rewrite fold_rngl_squ.
   rewrite rngl_squ_sqrt. 2: {
     apply (rngl_div_nonneg Hop Hiv Hto). 2: {
@@ -1285,7 +1277,7 @@ rewrite rngl_squ_sqrt. 2: {
 rewrite fold_rl_modl.
 rewrite fold_gc_modulus.
 rewrite (rngl_squ_mul Hic).
-rewrite rngl_squ_signp.
+rewrite (rngl_squ_signp Hop).
 rewrite rngl_mul_1_l.
 rewrite rngl_squ_sqrt. 2: {
   apply (rngl_div_nonneg Hop Hiv Hto). 2: {
