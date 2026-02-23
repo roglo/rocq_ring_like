@@ -2085,11 +2085,11 @@ Qed.
 Definition negative_real a := (Re a < 0 ∧ Im a = 0)%L.
 
 Theorem gc_sqrt_mul_of_nonneg_Im :
-  ∀ a b,
-  (0 ≤ Im a)%L
-  → (0 ≤ Im b)%L
-  → (¬ negative_real a ∨ ¬ negative_real b)
-  → (√(a * b) = √a * √b)%C.
+  ∀ z₁ z₂,
+  (0 ≤ Im z₁)%L
+  → (0 ≤ Im z₂)%L
+  → (¬ negative_real z₁ ∨ ¬ negative_real z₂)
+  → (√(z₁ * z₂) = √z₁ * √z₂)%C.
 Proof.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
@@ -2101,35 +2101,35 @@ destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
   now do 2 rewrite (H1 (Re _)), (H1 (Im _)).
 }
 specialize (rngl_integral_or_inv_pdiv_eq_dec_order Hiv Hor) as Hio.
-specialize (rngl_2_neq_0 Hos Hc1 Hto) as H2z.
-intros * Hia Hib Hrab.
-destruct (gc_eq_dec Heo a 0) as [Haz| Haz]. {
-  subst a.
+specialize (rngl_2_neq_0 Hos Hc1 Hto) as H2nz.
+intros * Hi1 Hi2 Hrab.
+destruct (gc_eq_dec Heo z₁ 0) as [H1z| H1z]. {
+  subst z₁.
   rewrite (gc_mul_0_l Hos).
   rewrite gc_sqrt_0.
   symmetry; apply (gc_mul_0_l Hos).
 }
-destruct (gc_eq_dec Heo b 0) as [Hbz| Hbz]. {
-  subst b.
+destruct (gc_eq_dec Heo z₂ 0) as [H2z| H2z]. {
+  subst z₂.
   rewrite (gc_mul_0_r Hos).
   rewrite gc_sqrt_0.
   symmetry; apply (gc_mul_0_r Hos).
 }
-specialize (gc_squ_sqrt_mul a b) as Hab.
-apply gc_eq_cases in Hab.
-destruct Hab as [| Hab]; [ easy | exfalso ].
-progress unfold gc_sqrt in Hab.
-remember (a * b)%C as c.
-move c before a.
-progress unfold gc_mul in Hab; cbn in Hab.
-injection Hab; clear Hab; intros H2 H1.
+specialize (gc_squ_sqrt_mul z₁ z₂) as H12.
+apply gc_eq_cases in H12.
+destruct H12 as [| H12]; [ easy | exfalso ].
+progress unfold gc_sqrt in H12.
+remember (z₁ * z₂)%C as z.
+move z before z₂.
+progress unfold gc_mul in H12; cbn in H12.
+injection H12; clear H12; intros H2 H1.
 move H1 after H2.
 rewrite rngl_mul_assoc in H1, H2.
 rewrite (rngl_mul_mul_swap Hic (rngl_signp _)) in H1.
 rewrite (rngl_mul_comm Hic _ (rngl_signp _)) in H2.
-specialize (rl_sqrt_nonneg ((‖ c ‖ + Re c) / 2)%L) as H3.
+specialize (rl_sqrt_nonneg ((‖ z ‖ + Re z) / 2)%L) as H3.
 specialize (H3 (gc_modulus_add_re_div_2_nonneg Hop Hiv Hto _)).
-specialize (rl_sqrt_nonneg ((‖ c ‖ - Re c) / 2)%L) as H4.
+specialize (rl_sqrt_nonneg ((‖ z ‖ - Re z) / 2)%L) as H4.
 specialize (H4 (gc_modulus_sub_re_div_2_nonneg Hop Hiv Hto _)).
 apply (rngl_nlt_ge Hor) in H4.
 apply H4; clear H4.
@@ -2139,13 +2139,13 @@ apply (rngl_opp_neg_pos Hop Hor).
 split. {
   apply (rngl_add_nonneg_nonneg Hos Hor). {
     apply (rngl_mul_nonneg_nonneg Hos Hor).
-    rewrite (rngl_signp_of_nonneg (Im b)); [ | easy ].
+    rewrite (rngl_signp_of_nonneg (Im _)); [ | easy ].
     rewrite rngl_mul_1_l.
     apply rl_sqrt_sub_mod_re_div_2_nonneg.
     apply rl_sqrt_add_mod_re_div_2_nonneg.
   } {
     apply (rngl_mul_nonneg_nonneg Hos Hor).
-    rewrite (rngl_signp_of_nonneg (Im a)); [ | easy ].
+    rewrite (rngl_signp_of_nonneg (Im _)); [ | easy ].
     rewrite rngl_mul_1_l.
     apply rl_sqrt_add_mod_re_div_2_nonneg.
     apply rl_sqrt_sub_mod_re_div_2_nonneg.
@@ -2154,18 +2154,18 @@ split. {
 intros H4; symmetry in H4.
 apply (rngl_eq_add_0 Hos Hor) in H4; cycle 1. {
   apply (rngl_mul_nonneg_nonneg Hos Hor).
-  rewrite (rngl_signp_of_nonneg (Im b)); [ | easy ].
+  rewrite (rngl_signp_of_nonneg (Im _)); [ | easy ].
   rewrite rngl_mul_1_l.
   apply rl_sqrt_sub_mod_re_div_2_nonneg.
   apply rl_sqrt_add_mod_re_div_2_nonneg.
 } {
   apply (rngl_mul_nonneg_nonneg Hos Hor).
-  rewrite (rngl_signp_of_nonneg (Im a)); [ | easy ].
+  rewrite (rngl_signp_of_nonneg (Im _)); [ | easy ].
   rewrite rngl_mul_1_l.
   apply rl_sqrt_add_mod_re_div_2_nonneg.
   apply rl_sqrt_sub_mod_re_div_2_nonneg.
 }
-clear Hia.
+clear Hi1.
 destruct H4 as (H4, H5).
 rewrite H4, rngl_add_0_l in H2.
 rewrite H5, (rngl_opp_0 Hop) in H2.
@@ -2175,12 +2175,12 @@ destruct H2 as (H2, H3).
 rewrite H3, rngl_signp_0, rngl_mul_1_l in H1.
 apply (rngl_integral Hos Hio) in H4.
 destruct H4 as [H4| H4]. {
-  rewrite (rngl_signp_of_nonneg (Im b)) in H4; [ | easy ].
+  rewrite (rngl_signp_of_nonneg (Im _)) in H4; [ | easy ].
   rewrite rngl_mul_1_l in H4.
   rewrite H4, (rngl_mul_0_l Hos), (rngl_sub_0_r Hos) in H1.
   apply eq_gc_sqrt_sub_modulus_Re_div_2_0 in H4.
   destruct H4 as (H4, H6).
-  move H6 after Hib; rename H6 into Hia.
+  move H6 after Hi2; rename H6 into Hi1.
   apply (rngl_integral Hos Hio) in H5.
   destruct H5 as [H5| H5]. {
     rewrite (rngl_mul_mul_swap Hic (rngl_signp _)), <- rngl_mul_assoc in H1.
@@ -2188,28 +2188,28 @@ destruct H4 as [H4| H4]. {
     apply eq_gc_sqrt_add_modulus_Re_div_2_0 in H1.
     destruct H1 as (H1, _).
     apply (rngl_le_antisymm Hor) in H2; [ clear H1 | easy ].
-    assert (H : c = 0%C) by now apply eq_gc_eq.
-    rewrite Heqc in H.
+    assert (H : z = 0%C) by now apply eq_gc_eq.
+    rewrite Heqz in H.
     apply (gc_integral Hic Hop Hio) in H.
     destruct H as [| H]; [ easy | ].
     destruct H as [| H]; [ easy | ].
     destruct H as [H| H]; cbn in H. {
       apply eq_rngl_add_squ_0 in H.
-      now apply Haz, eq_gc_eq.
+      now apply H1z, eq_gc_eq.
     } {
       apply eq_rngl_add_squ_0 in H.
-      now apply Hbz, eq_gc_eq.
+      now apply H2z, eq_gc_eq.
     }
   } {
     apply eq_gc_sqrt_sub_modulus_Re_div_2_0 in H5.
     destruct H5 as (H5, H6).
-    move H6 before Hib; clear Hib; rename H6 into Hib.
+    move H6 before Hi2; clear Hi2; rename H6 into Hi2.
     apply (rngl_add_move_0_r Hop) in H1.
     apply (rngl_eq_add_0 Hos Hor) in H1; cycle 1.
     apply rl_sqrt_add_mod_re_div_2_nonneg.
     apply (rngl_mul_nonneg_nonneg Hos Hor). {
-      rewrite Hia, rngl_signp_0, rngl_mul_1_l.
-      rewrite Hib, rngl_signp_0, rngl_mul_1_l.
+      rewrite Hi1, rngl_signp_0, rngl_mul_1_l.
+      rewrite Hi2, rngl_signp_0, rngl_mul_1_l.
       apply rl_sqrt_add_mod_re_div_2_nonneg.
     } {
       apply rl_sqrt_add_mod_re_div_2_nonneg.
@@ -2218,17 +2218,17 @@ destruct H4 as [H4| H4]. {
     apply eq_gc_sqrt_add_modulus_Re_div_2_0 in H1.
     destruct H1 as (H1, _).
     apply (rngl_le_antisymm Hor) in H2; [ clear H1 | easy ].
-    assert (H : c = 0%C) by now apply eq_gc_eq.
-    rewrite Heqc in H.
+    assert (H : z = 0%C) by now apply eq_gc_eq.
+    rewrite Heqz in H.
     apply (gc_integral Hic Hop Hio) in H.
     destruct H as [| H]; [ easy | ].
     destruct H as [| H]; [ easy | ].
     destruct H as [H| H]; cbn in H. {
       apply eq_rngl_add_squ_0 in H.
-      now apply Haz, eq_gc_eq.
+      now apply H1z, eq_gc_eq.
     } {
       apply eq_rngl_add_squ_0 in H.
-      now apply Hbz, eq_gc_eq.
+      now apply H2z, eq_gc_eq.
     }
   }
 }
@@ -2236,27 +2236,27 @@ rewrite H4, (rngl_mul_0_r Hos), (rngl_sub_0_l Hop) in H1.
 rewrite (rngl_opp_involutive Hop) in H1.
 apply eq_gc_sqrt_add_modulus_Re_div_2_0 in H4.
 destruct H4 as (Hrb, H6).
-clear Hib; rename H6 into Hib.
+clear Hi2; rename H6 into Hi2.
 apply (rngl_integral Hos Hio) in H5.
 destruct H5 as [H5| H5]; cycle 1. {
   rewrite H5, (rngl_mul_0_r Hos) in H1.
   apply eq_gc_sqrt_add_modulus_Re_div_2_0 in H1.
   destruct H1 as (H1, _).
   apply (rngl_le_antisymm Hor) in H2; [ clear H1 | easy ].
-  assert (H : c = 0%C) by now apply eq_gc_eq.
-  rewrite Heqc in H.
+  assert (H : z = 0%C) by now apply eq_gc_eq.
+  rewrite Heqz in H.
   apply (gc_integral Hic Hop Hio) in H.
   destruct H as [| H]; [ easy | ].
   destruct H as [| H]; [ easy | ].
   destruct H as [H| H]; cbn in H. {
     apply eq_rngl_add_squ_0 in H.
-    now apply Haz, eq_gc_eq.
+    now apply H1z, eq_gc_eq.
   } {
     apply eq_rngl_add_squ_0 in H.
-    now apply Hbz, eq_gc_eq.
+    now apply H2z, eq_gc_eq.
   }
 }
-clear c Heqc H1 H2 H3.
+clear z Heqz H1 H2 H3.
 apply (rngl_integral Hos Hio) in H5.
 destruct H5 as [H5| H5]; [ now apply (rngl_signp_neq_0 Hc1) in H5 | ].
 apply eq_gc_sqrt_add_modulus_Re_div_2_0 in H5.
@@ -2264,8 +2264,8 @@ destruct H5 as (Hra, Hia).
 progress unfold negative_real in Hrab.
 destruct Hrab as [H| H]; apply H; clear H.
 1, 2: split; [ apply rngl_le_neq; split | easy ]; [ easy | ].
-now intros H; apply Haz; apply eq_gc_eq.
-now intros H; apply Hbz; apply eq_gc_eq.
+now intros H; apply H1z; apply eq_gc_eq.
+now intros H; apply H2z; apply eq_gc_eq.
 Qed.
 
 Definition gc_add_overflow a b :=
