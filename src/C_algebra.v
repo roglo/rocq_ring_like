@@ -1983,11 +1983,6 @@ split; intros Hrz. {
 }
 Qed.
 
-(*****)
-
-Theorem rngl_neq_symm : ∀ a b : T, (a ≠ b → b ≠ a)%L.
-Proof. easy. Qed.
-
 Theorem eq_gc_modulus_0 : ∀ z, (‖ z ‖ = 0)%L ↔ z = 0%C.
 Proof.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
@@ -2009,13 +2004,6 @@ Proof. easy. Qed.
 
 Theorem Im_mul : ∀ z₁ z2, Im (z₁ * z2) = (Im z₁ * Re z2 + Re z₁ * Im z2)%L.
 Proof. easy. Qed.
-
-Theorem rngl_signp_dec : ∀ a, ({rngl_signp a = -1} + {rngl_signp a = 1})%L.
-Proof.
-intros.
-progress unfold rngl_signp.
-now destruct (0 ≤? a)%L; [ right | left ].
-Qed.
 
 Definition negative_real z := (Re z < 0 ∧ Im z = 0)%L.
 
