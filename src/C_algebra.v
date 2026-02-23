@@ -2082,11 +2082,13 @@ progress unfold rngl_signp.
 now destruct (0 ≤? a)%L; [ right | left ].
 Qed.
 
+Definition negative_real a := (Re a < 0 ∧ Im a = 0)%L.
+
 Theorem gc_sqrt_mul_of_nonneg_Im :
   ∀ a b,
-  (Im a ≠ 0 ∨ Im b ≠ 0)%L
-  → (0 ≤ Im a)%L
+  (0 ≤ Im a)%L
   → (0 ≤ Im b)%L
+  → (¬ negative_real a ∨ ¬ negative_real b)
   → (√(a * b) = √a * √b)%C.
 Proof.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
@@ -2100,7 +2102,7 @@ destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
 }
 specialize (rngl_integral_or_inv_pdiv_eq_dec_order Hiv Hor) as Hio.
 specialize (rngl_2_neq_0 Hos Hc1 Hto) as H2z.
-intros * Hrab Hia Hib.
+intros * Hia Hib Hrab.
 destruct (gc_eq_dec Heo a 0) as [Haz| Haz]. {
   subst a.
   rewrite (gc_mul_0_l Hos).
@@ -2259,7 +2261,11 @@ apply (rngl_integral Hos Hio) in H5.
 destruct H5 as [H5| H5]; [ now apply (rngl_signp_neq_0 Hc1) in H5 | ].
 apply eq_gc_sqrt_add_modulus_Re_div_2_0 in H5.
 destruct H5 as (Hra, Hia).
-now destruct Hrab.
+progress unfold negative_real in Hrab.
+destruct Hrab as [H| H]; apply H; clear H.
+1, 2: split; [ apply rngl_le_neq; split | easy ]; [ easy | ].
+now intros H; apply Haz; apply eq_gc_eq.
+now intros H; apply Hbz; apply eq_gc_eq.
 Qed.
 
 Definition gc_add_overflow a b :=
