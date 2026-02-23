@@ -89,12 +89,12 @@ Definition gc_opt_inv_or_pdiv :
 
 Theorem gc_eq_dec :
   rngl_has_eq_dec_or_order T = true →
-  ∀ a b : GComplex T, {a = b} + {a ≠ b}.
+  ∀ z₁ z₂ : GComplex T, {z₁ = z₂} + {z₁ ≠ z₂}.
 Proof.
 intros Heo.
 intros.
-destruct a as (ra, ia).
-destruct b as (rb, ib).
+destruct z₁ as (ra, ia).
+destruct z₂ as (rb, ib).
 destruct (rngl_eqb_dec ra rb) as [H1| H1]. {
   apply (rngl_eqb_eq Heo) in H1.
   subst rb.
@@ -117,7 +117,8 @@ Qed.
 Definition gc_opt_is_zero_divisor : option (GComplex T → Prop) :=
   Some (λ z, ((Re z)² + (Im z)² = 0)%L).
 
-Definition gc_opt_eq_dec : option (∀ a b : GComplex T, {a = b} + {a ≠ b}) :=
+Definition gc_opt_eq_dec :
+    option (∀ z₁ z₂ : GComplex T, {z₁ = z₂} + {z₁ ≠ z₂}) :=
   match Bool.bool_dec (rngl_has_eq_dec T) true with
   | left Hed =>
        let Heo := rngl_has_eq_dec_or_is_ordered_l Hed in
@@ -168,13 +169,12 @@ progress unfold gc_add; cbn.
 f_equal; apply rngl_add_assoc.
 Qed.
 
-Theorem gc_add_0_l :
-  ∀ a : GComplex T, (0 + a)%C = a.
+Theorem gc_add_0_l : ∀ z : GComplex T, (0 + z)%C = z.
 Proof.
 intros; cbn.
 progress unfold gc_add; cbn.
 do 2 rewrite rngl_add_0_l.
-now destruct a.
+now destruct z.
 Qed.
 
 Theorem gc_mul_assoc :
@@ -208,7 +208,7 @@ Qed.
 
 Theorem gc_opt_mul_1_l :
   rngl_has_opp_or_psub T = true →
-  ∀ a : GComplex T, (1 * a)%C = a.
+  ∀ z : GComplex T, (1 * z)%C = z.
 Proof.
 intros * Hos.
 intros; cbn.
@@ -261,7 +261,7 @@ Qed.
 Theorem gc_opt_mul_1_r :
   rngl_has_opp_or_psub T = true →
   if rngl_mul_is_comm T then not_applicable
-  else ∀ a : GComplex T, (a * 1)%L = a.
+  else ∀ z : GComplex T, (z * 1)%L = z.
 Proof.
 intros * Hos.
 remember (rngl_mul_is_comm T) as ic eqn:Hic; symmetry in Hic.
@@ -305,7 +305,7 @@ Qed.
 
 Theorem gc_opt_add_opp_diag_l :
   rngl_has_opp T = true →
-  if rngl_has_opp (GComplex T) then ∀ a : GComplex T, (- a + a)%L = 0%L
+  if rngl_has_opp (GComplex T) then ∀ z : GComplex T, (- z + z)%L = 0%L
   else not_applicable.
 Proof.
 intros * Hop.
@@ -434,7 +434,7 @@ Qed.
 
 Theorem gc_opt_mul_inv_diag_r :
   if (rngl_has_inv (GComplex T) && negb (rngl_mul_is_comm T))%bool then
-    ∀ a : GComplex T, a ≠ 0%L → (a * a⁻¹)%L = 1%L
+    ∀ z : GComplex T, z ≠ 0%L → (z * z⁻¹)%L = 1%L
   else not_applicable.
 Proof.
 cbn.
@@ -937,7 +937,7 @@ apply eq_gc_eq.
 split; cbn; ring.
 Qed.
 
-Theorem gc_inv_rngl_inv : ∀ a, gc_inv a = rngl_inv a.
+Theorem gc_inv_rngl_inv : ∀ z, z⁻¹%C = z⁻¹.
 Proof.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 intros.
@@ -974,7 +974,7 @@ f_equal; f_equal.
 apply (rngl_squ_opp Hop).
 Qed.
 
-Theorem rngl_add_modl_nonneg : ∀ x y, (0 ≤ rl_modl x y + x)%L.
+Theorem rngl_add_modl_nonneg : ∀ a b, (0 ≤ rl_modl a b + a)%L.
 Proof.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
@@ -983,7 +983,7 @@ intros.
 progress unfold rl_modl.
 rewrite rngl_add_comm.
 apply (rngl_le_opp_l Hop Hor).
-apply (rngl_le_trans Hor _ (rngl_abs x)). {
+apply (rngl_le_trans Hor _ (rngl_abs a)). {
   apply (rngl_le_abs Hop Hto); right.
   apply (rngl_le_refl Hor).
 }
