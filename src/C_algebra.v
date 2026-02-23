@@ -1522,6 +1522,23 @@ split. {
 }
 Qed.
 
+Theorem gc_integral' : ∀ a b : GComplex T, (a * b)%C = 0%C → a = 0%C ∨ b = 0%C.
+Proof.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+specialize (rngl_integral_or_inv_pdiv_eq_dec_order Hiv Hor) as Hio.
+intros * Hab.
+specialize (gc_integral Hic Hop Hio a b Hab) as H.
+destruct H as [H| H]; [ now left | ].
+destruct H as [H| H]; [ now right | ].
+destruct H as [H| H]; cbn in H. {
+  apply eq_rngl_add_squ_0 in H.
+  now left; apply eq_gc_eq.
+} {
+  apply eq_rngl_add_squ_0 in H.
+  now right; apply eq_gc_eq.
+}
+Qed.
+
 Theorem gc_eq_cases : ∀ a b, (a² = b² → a = b ∨ a = - b)%C.
 Proof.
 specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
@@ -1529,28 +1546,11 @@ specialize (rngl_integral_or_inv_pdiv_eq_dec_order Hiv Hor) as Hio.
 intros * Hab.
 apply (gc_sub_move_0_r Hop) in Hab.
 rewrite gc_squ_sub_squ in Hab.
-apply (gc_integral Hic Hop Hio) in Hab.
+apply gc_integral' in Hab.
 destruct Hab as [H| H]. {
-  apply (gc_add_move_0_r Hop) in H.
-  now right.
-}
-destruct H as [H| H]. {
-  apply -> (gc_sub_move_0_r Hop a) in H.
-  now left.
-}
-destruct H as [H| H]; cbn in H. {
-  apply eq_rngl_add_squ_0 in H.
-  destruct H as (H1, H2).
-  apply (rngl_add_move_0_r Hop) in H1, H2.
-  right.
-  now apply eq_gc_eq.
+  now apply (gc_add_move_0_r Hop) in H; right.
 } {
-  apply eq_rngl_add_squ_0 in H.
-  destruct H as (H1, H2).
-  apply -> (rngl_sub_move_0_r Hop) in H1.
-  apply -> (rngl_sub_move_0_r Hop) in H2.
-  left.
-  now apply eq_gc_eq.
+  now apply -> (gc_sub_move_0_r Hop a) in H; left.
 }
 Qed.
 
@@ -2190,16 +2190,7 @@ destruct H4 as [H4| H4]. {
     apply (rngl_le_antisymm Hor) in H2; [ clear H1 | easy ].
     assert (H : z = 0%C) by now apply eq_gc_eq.
     rewrite Heqz in H.
-    apply (gc_integral Hic Hop Hio) in H.
-    destruct H as [| H]; [ easy | ].
-    destruct H as [| H]; [ easy | ].
-    destruct H as [H| H]; cbn in H. {
-      apply eq_rngl_add_squ_0 in H.
-      now apply H1z, eq_gc_eq.
-    } {
-      apply eq_rngl_add_squ_0 in H.
-      now apply H2z, eq_gc_eq.
-    }
+    now apply gc_integral' in H; destruct H.
   } {
     apply eq_gc_sqrt_sub_modulus_Re_div_2_0 in H5.
     destruct H5 as (H5, H6).
@@ -2220,16 +2211,7 @@ destruct H4 as [H4| H4]. {
     apply (rngl_le_antisymm Hor) in H2; [ clear H1 | easy ].
     assert (H : z = 0%C) by now apply eq_gc_eq.
     rewrite Heqz in H.
-    apply (gc_integral Hic Hop Hio) in H.
-    destruct H as [| H]; [ easy | ].
-    destruct H as [| H]; [ easy | ].
-    destruct H as [H| H]; cbn in H. {
-      apply eq_rngl_add_squ_0 in H.
-      now apply H1z, eq_gc_eq.
-    } {
-      apply eq_rngl_add_squ_0 in H.
-      now apply H2z, eq_gc_eq.
-    }
+    now apply gc_integral' in H; destruct H.
   }
 }
 rewrite H4, (rngl_mul_0_r Hos), (rngl_sub_0_l Hop) in H1.
@@ -2245,16 +2227,7 @@ destruct H5 as [H5| H5]; cycle 1. {
   apply (rngl_le_antisymm Hor) in H2; [ clear H1 | easy ].
   assert (H : z = 0%C) by now apply eq_gc_eq.
   rewrite Heqz in H.
-  apply (gc_integral Hic Hop Hio) in H.
-  destruct H as [| H]; [ easy | ].
-  destruct H as [| H]; [ easy | ].
-  destruct H as [H| H]; cbn in H. {
-    apply eq_rngl_add_squ_0 in H.
-    now apply H1z, eq_gc_eq.
-  } {
-    apply eq_rngl_add_squ_0 in H.
-    now apply H2z, eq_gc_eq.
-  }
+  now apply gc_integral' in H; destruct H.
 }
 clear z Heqz H1 H2 H3.
 apply (rngl_integral Hos Hio) in H5.
@@ -2874,7 +2847,7 @@ clear n Hm; rename m into n.
 destruct n; [ easy | clear Hkn ].
 induction k; cbn; [ apply (gc_mul_0_l Hos) | ].
 cbn in IHk.
-apply (gc_integral Hic Hop Hio) in IHk.
+apply gc_integral' in IHk.
 destruct IHk as [H| H]. {
   rewrite H.
   (* lemma *)
