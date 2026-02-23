@@ -27,20 +27,20 @@ Context {T : Type}.
 Context {ro : ring_like_op T}.
 
 Theorem eq_gc_eq :
-  ∀ a b : GComplex T, Re a = Re b ∧ Im a = Im b ↔ a = b.
+  ∀ z₁ z₂ : GComplex T, Re z₁ = Re z₂ ∧ Im z₁ = Im z₂ ↔ z₁ = z₂.
 Proof.
 intros.
-split; intros Hab; [ | now subst ].
-destruct a, b; cbn in Hab.
+split; intros Hzz; [ | now subst ].
+destruct z₁, z₂; cbn in Hzz.
 now f_equal.
 Qed.
 
 Theorem neq_gc_neq :
-  ∀ a b : GComplex T, Re a ≠ Re b ∨ Im a ≠ Im b → a ≠ b.
+  ∀ z₁ z₂ : GComplex T, Re z₁ ≠ Re z₂ ∨ Im z₁ ≠ Im z₂ → z₁ ≠ z₂.
 Proof.
-intros * Hab.
-intros H; subst b.
-now destruct Hab.
+intros * Hzz.
+intros H; subst.
+now destruct Hzz.
 Qed.
 
 Definition gc_zero : GComplex T := {| Re := 0; Im := 0 |}.
