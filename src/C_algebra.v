@@ -2256,7 +2256,8 @@ Definition gc_add_overflow z₁ z₂ :=
    works only if θ₁+θ₂ < 2π. Otherwise π has to be added. *)
 Theorem gc_sqrt_mul :
   ∀ z₁ z₂,
-  (√(z₁ * z₂) = if gc_add_overflow a b then - (√a * √b) else √a * √b)%C.
+  (√(z₁ * z₂) =
+     if gc_add_overflow z₁ z₂ then - (√z₁ * √z₂) else √z₁ * √z₂)%C.
 Proof.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
@@ -2274,25 +2275,25 @@ destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
 }
 specialize (rngl_2_neq_0 Hos Hc1 Hto) as H2z.
 intros.
-destruct (gc_eq_dec Heo a 0) as [Haz| Haz]. {
-  subst a.
+destruct (gc_eq_dec Heo z₁ 0) as [Haz| Haz]. {
+  subst.
   rewrite (gc_mul_0_l Hos).
   rewrite gc_sqrt_0.
   rewrite (gc_mul_0_l Hos).
   rewrite gc_opp_0.
   now destruct (gc_add_overflow _ _).
 }
-destruct (gc_eq_dec Heo b 0) as [Hbz| Hbz]. {
-  subst b.
+destruct (gc_eq_dec Heo z₂ 0) as [Hbz| Hbz]. {
+  subst.
   rewrite (gc_mul_0_r Hos).
   rewrite gc_sqrt_0.
   rewrite (gc_mul_0_r Hos).
   rewrite gc_opp_0.
   now destruct (gc_add_overflow _ _).
 }
-specialize (gc_squ_sqrt_mul a b) as H.
+specialize (gc_squ_sqrt_mul z₁ z₂) as H.
 apply gc_eq_cases in H.
-remember (gc_add_overflow a b) as ov eqn:Hov.
+remember (gc_add_overflow z₁ z₂) as ov eqn:Hov.
 symmetry in Hov.
 destruct ov. {
   destruct H as [Hab| H]; [ | easy ].
@@ -2309,12 +2310,12 @@ destruct ov. {
     apply (rngl_leb_gt_iff Hto) in Hzib.
     apply (rngl_leb_gt Hor).
 (**)
-    remember (-b)%C as b' eqn:Hb.
+    remember (-z₂)%C as z eqn:Hb.
     apply (f_equal gc_opp) in Hb.
     rewrite gc_opp_involutive in Hb.
-    subst b; rename b' into b; move b before a.
-    assert (H' : b ≠ 0%C). {
-      intros H'; apply Hbz; subst b.
+    subst z₂; rename z into z₂; move z₂ before z₁.
+    assert (H' : z₂ ≠ 0%C). {
+      intros H'; apply Hbz; subst.
       apply gc_opp_0.
     }
     move H' before Hbz; clear Hbz; rename H' into Hbz.
@@ -2326,7 +2327,7 @@ destruct ov. {
     apply (rngl_lt_sub_0 Hop Hor).
     rewrite gc_mul_opp_r in Hab.
 Search (√(- _))%C.
-specialize (gc_sqrt_neg b) as H.
+specialize (gc_sqrt_neg z₂) as H.
 Search (rngl_signp (- _)).
 Print rngl_signp.
 ...
