@@ -2249,6 +2249,8 @@ destruct H5 as [H5| H5]; cycle 1. {
     now apply Hbz, eq_gc_eq.
   }
 }
+clear H1.
+clear c Heqc H2 H3.
 rewrite (rngl_signp_of_nonneg (Im a)) in H5; [ | easy ].
 rewrite rngl_mul_1_l in H5.
 apply eq_gc_sqrt_add_modulus_Re_div_2_0 in H5.
@@ -2256,8 +2258,6 @@ destruct H5 as (H5, H6).
 move H6 before Hia; clear Hia; rename H6 into Hia.
 move H5 after Hia; rename H5 into Hra.
 move H4 after Hia; rename H4 into Hrb.
-move H3 before Hib; rename H3 into Hid.
-move H2 before Hrb; rename H2 into Hrc.
 destruct Hrab as [Hrab| Hrab]. {
   apply (rngl_le_antisymm Hor) in Hrab; [ | easy ].
   now apply Haz, eq_gc_eq.
