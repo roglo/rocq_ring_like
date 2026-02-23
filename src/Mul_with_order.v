@@ -768,6 +768,53 @@ apply rngl_squ_1.
 apply (rngl_squ_opp_1 Hop).
 Qed.
 
+Theorem rngl_abs_signp :
+  rngl_has_opp T = true →
+  rngl_is_totally_ordered T = true →
+  ∀ a, ∣ rngl_signp a ∣ = 1%L.
+Proof.
+intros Hop Hto.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
+  specialize (rngl_characteristic_1 Hos Hc1) as H1.
+  intros.
+  now rewrite (H1 (rngl_abs _)), (H1 1%L).
+}
+intros.
+progress unfold rngl_abs.
+progress unfold rngl_signp.
+destruct (0 ≤? a)%L. {
+  remember (1 ≤? 0)%L as x eqn:Hx.
+  symmetry in Hx.
+  destruct x; [ exfalso | easy ].
+  apply rngl_leb_le in Hx.
+  apply (rngl_nlt_ge Hor) in Hx.
+  apply Hx; clear Hx.
+  apply (rngl_0_lt_1 Hos Hc1 Hto).
+}
+remember (-1 ≤? 0)%L as x eqn:Hx.
+symmetry in Hx.
+rewrite (rngl_opp_involutive Hop).
+destruct x; [ easy | exfalso ].
+apply Bool.not_true_iff_false in Hx.
+apply Hx; clear Hx.
+apply rngl_leb_le.
+apply (rngl_opp_1_le_0 Hop Hto).
+Qed.
+
+Theorem rngl_signp_neq_0 :
+  rngl_has_opp T = true →
+  rngl_characteristic T ≠ 1 →
+  ∀ a, rngl_signp a ≠ 0%L.
+Proof.
+intros Hop Hc1 *.
+progress unfold rngl_signp.
+destruct (0 ≤? a)%L.
+apply (rngl_1_neq_0 Hc1).
+apply (rngl_opp_1_neq_0 Hop Hc1).
+Qed.
+
 End a.
 
 Arguments rngl_mul_le_mono_nonneg_r {T ro rp} Hop Hor (a b c)%_L.

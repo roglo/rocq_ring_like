@@ -998,8 +998,6 @@ apply (rngl_le_add_r Hos Hor).
 apply (rngl_squ_nonneg Hos Hto).
 Qed.
 
-(*****)
-
 Theorem gc_squ_sqrt z : gc_squ (gc_sqrt z) = z.
 Proof.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
@@ -1677,37 +1675,6 @@ rewrite (rngl_opp_add_distr Hop).
 easy.
 Qed.
 
-Theorem rngl_abs_signp : ∀ a, ∣ rngl_signp a ∣ = 1%L.
-Proof.
-specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
-specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
-destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
-  specialize (rngl_characteristic_1 Hos Hc1) as H1.
-  intros.
-  now rewrite (H1 (rngl_abs _)), (H1 1%L).
-}
-intros.
-progress unfold rngl_abs.
-progress unfold rngl_signp.
-destruct (0 ≤? a)%L. {
-  remember (1 ≤? 0)%L as x eqn:Hx.
-  symmetry in Hx.
-  destruct x; [ exfalso | easy ].
-  apply rngl_leb_le in Hx.
-  apply (rngl_nlt_ge Hor) in Hx.
-  apply Hx; clear Hx.
-  apply (rngl_0_lt_1 Hos Hc1 Hto).
-}
-remember (-1 ≤? 0)%L as x eqn:Hx.
-symmetry in Hx.
-rewrite (rngl_opp_involutive Hop).
-destruct x; [ easy | exfalso ].
-apply Bool.not_true_iff_false in Hx.
-apply Hx; clear Hx.
-apply rngl_leb_le.
-apply (rngl_opp_1_le_0 Hop Hto).
-Qed.
-
 Theorem gc_sqrt_neg :
   ∀ z, (√(- z))%C = (rngl_signp (- Im z) * Im √z +ℹ ∣ Re √z ∣)%C.
 Proof.
@@ -1721,7 +1688,7 @@ rewrite (rngl_sub_opp_r Hop).
 rewrite (gc_modulus_opp Hop).
 progress f_equal.
 rewrite (rngl_abs_mul Hop Hiq Hto).
-rewrite rngl_abs_signp, rngl_mul_1_l.
+rewrite (rngl_abs_signp Hop Hto), rngl_mul_1_l.
 symmetry.
 apply (rngl_abs_sqrt Hop Hor).
 apply (gc_modulus_add_re_div_2_nonneg Hop Hiv Hto).
@@ -1970,7 +1937,8 @@ cbn in Hiz.
 now apply eq_gc_sqrt_sub_modulus_Re_div_2_0 in Hiz.
 Qed.
 
-Theorem Re_neg_signp_Im_opp_1 : ∀ z, (Re √z < 0)%L → rngl_signp (Im z) = (-1)%L.
+Theorem Re_neg_signp_Im_opp_1 :
+  ∀ z, (Re √z < 0)%L → rngl_signp (Im z) = (-1)%L.
 Proof.
 specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
@@ -1985,17 +1953,6 @@ rewrite rngl_mul_1_l in Hzz.
 apply (rngl_nle_gt Hor) in Hzz.
 apply Hzz; clear Hzz.
 apply rl_sqrt_add_mod_re_div_2_nonneg.
-Qed.
-
-Theorem rngl_signp_neq_0 :
-  rngl_characteristic T ≠ 1 →
-  ∀ a, rngl_signp a ≠ 0%L.
-Proof.
-intros Hc1 *.
-progress unfold rngl_signp.
-destruct (0 ≤? a)%L.
-apply (rngl_1_neq_0 Hc1).
-apply (rngl_opp_1_neq_0 Hop Hc1).
 Qed.
 
 Theorem eq_Re_sqrt_0 : ∀ z, Re √z = 0%L ↔ (Re z ≤ 0)%L ∧ Im z = 0%L.
@@ -2015,7 +1972,8 @@ intros.
 split; intros Hrz. {
   cbn in Hrz.
   apply (rngl_integral Hos Hio) in Hrz.
-  destruct Hrz as [Hrz| Hrz]; [ now apply (rngl_signp_neq_0 Hc1) in Hrz | ].
+  destruct Hrz as [Hrz| Hrz].
+  now apply (rngl_signp_neq_0 Hop Hc1) in Hrz.
   now apply eq_gc_sqrt_add_modulus_Re_div_2_0 in Hrz.
 } {
   destruct Hrz as (H1, H2).
@@ -2024,6 +1982,8 @@ split; intros Hrz. {
   now apply eq_gc_sqrt_add_modulus_Re_div_2_0.
 }
 Qed.
+
+(*****)
 
 Theorem rngl_neq_symm : ∀ a b : T, (a ≠ b → b ≠ a)%L.
 Proof. easy. Qed.
@@ -2206,7 +2166,7 @@ destruct H5 as [H5| H5]; cycle 1. {
 }
 clear z Heqz H1 H2 H3.
 apply (rngl_integral Hos Hio) in H5.
-destruct H5 as [H5| H5]; [ now apply (rngl_signp_neq_0 Hc1) in H5 | ].
+destruct H5 as [H5| H5]; [ now apply (rngl_signp_neq_0 Hop Hc1) in H5 | ].
 apply eq_gc_sqrt_add_modulus_Re_div_2_0 in H5.
 destruct H5 as (Hra, Hia).
 progress unfold negative_real in Hrab.
