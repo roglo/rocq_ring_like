@@ -2084,7 +2084,7 @@ Qed.
 
 Theorem gc_sqrt_mul_of_nonneg_Im :
   ∀ a b,
-  (0 ≤ Re a ∨ 0 ≤ Re b ∨ Im a ≠ 0 ∨ Im b ≠ 0)%L
+  (Im a ≠ 0 ∨ Im b ≠ 0)%L
   → (0 ≤ Im a)%L
   → (0 ≤ Im b)%L
   → (√(a * b) = √a * √b)%C.
@@ -2259,14 +2259,6 @@ apply (rngl_integral Hos Hio) in H5.
 destruct H5 as [H5| H5]; [ now apply (rngl_signp_neq_0 Hc1) in H5 | ].
 apply eq_gc_sqrt_add_modulus_Re_div_2_0 in H5.
 destruct H5 as (Hra, Hia).
-destruct Hrab as [Hrab| Hrab]. {
-  apply (rngl_le_antisymm Hor) in Hrab; [ | easy ].
-  now apply Haz, eq_gc_eq.
-}
-destruct Hrab as [Hrab| Hrab]. {
-  apply (rngl_le_antisymm Hor) in Hrab; [ | easy ].
-  now apply Hbz, eq_gc_eq.
-}
 now destruct Hrab.
 Qed.
 
