@@ -2249,8 +2249,7 @@ destruct H5 as [H5| H5]; cycle 1. {
     now apply Hbz, eq_gc_eq.
   }
 }
-clear H1.
-clear c Heqc H2 H3.
+clear c Heqc H1 H2 H3.
 rewrite (rngl_signp_of_nonneg (Im a)) in H5; [ | easy ].
 rewrite rngl_mul_1_l in H5.
 apply eq_gc_sqrt_add_modulus_Re_div_2_0 in H5.
