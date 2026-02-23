@@ -2117,9 +2117,6 @@ specialize (gc_squ_sqrt_mul a b) as Hab.
 apply gc_eq_cases in Hab.
 destruct Hab as [| Hab]; [ easy | exfalso ].
 progress unfold gc_sqrt in Hab.
-rewrite (rngl_signp_of_nonneg (Im a)) in Hab; [ | easy ].
-rewrite (rngl_signp_of_nonneg (Im b)) in Hab; [ | easy ].
-do 2 rewrite rngl_mul_1_l in Hab.
 remember (a * b)%C as c.
 move c before a.
 progress unfold gc_mul in Hab; cbn in Hab.
@@ -2138,9 +2135,13 @@ split. {
   apply (rngl_add_nonneg_nonneg Hos Hor). {
     apply (rngl_mul_nonneg_nonneg Hos Hor).
     apply rl_sqrt_sub_mod_re_div_2_nonneg.
+    rewrite (rngl_signp_of_nonneg (Im b)); [ | easy ].
+    rewrite rngl_mul_1_l.
     apply rl_sqrt_add_mod_re_div_2_nonneg.
   } {
     apply (rngl_mul_nonneg_nonneg Hos Hor).
+    rewrite (rngl_signp_of_nonneg (Im a)); [ | easy ].
+    rewrite rngl_mul_1_l.
     apply rl_sqrt_add_mod_re_div_2_nonneg.
     apply rl_sqrt_sub_mod_re_div_2_nonneg.
   }
@@ -2149,9 +2150,13 @@ intros H4; symmetry in H4.
 apply (rngl_eq_add_0 Hos Hor) in H4; cycle 1. {
   apply (rngl_mul_nonneg_nonneg Hos Hor).
   apply rl_sqrt_sub_mod_re_div_2_nonneg.
+  rewrite (rngl_signp_of_nonneg (Im b)); [ | easy ].
+  rewrite rngl_mul_1_l.
   apply rl_sqrt_add_mod_re_div_2_nonneg.
 } {
   apply (rngl_mul_nonneg_nonneg Hos Hor).
+  rewrite (rngl_signp_of_nonneg (Im a)); [ | easy ].
+  rewrite rngl_mul_1_l.
   apply rl_sqrt_add_mod_re_div_2_nonneg.
   apply rl_sqrt_sub_mod_re_div_2_nonneg.
 }
@@ -2193,8 +2198,13 @@ destruct H4 as [H4| H4]. {
     apply (rngl_add_move_0_r Hop) in H1.
     apply (rngl_eq_add_0 Hos Hor) in H1; cycle 1.
     apply rl_sqrt_add_mod_re_div_2_nonneg.
-    apply (rngl_mul_nonneg_nonneg Hos Hor).
-    1, 2: apply rl_sqrt_add_mod_re_div_2_nonneg.
+    apply (rngl_mul_nonneg_nonneg Hos Hor). {
+      rewrite Hia, rngl_signp_0, rngl_mul_1_l.
+      apply rl_sqrt_add_mod_re_div_2_nonneg.
+    } {
+      rewrite Hib, rngl_signp_0, rngl_mul_1_l.
+      apply rl_sqrt_add_mod_re_div_2_nonneg.
+    }
     destruct H1 as (H1, H6).
     apply eq_gc_sqrt_add_modulus_Re_div_2_0 in H1.
     destruct H1 as (H1, _).
@@ -2215,6 +2225,8 @@ destruct H4 as [H4| H4]. {
 }
 rewrite H4, (rngl_mul_0_r Hos), (rngl_sub_0_l Hop) in H1.
 rewrite (rngl_opp_involutive Hop) in H1.
+rewrite (rngl_signp_of_nonneg (Im b)) in H4; [ | easy ].
+rewrite rngl_mul_1_l in H4.
 apply eq_gc_sqrt_add_modulus_Re_div_2_0 in H4.
 destruct H4 as (H4, H6).
 move H6 before Hib; clear Hib; rename H6 into Hib.
@@ -2237,6 +2249,8 @@ destruct H5 as [H5| H5]; cycle 1. {
     now apply Hbz, eq_gc_eq.
   }
 }
+rewrite (rngl_signp_of_nonneg (Im a)) in H5; [ | easy ].
+rewrite rngl_mul_1_l in H5.
 apply eq_gc_sqrt_add_modulus_Re_div_2_0 in H5.
 destruct H5 as (H5, H6).
 move H6 before Hia; clear Hia; rename H6 into Hia.
