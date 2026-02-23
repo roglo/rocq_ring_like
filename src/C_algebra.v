@@ -46,16 +46,16 @@ Qed.
 Definition gc_zero : GComplex T := {| Re := 0; Im := 0 |}.
 Definition gc_one : GComplex T := {| Re := 1; Im := 0 |}.
 
-Definition gc_add (ca cb : GComplex T) :=
-  {| Re := Re ca + Re cb; Im := Im ca + Im cb |}.
+Definition gc_add (z₁ z₂ : GComplex T) :=
+  {| Re := Re z₁ + Re z₂; Im := Im z₁ + Im z₂ |}.
 
-Definition gc_mul (ca cb : GComplex T) :=
-  {| Re := (Re ca * Re cb - Im ca * Im cb)%L;
-     Im := (Im ca * Re cb + Re ca * Im cb)%L |}.
+Definition gc_mul (z₁ z₂ : GComplex T) :=
+  {| Re := (Re z₁ * Re z₂ - Im z₁ * Im z₂);
+     Im := (Im z₁ * Re z₂ + Re z₁ * Im z₂) |}.
 
-Definition gc_inv c :=
-  let d := (Re c * Re c + Im c * Im c)%L in
-  mk_gc (Re c / d) (- Im c / d)%L.
+Definition gc_inv z :=
+  let z' := (Re z * Re z + Im z * Im z)%L in
+  mk_gc (Re z / z') (- Im z / z')%L.
 
 Definition gc_opt_opp_or_psub :
     option
@@ -649,11 +649,10 @@ Context {ro : ring_like_op T}.
 Context {rp : ring_like_prop T}.
 Context {rl : real_like_prop T}.
 
-Definition gc_opp (c : GComplex T) := {| Re := - Re c; Im := - Im c |}.
-Definition gc_sub (ca cb : GComplex T) :=
-  {| Re := Re ca - Re cb; Im := Im ca - Im cb |}.
-Definition gc_div (ca cb : GComplex T) :=
-  gc_mul ca (gc_inv cb).
+Definition gc_opp (z : GComplex T) := {| Re := - Re z; Im := - Im z |}.
+Definition gc_sub (z₁ z₂ : GComplex T) :=
+  {| Re := Re z₁ - Re z₂; Im := Im z₁ - Im z₂ |}.
+Definition gc_div (z₁ z₂ : GComplex T) := gc_mul z₁ (gc_inv z₂).
 Definition gc_squ z := (z * z)%C.
 Definition gc_pow_nat (z : GComplex T) n := rngl_power z n.
 Definition gc_modulus (z : GComplex T) := rl_modl (Re z) (Im z).
