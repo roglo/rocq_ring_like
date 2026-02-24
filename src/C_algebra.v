@@ -2006,7 +2006,7 @@ Proof. easy. Qed.
 
 Definition gc_negative_real z := (Re z < 0 ∧ Im z = 0)%L.
 
-Theorem gc_sqrt_mul_of_nonneg_Im :
+Theorem gc_sqrt_mul_when_Im_nonneg_nonneg :
   ∀ z₁ z₂,
   (0 ≤ Im z₁)%L
   → (0 ≤ Im z₂)%L
@@ -2144,7 +2144,7 @@ now intros H; apply H1z; apply eq_gc_eq.
 now intros H; apply H2z; apply eq_gc_eq.
 Qed.
 
-Theorem gc_sqrt_mul_of_neg_Im :
+Theorem gc_sqrt_mul_when_Im_neg_neg :
   ∀ z₁ z₂,
   (Im z₁ < 0)%L
   → (Im z₂ < 0)%L
@@ -2256,7 +2256,7 @@ rewrite H6 in Hi2.
 now apply rngl_lt_irrefl in Hi2.
 Qed.
 
-Theorem gc_sqrt_mul_of_Im_nonneg_neg :
+Theorem gc_sqrt_mul_when_Im_nonneg_neg :
   ∀ z₁ z₂,
   (0 ≤ Im z₁)%L
   → (Im z₂ < 0)%L
@@ -2384,12 +2384,12 @@ specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
 intros.
 split; intros Hzz. {
   destruct Hzz as [Hzz| Hzz].
-  now apply gc_sqrt_mul_of_nonneg_Im.
+  now apply gc_sqrt_mul_when_Im_nonneg_nonneg.
   destruct Hzz as [Hzz| Hzz].
-  now apply gc_sqrt_mul_of_Im_nonneg_neg.
+  now apply gc_sqrt_mul_when_Im_nonneg_neg.
   rewrite (gc_mul_comm Hic z₁).
   rewrite (gc_mul_comm Hic √z₁).
-  now apply gc_sqrt_mul_of_Im_nonneg_neg.
+  now apply gc_sqrt_mul_when_Im_nonneg_neg.
 }
 progress unfold gc_sqrt in Hzz.
 destruct (rngl_leb_dec 0 (Im z₁)) as [Hzz1| Hzz1]. {
@@ -2400,6 +2400,7 @@ destruct (rngl_leb_dec 0 (Im z₁)) as [Hzz1| Hzz1]. {
     apply rngl_leb_le in Hzz2.
     rewrite (rngl_signp_of_nonneg (Im z₂)) in Hzz; [ | easy ].
     rewrite rngl_mul_1_l in Hzz.
+...
     left.
     split; [ easy | ].
     split; [ easy | ].
@@ -2409,11 +2410,11 @@ destruct (rngl_leb_dec 0 (Im z₁)) as [Hzz1| Hzz1]. {
       right.
       intros (Hr2z, Hi2z).
       move Hi2z before Hi1z.
-... ...
-    destruct (rngl_leb_dec 0 (Re z₁)) as [Hzr1| Hzr1]. {
-      apply rngl_leb_le in Hzr1.
-        left.
-(* ah bin non, chuis con, c'est le contraire *)
+      clear Hzz1 Hzz2.
+      remember (z₁ * z₂)%C as z.
+      move z before z₂.
+      injection Hzz; clear Hzz; intros H2 H1.
+      move H1 after H2.
 ...
 *)
 
