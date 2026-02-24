@@ -2370,6 +2370,35 @@ apply (rngl_mul_lt_mono_pos_l Hop Hiq Hto). {
 now rewrite (rngl_mul_comm Hic).
 Qed.
 
+(* to be completed
+Theorem glop :
+  ∀ z₁ z₂ : GComplex T,
+  ((0 ≤ Im z₁)%L ∧ (0 ≤ Im z₂)%L ∧
+     (¬ gc_negative_real z₁ ∨ ¬ gc_negative_real z₂)) ∨
+  ((0 ≤ Im z₁)%L ∧ (Im z₂ < 0)%L ∧ (Re z₂ * ‖ z₁ ‖ < Re z₁ * ‖ z₂ ‖)%L) ∨
+  ((0 ≤ Im z₂)%L ∧ (Im z₁ < 0)%L ∧ (Re z₁ * ‖ z₂ ‖ < Re z₂ * ‖ z₁ ‖)%L) ↔
+  (√(z₁ * z₂))%C = (√z₁ * √z₂)%C.
+Proof.
+intros.
+split; intros Hzz. {
+  destruct Hzz as [Hzz| Hzz].
+  now apply gc_sqrt_mul_of_nonneg_Im.
+  destruct Hzz as [Hzz| Hzz].
+  now apply gc_sqrt_mul_of_Im_nonneg_neg.
+  rewrite (gc_mul_comm Hic z₁).
+  rewrite (gc_mul_comm Hic √z₁).
+  now apply gc_sqrt_mul_of_Im_nonneg_neg.
+}
+destruct (rngl_leb_dec 0 (Im z₁)) as [Hzz1| Hzz1]. {
+  apply rngl_leb_le in Hzz1.
+  destruct (rngl_leb_dec 0 (Im z₂)) as [Hzz2| Hzz2]. {
+    apply rngl_leb_le in Hzz2.
+    left.
+    split; [ easy | ].
+    split; [ easy | ].
+...
+*)
+
 Definition gc_add_overflow z₁ z₂ :=
   if (0 ≤? Im z₁)%L then
     if (0 ≤? Im z₂)%L then false
