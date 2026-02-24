@@ -2291,6 +2291,18 @@ rewrite H6 in Hi2.
 now apply rngl_lt_irrefl in Hi2.
 Qed.
 
+(* to be completed
+Theorem gc_sqrt_mul_of_Im_nonneg_neg :
+  ∀ z₁ z₂,
+  (0 ≤ Im z₁)%L
+  → (Im z₂ < 0)%L
+  → (Re z₂ < Re z₁)%L
+  → (√(z₁ * z₂) = √z₁ * √z₂)%C.
+Proof.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+...
+*)
+
 Definition gc_add_overflow z₁ z₂ :=
   if (0 ≤? Im z₁)%L then
     if (0 ≤? Im z₂)%L then false
