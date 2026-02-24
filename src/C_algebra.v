@@ -2379,6 +2379,8 @@ Theorem glop :
   ((0 ≤ Im z₂)%L ∧ (Im z₁ < 0)%L ∧ (Re z₁ * ‖ z₂ ‖ < Re z₂ * ‖ z₁ ‖)%L) ↔
   (√(z₁ * z₂))%C = (√z₁ * √z₂)%C.
 Proof.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
 intros.
 split; intros Hzz. {
   destruct Hzz as [Hzz| Hzz].
@@ -2396,6 +2398,13 @@ destruct (rngl_leb_dec 0 (Im z₁)) as [Hzz1| Hzz1]. {
     left.
     split; [ easy | ].
     split; [ easy | ].
+    progress unfold gc_negative_real.
+    destruct (rngl_ltb_dec (Re z₁) 0) as [Hr1z| Hr1z]. {
+      apply (rngl_ltb_lt Heo) in Hr1z.
+      destruct (rngl_eqb_dec (Im z₁) 0) as [Hi1z| Hi1z]. {
+        apply (rngl_eqb_eq Heo) in Hi1z.
+        left.
+(* ah bin non, chuis con, c'est le contraire *)
 ...
 *)
 
