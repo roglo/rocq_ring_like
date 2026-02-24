@@ -2379,6 +2379,7 @@ Theorem glop :
   ((0 ≤ Im z₂)%L ∧ (Im z₁ < 0)%L ∧ (Re z₁ * ‖ z₂ ‖ < Re z₂ * ‖ z₁ ‖)%L) ↔
   (√(z₁ * z₂))%C = (√z₁ * √z₂)%C.
 Proof.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
 intros.
@@ -2400,13 +2401,48 @@ destruct (rngl_leb_dec 0 (Im z₁)) as [Hzz1| Hzz1]. {
     apply rngl_leb_le in Hzz2.
     rewrite (rngl_signp_of_nonneg (Im z₂)) in Hzz; [ | easy ].
     rewrite rngl_mul_1_l in Hzz.
-...
     left.
     split; [ easy | ].
     split; [ easy | ].
+(**)
+destruct (rngl_eqb_dec (Im z₁) 0) as [Hi1z| Hi1z]. {
+  apply (rngl_eqb_eq Heo) in Hi1z.
+  clear Hzz1.
+  right.
+  intros Hrz2.
+  progress unfold gc_negative_real in Hrz2.
+  destruct Hrz2 as (Hr2z, Hiz2).
+  clear Hzz2.
+remember (z₁ * z₂)%C as z.
+move z before z₂.
+injection Hzz; clear Hzz; intros H2 H1.
+move H1 after H2.
+rewrite rngl_signp_of_nonneg in H1; cycle 1. {
+  rewrite Heqz; cbn.
+  rewrite Hi1z, Hiz2.
+  rewrite (rngl_mul_0_l Hos), (rngl_mul_0_r Hos).
+  rewrite rngl_add_0_l.
+  apply (rngl_le_refl Hor).
+}
+rewrite rngl_mul_1_l in H1.
+...
+left.
+intros Hrz1.
+progress unfold gc_negative_real in Hrz1.
+destruct Hrz1 as (Hr1z, Hiz1).
+clear Hzz1.
+remember (z₁ * z₂)%C as z.
+move z before z₂.
+injection Hzz; clear Hzz; intros H2 H1.
+move H1 after H2.
+rewrite (rngl_signp_of_neg Hor) in H1; cycle 1. {
+rewrite Heqz; cbn.
+rewrite Hiz1, (rngl_mul_0_l Hos), rngl_add_0_l.
+...
     progress unfold gc_negative_real.
     destruct (rngl_eqb_dec (Im z₁) 0) as [Hi1z| Hi1z]. {
       apply (rngl_eqb_eq Heo) in Hi1z.
+...
       right.
       intros (Hr2z, Hi2z).
       move Hi2z before Hi1z.
