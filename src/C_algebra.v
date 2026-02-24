@@ -2023,7 +2023,6 @@ destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
   now do 2 rewrite (H1 (Re _)), (H1 (Im _)).
 }
 specialize (rngl_integral_or_inv_pdiv_eq_dec_order Hiv Hor) as Hio.
-specialize (rngl_2_neq_0 Hos Hc1 Hto) as H2nz.
 intros * Hi1 Hi2 Hrab.
 destruct (gc_eq_dec Heo z₁ 0) as [H1z| H1z]. {
   subst z₁.
@@ -2172,14 +2171,7 @@ Proof.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
-destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
-  specialize (rngl_characteristic_1 Hos Hc1) as H1.
-  intros.
-  apply eq_gc_eq.
-  now do 2 rewrite (H1 (Re _)), (H1 (Im _)).
-}
 specialize (rngl_integral_or_inv_pdiv_eq_dec_order Hiv Hor) as Hio.
-specialize (rngl_2_neq_0 Hos Hc1 Hto) as H2nz.
 intros * Hi1 Hi2.
 destruct (gc_eq_dec Heo z₁ 0) as [H1z| H1z]. {
   subst z₁.
@@ -2296,10 +2288,28 @@ Theorem gc_sqrt_mul_of_Im_nonneg_neg :
   ∀ z₁ z₂,
   (0 ≤ Im z₁)%L
   → (Im z₂ < 0)%L
-  → (Re z₂ < Re z₁)%L
+  → (Re z₂ * ‖ z₁ ‖ < Re z₁ * ‖ z₂ ‖)%L
   → (√(z₁ * z₂) = √z₁ * √z₂)%C.
 Proof.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
+intros * Hi1 Hi2 Hrr.
+destruct (gc_eq_dec Heo z₁ 0) as [H1z| H1z]. {
+  subst z₁.
+  rewrite (gc_mul_0_l Hos).
+  rewrite gc_sqrt_0; symmetry.
+  apply (gc_mul_0_l Hos).
+}
+destruct (gc_eq_dec Heo z₂ 0) as [H2z| H2z]. {
+  subst z₂.
+  rewrite (gc_mul_0_r Hos).
+  rewrite gc_sqrt_0; symmetry.
+  apply (gc_mul_0_r Hos).
+}
+specialize (gc_squ_sqrt_mul z₁ z₂) as H12.
+apply gc_eq_cases in H12.
+destruct H12 as [H12| ]; [ easy | exfalso ].
 ...
 *)
 
