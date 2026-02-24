@@ -2391,18 +2391,27 @@ split; intros Hzz. {
   rewrite (gc_mul_comm Hic √z₁).
   now apply gc_sqrt_mul_of_Im_nonneg_neg.
 }
+progress unfold gc_sqrt in Hzz.
 destruct (rngl_leb_dec 0 (Im z₁)) as [Hzz1| Hzz1]. {
   apply rngl_leb_le in Hzz1.
+  rewrite (rngl_signp_of_nonneg (Im z₁)) in Hzz; [ | easy ].
+  rewrite rngl_mul_1_l in Hzz.
   destruct (rngl_leb_dec 0 (Im z₂)) as [Hzz2| Hzz2]. {
     apply rngl_leb_le in Hzz2.
+    rewrite (rngl_signp_of_nonneg (Im z₂)) in Hzz; [ | easy ].
+    rewrite rngl_mul_1_l in Hzz.
     left.
     split; [ easy | ].
     split; [ easy | ].
     progress unfold gc_negative_real.
-    destruct (rngl_ltb_dec (Re z₁) 0) as [Hr1z| Hr1z]. {
-      apply (rngl_ltb_lt Heo) in Hr1z.
-      destruct (rngl_eqb_dec (Im z₁) 0) as [Hi1z| Hi1z]. {
-        apply (rngl_eqb_eq Heo) in Hi1z.
+    destruct (rngl_eqb_dec (Im z₁) 0) as [Hi1z| Hi1z]. {
+      apply (rngl_eqb_eq Heo) in Hi1z.
+      right.
+      intros (Hr2z, Hi2z).
+      move Hi2z before Hi1z.
+... ...
+    destruct (rngl_leb_dec 0 (Re z₁)) as [Hzr1| Hzr1]. {
+      apply rngl_leb_le in Hzr1.
         left.
 (* ah bin non, chuis con, c'est le contraire *)
 ...
