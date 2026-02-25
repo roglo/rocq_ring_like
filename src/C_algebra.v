@@ -2405,26 +2405,28 @@ destruct (rngl_leb_dec 0 (Im z₁)) as [Hzz1| Hzz1]. {
     split; [ easy | ].
     split; [ easy | ].
 (**)
-destruct (rngl_eqb_dec (Im z₁) 0) as [Hi1z| Hi1z]. {
-  apply (rngl_eqb_eq Heo) in Hi1z.
-  clear Hzz1.
-  right.
-  intros Hrz2.
-  progress unfold gc_negative_real in Hrz2.
-  destruct Hrz2 as (Hr2z, Hiz2).
-  clear Hzz2.
-remember (z₁ * z₂)%C as z.
-move z before z₂.
-injection Hzz; clear Hzz; intros H2 H1.
-move H1 after H2.
-rewrite rngl_signp_of_nonneg in H1; cycle 1. {
-  rewrite Heqz; cbn.
-  rewrite Hi1z, Hiz2.
-  rewrite (rngl_mul_0_l Hos), (rngl_mul_0_r Hos).
-  rewrite rngl_add_0_l.
-  apply (rngl_le_refl Hor).
-}
-rewrite rngl_mul_1_l in H1.
+    destruct (rngl_eqb_dec (Im z₁) 0) as [Hi1z| Hi1z]. {
+      apply (rngl_eqb_eq Heo) in Hi1z.
+      clear Hzz1.
+      destruct (rngl_ltb_dec (Re z₁) 0) as [Hr1z| Hr1z]. {
+        apply (rngl_ltb_lt Heo) in Hr1z.
+        right.
+        intros Hrz2.
+        progress unfold gc_negative_real in Hrz2.
+        destruct Hrz2 as (Hr2z, Hiz2).
+        clear Hzz2.
+        remember (z₁ * z₂)%C as z.
+        move z before z₂.
+        injection Hzz; clear Hzz; intros H2 H1.
+        move H1 after H2.
+        rewrite rngl_signp_of_nonneg in H1; cycle 1. {
+          rewrite Heqz; cbn.
+          rewrite Hi1z, Hiz2.
+          rewrite (rngl_mul_0_l Hos), (rngl_mul_0_r Hos).
+          rewrite rngl_add_0_l.
+          apply (rngl_le_refl Hor).
+        }
+        rewrite rngl_mul_1_l in H1.
 ...
 left.
 intros Hrz1.
