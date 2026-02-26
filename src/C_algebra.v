@@ -2378,12 +2378,13 @@ Definition gc_mul_not_overflow z₁ z₂ :=
   ((0 ≤ Im z₂)%L ∧ (Im z₁ < 0)%L ∧ (Re z₁ * ‖ z₂ ‖ < Re z₂ * ‖ z₁ ‖)%L).
 
 (* to be completed
-Theorem glop :
+Theorem gc_sqrt_mul_not_ov :
   ∀ z₁ z₂ : GComplex T,
   gc_mul_not_overflow z₁ z₂
   ↔ (√(z₁ * z₂))%C = (√z₁ * √z₂)%C.
 Proof.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
 specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
 specialize (rngl_integral_or_inv_pdiv_eq_dec_order Hiv Hor) as Hio.
@@ -2582,6 +2583,22 @@ destruct (rngl_leb_dec 0 (Im z₁)) as [Hzz1| Hzz1]. {
     rewrite rngl_mul_1_l in H1.
     rewrite <- (rngl_opp_add_distr Hop) in H1.
     apply (rngl_opp_inj Hop) in H1.
+    rewrite (rngl_add_opp_l Hop) in H2.
+    destruct (rngl_ltb_dec 0 (Re z₁)) as [Hzr1| Hzr1]. {
+      apply (rngl_ltb_lt Heo) in Hzr1.
+      destruct (rngl_leb_dec (Re z₂) 0) as [Hr2z| Hr2z]. {
+        apply rngl_leb_le in Hr2z.
+        apply (rngl_le_lt_trans Hor _ 0). {
+          apply (rngl_mul_nonpos_nonneg Hop Hor); [ easy | ].
+          apply gc_modulus_nonneg.
+        }
+        apply (rngl_mul_pos_pos Hop Hiq Hor); [ easy | ].
+        apply rngl_le_neq.
+        split; [ apply gc_modulus_nonneg | ].
+        intros H; symmetry in H.
+        now apply eq_gc_modulus_0 in H.
+      }
+      apply (rngl_leb_gt_iff Hto) in Hr2z.
 ...
 Theorem glop :
   ∀ z, (Re z < 0)%L → √((‖ z ‖ + Re z) / 2) = 0%L.
