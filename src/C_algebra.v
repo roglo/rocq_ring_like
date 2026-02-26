@@ -2371,6 +2371,7 @@ now rewrite (rngl_mul_comm Hic).
 Qed.
 
 Definition gc_mul_not_overflow z₁ z₂ :=
+  (z₁ = 0%C) ∨ (z₂ = 0%C) ∨
   ((0 ≤ Im z₁)%L ∧ (0 ≤ Im z₂)%L ∧
      (¬ gc_negative_real z₁ ∨ ¬ gc_negative_real z₂)) ∨
   ((0 ≤ Im z₁)%L ∧ (Im z₂ < 0)%L ∧ (Re z₂ * ‖ z₁ ‖ < Re z₁ * ‖ z₂ ‖)%L) ∨
@@ -2388,6 +2389,16 @@ specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
 specialize (rngl_integral_or_inv_pdiv_eq_dec_order Hiv Hor) as Hio.
 intros.
 split; intros Hzz. {
+  destruct Hzz as [Hzz| Hzz]. {
+    subst; rewrite (gc_mul_0_l Hos).
+    rewrite gc_sqrt_0; symmetry.
+    apply (gc_mul_0_l Hos).
+  }
+  destruct Hzz as [Hzz| Hzz]. {
+    subst; rewrite (gc_mul_0_r Hos).
+    rewrite gc_sqrt_0; symmetry.
+    apply (gc_mul_0_r Hos).
+  }
   destruct Hzz as [Hzz| Hzz].
   now apply gc_sqrt_mul_when_Im_nonneg_nonneg.
   destruct Hzz as [Hzz| Hzz].
@@ -2396,6 +2407,8 @@ split; intros Hzz. {
   rewrite (gc_mul_comm Hic √z₁).
   now apply gc_sqrt_mul_when_Im_nonneg_neg.
 }
+destruct (gc_eq_dec Heo z₁ 0) as [H1z| H1z]; [ now left | ].
+destruct (gc_eq_dec Heo z₂ 0) as [H2z| H2z]; [ now right; left | ].
 progress unfold gc_sqrt in Hzz.
 destruct (rngl_leb_dec 0 (Im z₁)) as [Hzz1| Hzz1]. {
   apply rngl_leb_le in Hzz1.
@@ -2411,7 +2424,7 @@ destruct (rngl_leb_dec 0 (Im z₁)) as [Hzz1| Hzz1]. {
     move H1 after H2.
     destruct (rngl_leb_dec 0 (Re z₁)) as [Hzr1| Hzr1]. {
       apply rngl_leb_le in Hzr1.
-      left.
+      right; right; left.
       split; [ easy | ].
       split; [ easy | ].
       left.
@@ -2424,7 +2437,7 @@ destruct (rngl_leb_dec 0 (Im z₁)) as [Hzz1| Hzz1]. {
     move Hzr1 before Hzz2.
     destruct (rngl_leb_dec 0 (Re z₂)) as [Hzr2| Hzr2]. {
       apply rngl_leb_le in Hzr2.
-      left.
+      right; right; left.
       split; [ easy | ].
       split; [ easy | ].
       right.
@@ -2480,21 +2493,21 @@ destruct (rngl_leb_dec 0 (Im z₁)) as [Hzz1| Hzz1]. {
       }
       apply (rngl_eqb_neq Heo) in Hi2z.
       move Hi2z before Hzz2.
-      left.
+      right; right; left.
       rewrite Hi1z.
       split; [ apply (rngl_le_refl Hor) | ].
       split; [ easy | right ].
       now intros (H3, H4).
     }
     apply (rngl_eqb_neq Heo) in Hi1z.
-    left.
+    right; right; left.
     split; [ easy | ].
     split; [ easy | ].
     left.
     now intros (H3, H4).
   }
   apply (rngl_leb_gt_iff Hto) in Hzz2.
-  right; left.
+  right; right; right; left.
   split; [ easy | ].
   split; [ easy | ].
   rewrite (rngl_signp_of_neg Hor (Im z₂)) in Hzz; [ | easy ].
@@ -2530,8 +2543,43 @@ destruct (rngl_leb_dec 0 (Im z₁)) as [Hzz1| Hzz1]. {
     apply eq_gc_sqrt_add_modulus_Re_div_2_0 in H1.
     clear Hizz.
     destruct H1 as (Hrzz, Hizz).
-    rewrite Heqz in Hrzz, Hizz.
-    cbn in Hrzz, Hizz.
+    apply (rngl_eq_add_0 Hos Hor) in H3; cycle 1. {
+      apply (rngl_mul_nonneg_nonneg Hos Hor).
+      apply rl_sqrt_add_mod_re_div_2_nonneg.
+      apply rl_sqrt_add_mod_re_div_2_nonneg.
+    } {
+      apply (rngl_mul_nonneg_nonneg Hos Hor).
+      apply rl_sqrt_sub_mod_re_div_2_nonneg.
+      apply rl_sqrt_sub_mod_re_div_2_nonneg.
+    }
+    destruct H3 as (H3, H4).
+    apply (rngl_integral Hos Hio) in H3.
+    apply (rngl_integral Hos Hio) in H4.
+    destruct H3 as [H3| H3]. {
+      apply eq_gc_sqrt_add_modulus_Re_div_2_0 in H3.
+      destruct H3 as (Hr1z, Hi1z).
+      clear Hzz1.
+      destruct H4 as [H4| H4]. {
+        apply eq_gc_sqrt_sub_modulus_Re_div_2_0 in H4.
+        destruct H4 as (Hzr1, _).
+        apply (rngl_le_antisymm Hor) in Hzr1; [ | easy ].
+        now exfalso; apply H1z, eq_gc_eq.
+      } {
+        apply eq_gc_sqrt_sub_modulus_Re_div_2_0 in H4.
+        destruct H4 as (_, H).
+        rewrite H in Hzz2.
+        now apply rngl_lt_irrefl in Hzz2.
+      }
+    }
+    apply eq_gc_sqrt_add_modulus_Re_div_2_0 in H3.
+    destruct H3 as (_, H).
+    rewrite H in Hzz2.
+    now apply rngl_lt_irrefl in Hzz2.
+  }
+...
+    apply eq_gc_sqrt_add_modulus_Re_div_2_0 in H1.
+    clear Hizz.
+    destruct H1 as (Hrzz, Hizz).
 ... ...
     apply (rngl_ltb_lt Heo) in Hizz.
     rewrite (rngl_signp_of_neg Hor (Im z)) in H1; [ | easy ].
