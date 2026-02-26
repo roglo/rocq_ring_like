@@ -2480,6 +2480,64 @@ destruct (rngl_leb_dec 0 (Im z₁)) as [Hzz1| Hzz1]. {
       }
       apply (rngl_eqb_neq Heo) in Hi2z.
       move Hi2z before Hzz2.
+      left.
+      rewrite Hi1z.
+      split; [ apply (rngl_le_refl Hor) | ].
+      split; [ easy | right ].
+      now intros (H3, H4).
+    }
+    apply (rngl_eqb_neq Heo) in Hi1z.
+    left.
+    split; [ easy | ].
+    split; [ easy | ].
+    left.
+    now intros (H3, H4).
+  }
+  apply (rngl_leb_gt_iff Hto) in Hzz2.
+  right; left.
+  split; [ easy | ].
+  split; [ easy | ].
+  rewrite (rngl_signp_of_neg Hor (Im z₂)) in Hzz; [ | easy ].
+  rewrite (rngl_mul_opp_l Hop) in Hzz.
+  rewrite rngl_mul_1_l in Hzz.
+  remember (z₁ * z₂)%C as z.
+  move z before z₂.
+  injection Hzz; clear Hzz; intros H2 H1.
+  move H1 after H2.
+  rewrite (rngl_mul_opp_r Hop) in H1, H2.
+  destruct (rngl_leb_dec 0 (Im z)) as [Hizz| Hizz]. {
+    apply rngl_leb_le in Hizz.
+    rewrite (rngl_signp_of_nonneg (Im z)) in H1; [ | easy ].
+    rewrite rngl_mul_1_l in H1.
+    apply (rngl_add_move_l Hop) in H1.
+    apply (rngl_add_move_0_l Hop) in H1.
+    rewrite rngl_add_assoc in H1.
+    rewrite rngl_add_comm in H1.
+    apply (rngl_eq_add_0 Hos Hor) in H1; cycle 1. {
+      apply rl_sqrt_add_mod_re_div_2_nonneg.
+    } {
+      apply (rngl_add_nonneg_nonneg Hos Hor). {
+        apply (rngl_mul_nonneg_nonneg Hos Hor).
+        apply rl_sqrt_add_mod_re_div_2_nonneg.
+        apply rl_sqrt_add_mod_re_div_2_nonneg.
+      } {
+        apply (rngl_mul_nonneg_nonneg Hos Hor).
+        apply rl_sqrt_sub_mod_re_div_2_nonneg.
+        apply rl_sqrt_sub_mod_re_div_2_nonneg.
+      }
+    }
+    destruct H1 as (H1, H3).
+    apply eq_gc_sqrt_add_modulus_Re_div_2_0 in H1.
+    clear Hizz.
+    destruct H1 as (Hrzz, Hizz).
+    rewrite Heqz in Hrzz, Hizz.
+    cbn in Hrzz, Hizz.
+... ...
+    apply (rngl_ltb_lt Heo) in Hizz.
+    rewrite (rngl_signp_of_neg Hor (Im z)) in H1; [ | easy ].
+    rewrite (rngl_mul_opp_l Hop) in H1.
+    rewrite rngl_mul_1_l in H1.
+    rewrite Heqz in Hizz; cbn in Hizz.
 ...
 Theorem glop :
   ∀ z, (Re z < 0)%L → √((‖ z ‖ + Re z) / 2) = 0%L.
