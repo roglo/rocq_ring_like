@@ -2370,18 +2370,22 @@ apply (rngl_mul_lt_mono_pos_l Hop Hiq Hto). {
 now rewrite (rngl_mul_comm Hic).
 Qed.
 
-(* to be completed
-Theorem glop :
-  ∀ z₁ z₂ : GComplex T,
+Definition gc_mul_not_overflow z₁ z₂ :=
   ((0 ≤ Im z₁)%L ∧ (0 ≤ Im z₂)%L ∧
      (¬ gc_negative_real z₁ ∨ ¬ gc_negative_real z₂)) ∨
   ((0 ≤ Im z₁)%L ∧ (Im z₂ < 0)%L ∧ (Re z₂ * ‖ z₁ ‖ < Re z₁ * ‖ z₂ ‖)%L) ∨
-  ((0 ≤ Im z₂)%L ∧ (Im z₁ < 0)%L ∧ (Re z₁ * ‖ z₂ ‖ < Re z₂ * ‖ z₁ ‖)%L) ↔
-  (√(z₁ * z₂))%C = (√z₁ * √z₂)%C.
+  ((0 ≤ Im z₂)%L ∧ (Im z₁ < 0)%L ∧ (Re z₁ * ‖ z₂ ‖ < Re z₂ * ‖ z₁ ‖)%L).
+
+(* to be completed
+Theorem glop :
+  ∀ z₁ z₂ : GComplex T,
+  gc_mul_not_overflow z₁ z₂
+  ↔ (√(z₁ * z₂))%C = (√z₁ * √z₂)%C.
 Proof.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
+specialize (rngl_integral_or_inv_pdiv_eq_dec_order Hiv Hor) as Hio.
 intros.
 split; intros Hzz. {
   destruct Hzz as [Hzz| Hzz].
@@ -2401,7 +2405,6 @@ destruct (rngl_leb_dec 0 (Im z₁)) as [Hzz1| Hzz1]. {
     apply rngl_leb_le in Hzz2.
     rewrite (rngl_signp_of_nonneg (Im z₂)) in Hzz; [ | easy ].
     rewrite rngl_mul_1_l in Hzz.
-(**)
     remember (z₁ * z₂)%C as z.
     move z before z₂.
     injection Hzz; clear Hzz; intros H2 H1.
@@ -2446,7 +2449,43 @@ destruct (rngl_leb_dec 0 (Im z₁)) as [Hzz1| Hzz1]. {
           apply (rngl_le_refl Hor).
         }
         rewrite rngl_mul_1_l in H1.
+        clear H2.
+        generalize Hzr1; intros Hzr1'.
+        generalize Hzr2; intros Hzr2'.
+        apply rngl_lt_le_incl in Hzr1', Hzr2'.
+        rewrite (proj2 (eq_gc_sqrt_add_modulus_Re_div_2_0 z₁)) in H1; [ | easy ].
+        rewrite (proj2 (eq_gc_sqrt_add_modulus_Re_div_2_0 z₂)) in H1; [ | easy ].
+        clear Hzr1' Hzr2'.
+        rewrite (rngl_mul_0_l Hos) in H1.
+        rewrite (rngl_sub_0_l Hop) in H1.
+        apply (rngl_add_move_0_r Hop) in H1.
+        apply (rngl_eq_add_0 Hos Hor) in H1; cycle 1. {
+          apply rl_sqrt_add_mod_re_div_2_nonneg.
+        } {
+          apply (rngl_mul_nonneg_nonneg Hos Hor).
+          apply rl_sqrt_sub_mod_re_div_2_nonneg.
+          apply rl_sqrt_sub_mod_re_div_2_nonneg.
+        }
+        destruct H1 as (_, H1).
+        apply (rngl_integral Hos Hio) in H1.
+        destruct H1 as [H1| H1]. {
+          apply eq_gc_sqrt_sub_modulus_Re_div_2_0 in H1.
+          destruct H1 as (H1, _).
+          now apply (rngl_nlt_ge Hor) in H1.
+        } {
+          apply eq_gc_sqrt_sub_modulus_Re_div_2_0 in H1.
+          destruct H1 as (H1, _).
+          now apply (rngl_nlt_ge Hor) in H1.
+        }
+      }
+      apply (rngl_eqb_neq Heo) in Hi2z.
+      move Hi2z before Hzz2.
 ...
+Theorem glop :
+  ∀ z, (Re z < 0)%L → √((‖ z ‖ + Re z) / 2) = 0%L.
+Proof.
+intros * Hrz.
+apply eq_
 ...
     left.
     split; [ easy | ].
