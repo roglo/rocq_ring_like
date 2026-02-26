@@ -2410,19 +2410,25 @@ split; intros Hzz. {
 }
 destruct (gc_eq_dec Heo z₁ 0) as [H1z| H1z]; [ now left | ].
 destruct (gc_eq_dec Heo z₂ 0) as [H2z| H2z]; [ now right; left | ].
+(*
 progress unfold gc_sqrt in Hzz.
+*)
 destruct (rngl_leb_dec 0 (Im z₁)) as [Hzz1| Hzz1]. {
   apply rngl_leb_le in Hzz1.
+(*
   rewrite (rngl_signp_of_nonneg (Im z₁)) in Hzz; [ | easy ].
   rewrite rngl_mul_1_l in Hzz.
+*)
   destruct (rngl_leb_dec 0 (Im z₂)) as [Hzz2| Hzz2]. {
     apply rngl_leb_le in Hzz2.
+(*
     rewrite (rngl_signp_of_nonneg (Im z₂)) in Hzz; [ | easy ].
     rewrite rngl_mul_1_l in Hzz.
     remember (z₁ * z₂)%C as z.
     move z before z₂.
     injection Hzz; clear Hzz; intros H2 H1.
     move H1 after H2.
+*)
     destruct (rngl_leb_dec 0 (Re z₁)) as [Hzr1| Hzr1]. {
       apply rngl_leb_le in Hzr1.
       right; right; left.
@@ -2455,6 +2461,14 @@ destruct (rngl_leb_dec 0 (Im z₁)) as [Hzz1| Hzz1]. {
       destruct (rngl_eqb_dec (Im z₂) 0) as [Hi2z| Hi2z]. {
         apply (rngl_eqb_eq Heo) in Hi2z.
         move Hi2z before Hzz2; clear Hzz2.
+        progress unfold gc_sqrt in Hzz.
+        rewrite Hi1z, Hi2z in Hzz.
+        rewrite rngl_signp_0 in Hzz.
+        rewrite rngl_mul_1_l in Hzz.
+        remember (z₁ * z₂)%C as z.
+        move z before z₂.
+        injection Hzz; clear Hzz; intros H2 H1.
+        move H1 after H2.
         rewrite rngl_signp_of_nonneg in H1; cycle 1. {
           rewrite Heqz; cbn.
           rewrite Hi1z, Hi2z.
@@ -2511,6 +2525,7 @@ destruct (rngl_leb_dec 0 (Im z₁)) as [Hzz1| Hzz1]. {
   right; right; right; left.
   split; [ easy | ].
   split; [ easy | ].
+...
   rewrite (rngl_signp_of_neg Hor (Im z₂)) in Hzz; [ | easy ].
   rewrite (rngl_mul_opp_l Hop) in Hzz.
   rewrite rngl_mul_1_l in Hzz.
