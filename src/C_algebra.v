@@ -2575,17 +2575,13 @@ destruct (rngl_leb_dec 0 (Im z₁)) as [Hzz1| Hzz1]. {
     destruct H3 as (_, H).
     rewrite H in Hzz2.
     now apply rngl_lt_irrefl in Hzz2.
-  }
-...
-    apply eq_gc_sqrt_add_modulus_Re_div_2_0 in H1.
-    clear Hizz.
-    destruct H1 as (Hrzz, Hizz).
-... ...
-    apply (rngl_ltb_lt Heo) in Hizz.
+  } {
+    apply (rngl_leb_gt_iff Hto) in Hizz.
     rewrite (rngl_signp_of_neg Hor (Im z)) in H1; [ | easy ].
     rewrite (rngl_mul_opp_l Hop) in H1.
     rewrite rngl_mul_1_l in H1.
-    rewrite Heqz in Hizz; cbn in Hizz.
+    rewrite <- (rngl_opp_add_distr Hop) in H1.
+    apply (rngl_opp_inj Hop) in H1.
 ...
 Theorem glop :
   ∀ z, (Re z < 0)%L → √((‖ z ‖ + Re z) / 2) = 0%L.
