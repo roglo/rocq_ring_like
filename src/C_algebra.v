@@ -2526,6 +2526,9 @@ destruct (rngl_leb_dec 0 (Im z₁)) as [Hzz1| Hzz1]. {
   split; [ easy | ].
   split; [ easy | ].
 ...
+  progress unfold gc_sqrt in Hzz.
+  rewrite (rngl_signp_of_nonneg (Im z₁)) in Hzz; [ | easy ].
+  rewrite rngl_mul_1_l in Hzz.
   rewrite (rngl_signp_of_neg Hor (Im z₂)) in Hzz; [ | easy ].
   rewrite (rngl_mul_opp_l Hop) in Hzz.
   rewrite rngl_mul_1_l in Hzz.
