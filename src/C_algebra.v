@@ -2704,9 +2704,27 @@ destruct (rngl_leb_dec 0 (Im z₁)) as [Hzz1| Hzz1]. {
       remember (‖ z₁ ‖ * ‖ z₂ ‖ - Re z₁ * Re z₂)%L as x.
       remember (Re z₁ * ‖ z₂ ‖ - ‖ z₁ ‖ * Re z₂)%L as y.
       move y before x.
-(* bref, faut montrer que y < x, quoi...
-   mais c'est vrai que √(x - y) impose quelque part que y ≤ x...
-*)
+      rewrite (rngl_mul_comm Hic (Re z₂)).
+      apply (rngl_lt_0_sub Hop Hor).
+      rewrite <- Heqy.
+      apply (f_equal (rngl_mul 2)) in H2.
+      rewrite (rngl_mul_comm Hic _ (_ / 2)) in H2.
+      rewrite (rngl_div_mul Hiv _ _ H2nz) in H2.
+(* oui, mais √(x - y) n'est simplifiable que si y ≤ x *)
+(* donc faut que je le prouve si je veux utiliser le
+   théorème glop ci-dessous *)
+...
+Theorem glop : ∀ a b c, a = (√b - √c)%L → False.
+Proof.
+intros * Habc.
+apply (f_equal rngl_squ) in Habc.
+rewrite (rngl_squ_sub Hop Hic) in Habc.
+rewrite <- (rngl_add_sub_swap Hop) in Habc.
+rewrite rngl_squ_sqrt in Habc.
+...
+Ah oui, zut, il faut que b et c soient positifs.
+...
+apply glop in H2.
 ...
 Theorem glop :
   ∀ z, (Re z < 0)%L → √((‖ z ‖ + Re z) / 2) = 0%L.
