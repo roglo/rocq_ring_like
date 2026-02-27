@@ -2625,7 +2625,7 @@ destruct (rngl_leb_dec 0 (Im z₁)) as [Hzz1| Hzz1]. {
       }
       apply (rngl_leb_gt_iff Hto) in Hr2z.
       move Hzr1 after Hzz1; move Hr2z before Hzr1.
-(*
+(**)
       rewrite <- rl_sqrt_mul in H1.
       2, 3: apply (gc_modulus_add_re_div_2_nonneg Hop Hiv Hto).
       rewrite <- rl_sqrt_mul in H1.
@@ -2660,7 +2660,7 @@ destruct (rngl_leb_dec 0 (Im z₁)) as [Hzz1| Hzz1]. {
       do 2 rewrite <- (rngl_add_sub_swap Hop) in H1.
       rewrite <- rngl_add_assoc in H1.
       rewrite <- (rngl_sub_add_distr Hos) in H1.
-*)
+(**)
       rewrite <- rl_sqrt_mul in H2.
       2: apply (gc_modulus_add_re_div_2_nonneg Hop Hiv Hto).
       2: apply (gc_modulus_sub_re_div_2_nonneg Hop Hiv Hto).
@@ -2701,6 +2701,12 @@ destruct (rngl_leb_dec 0 (Im z₁)) as [Hzz1| Hzz1]. {
       rewrite (rngl_sub_sub_swap Hop) in H2.
       rewrite <- (rngl_add_sub_assoc Hop) in H2.
       rewrite <- (rngl_sub_sub_distr Hop _ (Re z₁ * ‖ z₂ ‖)) in H2.
+      remember (‖ z₁ ‖ * ‖ z₂ ‖ - Re z₁ * Re z₂)%L as x.
+      remember (Re z₁ * ‖ z₂ ‖ - ‖ z₁ ‖ * Re z₂)%L as y.
+      move y before x.
+(* bref, faut montrer que y < x, quoi...
+   mais c'est vrai que √(x - y) impose quelque part que y ≤ x...
+*)
 ...
 Theorem glop :
   ∀ z, (Re z < 0)%L → √((‖ z ‖ + Re z) / 2) = 0%L.
