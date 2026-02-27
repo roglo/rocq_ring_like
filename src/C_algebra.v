@@ -2384,10 +2384,6 @@ Theorem gc_sqrt_mul_not_ov :
   ↔ (√(z₁ * z₂))%C = (√z₁ * √z₂)%C.
 Proof.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
-specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
-specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
-specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
-specialize (rngl_integral_or_inv_pdiv_eq_dec_order Hiv Hor) as Hio.
 intros.
 split; intros Hzz. {
   destruct Hzz as [Hzz| Hzz]. {
@@ -2408,6 +2404,18 @@ split; intros Hzz. {
   rewrite (gc_mul_comm Hic √z₁).
   now apply gc_sqrt_mul_when_Im_nonneg_neg.
 }
+specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
+specialize (rngl_integral_or_inv_pdiv_eq_dec_order Hiv Hor) as Hio.
+destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
+  specialize (rngl_characteristic_1 Hos Hc1) as H1.
+  left.
+  apply eq_gc_eq.
+  now do 2 rewrite (H1 (Re _)), (H1 (Im _)).
+}
+specialize (rngl_2_neq_0 Hos Hc1 Hto) as H2nz.
+move z₂ at bottom; move z₁ before z₂.
 destruct (gc_eq_dec Heo z₁ 0) as [H1z| H1z]; [ now left | ].
 destruct (gc_eq_dec Heo z₂ 0) as [H2z| H2z]; [ now right; left | ].
 (*
@@ -2525,7 +2533,6 @@ destruct (rngl_leb_dec 0 (Im z₁)) as [Hzz1| Hzz1]. {
   right; right; right; left.
   split; [ easy | ].
   split; [ easy | ].
-...
   progress unfold gc_sqrt in Hzz.
   rewrite (rngl_signp_of_nonneg (Im z₁)) in Hzz; [ | easy ].
   rewrite rngl_mul_1_l in Hzz.
@@ -2617,6 +2624,30 @@ destruct (rngl_leb_dec 0 (Im z₁)) as [Hzz1| Hzz1]. {
         now apply eq_gc_modulus_0 in H.
       }
       apply (rngl_leb_gt_iff Hto) in Hr2z.
+      move Hzr1 after Hzz1; move Hr2z before Hzr1.
+      rewrite <- rl_sqrt_mul in H1.
+      2, 3: apply (gc_modulus_add_re_div_2_nonneg Hop Hiv Hto).
+      rewrite <- rl_sqrt_mul in H1.
+      2, 3: apply (gc_modulus_sub_re_div_2_nonneg Hop Hiv Hto).
+      do 2 rewrite (rngl_mul_div_assoc Hiv) in H1.
+      do 2 rewrite (rngl_div_mul_mul_div Hic Hiv) in H1.
+      do 2 rewrite (rngl_div_div Hos Hiv _ _ _ H2nz H2nz) in H1.
+      rewrite fold_rngl_squ in H1.
+      rewrite (rl_sqrt_div Hop Hiv Hto _ 2²) in H1; cycle 1. {
+        apply (rngl_mul_nonneg_nonneg Hos Hor).
+        1, 2: apply (gc_add_modulus_re Hop Hiv Hto).
+      } {
+        apply (rngl_squ_pos Hos Hto Hio _ H2nz).
+      }
+      rewrite (rl_sqrt_div Hop Hiv Hto _ 2²) in H1; cycle 1. {
+        apply (rngl_mul_nonneg_nonneg Hos Hor).
+        1, 2: apply (gc_sub_modulus_re Hop Hiv Hto).
+      } {
+        apply (rngl_squ_pos Hos Hto Hio _ H2nz).
+      }
+      rewrite (rl_sqrt_squ Hop Hto) in H1.
+      rewrite (rngl_abs_nonneg_eq Hop Hor) in H1.
+      2: apply (rngl_0_le_2 Hos Hto).
 ...
 Theorem glop :
   ∀ z, (Re z < 0)%L → √((‖ z ‖ + Re z) / 2) = 0%L.
