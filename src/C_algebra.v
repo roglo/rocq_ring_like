@@ -2625,6 +2625,7 @@ destruct (rngl_leb_dec 0 (Im z₁)) as [Hzz1| Hzz1]. {
       }
       apply (rngl_leb_gt_iff Hto) in Hr2z.
       move Hzr1 after Hzz1; move Hr2z before Hzr1.
+(*
       rewrite <- rl_sqrt_mul in H1.
       2, 3: apply (gc_modulus_add_re_div_2_nonneg Hop Hiv Hto).
       rewrite <- rl_sqrt_mul in H1.
@@ -2648,6 +2649,58 @@ destruct (rngl_leb_dec 0 (Im z₁)) as [Hzz1| Hzz1]. {
       rewrite (rl_sqrt_squ Hop Hto) in H1.
       rewrite (rngl_abs_nonneg_eq Hop Hor) in H1.
       2: apply (rngl_0_le_2 Hos Hto).
+      rewrite <- (rngl_div_add_distr_r Hiv) in H1.
+      rewrite rngl_mul_add_distr_l in H1.
+      do 2 rewrite rngl_mul_add_distr_r in H1.
+      rewrite rngl_add_assoc in H1.
+      rewrite (rngl_mul_sub_distr_l Hop) in H1.
+      do 2 rewrite (rngl_mul_sub_distr_r Hop) in H1.
+      rewrite (rngl_sub_sub_distr Hop) in H1.
+      do 2 rewrite (rngl_add_add_swap _ _ (Re z₁ * Re z₂)) in H1.
+      do 2 rewrite <- (rngl_add_sub_swap Hop) in H1.
+      rewrite <- rngl_add_assoc in H1.
+      rewrite <- (rngl_sub_add_distr Hos) in H1.
+*)
+      rewrite <- rl_sqrt_mul in H2.
+      2: apply (gc_modulus_add_re_div_2_nonneg Hop Hiv Hto).
+      2: apply (gc_modulus_sub_re_div_2_nonneg Hop Hiv Hto).
+      rewrite <- rl_sqrt_mul in H2.
+      2: apply (gc_modulus_sub_re_div_2_nonneg Hop Hiv Hto).
+      2: apply (gc_modulus_add_re_div_2_nonneg Hop Hiv Hto).
+      do 2 rewrite (rngl_mul_div_assoc Hiv) in H2.
+      do 2 rewrite (rngl_div_mul_mul_div Hic Hiv) in H2.
+      do 2 rewrite (rngl_div_div Hos Hiv _ _ _ H2nz H2nz) in H2.
+      rewrite fold_rngl_squ in H2.
+      rewrite (rl_sqrt_div Hop Hiv Hto _ 2²) in H2; cycle 1. {
+        apply (rngl_mul_nonneg_nonneg Hos Hor).
+        apply (gc_add_modulus_re Hop Hiv Hto).
+        apply (gc_sub_modulus_re Hop Hiv Hto).
+      } {
+        apply (rngl_squ_pos Hos Hto Hio _ H2nz).
+      }
+      rewrite (rl_sqrt_div Hop Hiv Hto _ 2²) in H2; cycle 1. {
+        apply (rngl_mul_nonneg_nonneg Hos Hor).
+        apply (gc_sub_modulus_re Hop Hiv Hto).
+        apply (gc_add_modulus_re Hop Hiv Hto).
+      } {
+        apply (rngl_squ_pos Hos Hto Hio _ H2nz).
+      }
+      rewrite (rl_sqrt_squ Hop Hto) in H2.
+      rewrite (rngl_abs_nonneg_eq Hop Hor) in H2.
+      2: apply (rngl_0_le_2 Hos Hto).
+      rewrite <- (rngl_div_sub_distr_r Hop Hiv) in H2.
+      rewrite (rngl_mul_sub_distr_l Hop) in H2.
+      do 2 rewrite rngl_mul_add_distr_r in H2.
+      rewrite (rngl_sub_add_distr Hos) in H2.
+      rewrite rngl_mul_add_distr_l in H2.
+      do 2 rewrite (rngl_mul_sub_distr_r Hop) in H2.
+      rewrite (rngl_add_sub_assoc Hop) in H2.
+      rewrite (rngl_sub_sub_swap Hop) in H2.
+      rewrite (rngl_add_sub_swap Hop) in H2.
+      rewrite (rngl_add_sub_swap Hop _ _ (Re z₁ * Re z₂)) in H2.
+      rewrite (rngl_sub_sub_swap Hop) in H2.
+      rewrite <- (rngl_add_sub_assoc Hop) in H2.
+      rewrite <- (rngl_sub_sub_distr Hop _ (Re z₁ * ‖ z₂ ‖)) in H2.
 ...
 Theorem glop :
   ∀ z, (Re z < 0)%L → √((‖ z ‖ + Re z) / 2) = 0%L.
