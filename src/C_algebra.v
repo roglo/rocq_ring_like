@@ -2483,25 +2483,10 @@ specialize (rngl_2_neq_0 Hos Hc1 Hto) as H2nz.
 move z₂ at bottom; move z₁ before z₂.
 destruct (gc_eq_dec Heo z₁ 0) as [H1z| H1z]; [ now left | ].
 destruct (gc_eq_dec Heo z₂ 0) as [H2z| H2z]; [ now right; left | ].
-(*
-progress unfold gc_sqrt in Hzz.
-*)
 destruct (rngl_leb_dec 0 (Im z₁)) as [Hzz1| Hzz1]. {
   apply rngl_leb_le in Hzz1.
-(*
-  rewrite (rngl_signp_of_nonneg (Im z₁)) in Hzz; [ | easy ].
-  rewrite rngl_mul_1_l in Hzz.
-*)
   destruct (rngl_leb_dec 0 (Im z₂)) as [Hzz2| Hzz2]. {
     apply rngl_leb_le in Hzz2.
-(*
-    rewrite (rngl_signp_of_nonneg (Im z₂)) in Hzz; [ | easy ].
-    rewrite rngl_mul_1_l in Hzz.
-    remember (z₁ * z₂)%C as z.
-    move z before z₂.
-    injection Hzz; clear Hzz; intros H2 H1.
-    move H1 after H2.
-*)
     destruct (rngl_leb_dec 0 (Re z₁)) as [Hzr1| Hzr1]. {
       apply rngl_leb_le in Hzr1.
       right; right; left.
@@ -2690,7 +2675,7 @@ destruct (rngl_leb_dec 0 (Im z₁)) as [Hzz1| Hzz1]. {
       }
       apply (rngl_leb_gt_iff Hto) in Hr2z.
       move Hzr1 after Hzz1; move Hr2z before Hzr1.
-(**)
+(* sur H1, mais chais pas si c'est utile *)
       rewrite <- rl_sqrt_mul in H1.
       2, 3: apply (gc_modulus_add_re_div_2_nonneg Hop Hiv Hto).
       rewrite <- rl_sqrt_mul in H1.
@@ -2725,7 +2710,7 @@ destruct (rngl_leb_dec 0 (Im z₁)) as [Hzz1| Hzz1]. {
       do 2 rewrite <- (rngl_add_sub_swap Hop) in H1.
       rewrite <- rngl_add_assoc in H1.
       rewrite <- (rngl_sub_add_distr Hos) in H1.
-(**)
+(* fin sur H1 *)
       rewrite <- rl_sqrt_mul in H2.
       2: apply (gc_modulus_add_re_div_2_nonneg Hop Hiv Hto).
       2: apply (gc_modulus_sub_re_div_2_nonneg Hop Hiv Hto).
@@ -2825,6 +2810,13 @@ apply rngl_mul_cancel_l in H2.
 apply rngl_mul_cancel_l in H2.
 ring_simplify in H2.
 fold_rngl_in H2.
+rewrite <- rngl_add_sub_swap in H2.
+rewrite <- rngl_add_sub_swap in H2.
+apply -> rngl_sub_move_r in H2.
+rewrite <- rngl_add_sub_swap in H2.
+symmetry in H2.
+apply -> rngl_sub_move_r in H2.
+(* chais pas... *)
 ...
       rewrite (rngl_sub_sub_distr Hop) in H2.
       rewrite (rngl_add_comm x), (rngl_add_sub Hos) in H2.
