@@ -2784,6 +2784,16 @@ destruct (rngl_leb_dec 0 (Im z₁)) as [Hzz1| Hzz1]. {
         apply (gc_sub_modulus_re Hop Hiv Hto).
       }
       apply rl_sqrt_sub_rl_sqrt in H2; [ | easy | easy ].
+      rewrite (rngl_squ_mul Hic) in H2.
+      rewrite rngl_squ_sqrt in H2.
+      2: apply (gc_modulus_sub_re_div_2_nonneg Hop Hiv Hto).
+      rewrite (rngl_sub_sub_distr Hop) in H2.
+      rewrite (rngl_add_comm x), (rngl_add_sub Hos) in H2.
+      rewrite (rngl_add_comm (y + x)), rngl_add_assoc in H2.
+      rewrite (rngl_sub_add Hop) in H2.
+(* mmm... chais pas... y a t-il quelque chose à tirer de H2 ? *)
+(* et H1, qu'est-ce qu'il devient, dans cette histoire ? *)
+(* j'ai fait des trucs sur lui ci-dessus, mais est-ce utile ? *)
 ...
     left.
     split; [ easy | ].
