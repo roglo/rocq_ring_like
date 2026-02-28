@@ -927,6 +927,26 @@ Context {Hiv : rngl_has_inv T = true}.
 Context {Hto : rngl_is_totally_ordered T = true}.
 
 Add Ring rngl_ring : (rngl_ring_theory Hic Hop).
+Theorem strange_let :
+  ∀ x,
+    match
+      (let (_, _, _, _, rngl_opt_opp_or_psub, _, _, _, _) := ro in
+       rngl_opt_opp_or_psub)
+    with
+    | Some (inl rngl_opp) => rngl_opp x
+    | _ => 0%L
+    end = rngl_opp x.
+Proof. easy. Qed.
+Ltac fold_rngl_in H :=
+  replace (let (_, _, _, rngl_mul, _, _, _, _, _) := ro in rngl_mul)
+    with rngl_mul in H by easy;
+  replace (let (_, _, rngl_add, _, _, _, _, _, _) := ro in rngl_add)
+    with rngl_add in H by easy;
+  replace (let (rngl_zero, _, _, _, _, _, _, _, _) := ro in rngl_zero)
+    with rngl_zero in H by easy;
+  replace (let (_, rngl_one, _, _, _, _, _, _, _) := ro in rngl_one)
+    with rngl_one in H by easy;
+  repeat try rewrite strange_let in H.
 
 Theorem gc_squ_sub_squ : ∀ z₁ z₂, (z₁² - z₂² = (z₁ + z₂) * (z₁ - z₂))%C.
 Proof.
@@ -2787,6 +2807,25 @@ destruct (rngl_leb_dec 0 (Im z₁)) as [Hzz1| Hzz1]. {
       rewrite (rngl_squ_mul Hic) in H2.
       rewrite rngl_squ_sqrt in H2.
       2: apply (gc_modulus_sub_re_div_2_nonneg Hop Hiv Hto).
+progress unfold rngl_squ in H2.
+ring_simplify in H2.
+fold_rngl_in H2.
+do 2 rewrite rngl_mul_div_assoc in H2.
+rewrite rngl_div_mul_mul_div in H2.
+do 9 rewrite <- rngl_mul_assoc in H2.
+rewrite rngl_mul_comm in H2.
+rewrite rngl_mul_div in H2.
+rewrite rngl_mul_comm in H2.
+rewrite rngl_mul_div in H2.
+rewrite (rngl_mul_comm Hic _ (2 * (2 * _))) in H2.
+rewrite rngl_mul_div in H2.
+do 2 rewrite <- rngl_mul_add_distr_l in H2.
+do 3 rewrite <- rngl_mul_assoc in H2.
+apply rngl_mul_cancel_l in H2.
+apply rngl_mul_cancel_l in H2.
+ring_simplify in H2.
+fold_rngl_in H2.
+...
       rewrite (rngl_sub_sub_distr Hop) in H2.
       rewrite (rngl_add_comm x), (rngl_add_sub Hos) in H2.
       rewrite (rngl_add_comm (y + x)), rngl_add_assoc in H2.
