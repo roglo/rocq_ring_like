@@ -2661,6 +2661,15 @@ destruct (rngl_leb_dec 0 (Im z₁)) as [Hzz1| Hzz1]. {
     rewrite (rngl_add_opp_l Hop) in H2.
     destruct (rngl_ltb_dec 0 (Re z₁)) as [Hzr1| Hzr1]. {
 clear - Hzr1 Heo Hor Hop Hto Hiq Hiv H2z H2 Hic Hos H2nz Hio Hc1 Hizz.
+remember √((‖ z ‖ - Re z) / 2) as rz eqn:Hrz.
+assert (H3 : (0 ≤ rz)%L). {
+  rewrite Hrz.
+  apply rl_sqrt_sub_mod_re_div_2_nonneg.
+}
+clear Hrz; subst rz.
+rename H3 into H2.
+apply -> (rngl_le_0_sub Hop Hor) in H2.
+...
       apply (rngl_ltb_lt Heo) in Hzr1.
       destruct (rngl_leb_dec (Re z₂) 0) as [Hr2z| Hr2z]. {
         apply rngl_leb_le in Hr2z.
