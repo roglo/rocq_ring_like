@@ -1458,7 +1458,7 @@ destruct za, zb, zab. {
 Qed.
 
 (* trigonometry equivalent to cos bound *)
-Theorem gre_bound : ∀ z, (- ‖ z ‖ ≤ Re z ≤ ‖ z ‖)%L.
+Theorem Re_bound : ∀ z, (- ‖ z ‖ ≤ Re z ≤ ‖ z ‖)%L.
 Proof.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
@@ -2370,6 +2370,51 @@ apply (rngl_mul_lt_mono_pos_l Hop Hiq Hto). {
 now rewrite (rngl_mul_comm Hic).
 Qed.
 
+Theorem rl_sqrt_sub_rl_sqrt :
+  ∀ a b c,
+  (0 ≤ b)%L
+  → (0 ≤ c)%L
+  → a = (√b - √c)%L
+  → ((a²)² + (b - c)² = 2 * a² * (b + c))%L.
+Proof.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+intros * Hzb Hzc Habc.
+apply (f_equal rngl_squ) in Habc.
+rewrite (rngl_squ_sub Hop Hic) in Habc.
+rewrite <- (rngl_add_sub_swap Hop) in Habc.
+rewrite (rngl_squ_sqrt _ Hzb) in Habc.
+rewrite (rngl_squ_sqrt _ Hzc) in Habc.
+symmetry in Habc.
+apply (rngl_sub_move_l Hop) in Habc.
+apply (f_equal rngl_squ) in Habc.
+do 2 rewrite (rngl_squ_mul Hic) in Habc.
+rewrite (rngl_squ_sqrt _ Hzb) in Habc.
+rewrite (rngl_squ_sqrt _ Hzc) in Habc.
+rewrite (rngl_squ_sub_comm Hop) in Habc.
+rewrite (rngl_squ_sub Hop Hic) in Habc.
+symmetry in Habc.
+rewrite (rngl_squ_add Hic) in Habc.
+do 2 rewrite rngl_add_assoc in Habc.
+rewrite rngl_add_add_swap in Habc.
+apply (rngl_sub_move_0_r Hop) in Habc.
+rewrite (rngl_add_sub_swap Hop) in Habc.
+rewrite <- (rngl_sub_sub_distr Hop) in Habc.
+rewrite <- (rngl_add_sub_assoc Hop) in Habc.
+do 2 rewrite <- (rngl_mul_sub_distr_r Hop) in Habc.
+replace (2² - 2)%L with 2%L in Habc; cycle 1. {
+  progress unfold rngl_squ.
+  rewrite (rngl_sub_mul_l_diag_r Hop).
+  rewrite (rngl_add_sub Hos); symmetry.
+  apply rngl_mul_1_l.
+}
+rewrite <- rngl_add_assoc in Habc.
+rewrite (rngl_add_sub_assoc Hop) in Habc.
+rewrite (rngl_add_sub_swap Hop) in Habc.
+rewrite <- (rngl_squ_sub Hop Hic) in Habc.
+rewrite <- (rngl_add_sub_swap Hop) in Habc.
+now apply -> (rngl_sub_move_0_r Hop) in Habc.
+Qed.
+
 Definition gc_mul_not_overflow z₁ z₂ :=
   (z₁ = 0%C) ∨ (z₂ = 0%C) ∨
   ((0 ≤ Im z₁)%L ∧ (0 ≤ Im z₂)%L ∧
@@ -2710,27 +2755,35 @@ destruct (rngl_leb_dec 0 (Im z₁)) as [Hzz1| Hzz1]. {
       apply (f_equal (rngl_mul 2)) in H2.
       rewrite (rngl_mul_comm Hic _ (_ / 2)) in H2.
       rewrite (rngl_div_mul Hiv _ _ H2nz) in H2.
-(* oui, mais √(x - y) n'est simplifiable que si y ≤ x *)
-(* donc faut que je le prouve si je veux utiliser le
-   théorème glop ci-dessous *)
-...
-Theorem glop : ∀ a b c, a = (√b - √c)%L → False.
-Proof.
-intros * Habc.
-apply (f_equal rngl_squ) in Habc.
-rewrite (rngl_squ_sub Hop Hic) in Habc.
-rewrite <- (rngl_add_sub_swap Hop) in Habc.
-rewrite rngl_squ_sqrt in Habc.
-...
-Ah oui, zut, il faut que b et c soient positifs.
-...
-apply glop in H2.
-...
-Theorem glop :
-  ∀ z, (Re z < 0)%L → √((‖ z ‖ + Re z) / 2) = 0%L.
-Proof.
-intros * Hrz.
-apply eq_
+      assert (Hsxy : (0 ≤ x - y)%L). {
+        rewrite Heqx, Heqy.
+        rewrite (rngl_sub_sub_distr Hop).
+        do 2 rewrite <- (rngl_add_sub_swap Hop).
+        rewrite <- (rngl_sub_add_distr Hos).
+        apply (rngl_le_0_sub Hop Hor).
+        do 2 rewrite <- rngl_mul_add_distr_l.
+        rewrite rngl_add_comm.
+        apply (rngl_mul_le_mono_nonneg_r Hop Hor).
+        apply (gc_add_modulus_re Hop Hiv Hto).
+        apply Re_bound.
+      }
+      assert (Haxy : (0 ≤ x + y)%L). {
+        rewrite Heqx, Heqy.
+        rewrite (rngl_add_sub_assoc Hop).
+        rewrite (rngl_add_sub_swap Hop).
+        rewrite (rngl_sub_sub_swap Hop).
+        rewrite <- (rngl_add_sub_swap Hop).
+        rewrite <- (rngl_add_sub_assoc Hop).
+        do 2 rewrite <- (rngl_mul_sub_distr_l Hop).
+        apply (rngl_add_nonneg_nonneg Hos Hor).
+        apply (rngl_mul_nonneg_nonneg Hos Hor).
+        apply gc_modulus_nonneg.
+        apply (gc_sub_modulus_re Hop Hiv Hto).
+        apply (rngl_mul_nonneg_nonneg Hos Hor).
+        now apply rngl_lt_le_incl.
+        apply (gc_sub_modulus_re Hop Hiv Hto).
+      }
+      apply rl_sqrt_sub_rl_sqrt in H2; [ | easy | easy ].
 ...
     left.
     split; [ easy | ].
@@ -3231,9 +3284,9 @@ progress f_equal. {
         apply (rngl_add_nonneg_nonneg Hos Hor). {
           apply rl_sqrt_nonneg.
           apply (rngl_mul_nonneg_nonneg Hos Hor). {
-            apply (rngl_le_0_sub Hop Hor), gre_bound.
+            apply (rngl_le_0_sub Hop Hor), Re_bound.
           } {
-            apply (rngl_le_0_sub Hop Hor), gre_bound.
+            apply (rngl_le_0_sub Hop Hor), Re_bound.
           }
         }
         apply (rngl_mul_nonneg_nonneg Hos Hor). 2: {
@@ -3472,11 +3525,11 @@ rewrite <- (rngl_mul_signp_abs (Im z₂)) at 1.
           apply (rngl_mul_nonneg_nonneg Hos Hor). {
             apply (rngl_le_0_sub Hop Hor).
             rewrite <- Ha.
-            apply gre_bound.
+            apply Re_bound.
           } {
             apply (rngl_le_0_sub Hop Hor).
             rewrite <- Hb.
-            apply gre_bound.
+            apply Re_bound.
           }
         }
         apply (rngl_mul_nonneg_nonneg Hos Hor). 2: {
