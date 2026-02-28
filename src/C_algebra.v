@@ -2788,6 +2788,8 @@ destruct (rngl_leb_dec 0 (Im z₁)) as [Hzz1| Hzz1]. {
         now apply rngl_lt_le_incl.
         apply (gc_sub_modulus_re Hop Hiv Hto).
       }
+assert ((√(x - y) ≤ √(x + y))%L). {
+... ...
       apply rl_sqrt_sub_rl_sqrt in H2; [ | easy | easy ].
       rewrite (rngl_squ_mul Hic) in H2.
       rewrite rngl_squ_sqrt in H2.
@@ -2817,6 +2819,8 @@ rewrite <- rngl_add_sub_swap in H2.
 symmetry in H2.
 apply -> rngl_sub_move_r in H2.
 (* chais pas... *)
+(* H2 contenant un y², et pas de y, on ne pourra pas en déduire
+   que y est positif *)
 ...
       rewrite (rngl_sub_sub_distr Hop) in H2.
       rewrite (rngl_add_comm x), (rngl_add_sub Hos) in H2.
