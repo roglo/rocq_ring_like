@@ -2788,7 +2788,34 @@ destruct (rngl_leb_dec 0 (Im z₁)) as [Hzz1| Hzz1]. {
         now apply rngl_lt_le_incl.
         apply (gc_sub_modulus_re Hop Hiv Hto).
       }
-assert ((√(x - y) ≤ √(x + y))%L). {
+      assert (Hss : (√(x - y) ≤ √(x + y))%L). {
+        apply (rngl_le_0_sub Hop Hor).
+        rewrite <- H2.
+        apply (rngl_mul_nonneg_nonneg Hos Hor).
+        apply (rngl_0_le_2 Hos Hto).
+        apply rl_sqrt_sub_mod_re_div_2_nonneg.
+      }
+      apply (rngl_le_le_squ Hop Hto) in Hss; cycle 1.
+      now apply rl_sqrt_nonneg.
+      rewrite rngl_squ_sqrt in Hss; [ | easy ].
+      rewrite rngl_squ_sqrt in Hss; [ | easy ].
+      apply -> (rngl_le_sub_le_add_r Hop Hor) in Hss.
+      rewrite <- rngl_add_assoc in Hss.
+      apply (rngl_le_sub_le_add_l Hop Hor) in Hss.
+      rewrite (rngl_sub_diag Hos) in Hss.
+      rewrite <- rngl_mul_2_l in Hss.
+      apply (rngl_le_0_mul Hop Hiq Hto) in Hss.
+      destruct Hss as [(_, Hss)| (H, _)]; cycle 1. {
+        apply (rngl_nlt_ge Hor) in H.
+        exfalso; apply H; clear H.
+        apply (rngl_0_lt_2 Hos Hc1 Hto).
+      }
+      apply rngl_le_neq.
+      split; [ easy | ].
+      intros H; move H at top; subst y.
+      clear Hss Haxy Hsxy.
+      symmetry in Heqy.
+      apply -> (rngl_sub_move_0_r Hop) in Heqy.
 ... ...
       apply rl_sqrt_sub_rl_sqrt in H2; [ | easy | easy ].
       rewrite (rngl_squ_mul Hic) in H2.
