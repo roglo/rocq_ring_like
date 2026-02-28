@@ -2660,6 +2660,7 @@ destruct (rngl_leb_dec 0 (Im z₁)) as [Hzz1| Hzz1]. {
     apply (rngl_opp_inj Hop) in H1.
     rewrite (rngl_add_opp_l Hop) in H2.
     destruct (rngl_ltb_dec 0 (Re z₁)) as [Hzr1| Hzr1]. {
+clear - Hzr1 Heo Hor Hop Hto Hiq Hiv H2z H2 Hic Hos H2nz Hio Hc1 Hizz.
       apply (rngl_ltb_lt Heo) in Hzr1.
       destruct (rngl_leb_dec (Re z₂) 0) as [Hr2z| Hr2z]. {
         apply rngl_leb_le in Hr2z.
@@ -2674,43 +2675,6 @@ destruct (rngl_leb_dec 0 (Im z₁)) as [Hzz1| Hzz1]. {
         now apply eq_gc_modulus_0 in H.
       }
       apply (rngl_leb_gt_iff Hto) in Hr2z.
-      move Hzr1 after Hzz1; move Hr2z before Hzr1.
-(* sur H1, mais chais pas si c'est utile *)
-      rewrite <- rl_sqrt_mul in H1.
-      2, 3: apply (gc_modulus_add_re_div_2_nonneg Hop Hiv Hto).
-      rewrite <- rl_sqrt_mul in H1.
-      2, 3: apply (gc_modulus_sub_re_div_2_nonneg Hop Hiv Hto).
-      do 2 rewrite (rngl_mul_div_assoc Hiv) in H1.
-      do 2 rewrite (rngl_div_mul_mul_div Hic Hiv) in H1.
-      do 2 rewrite (rngl_div_div Hos Hiv _ _ _ H2nz H2nz) in H1.
-      rewrite fold_rngl_squ in H1.
-      rewrite (rl_sqrt_div Hop Hiv Hto _ 2²) in H1; cycle 1. {
-        apply (rngl_mul_nonneg_nonneg Hos Hor).
-        1, 2: apply (gc_add_modulus_re Hop Hiv Hto).
-      } {
-        apply (rngl_squ_pos Hos Hto Hio _ H2nz).
-      }
-      rewrite (rl_sqrt_div Hop Hiv Hto _ 2²) in H1; cycle 1. {
-        apply (rngl_mul_nonneg_nonneg Hos Hor).
-        1, 2: apply (gc_sub_modulus_re Hop Hiv Hto).
-      } {
-        apply (rngl_squ_pos Hos Hto Hio _ H2nz).
-      }
-      rewrite (rl_sqrt_squ Hop Hto) in H1.
-      rewrite (rngl_abs_nonneg_eq Hop Hor) in H1.
-      2: apply (rngl_0_le_2 Hos Hto).
-      rewrite <- (rngl_div_add_distr_r Hiv) in H1.
-      rewrite rngl_mul_add_distr_l in H1.
-      do 2 rewrite rngl_mul_add_distr_r in H1.
-      rewrite rngl_add_assoc in H1.
-      rewrite (rngl_mul_sub_distr_l Hop) in H1.
-      do 2 rewrite (rngl_mul_sub_distr_r Hop) in H1.
-      rewrite (rngl_sub_sub_distr Hop) in H1.
-      do 2 rewrite (rngl_add_add_swap _ _ (Re z₁ * Re z₂)) in H1.
-      do 2 rewrite <- (rngl_add_sub_swap Hop) in H1.
-      rewrite <- rngl_add_assoc in H1.
-      rewrite <- (rngl_sub_add_distr Hos) in H1.
-(* fin sur H1 *)
       rewrite <- rl_sqrt_mul in H2.
       2: apply (gc_modulus_add_re_div_2_nonneg Hop Hiv Hto).
       2: apply (gc_modulus_sub_re_div_2_nonneg Hop Hiv Hto).
@@ -2813,14 +2777,16 @@ destruct (rngl_leb_dec 0 (Im z₁)) as [Hzz1| Hzz1]. {
       apply rngl_le_neq.
       split; [ easy | ].
       intros H; move H at top; subst y.
-      clear Hss Haxy Hsxy.
-      symmetry in Heqy.
-      apply -> (rngl_sub_move_0_r Hop) in Heqy.
-... ...
-      apply rl_sqrt_sub_rl_sqrt in H2; [ | easy | easy ].
-      rewrite (rngl_squ_mul Hic) in H2.
-      rewrite rngl_squ_sqrt in H2.
-      2: apply (gc_modulus_sub_re_div_2_nonneg Hop Hiv Hto).
+      rewrite rngl_add_0_r, (rngl_sub_0_r Hos) in H2.
+      rewrite (rngl_sub_diag Hos) in H2.
+      apply (rngl_integral Hos Hio) in H2.
+      destruct H2 as [H2| H2]; [ easy | ].
+      apply eq_gc_sqrt_sub_modulus_Re_div_2_0 in H2.
+      destruct H2 as (_, H2).
+      rewrite H2 in Hizz.
+      now apply rngl_lt_irrefl in Hizz.
+    }
+...
 progress unfold rngl_squ in H2.
 ring_simplify in H2.
 fold_rngl_in H2.
