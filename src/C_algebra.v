@@ -2554,11 +2554,13 @@ Qed.
 
 Definition gc_mul_not_overflow z₁ z₂ :=
   z₁ = 0%C ∨ z₂ = 0%C ∨
-  (0 ≤ Im z₁ ∧ 0 ≤ Im z₂ ∧
-     (¬ gc_negative_real z₁ ∨ ¬ gc_negative_real z₂))%L ∨
-  (0 ≤ Im z₁ ∧ Im z₂ < 0 ∧ Re z₂ * ‖ z₁ ‖ < Re z₁ * ‖ z₂ ‖)%L ∨
-  (0 ≤ Im z₂ ∧ Im z₁ < 0 ∧ Re z₁ * ‖ z₂ ‖ < Re z₂ * ‖ z₁ ‖)%L.
+  ((0 ≤ Im z₁ ∨ 0 ≤ Im z₂) ∧
+     ((0 ≤ Im z₁ ∧ 0 ≤ Im z₂ ∧
+         (¬ gc_negative_real z₁ ∨ ¬ gc_negative_real z₂)) ∨
+      (0 ≤ Im z₁ ∧ Im z₂ < 0 ∧ Re z₂ * ‖ z₁ ‖ < Re z₁ * ‖ z₂ ‖) ∨
+      (0 ≤ Im z₂ ∧ Im z₁ < 0 ∧ Re z₁ * ‖ z₂ ‖ < Re z₂ * ‖ z₁ ‖)))%L.
 
+(* to be completed
 Theorem gc_mul_not_overflow_symm :
   ∀ z₁ z₂, gc_mul_not_overflow z₁ z₂ → gc_mul_not_overflow z₂ z₁.
 Proof.
@@ -2566,7 +2568,19 @@ intros * H12.
 progress unfold gc_mul_not_overflow.
 destruct H12 as [H12| H12]; [ now right; left | ].
 destruct H12 as [H12| H12]; [ now left | ].
+destruct H12 as (Hii, H12).
 right; right.
+split. {
+...
+  now destruct Hii; [ left | right ].
+}
+destruct H12 as [H12| H12]. {
+  split. {
+    now destruct Hii; [ left | right ].
+  }
+
+...
+
 destruct H12 as [H12| H12]; [ left | right ]. {
   split; [ easy | ].
   split; [ easy | ].
@@ -2702,7 +2716,7 @@ destruct (rngl_leb_dec 0 (Im (z₁ * z₂))) as [Hizz| Hizz]. {
 }
 Qed.
 
-(* to be completed
+(* to be completed *)
 Theorem gc_sqrt_mul_not_ov :
   ∀ z₁ z₂ : GComplex T,
   gc_mul_not_overflow z₁ z₂
