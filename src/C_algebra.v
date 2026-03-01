@@ -2701,7 +2701,6 @@ destruct (rngl_leb_dec 0 (Im (z₁ * z₂))) as [Hizz| Hizz]. {
 }
 Qed.
 
-(* to be completed
 Theorem gc_sqrt_mul_not_ov :
   ∀ z₁ z₂ : GComplex T,
   gc_mul_not_overflow z₁ z₂
@@ -2728,22 +2727,9 @@ split; intros Hzz. {
   rewrite (gc_mul_comm Hic √z₁).
   now apply gc_sqrt_mul_when_Im_nonneg_neg.
 }
-(*
-specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
-*)
 specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
-(*
 specialize (rngl_integral_or_inv_pdiv_eq_dec_order Hiv Hor) as Hio.
-destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
-  specialize (rngl_characteristic_1 Hos Hc1) as H1.
-  left.
-  apply eq_gc_eq.
-  now do 2 rewrite (H1 (Re _)), (H1 (Im _)).
-}
-specialize (rngl_2_neq_0 Hos Hc1 Hto) as H2nz.
-move z₂ at bottom; move z₁ before z₂.
-*)
 destruct (gc_eq_dec Heo z₁ 0) as [H1z| H1z]; [ now left | ].
 destruct (gc_eq_dec Heo z₂ 0) as [H2z| H2z]; [ now right; left | ].
 destruct (rngl_leb_dec 0 (Im z₁)) as [Hzz1| Hzz1]. {
@@ -2766,8 +2752,47 @@ destruct (rngl_leb_dec 0 (Im z₂)) as [Hzz2| Hzz2]. {
   now apply gc_sqrt_mul_im_nonneg_neg_not_ov.
 }
 apply (rngl_leb_gt_iff Hto) in Hzz2.
-...
-*)
+exfalso.
+remember (z₁ * z₂)%C as z.
+move z before z₂.
+injection Hzz; clear Hzz; intros H2 H1.
+move H1 after H2.
+rewrite (rngl_signp_of_neg Hor (Im z₁)) in H2; [ | easy ].
+rewrite (rngl_signp_of_neg Hor (Im z₂)) in H2; [ | easy ].
+do 3 rewrite (rngl_mul_opp_l Hop) in H2.
+do 2 rewrite rngl_mul_1_l in H2.
+rewrite (rngl_mul_opp_r Hop) in H2.
+rewrite (rngl_add_opp_r Hop) in H2.
+rewrite <- (rngl_opp_add_distr Hop) in H2.
+apply (rngl_add_move_0_r Hop) in H2.
+rewrite rngl_add_assoc in H2.
+apply (rngl_eq_add_0 Hos Hor) in H2; cycle 1. {
+  apply (rngl_add_nonneg_nonneg Hos Hor). {
+    apply rl_sqrt_sub_mod_re_div_2_nonneg.
+  } {
+    apply (rngl_mul_nonneg_nonneg Hos Hor).
+    apply rl_sqrt_sub_mod_re_div_2_nonneg.
+    apply rl_sqrt_add_mod_re_div_2_nonneg.
+  }
+} {
+  apply (rngl_mul_nonneg_nonneg Hos Hor).
+  apply rl_sqrt_add_mod_re_div_2_nonneg.
+  apply rl_sqrt_sub_mod_re_div_2_nonneg.
+}
+destruct H2 as (H2, H3).
+apply (rngl_integral Hos Hio) in H3.
+destruct H3 as [H3| H3]. {
+  apply eq_gc_sqrt_add_modulus_Re_div_2_0 in H3.
+  destruct H3 as (_, H3).
+  rewrite H3 in Hzz1.
+  now apply rngl_lt_irrefl in Hzz1.
+} {
+  apply eq_gc_sqrt_sub_modulus_Re_div_2_0 in H3.
+  destruct H3 as (_, H3).
+  rewrite H3 in Hzz2.
+  now apply rngl_lt_irrefl in Hzz2.
+}
+Qed.
 
 Definition gc_add_overflow z₁ z₂ :=
   if (0 ≤? Im z₁)%L then
