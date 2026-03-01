@@ -2560,7 +2560,6 @@ Definition gc_mul_not_overflow z₁ z₂ :=
       (0 ≤ Im z₁ ∧ Im z₂ < 0 ∧ Re z₂ * ‖ z₁ ‖ < Re z₁ * ‖ z₂ ‖) ∨
       (0 ≤ Im z₂ ∧ Im z₁ < 0 ∧ Re z₁ * ‖ z₂ ‖ < Re z₂ * ‖ z₁ ‖)))%L.
 
-(* to be completed
 Theorem gc_mul_not_overflow_symm :
   ∀ z₁ z₂, gc_mul_not_overflow z₁ z₂ → gc_mul_not_overflow z₂ z₁.
 Proof.
@@ -2571,16 +2570,8 @@ destruct H12 as [H12| H12]; [ now left | ].
 destruct H12 as (Hii, H12).
 right; right.
 split. {
-...
-  now destruct Hii; [ left | right ].
+  now destruct Hii; [ right | left ].
 }
-destruct H12 as [H12| H12]. {
-  split. {
-    now destruct Hii; [ left | right ].
-  }
-
-...
-
 destruct H12 as [H12| H12]; [ left | right ]. {
   split; [ easy | ].
   split; [ easy | ].
@@ -2604,7 +2595,8 @@ specialize (rngl_integral_or_inv_pdiv_eq_dec_order Hiv Hor) as Hio.
 intros * Hzz Hzz1 Hzz2.
 destruct (rngl_leb_dec 0 (Re z₁)) as [Hzr1| Hzr1]. {
   apply rngl_leb_le in Hzr1.
-  right; right; left.
+  right; right.
+  split; left; [ easy | ].
   split; [ easy | ].
   split; [ easy | ].
   left.
@@ -2617,7 +2609,8 @@ apply (rngl_leb_gt_iff Hto) in Hzr1.
 move Hzr1 before Hzz2.
 destruct (rngl_leb_dec 0 (Re z₂)) as [Hzr2| Hzr2]. {
   apply rngl_leb_le in Hzr2.
-  right; right; left.
+  right; right.
+  split; left; [ easy | ].
   split; [ easy | ].
   split; [ easy | ].
   right.
@@ -2681,14 +2674,16 @@ destruct (rngl_eqb_dec (Im z₁) 0) as [Hi1z| Hi1z]. {
   }
   apply (rngl_eqb_neq Heo) in Hi2z.
   move Hi2z before Hzz2.
-  right; right; left.
+  right; right.
+  split; [ now right | left ].
   rewrite Hi1z.
   split; [ apply (rngl_le_refl Hor) | ].
   split; [ easy | right ].
   now intros (H3, H4).
 }
 apply (rngl_eqb_neq Heo) in Hi1z.
-right; right; left.
+right; right.
+split; left; [ easy | ].
 split; [ easy | ].
 split; [ easy | ].
 left.
@@ -2704,7 +2699,8 @@ Theorem gc_sqrt_mul_im_nonneg_neg_not_ov :
   → gc_mul_not_overflow z₁ z₂.
 Proof.
 intros * Hzz H1z Hzz1 Hzz2.
-right; right; right; left.
+right; right.
+split; [ now left | right; left ].
 split; [ easy | ].
 split; [ easy | ].
 destruct (rngl_leb_dec 0 (Im (z₁ * z₂))) as [Hizz| Hizz]. {
@@ -2716,7 +2712,7 @@ destruct (rngl_leb_dec 0 (Im (z₁ * z₂))) as [Hizz| Hizz]. {
 }
 Qed.
 
-(* to be completed *)
+(* to be completed
 Theorem gc_sqrt_mul_not_ov :
   ∀ z₁ z₂ : GComplex T,
   gc_mul_not_overflow z₁ z₂
@@ -2735,6 +2731,7 @@ split; intros Hzz. {
     rewrite gc_sqrt_0; symmetry.
     apply (gc_mul_0_r Hos).
   }
+  destruct Hzz as (Hii, Hzz).
   destruct Hzz as [Hzz| Hzz].
   now apply gc_sqrt_mul_when_Im_nonneg_nonneg.
   destruct Hzz as [Hzz| Hzz].
@@ -2781,6 +2778,8 @@ destruct (rngl_leb_dec 0 (Im z₂)) as [Hzz2| Hzz2]. {
   now apply gc_sqrt_mul_im_nonneg_neg_not_ov.
 }
 apply (rngl_leb_gt_iff Hto) in Hzz2.
+right; right.
+(* ah bin non... *)
 ...
 *)
 
