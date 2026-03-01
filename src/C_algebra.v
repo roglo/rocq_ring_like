@@ -2164,6 +2164,7 @@ now intros H; apply H1z; apply eq_gc_eq.
 now intros H; apply H2z; apply eq_gc_eq.
 Qed.
 
+(*
 Theorem gc_sqrt_mul_when_Im_neg_neg :
   ∀ z₁ z₂,
   (Im z₁ < 0)%L
@@ -2275,6 +2276,7 @@ destruct H4 as (Hrb, H6).
 rewrite H6 in Hi2.
 now apply rngl_lt_irrefl in Hi2.
 Qed.
+*)
 
 Theorem gc_sqrt_mul_when_Im_nonneg_neg :
   ∀ z₁ z₂,
@@ -2805,6 +2807,27 @@ apply (rngl_leb_gt_iff Hto) in Hzz2.
 exfalso; revert Hzz.
 now apply gc_sqrt_mul_im_neg_neg_not_eq.
 Qed.
+
+(* to be completed
+Theorem gc_sqrt_mul_ov :
+  ∀ z₁ z₂ : GComplex T,
+  ¬ gc_mul_not_overflow z₁ z₂
+  ↔ (√(z₁ * z₂))%C = (- (√z₁ * √z₂))%C.
+Proof.
+intros.
+split; intros H. {
+  specialize (gc_squ_sqrt_mul z₁ z₂) as H12.
+  apply gc_eq_cases in H12.
+  destruct H12 as [H12| ]; [ exfalso | easy ].
+  now apply H, gc_sqrt_mul_not_ov.
+} {
+  intros H'.
+  apply gc_sqrt_mul_not_ov in H'.
+  rewrite H' in H.
+  apply (gc_add_move_0_r Hop) in H.
+Search (2 * _)%C.
+...
+*)
 
 Definition gc_add_overflow z₁ z₂ :=
   if (0 ≤? Im z₁)%L then
