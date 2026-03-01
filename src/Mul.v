@@ -865,4 +865,5 @@ Arguments rngl_mul_mul_swap {T ro rp} Hic (a b c)%_L.
 Arguments rngl_mul_0_r {T ro rp} Hom a%_L.
 Arguments rngl_mul_1_r {T ro rp} a%_L.
 Arguments rngl_mul_2_l {T ro rp} a%_L.
+Arguments rngl_mul_2_r {T ro rp} a%_L.
 Arguments rngl_pow_squ {T ro rp} a%_L n%_nat.
