@@ -2390,6 +2390,87 @@ apply (rngl_mul_lt_mono_pos_l Hop Hiq Hto). {
 now rewrite (rngl_mul_comm Hic).
 Qed.
 
+Theorem gc_sqrt_mul_im_nonneg_neg_nonneg :
+  ∀ z₁ z₂,
+  (√(z₁ * z₂))%C = (√z₁ * √z₂)%C
+  → z₁ ≠ 0%C
+  → (0 ≤ Im z₁)%L
+  → (Im z₂ < 0)%L
+  → (0 ≤ Im (z₁ * z₂))%L
+  → (Re z₂ * ‖ z₁ ‖ < Re z₁ * ‖ z₂ ‖)%L.
+Proof.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+specialize (rngl_integral_or_inv_pdiv_eq_dec_order Hiv Hor) as Hio.
+intros * Hzz H1z Hzz1 Hzz2 Hizz.
+progress unfold gc_sqrt in Hzz.
+rewrite (rngl_signp_of_nonneg (Im z₁)) in Hzz; [ | easy ].
+rewrite rngl_mul_1_l in Hzz.
+rewrite (rngl_signp_of_neg Hor (Im z₂)) in Hzz; [ | easy ].
+rewrite (rngl_mul_opp_l Hop) in Hzz.
+rewrite rngl_mul_1_l in Hzz.
+remember (z₁ * z₂)%C as z.
+move z before z₂.
+injection Hzz; clear Hzz; intros H2 H1.
+move H1 after H2.
+rewrite (rngl_mul_opp_r Hop) in H1, H2.
+rewrite (rngl_signp_of_nonneg (Im z)) in H1; [ | easy ].
+rewrite rngl_mul_1_l in H1.
+apply (rngl_add_move_l Hop) in H1.
+apply (rngl_add_move_0_l Hop) in H1.
+rewrite rngl_add_assoc in H1.
+rewrite rngl_add_comm in H1.
+apply (rngl_eq_add_0 Hos Hor) in H1; cycle 1. {
+  apply rl_sqrt_add_mod_re_div_2_nonneg.
+} {
+  apply (rngl_add_nonneg_nonneg Hos Hor). {
+    apply (rngl_mul_nonneg_nonneg Hos Hor).
+    apply rl_sqrt_add_mod_re_div_2_nonneg.
+    apply rl_sqrt_add_mod_re_div_2_nonneg.
+  } {
+    apply (rngl_mul_nonneg_nonneg Hos Hor).
+    apply rl_sqrt_sub_mod_re_div_2_nonneg.
+    apply rl_sqrt_sub_mod_re_div_2_nonneg.
+  }
+}
+destruct H1 as (H1, H3).
+apply eq_gc_sqrt_add_modulus_Re_div_2_0 in H1.
+clear Hizz.
+destruct H1 as (Hrzz, Hizz).
+apply (rngl_eq_add_0 Hos Hor) in H3; cycle 1. {
+  apply (rngl_mul_nonneg_nonneg Hos Hor).
+  apply rl_sqrt_add_mod_re_div_2_nonneg.
+  apply rl_sqrt_add_mod_re_div_2_nonneg.
+} {
+  apply (rngl_mul_nonneg_nonneg Hos Hor).
+  apply rl_sqrt_sub_mod_re_div_2_nonneg.
+  apply rl_sqrt_sub_mod_re_div_2_nonneg.
+}
+destruct H3 as (H3, H4).
+apply (rngl_integral Hos Hio) in H3.
+apply (rngl_integral Hos Hio) in H4.
+destruct H3 as [H3| H3]. {
+  apply eq_gc_sqrt_add_modulus_Re_div_2_0 in H3.
+  destruct H3 as (Hr1z, Hi1z).
+  clear Hzz1.
+  destruct H4 as [H4| H4]. {
+    apply eq_gc_sqrt_sub_modulus_Re_div_2_0 in H4.
+    destruct H4 as (Hzr1, _).
+    apply (rngl_le_antisymm Hor) in Hzr1; [ | easy ].
+    now exfalso; apply H1z, eq_gc_eq.
+  } {
+    apply eq_gc_sqrt_sub_modulus_Re_div_2_0 in H4.
+    destruct H4 as (_, H).
+    rewrite H in Hzz2.
+    now apply rngl_lt_irrefl in Hzz2.
+  }
+}
+apply eq_gc_sqrt_add_modulus_Re_div_2_0 in H3.
+destruct H3 as (_, H).
+rewrite H in Hzz2.
+now apply rngl_lt_irrefl in Hzz2.
+Qed.
+
 Definition gc_mul_not_overflow z₁ z₂ :=
   (z₁ = 0%C) ∨ (z₂ = 0%C) ∨
   ((0 ≤ Im z₁)%L ∧ (0 ≤ Im z₂)%L ∧
@@ -2540,74 +2621,7 @@ destruct (rngl_leb_dec 0 (Im z₁)) as [Hzz1| Hzz1]. {
   split; [ easy | ].
   destruct (rngl_leb_dec 0 (Im (z₁ * z₂))) as [Hizz| Hizz]. {
     apply rngl_leb_le in Hizz.
-clear - Hzz Hzz1 Hor Hzz2 Hop Hizz Hos Hiv Hto Hio H1z.
-(* lemma to do *)
-    progress unfold gc_sqrt in Hzz.
-    rewrite (rngl_signp_of_nonneg (Im z₁)) in Hzz; [ | easy ].
-    rewrite rngl_mul_1_l in Hzz.
-    rewrite (rngl_signp_of_neg Hor (Im z₂)) in Hzz; [ | easy ].
-    rewrite (rngl_mul_opp_l Hop) in Hzz.
-    rewrite rngl_mul_1_l in Hzz.
-    remember (z₁ * z₂)%C as z.
-    move z before z₂.
-    injection Hzz; clear Hzz; intros H2 H1.
-    move H1 after H2.
-    rewrite (rngl_mul_opp_r Hop) in H1, H2.
-    rewrite (rngl_signp_of_nonneg (Im z)) in H1; [ | easy ].
-    rewrite rngl_mul_1_l in H1.
-    apply (rngl_add_move_l Hop) in H1.
-    apply (rngl_add_move_0_l Hop) in H1.
-    rewrite rngl_add_assoc in H1.
-    rewrite rngl_add_comm in H1.
-    apply (rngl_eq_add_0 Hos Hor) in H1; cycle 1. {
-      apply rl_sqrt_add_mod_re_div_2_nonneg.
-    } {
-      apply (rngl_add_nonneg_nonneg Hos Hor). {
-        apply (rngl_mul_nonneg_nonneg Hos Hor).
-        apply rl_sqrt_add_mod_re_div_2_nonneg.
-        apply rl_sqrt_add_mod_re_div_2_nonneg.
-      } {
-        apply (rngl_mul_nonneg_nonneg Hos Hor).
-        apply rl_sqrt_sub_mod_re_div_2_nonneg.
-        apply rl_sqrt_sub_mod_re_div_2_nonneg.
-      }
-    }
-    destruct H1 as (H1, H3).
-    apply eq_gc_sqrt_add_modulus_Re_div_2_0 in H1.
-    clear Hizz.
-    destruct H1 as (Hrzz, Hizz).
-    apply (rngl_eq_add_0 Hos Hor) in H3; cycle 1. {
-      apply (rngl_mul_nonneg_nonneg Hos Hor).
-      apply rl_sqrt_add_mod_re_div_2_nonneg.
-      apply rl_sqrt_add_mod_re_div_2_nonneg.
-    } {
-      apply (rngl_mul_nonneg_nonneg Hos Hor).
-      apply rl_sqrt_sub_mod_re_div_2_nonneg.
-      apply rl_sqrt_sub_mod_re_div_2_nonneg.
-    }
-    destruct H3 as (H3, H4).
-    apply (rngl_integral Hos Hio) in H3.
-    apply (rngl_integral Hos Hio) in H4.
-    destruct H3 as [H3| H3]. {
-      apply eq_gc_sqrt_add_modulus_Re_div_2_0 in H3.
-      destruct H3 as (Hr1z, Hi1z).
-      clear Hzz1.
-      destruct H4 as [H4| H4]. {
-        apply eq_gc_sqrt_sub_modulus_Re_div_2_0 in H4.
-        destruct H4 as (Hzr1, _).
-        apply (rngl_le_antisymm Hor) in Hzr1; [ | easy ].
-        now exfalso; apply H1z, eq_gc_eq.
-      } {
-        apply eq_gc_sqrt_sub_modulus_Re_div_2_0 in H4.
-        destruct H4 as (_, H).
-        rewrite H in Hzz2.
-        now apply rngl_lt_irrefl in Hzz2.
-      }
-    }
-    apply eq_gc_sqrt_add_modulus_Re_div_2_0 in H3.
-    destruct H3 as (_, H).
-    rewrite H in Hzz2.
-    now apply rngl_lt_irrefl in Hzz2.
+    now apply gc_sqrt_mul_im_nonneg_neg_nonneg.
   } {
     apply (rngl_leb_gt_iff Hto) in Hizz.
 clear - Hzz Hzz1 Hor Hzz2 Hop Hizz Hto Hiv Hiq Hic Hos Hc1 H2nz.
