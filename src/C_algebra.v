@@ -2553,11 +2553,11 @@ now apply (rngl_0_lt_2 Hos Hc1 Hto).
 Qed.
 
 Definition gc_mul_not_overflow z₁ z₂ :=
-  (z₁ = 0%C) ∨ (z₂ = 0%C) ∨
-  ((0 ≤ Im z₁)%L ∧ (0 ≤ Im z₂)%L ∧
-     (¬ gc_negative_real z₁ ∨ ¬ gc_negative_real z₂)) ∨
-  ((0 ≤ Im z₁)%L ∧ (Im z₂ < 0)%L ∧ (Re z₂ * ‖ z₁ ‖ < Re z₁ * ‖ z₂ ‖)%L) ∨
-  ((0 ≤ Im z₂)%L ∧ (Im z₁ < 0)%L ∧ (Re z₁ * ‖ z₂ ‖ < Re z₂ * ‖ z₁ ‖)%L).
+  z₁ = 0%C ∨ z₂ = 0%C ∨
+  (0 ≤ Im z₁ ∧ 0 ≤ Im z₂ ∧
+     (¬ gc_negative_real z₁ ∨ ¬ gc_negative_real z₂))%L ∨
+  (0 ≤ Im z₁ ∧ Im z₂ < 0 ∧ Re z₂ * ‖ z₁ ‖ < Re z₁ * ‖ z₂ ‖)%L ∨
+  (0 ≤ Im z₂ ∧ Im z₁ < 0 ∧ Re z₁ * ‖ z₂ ‖ < Re z₂ * ‖ z₁ ‖)%L.
 
 Theorem gc_mul_not_overflow_symm :
   ∀ z₁ z₂, gc_mul_not_overflow z₁ z₂ → gc_mul_not_overflow z₂ z₁.
@@ -2767,32 +2767,6 @@ destruct (rngl_leb_dec 0 (Im z₂)) as [Hzz2| Hzz2]. {
   now apply gc_sqrt_mul_im_nonneg_neg_not_ov.
 }
 apply (rngl_leb_gt_iff Hto) in Hzz2.
-...
-left.
-intros Hrz1.
-progress unfold gc_negative_real in Hrz1.
-destruct Hrz1 as (Hr1z, Hiz1).
-clear Hzz1.
-remember (z₁ * z₂)%C as z.
-move z before z₂.
-injection Hzz; clear Hzz; intros H2 H1.
-move H1 after H2.
-rewrite (rngl_signp_of_neg Hor) in H1; cycle 1. {
-rewrite Heqz; cbn.
-rewrite Hiz1, (rngl_mul_0_l Hos), rngl_add_0_l.
-...
-    progress unfold gc_negative_real.
-    destruct (rngl_eqb_dec (Im z₁) 0) as [Hi1z| Hi1z]. {
-      apply (rngl_eqb_eq Heo) in Hi1z.
-...
-      right.
-      intros (Hr2z, Hi2z).
-      move Hi2z before Hi1z.
-      clear Hzz1 Hzz2.
-      remember (z₁ * z₂)%C as z.
-      move z before z₂.
-      injection Hzz; clear Hzz; intros H2 H1.
-      move H1 after H2.
 ...
 *)
 
