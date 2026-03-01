@@ -2701,58 +2701,16 @@ destruct (rngl_leb_dec 0 (Im (z₁ * z₂))) as [Hizz| Hizz]. {
 }
 Qed.
 
-Theorem gc_sqrt_mul_not_ov :
-  ∀ z₁ z₂ : GComplex T,
-  gc_mul_not_overflow z₁ z₂
-  ↔ (√(z₁ * z₂))%C = (√z₁ * √z₂)%C.
+Theorem gc_sqrt_mul_im_neg_neg_not_eq :
+  ∀ z₁ z₂,
+  (Im z₁ < 0)%L
+  → (Im z₂ < 0)%L
+  → (√(z₁ * z₂))%C ≠ (√z₁ * √z₂)%C.
 Proof.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
-intros.
-split; intros Hzz. {
-  destruct Hzz as [Hzz| Hzz]. {
-    subst; rewrite (gc_mul_0_l Hos).
-    rewrite gc_sqrt_0; symmetry.
-    apply (gc_mul_0_l Hos).
-  }
-  destruct Hzz as [Hzz| Hzz]. {
-    subst; rewrite (gc_mul_0_r Hos).
-    rewrite gc_sqrt_0; symmetry.
-    apply (gc_mul_0_r Hos).
-  }
-  destruct Hzz as [Hzz| Hzz].
-  now apply gc_sqrt_mul_when_Im_nonneg_nonneg.
-  destruct Hzz as [Hzz| Hzz].
-  now apply gc_sqrt_mul_when_Im_nonneg_neg.
-  rewrite (gc_mul_comm Hic z₁).
-  rewrite (gc_mul_comm Hic √z₁).
-  now apply gc_sqrt_mul_when_Im_nonneg_neg.
-}
 specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
-specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
 specialize (rngl_integral_or_inv_pdiv_eq_dec_order Hiv Hor) as Hio.
-destruct (gc_eq_dec Heo z₁ 0) as [H1z| H1z]; [ now left | ].
-destruct (gc_eq_dec Heo z₂ 0) as [H2z| H2z]; [ now right; left | ].
-destruct (rngl_leb_dec 0 (Im z₁)) as [Hzz1| Hzz1]. {
-  clear H2z.
-  apply rngl_leb_le in Hzz1.
-  destruct (rngl_leb_dec 0 (Im z₂)) as [Hzz2| Hzz2]. {
-    apply rngl_leb_le in Hzz2.
-    now apply gc_sqrt_mul_im_nonneg_nonneg_not_ov.
-  }
-  apply (rngl_leb_gt_iff Hto) in Hzz2.
-  now apply gc_sqrt_mul_im_nonneg_neg_not_ov.
-}
-apply (rngl_leb_gt_iff Hto) in Hzz1.
-destruct (rngl_leb_dec 0 (Im z₂)) as [Hzz2| Hzz2]. {
-  clear H1z.
-  apply rngl_leb_le in Hzz2.
-  apply gc_mul_not_overflow_symm.
-  rewrite (gc_mul_comm Hic z₁) in Hzz.
-  rewrite (gc_mul_comm Hic √_) in Hzz.
-  now apply gc_sqrt_mul_im_nonneg_neg_not_ov.
-}
-apply (rngl_leb_gt_iff Hto) in Hzz2.
-exfalso.
+intros * Hzz1 Hzz2 Hzz.
 remember (z₁ * z₂)%C as z.
 move z before z₂.
 injection Hzz; clear Hzz; intros H2 H1.
@@ -2792,6 +2750,60 @@ destruct H3 as [H3| H3]. {
   rewrite H3 in Hzz2.
   now apply rngl_lt_irrefl in Hzz2.
 }
+Qed.
+
+Theorem gc_sqrt_mul_not_ov :
+  ∀ z₁ z₂ : GComplex T,
+  gc_mul_not_overflow z₁ z₂
+  ↔ (√(z₁ * z₂))%C = (√z₁ * √z₂)%C.
+Proof.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
+intros.
+split; intros Hzz. {
+  destruct Hzz as [Hzz| Hzz]. {
+    subst; rewrite (gc_mul_0_l Hos).
+    rewrite gc_sqrt_0; symmetry.
+    apply (gc_mul_0_l Hos).
+  }
+  destruct Hzz as [Hzz| Hzz]. {
+    subst; rewrite (gc_mul_0_r Hos).
+    rewrite gc_sqrt_0; symmetry.
+    apply (gc_mul_0_r Hos).
+  }
+  destruct Hzz as [Hzz| Hzz].
+  now apply gc_sqrt_mul_when_Im_nonneg_nonneg.
+  destruct Hzz as [Hzz| Hzz].
+  now apply gc_sqrt_mul_when_Im_nonneg_neg.
+  rewrite (gc_mul_comm Hic z₁).
+  rewrite (gc_mul_comm Hic √z₁).
+  now apply gc_sqrt_mul_when_Im_nonneg_neg.
+}
+destruct (gc_eq_dec Heo z₁ 0) as [H1z| H1z]; [ now left | ].
+destruct (gc_eq_dec Heo z₂ 0) as [H2z| H2z]; [ now right; left | ].
+destruct (rngl_leb_dec 0 (Im z₁)) as [Hzz1| Hzz1]. {
+  clear H2z.
+  apply rngl_leb_le in Hzz1.
+  destruct (rngl_leb_dec 0 (Im z₂)) as [Hzz2| Hzz2]. {
+    apply rngl_leb_le in Hzz2.
+    now apply gc_sqrt_mul_im_nonneg_nonneg_not_ov.
+  }
+  apply (rngl_leb_gt_iff Hto) in Hzz2.
+  now apply gc_sqrt_mul_im_nonneg_neg_not_ov.
+}
+apply (rngl_leb_gt_iff Hto) in Hzz1.
+destruct (rngl_leb_dec 0 (Im z₂)) as [Hzz2| Hzz2]. {
+  clear H1z.
+  apply rngl_leb_le in Hzz2.
+  apply gc_mul_not_overflow_symm.
+  rewrite (gc_mul_comm Hic z₁) in Hzz.
+  rewrite (gc_mul_comm Hic √_) in Hzz.
+  now apply gc_sqrt_mul_im_nonneg_neg_not_ov.
+}
+apply (rngl_leb_gt_iff Hto) in Hzz2.
+exfalso; revert Hzz.
+now apply gc_sqrt_mul_im_neg_neg_not_eq.
 Qed.
 
 Definition gc_add_overflow z₁ z₂ :=
