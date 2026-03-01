@@ -2442,7 +2442,7 @@ Definition gc_mul_not_overflow z₁ z₂ :=
   ((0 ≤ Im z₁)%L ∧ (Im z₂ < 0)%L ∧ (Re z₂ * ‖ z₁ ‖ < Re z₁ * ‖ z₂ ‖)%L) ∨
   ((0 ≤ Im z₂)%L ∧ (Im z₁ < 0)%L ∧ (Re z₁ * ‖ z₂ ‖ < Re z₂ * ‖ z₁ ‖)%L).
 
-(* to be completed
+(* to be completed *)
 Theorem gc_sqrt_mul_not_ov :
   ∀ z₁ z₂ : GComplex T,
   gc_mul_not_overflow z₁ z₂
@@ -2652,92 +2652,59 @@ destruct (rngl_leb_dec 0 (Im z₁)) as [Hzz1| Hzz1]. {
     rewrite H in Hzz2.
     now apply rngl_lt_irrefl in Hzz2.
   } {
+clear - Heo Hor Hop Hto Hiq Hiv H2z H2 Hic Hos H2nz Hio Hc1 Hizz.
     apply (rngl_leb_gt_iff Hto) in Hizz.
-    rewrite (rngl_signp_of_neg Hor (Im z)) in H1; [ | easy ].
-    rewrite (rngl_mul_opp_l Hop) in H1.
-    rewrite rngl_mul_1_l in H1.
-    rewrite <- (rngl_opp_add_distr Hop) in H1.
-    apply (rngl_opp_inj Hop) in H1.
     rewrite (rngl_add_opp_l Hop) in H2.
-    destruct (rngl_ltb_dec 0 (Re z₁)) as [Hzr1| Hzr1]. {
-(**)
-clear - Hzr1 Heo Hor Hop Hto Hiq Hiv H2z H2 Hic Hos H2nz Hio Hc1 Hizz.
-(**)
-      assert (H3 : (0 < √((‖ z ‖ - Re z) / 2))%L). {
-        apply rngl_le_neq.
-        split.
-        apply rl_sqrt_sub_mod_re_div_2_nonneg.
-        intros H; symmetry in H.
-        apply eq_gc_sqrt_sub_modulus_Re_div_2_0 in H.
-        destruct H as (_, H).
-        rewrite H in Hizz.
-        now apply rngl_lt_irrefl in Hizz.
-      }
-      rewrite H2 in H3; clear H2.
-      rename H3 into H2.
-      apply -> (rngl_lt_0_sub Hop Hor) in H2.
-      apply (rngl_lt_lt_squ Hop Hiq Hto) in H2; cycle 1.
-      apply (rngl_mul_comm Hic).
-      apply (rngl_mul_nonneg_nonneg Hos Hor).
+    assert (H3 : (0 < √((‖ z ‖ - Re z) / 2))%L). {
+      apply rngl_le_neq.
+      split.
       apply rl_sqrt_sub_mod_re_div_2_nonneg.
-      apply rl_sqrt_add_mod_re_div_2_nonneg.
-      do 2 rewrite (rngl_squ_mul Hic) in H2.
-      rewrite rngl_squ_sqrt in H2; cycle 1.
-      apply (gc_modulus_sub_re_div_2_nonneg Hop Hiv Hto).
-      rewrite rngl_squ_sqrt in H2; cycle 1.
-      apply (gc_modulus_add_re_div_2_nonneg Hop Hiv Hto).
-      rewrite rngl_squ_sqrt in H2; cycle 1.
-      apply (gc_modulus_add_re_div_2_nonneg Hop Hiv Hto).
-      rewrite rngl_squ_sqrt in H2; cycle 1.
-      apply (gc_modulus_sub_re_div_2_nonneg Hop Hiv Hto).
-      do 2 rewrite (rngl_div_mul_mul_div Hic Hiv) in H2.
-      do 2 rewrite (rngl_mul_div_assoc Hiv) in H2.
-      apply (rngl_mul_lt_mono_pos_r Hop Hiq Hto 2) in H2; cycle 1.
-      apply (rngl_0_lt_2 Hos Hc1 Hto).
-      do 2 rewrite (rngl_div_mul Hiv _ _ H2nz) in H2.
-      apply (rngl_mul_lt_mono_pos_r Hop Hiq Hto 2) in H2; cycle 1.
-      apply (rngl_0_lt_2 Hos Hc1 Hto).
-      do 2 rewrite (rngl_div_mul Hiv _ _ H2nz) in H2.
-      ring_simplify in H2.
-      apply (rngl_sub_lt_mono_r Hop Hor) in H2.
-      rewrite <- (rngl_add_sub_assoc Hop) in H2.
-      rewrite <- (rngl_add_sub_swap Hop) in H2.
-      rewrite <- (rngl_add_sub_assoc Hop) in H2.
-      apply (rngl_add_lt_mono_l Hos Hor) in H2.
-      apply (rngl_lt_sub_lt_add_l Hop Hor) in H2.
-      rewrite (rngl_add_sub_assoc Hop) in H2.
-      apply (rngl_lt_add_lt_sub_l Hop Hor) in H2.
-      do 2 rewrite <- (rngl_mul_2_l (_ * _)) in H2.
-      rewrite (rngl_mul_comm Hic (gc_modulus _)) in H2.
-      apply (rngl_mul_lt_mono_pos_l Hop Hiq Hto) in H2; [ easy | ].
-      now apply (rngl_0_lt_2 Hos Hc1 Hto).
+      intros H; symmetry in H.
+      apply eq_gc_sqrt_sub_modulus_Re_div_2_0 in H.
+      destruct H as (_, H).
+      rewrite H in Hizz.
+      now apply rngl_lt_irrefl in Hizz.
     }
-...
-    left.
-    split; [ easy | ].
-    split; [ easy | ].
-    destruct (rngl_eqb_dec (Im z₁) 0) as [Hi1z| Hi1z]. {
-      apply (rngl_eqb_eq Heo) in Hi1z.
-      clear Hzz1.
-      destruct (rngl_ltb_dec (Re z₁) 0) as [Hr1z| Hr1z]. {
-        apply (rngl_ltb_lt Heo) in Hr1z.
-        right.
-        intros Hrz2.
-        progress unfold gc_negative_real in Hrz2.
-        destruct Hrz2 as (Hr2z, Hiz2).
-        clear Hzz2.
-        remember (z₁ * z₂)%C as z.
-        move z before z₂.
-        injection Hzz; clear Hzz; intros H2 H1.
-        move H1 after H2.
-        rewrite rngl_signp_of_nonneg in H1; cycle 1. {
-          rewrite Heqz; cbn.
-          rewrite Hi1z, Hiz2.
-          rewrite (rngl_mul_0_l Hos), (rngl_mul_0_r Hos).
-          rewrite rngl_add_0_l.
-          apply (rngl_le_refl Hor).
-        }
-        rewrite rngl_mul_1_l in H1.
+    rewrite H2 in H3; clear H2.
+    rename H3 into H2.
+    apply -> (rngl_lt_0_sub Hop Hor) in H2.
+    apply (rngl_lt_lt_squ Hop Hiq Hto) in H2; cycle 1.
+    apply (rngl_mul_comm Hic).
+    apply (rngl_mul_nonneg_nonneg Hos Hor).
+    apply rl_sqrt_sub_mod_re_div_2_nonneg.
+    apply rl_sqrt_add_mod_re_div_2_nonneg.
+    do 2 rewrite (rngl_squ_mul Hic) in H2.
+    rewrite rngl_squ_sqrt in H2; cycle 1.
+    apply (gc_modulus_sub_re_div_2_nonneg Hop Hiv Hto).
+    rewrite rngl_squ_sqrt in H2; cycle 1.
+    apply (gc_modulus_add_re_div_2_nonneg Hop Hiv Hto).
+    rewrite rngl_squ_sqrt in H2; cycle 1.
+    apply (gc_modulus_add_re_div_2_nonneg Hop Hiv Hto).
+    rewrite rngl_squ_sqrt in H2; cycle 1.
+    apply (gc_modulus_sub_re_div_2_nonneg Hop Hiv Hto).
+    do 2 rewrite (rngl_div_mul_mul_div Hic Hiv) in H2.
+    do 2 rewrite (rngl_mul_div_assoc Hiv) in H2.
+    apply (rngl_mul_lt_mono_pos_r Hop Hiq Hto 2) in H2; cycle 1.
+    apply (rngl_0_lt_2 Hos Hc1 Hto).
+    do 2 rewrite (rngl_div_mul Hiv _ _ H2nz) in H2.
+    apply (rngl_mul_lt_mono_pos_r Hop Hiq Hto 2) in H2; cycle 1.
+    apply (rngl_0_lt_2 Hos Hc1 Hto).
+    do 2 rewrite (rngl_div_mul Hiv _ _ H2nz) in H2.
+    ring_simplify in H2.
+    apply (rngl_sub_lt_mono_r Hop Hor) in H2.
+    rewrite <- (rngl_add_sub_assoc Hop) in H2.
+    rewrite <- (rngl_add_sub_swap Hop) in H2.
+    rewrite <- (rngl_add_sub_assoc Hop) in H2.
+    apply (rngl_add_lt_mono_l Hos Hor) in H2.
+    apply (rngl_lt_sub_lt_add_l Hop Hor) in H2.
+    rewrite (rngl_add_sub_assoc Hop) in H2.
+    apply (rngl_lt_add_lt_sub_l Hop Hor) in H2.
+    do 2 rewrite <- (rngl_mul_2_l (_ * _)) in H2.
+    rewrite (rngl_mul_comm Hic (gc_modulus _)) in H2.
+    apply (rngl_mul_lt_mono_pos_l Hop Hiq Hto) in H2; [ easy | ].
+    now apply (rngl_0_lt_2 Hos Hc1 Hto).
+  }
+}
 ...
 left.
 intros Hrz1.
