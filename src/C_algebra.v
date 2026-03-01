@@ -2559,6 +2559,23 @@ Definition gc_mul_not_overflow z₁ z₂ :=
   ((0 ≤ Im z₁)%L ∧ (Im z₂ < 0)%L ∧ (Re z₂ * ‖ z₁ ‖ < Re z₁ * ‖ z₂ ‖)%L) ∨
   ((0 ≤ Im z₂)%L ∧ (Im z₁ < 0)%L ∧ (Re z₁ * ‖ z₂ ‖ < Re z₂ * ‖ z₁ ‖)%L).
 
+Theorem gc_mul_not_overflow_symm :
+  ∀ z₁ z₂, gc_mul_not_overflow z₁ z₂ → gc_mul_not_overflow z₂ z₁.
+Proof.
+intros * H12.
+progress unfold gc_mul_not_overflow.
+destruct H12 as [H12| H12]; [ now right; left | ].
+destruct H12 as [H12| H12]; [ now left | ].
+right; right.
+destruct H12 as [H12| H12]; [ left | right ]. {
+  split; [ easy | ].
+  split; [ easy | ].
+  destruct H12 as (_ & _ & H12).
+  now destruct H12; [ right | left ].
+}
+now destruct H12 as [H12| H12]; [ right | left ].
+Qed.
+
 Theorem gc_sqrt_mul_im_nonneg_nonneg_not_ov :
   ∀ z₁ z₂,
   (√(z₁ * z₂))%C = (√z₁ * √z₂)%C
@@ -2712,9 +2729,12 @@ split; intros Hzz. {
   rewrite (gc_mul_comm Hic √z₁).
   now apply gc_sqrt_mul_when_Im_nonneg_neg.
 }
+(*
 specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
+*)
 specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
+(*
 specialize (rngl_integral_or_inv_pdiv_eq_dec_order Hiv Hor) as Hio.
 destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
   specialize (rngl_characteristic_1 Hos Hc1) as H1.
@@ -2724,6 +2744,7 @@ destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
 }
 specialize (rngl_2_neq_0 Hos Hc1 Hto) as H2nz.
 move z₂ at bottom; move z₁ before z₂.
+*)
 destruct (gc_eq_dec Heo z₁ 0) as [H1z| H1z]; [ now left | ].
 destruct (gc_eq_dec Heo z₂ 0) as [H2z| H2z]; [ now right; left | ].
 destruct (rngl_leb_dec 0 (Im z₁)) as [Hzz1| Hzz1]. {
@@ -2736,6 +2757,16 @@ destruct (rngl_leb_dec 0 (Im z₁)) as [Hzz1| Hzz1]. {
   apply (rngl_leb_gt_iff Hto) in Hzz2.
   now apply gc_sqrt_mul_im_nonneg_neg_not_ov.
 }
+apply (rngl_leb_gt_iff Hto) in Hzz1.
+destruct (rngl_leb_dec 0 (Im z₂)) as [Hzz2| Hzz2]. {
+  clear H1z.
+  apply rngl_leb_le in Hzz2.
+  apply gc_mul_not_overflow_symm.
+  rewrite (gc_mul_comm Hic z₁) in Hzz.
+  rewrite (gc_mul_comm Hic √_) in Hzz.
+  now apply gc_sqrt_mul_im_nonneg_neg_not_ov.
+}
+apply (rngl_leb_gt_iff Hto) in Hzz2.
 ...
 left.
 intros Hrz1.
