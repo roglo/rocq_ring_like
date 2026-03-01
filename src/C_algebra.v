@@ -2390,51 +2390,6 @@ apply (rngl_mul_lt_mono_pos_l Hop Hiq Hto). {
 now rewrite (rngl_mul_comm Hic).
 Qed.
 
-Theorem rl_sqrt_sub_rl_sqrt :
-  ∀ a b c,
-  (0 ≤ b)%L
-  → (0 ≤ c)%L
-  → a = (√b - √c)%L
-  → ((a²)² + (b - c)² = 2 * a² * (b + c))%L.
-Proof.
-specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
-intros * Hzb Hzc Habc.
-apply (f_equal rngl_squ) in Habc.
-rewrite (rngl_squ_sub Hop Hic) in Habc.
-rewrite <- (rngl_add_sub_swap Hop) in Habc.
-rewrite (rngl_squ_sqrt _ Hzb) in Habc.
-rewrite (rngl_squ_sqrt _ Hzc) in Habc.
-symmetry in Habc.
-apply (rngl_sub_move_l Hop) in Habc.
-apply (f_equal rngl_squ) in Habc.
-do 2 rewrite (rngl_squ_mul Hic) in Habc.
-rewrite (rngl_squ_sqrt _ Hzb) in Habc.
-rewrite (rngl_squ_sqrt _ Hzc) in Habc.
-rewrite (rngl_squ_sub_comm Hop) in Habc.
-rewrite (rngl_squ_sub Hop Hic) in Habc.
-symmetry in Habc.
-rewrite (rngl_squ_add Hic) in Habc.
-do 2 rewrite rngl_add_assoc in Habc.
-rewrite rngl_add_add_swap in Habc.
-apply (rngl_sub_move_0_r Hop) in Habc.
-rewrite (rngl_add_sub_swap Hop) in Habc.
-rewrite <- (rngl_sub_sub_distr Hop) in Habc.
-rewrite <- (rngl_add_sub_assoc Hop) in Habc.
-do 2 rewrite <- (rngl_mul_sub_distr_r Hop) in Habc.
-replace (2² - 2)%L with 2%L in Habc; cycle 1. {
-  progress unfold rngl_squ.
-  rewrite (rngl_sub_mul_l_diag_r Hop).
-  rewrite (rngl_add_sub Hos); symmetry.
-  apply rngl_mul_1_l.
-}
-rewrite <- rngl_add_assoc in Habc.
-rewrite (rngl_add_sub_assoc Hop) in Habc.
-rewrite (rngl_add_sub_swap Hop) in Habc.
-rewrite <- (rngl_squ_sub Hop Hic) in Habc.
-rewrite <- (rngl_add_sub_swap Hop) in Habc.
-now apply -> (rngl_sub_move_0_r Hop) in Habc.
-Qed.
-
 Definition gc_mul_not_overflow z₁ z₂ :=
   (z₁ = 0%C) ∨ (z₂ = 0%C) ∨
   ((0 ≤ Im z₁)%L ∧ (0 ≤ Im z₂)%L ∧
@@ -2442,7 +2397,7 @@ Definition gc_mul_not_overflow z₁ z₂ :=
   ((0 ≤ Im z₁)%L ∧ (Im z₂ < 0)%L ∧ (Re z₂ * ‖ z₁ ‖ < Re z₁ * ‖ z₂ ‖)%L) ∨
   ((0 ≤ Im z₂)%L ∧ (Im z₁ < 0)%L ∧ (Re z₁ * ‖ z₂ ‖ < Re z₂ * ‖ z₁ ‖)%L).
 
-(* to be completed *)
+(* to be completed
 Theorem gc_sqrt_mul_not_ov :
   ∀ z₁ z₂ : GComplex T,
   gc_mul_not_overflow z₁ z₂
@@ -2583,19 +2538,21 @@ destruct (rngl_leb_dec 0 (Im z₁)) as [Hzz1| Hzz1]. {
   right; right; right; left.
   split; [ easy | ].
   split; [ easy | ].
-  progress unfold gc_sqrt in Hzz.
-  rewrite (rngl_signp_of_nonneg (Im z₁)) in Hzz; [ | easy ].
-  rewrite rngl_mul_1_l in Hzz.
-  rewrite (rngl_signp_of_neg Hor (Im z₂)) in Hzz; [ | easy ].
-  rewrite (rngl_mul_opp_l Hop) in Hzz.
-  rewrite rngl_mul_1_l in Hzz.
-  remember (z₁ * z₂)%C as z.
-  move z before z₂.
-  injection Hzz; clear Hzz; intros H2 H1.
-  move H1 after H2.
-  rewrite (rngl_mul_opp_r Hop) in H1, H2.
-  destruct (rngl_leb_dec 0 (Im z)) as [Hizz| Hizz]. {
+  destruct (rngl_leb_dec 0 (Im (z₁ * z₂))) as [Hizz| Hizz]. {
     apply rngl_leb_le in Hizz.
+clear - Hzz Hzz1 Hor Hzz2 Hop Hizz Hos Hiv Hto Hio H1z.
+(* lemma to do *)
+    progress unfold gc_sqrt in Hzz.
+    rewrite (rngl_signp_of_nonneg (Im z₁)) in Hzz; [ | easy ].
+    rewrite rngl_mul_1_l in Hzz.
+    rewrite (rngl_signp_of_neg Hor (Im z₂)) in Hzz; [ | easy ].
+    rewrite (rngl_mul_opp_l Hop) in Hzz.
+    rewrite rngl_mul_1_l in Hzz.
+    remember (z₁ * z₂)%C as z.
+    move z before z₂.
+    injection Hzz; clear Hzz; intros H2 H1.
+    move H1 after H2.
+    rewrite (rngl_mul_opp_r Hop) in H1, H2.
     rewrite (rngl_signp_of_nonneg (Im z)) in H1; [ | easy ].
     rewrite rngl_mul_1_l in H1.
     apply (rngl_add_move_l Hop) in H1.
@@ -2652,8 +2609,21 @@ destruct (rngl_leb_dec 0 (Im z₁)) as [Hzz1| Hzz1]. {
     rewrite H in Hzz2.
     now apply rngl_lt_irrefl in Hzz2.
   } {
-clear - Heo Hor Hop Hto Hiq Hiv H2z H2 Hic Hos H2nz Hio Hc1 Hizz.
     apply (rngl_leb_gt_iff Hto) in Hizz.
+clear - Hzz Hzz1 Hor Hzz2 Hop Hizz Hto Hiv Hiq Hic Hos Hc1 H2nz.
+(* lemma to do *)
+    progress unfold gc_sqrt in Hzz.
+    rewrite (rngl_signp_of_nonneg (Im z₁)) in Hzz; [ | easy ].
+    rewrite rngl_mul_1_l in Hzz.
+    rewrite (rngl_signp_of_neg Hor (Im z₂)) in Hzz; [ | easy ].
+    rewrite (rngl_mul_opp_l Hop) in Hzz.
+    rewrite rngl_mul_1_l in Hzz.
+    remember (z₁ * z₂)%C as z.
+    move z before z₂.
+    injection Hzz; clear Hzz; intros H2 H1.
+    move H1 after H2.
+    rewrite (rngl_mul_opp_r Hop) in H1, H2.
+(**)
     rewrite (rngl_add_opp_l Hop) in H2.
     assert (H3 : (0 < √((‖ z ‖ - Re z) / 2))%L). {
       apply rngl_le_neq.
