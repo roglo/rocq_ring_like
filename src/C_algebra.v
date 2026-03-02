@@ -2714,12 +2714,11 @@ split; intros H12. {
 }
 Qed.
 
-(* to be completed
 Theorem gc_mul_not_overflow_symm :
   ∀ z₁ z₂, gc_mul_not_overflow_prop z₁ z₂ → gc_mul_not_overflow_prop z₂ z₁.
 Proof.
 intros * H12.
-progress unfold gc_mul_not_overflow.
+progress unfold gc_mul_not_overflow_prop.
 destruct H12 as [H12| H12]; [ now right; left | ].
 destruct H12 as [H12| H12]; [ now left | right; right ].
 destruct H12 as [H12| H12]; [ left | right ]. {
@@ -2731,6 +2730,7 @@ destruct H12 as [H12| H12]; [ left | right ]. {
 now destruct H12 as [H12| H12]; [ right | left ].
 Qed.
 
+(* to be completed
 Theorem gc_sqrt_mul_im_nonneg_nonneg_not_ov :
   ∀ z₁ z₂,
   (√(z₁ * z₂))%C = (√z₁ * √z₂)%C
