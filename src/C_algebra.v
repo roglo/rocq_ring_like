@@ -2695,6 +2695,20 @@ split; intros H12. {
       intros H; apply H12; clear H12.
       now apply gc_negative_real_bool_prop.
     }
+    apply Bool.eq_true_not_negb_iff.
+    intros H1; apply H12; clear H12.
+    now apply gc_negative_real_bool_prop.
+  }
+  destruct H12 as [H12| H12]. {
+    left.
+    apply Bool.orb_true_iff.
+    right.
+    apply Bool.andb_true_iff.
+    split; [ | now apply (rngl_ltb_lt Heo) ].
+    apply Bool.andb_true_iff.
+    split; [ | now apply (rngl_ltb_lt Heo) ].
+    now apply rngl_leb_le.
+  }
 ...
         apply Bool.orb_true_iff in H12.
         destruct H12 as [H12| H12]; [ left | right; left ].
