@@ -464,7 +464,7 @@ remember (rngl_mul_is_comm T) as ic eqn:Hic; symmetry in Hic.
 now destruct ic.
 Qed.
 
-Theorem gc_integral :
+Theorem gc_integral'' :
   rngl_mul_is_comm T = true →
   rngl_has_opp T = true →
   (rngl_is_integral_domain T ||
@@ -630,7 +630,7 @@ Instance gc_ring_like_prop_not_alg_closed : ring_like_prop (GComplex T) :=
      rngl_opt_mul_inv_diag_l := gc_opt_mul_inv_diag_l Hic Hop Hiv Hto;
      rngl_opt_mul_inv_diag_r := gc_opt_mul_inv_diag_r;
      rngl_opt_mul_div := gc_opt_mul_div;
-     rngl_opt_integral := gc_integral Hic Hop Hio;
+     rngl_opt_integral := gc_integral'' Hic Hop Hio;
      rngl_opt_alg_closed := NA;
      rngl_opt_ord := NA;
      rngl_opt_archimedean := NA;
@@ -1513,13 +1513,13 @@ split. {
 }
 Qed.
 
-Theorem gc_integral' :
+Theorem gc_integral :
   ∀ z₁ z₂ : GComplex T, (z₁ * z₂)%C = 0%C → z₁ = 0%C ∨ z₂ = 0%C.
 Proof.
 specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 specialize (rngl_integral_or_inv_pdiv_eq_dec_order Hiv Hor) as Hio.
 intros * Hab.
-specialize (gc_integral Hic Hop Hio z₁ z₂ Hab) as H.
+specialize (gc_integral'' Hic Hop Hio z₁ z₂ Hab) as H.
 destruct H as [H| H]; [ now left | ].
 destruct H as [H| H]; [ now right | ].
 destruct H as [H| H]; cbn in H. {
@@ -1538,7 +1538,7 @@ specialize (rngl_integral_or_inv_pdiv_eq_dec_order Hiv Hor) as Hio.
 intros * Hab.
 apply (gc_sub_move_0_r Hop) in Hab.
 rewrite gc_squ_sub_squ in Hab.
-apply gc_integral' in Hab.
+apply gc_integral in Hab.
 destruct Hab as [H| H]. {
   now apply (gc_add_move_0_r Hop) in H; right.
 } {
@@ -2120,7 +2120,7 @@ destruct H4 as [H4| H4]. {
     apply (rngl_le_antisymm Hor) in H2; [ clear H1 | easy ].
     assert (H : z = 0%C) by now apply eq_gc_eq.
     rewrite Heqz in H.
-    now apply gc_integral' in H; destruct H.
+    now apply gc_integral in H; destruct H.
   } {
     apply eq_gc_sqrt_sub_modulus_Re_div_2_0 in H5.
     destruct H5 as (H5, H6).
@@ -2136,7 +2136,7 @@ destruct H4 as [H4| H4]. {
     apply (rngl_le_antisymm Hor) in H2; [ clear H1 | easy ].
     assert (H : z = 0%C) by now apply eq_gc_eq.
     rewrite Heqz in H.
-    now apply gc_integral' in H; destruct H.
+    now apply gc_integral in H; destruct H.
   }
 }
 rewrite H4, (rngl_mul_0_r Hos), (rngl_sub_0_l Hop) in H1.
@@ -2152,7 +2152,7 @@ destruct H5 as [H5| H5]; cycle 1. {
   apply (rngl_le_antisymm Hor) in H2; [ clear H1 | easy ].
   assert (H : z = 0%C) by now apply eq_gc_eq.
   rewrite Heqz in H.
-  now apply gc_integral' in H; destruct H.
+  now apply gc_integral in H; destruct H.
 }
 clear z Heqz H1 H2 H3.
 apply eq_gc_sqrt_add_modulus_Re_div_2_0 in H5.
@@ -2810,11 +2810,13 @@ Qed.
 
 (* to be completed
 Theorem gc_sqrt_mul_ov :
+  rngl_characteristic T ≠ 1 →
   ∀ z₁ z₂ : GComplex T,
   ¬ gc_mul_not_overflow z₁ z₂
   ↔ (√(z₁ * z₂))%C = (- (√z₁ * √z₂))%C.
 Proof.
-intros.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+intros Hc1 *.
 split; intros H. {
   specialize (gc_squ_sqrt_mul z₁ z₂) as H12.
   apply gc_eq_cases in H12.
@@ -2825,6 +2827,24 @@ split; intros H. {
   apply gc_sqrt_mul_not_ov in H'.
   rewrite H' in H.
   apply (gc_add_move_0_r Hop) in H.
+  set (gro := gc_ring_like_op T).
+  set (grp := gc_ring_like_prop_not_alg_closed Hic Hop Hiv Hto).
+  specialize (@rngl_mul_2_l) as H1.
+  specialize (H1 (GComplex T) gro grp (√z₁ * √z₂)%C).
+  cbn in H1.
+  rewrite <- H1 in H; clear H1 gro grp.
+  apply gc_integral in H.
+  destruct H as [H| H]. {
+    apply eq_gc_eq in H; cbn in H.
+    destruct H as (H, _); revert H.
+    apply (rngl_2_neq_0 Hos Hc1 Hto).
+  }
+  apply gc_integral in H.
+(* ouais, bon, faut peut-être ajouter z₁≠0 et z₂≠0 en hypothèse
+   quoique... je sais pas *)
+...
+  specialize (@rngl_mul_2_l (√z₁ * √z₂)) as H1.
+  rewrite <- rngl_mul_2_l in H.
 Search (2 * _)%C.
 ...
 *)
@@ -3434,7 +3454,7 @@ clear n Hm; rename m into n.
 destruct n; [ easy | clear Hkn ].
 induction k; cbn; [ apply (gc_mul_0_l Hos) | ].
 cbn in IHk.
-apply gc_integral' in IHk.
+apply gc_integral in IHk.
 destruct IHk as [H| H]. {
   rewrite H.
   (* lemma *)
