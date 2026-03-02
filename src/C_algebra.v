@@ -2809,61 +2809,15 @@ now apply gc_sqrt_mul_im_neg_neg_not_eq.
 Qed.
 
 (* to be completed
-Theorem gc_sqrt_mul_ov :
-  rngl_characteristic T ≠ 1 →
-  ∀ z₁ z₂ : GComplex T,
-  ¬ gc_mul_not_overflow z₁ z₂
-  ↔ (√(z₁ * z₂))%C = (- (√z₁ * √z₂))%C.
-Proof.
-specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
-intros Hc1 *.
-split; intros H1. {
-  specialize (gc_squ_sqrt_mul z₁ z₂) as H12.
-  apply gc_eq_cases in H12.
-  destruct H12 as [H12| ]; [ exfalso | easy ].
-  now apply H1, gc_sqrt_mul_not_ov.
-} {
-  intros H2.
-  generalize H2; intros H3.
-  apply gc_sqrt_mul_not_ov in H3.
-  rewrite H3 in H1.
-  apply (gc_add_move_0_r Hop) in H1.
-  set (gro := gc_ring_like_op T).
-  set (grp := gc_ring_like_prop_not_alg_closed Hic Hop Hiv Hto).
-  specialize (@rngl_mul_2_l) as H4.
-  specialize (H4 (GComplex T) gro grp (√z₁ * √z₂)%C).
-  cbn in H4.
-  rewrite <- H4 in H1; clear H4 gro grp.
-  apply gc_integral in H1.
-  destruct H1 as [H1| H1]. {
-    apply eq_gc_eq in H1; cbn in H1.
-    destruct H1 as (H1, _); revert H1.
-    apply (rngl_2_neq_0 Hos Hc1 Hto).
-  }
-  apply gc_integral in H1.
-(* ouais, bon, faut peut-être ajouter z₁≠0 et z₂≠0 en hypothèse
-   quoique... je sais pas *)
-(* en fait, ça peut étre en même temps égal à -(√z₁*√z₂) et à
-   √z₁*√z2, si z₁ ou z₂ vaut 0. *)
-...
-*)
-
-Definition gc_add_overflow z₁ z₂ :=
-  if (0 ≤? Im z₁)%L then
-    if (0 ≤? Im z₂)%L then false
-    else (0 ≤? Re z₁ / ‖ z₁ ‖ + Re z₂ / ‖ z₂ ‖)%L
-  else
-    if (0 ≤? Im z₂)%L then (Re z₁ / ‖ z₁ ‖ + Re z₂ / ‖ z₂ ‖ ≤? 0)%L
-    else true.
-
-(* to be completed
 (* trigonometry equivalent to (θ₁+θ₂)/2 = θ₁/2 + θ₂/2, which
    works only if θ₁+θ₂ < 2π. Otherwise π has to be added. *)
+...
 Theorem gc_sqrt_mul :
   ∀ z₁ z₂,
   (√(z₁ * z₂) =
-     if gc_add_overflow z₁ z₂ then - (√z₁ * √z₂) else √z₁ * √z₂)%C.
+     if gc_mul_not_overflow z₁ z₂ then √z₁ * √z₂ else - (√z₁ * √z₂))%C.
 Proof.
+,,,
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
 specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
