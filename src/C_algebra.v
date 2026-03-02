@@ -2609,7 +2609,6 @@ Definition gc_mul_not_overflow_prop z₁ z₂ :=
   (0 ≤ Im z₁ ∧ Im z₂ < 0 ∧ Re z₂ * ‖ z₁ ‖ < Re z₁ * ‖ z₂ ‖)%L ∨
   (0 ≤ Im z₂ ∧ Im z₁ < 0 ∧ Re z₁ * ‖ z₂ ‖ < Re z₂ * ‖ z₁ ‖)%L.
 
-(* to be completed
 Theorem gc_mul_not_overflow_bool_prop z₁ z₂ :
   gc_mul_not_overflow z₁ z₂ = true ↔ gc_mul_not_overflow_prop z₁ z₂.
 Proof.
@@ -2700,58 +2699,22 @@ split; intros H12. {
     now apply gc_negative_real_bool_prop.
   }
   destruct H12 as [H12| H12]. {
-    left.
-    apply Bool.orb_true_iff.
-    right.
-    apply Bool.andb_true_iff.
+    left; apply Bool.orb_true_iff.
+    right; apply Bool.andb_true_iff.
     split; [ | now apply (rngl_ltb_lt Heo) ].
     apply Bool.andb_true_iff.
     split; [ | now apply (rngl_ltb_lt Heo) ].
     now apply rngl_leb_le.
   }
-...
-        apply Bool.orb_true_iff in H12.
-        destruct H12 as [H12| H12]; [ left | right; left ].
-        1, 2: now apply gc_eqb_eq.
-      }
-      right; right; left.
-      apply Bool.andb_true_iff in H12.
-      destruct H12 as (H1, H2).
-      apply Bool.andb_true_iff in H1.
-      split; [ now apply rngl_leb_le | ].
-      split; [ now apply rngl_leb_le | ].
-      apply Bool.orb_true_iff in H2.
-      destruct H2 as [H2| H2]; [ left | right ]. {
-        intros H.
-        apply Bool.eq_true_not_negb_iff in H2.
-        apply H2; clear H2.
-        now apply gc_negative_real_bool_prop.
-      } {
-        intros H.
-        apply Bool.eq_true_not_negb_iff in H2.
-        apply H2; clear H2.
-        now apply gc_negative_real_bool_prop.
-      }
-    }
-    right; right; right; left.
-    apply Bool.andb_true_iff in H12.
-    destruct H12 as (H12, H2).
-    apply Bool.andb_true_iff in H12.
-    destruct H12 as (H12, H1).
-    split; [ now apply rngl_leb_le | ].
-    split; [ now apply (rngl_ltb_lt Heo) | ].
-    now apply (rngl_ltb_lt Heo).
-  }
-  right; right; right; right.
-  apply Bool.andb_true_iff in H12.
-  destruct H12 as (H12, H2).
-  apply Bool.andb_true_iff in H12.
-  destruct H12 as (H12, H1).
-  split; [ now apply rngl_leb_le | ].
-  split; [ now apply (rngl_ltb_lt Heo) | ].
-  now apply (rngl_ltb_lt Heo).
-...
+  right; apply Bool.andb_true_iff.
+  split; [ | now apply (rngl_ltb_lt Heo) ].
+  apply Bool.andb_true_iff.
+  split; [ | now apply (rngl_ltb_lt Heo) ].
+  now apply rngl_leb_le.
+}
+Qed.
 
+(* to be completed
 Theorem gc_mul_not_overflow_symm :
   ∀ z₁ z₂, gc_mul_not_overflow_prop z₁ z₂ → gc_mul_not_overflow_prop z₂ z₁.
 Proof.
