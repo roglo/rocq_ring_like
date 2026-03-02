@@ -2730,6 +2730,26 @@ destruct H12 as [H12| H12]; [ left | right ]. {
 now destruct H12 as [H12| H12]; [ right | left ].
 Qed.
 
+Theorem gc_mul_not_overflow_comm :
+  ∀ z₁ z₂, gc_mul_not_overflow z₁ z₂ = gc_mul_not_overflow z₂ z₁.
+Proof.
+intros.
+remember (gc_mul_not_overflow z₂ z₁) as ov eqn:Hov.
+symmetry in Hov.
+destruct ov. {
+  apply gc_mul_not_overflow_bool_prop.
+  apply gc_mul_not_overflow_symm.
+  now apply gc_mul_not_overflow_bool_prop.
+} {
+  apply Bool.not_true_iff_false in Hov.
+  apply Bool.not_true_iff_false.
+  intros H; apply Hov; clear Hov.
+  apply gc_mul_not_overflow_bool_prop.
+  apply gc_mul_not_overflow_symm.
+  now apply gc_mul_not_overflow_bool_prop.
+}
+Qed.
+
 (* to be completed
 Theorem gc_sqrt_mul_im_nonneg_nonneg_not_ov :
   ∀ z₁ z₂,
