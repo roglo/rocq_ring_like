@@ -2613,6 +2613,8 @@ Definition gc_mul_not_overflow_prop z₁ z₂ :=
 Theorem gc_mul_not_overflow_bool_prop z₁ z₂ :
   gc_mul_not_overflow z₁ z₂ = true ↔ gc_mul_not_overflow_prop z₁ z₂.
 Proof.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
 split; intros H12. {
   progress unfold gc_mul_not_overflow in H12.
   apply Bool.orb_true_iff in H12.
@@ -2644,6 +2646,96 @@ split; intros H12. {
         now apply gc_negative_real_bool_prop.
       }
     }
+    right; right; right; left.
+    apply Bool.andb_true_iff in H12.
+    destruct H12 as (H12, H2).
+    apply Bool.andb_true_iff in H12.
+    destruct H12 as (H12, H1).
+    split; [ now apply rngl_leb_le | ].
+    split; [ now apply (rngl_ltb_lt Heo) | ].
+    now apply (rngl_ltb_lt Heo).
+  }
+  right; right; right; right.
+  apply Bool.andb_true_iff in H12.
+  destruct H12 as (H12, H2).
+  apply Bool.andb_true_iff in H12.
+  destruct H12 as (H12, H1).
+  split; [ now apply rngl_leb_le | ].
+  split; [ now apply (rngl_ltb_lt Heo) | ].
+  now apply (rngl_ltb_lt Heo).
+} {
+  progress unfold gc_mul_not_overflow.
+  apply Bool.orb_true_iff.
+  destruct H12 as [H12| H12]. {
+    left; apply Bool.orb_true_iff.
+    left; apply Bool.orb_true_iff.
+    left; apply Bool.orb_true_iff.
+    now left; apply gc_eqb_eq.
+  }
+  destruct H12 as [H12| H12]. {
+    left; apply Bool.orb_true_iff.
+    left; apply Bool.orb_true_iff.
+    left; apply Bool.orb_true_iff.
+    now right; apply gc_eqb_eq.
+  }
+  destruct H12 as [H12| H12]. {
+    left; apply Bool.orb_true_iff.
+    left; apply Bool.orb_true_iff.
+    right; apply Bool.andb_true_iff.
+    split. {
+      apply Bool.andb_true_iff.
+      split.
+      now apply rngl_leb_le.
+      now apply rngl_leb_le.
+    }
+    apply Bool.orb_true_iff.
+    destruct H12 as (_ & _ & H12).
+    destruct H12 as [H12| H12]; [ left | right ]. {
+      apply Bool.eq_true_not_negb_iff.
+      intros H; apply H12; clear H12.
+      now apply gc_negative_real_bool_prop.
+    }
+...
+        apply Bool.orb_true_iff in H12.
+        destruct H12 as [H12| H12]; [ left | right; left ].
+        1, 2: now apply gc_eqb_eq.
+      }
+      right; right; left.
+      apply Bool.andb_true_iff in H12.
+      destruct H12 as (H1, H2).
+      apply Bool.andb_true_iff in H1.
+      split; [ now apply rngl_leb_le | ].
+      split; [ now apply rngl_leb_le | ].
+      apply Bool.orb_true_iff in H2.
+      destruct H2 as [H2| H2]; [ left | right ]. {
+        intros H.
+        apply Bool.eq_true_not_negb_iff in H2.
+        apply H2; clear H2.
+        now apply gc_negative_real_bool_prop.
+      } {
+        intros H.
+        apply Bool.eq_true_not_negb_iff in H2.
+        apply H2; clear H2.
+        now apply gc_negative_real_bool_prop.
+      }
+    }
+    right; right; right; left.
+    apply Bool.andb_true_iff in H12.
+    destruct H12 as (H12, H2).
+    apply Bool.andb_true_iff in H12.
+    destruct H12 as (H12, H1).
+    split; [ now apply rngl_leb_le | ].
+    split; [ now apply (rngl_ltb_lt Heo) | ].
+    now apply (rngl_ltb_lt Heo).
+  }
+  right; right; right; right.
+  apply Bool.andb_true_iff in H12.
+  destruct H12 as (H12, H2).
+  apply Bool.andb_true_iff in H12.
+  destruct H12 as (H12, H1).
+  split; [ now apply rngl_leb_le | ].
+  split; [ now apply (rngl_ltb_lt Heo) | ].
+  now apply (rngl_ltb_lt Heo).
 ...
 
 Theorem gc_mul_not_overflow_symm :
