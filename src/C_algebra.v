@@ -2750,13 +2750,12 @@ destruct ov. {
 }
 Qed.
 
-(* to be completed
 Theorem gc_sqrt_mul_im_nonneg_nonneg_not_ov :
   ∀ z₁ z₂,
   (√(z₁ * z₂))%C = (√z₁ * √z₂)%C
   → (0 ≤ Im z₁)%L
   → (0 ≤ Im z₂)%L
-  → gc_mul_not_overflow z₁ z₂.
+  → gc_mul_not_overflow_prop z₁ z₂.
 Proof.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
@@ -2770,7 +2769,7 @@ destruct (rngl_leb_dec 0 (Re z₁)) as [Hzr1| Hzr1]. {
   split; [ easy | ].
   left.
   intros H.
-  progress unfold gc_negative_real in H.
+  progress unfold gc_negative_real_prop in H.
   destruct H as (H, _).
   now apply (rngl_nle_gt Hor) in H.
 }
@@ -2783,7 +2782,7 @@ destruct (rngl_leb_dec 0 (Re z₂)) as [Hzr2| Hzr2]. {
   split; [ easy | ].
   right.
   intros H.
-  progress unfold gc_negative_real in H.
+  progress unfold gc_negative_real_prop in H.
   destruct H as (H, _).
   now apply (rngl_nle_gt Hor) in H.
 }
@@ -2862,7 +2861,7 @@ Theorem gc_sqrt_mul_im_nonneg_neg_not_ov :
   → z₁ ≠ 0%C
   → (0 ≤ Im z₁)%L
   → (Im z₂ < 0)%L
-  → gc_mul_not_overflow z₁ z₂.
+  → gc_mul_not_overflow_prop z₁ z₂.
 Proof.
 intros * Hzz H1z Hzz1 Hzz2.
 right; right; right; left.
@@ -2930,7 +2929,7 @@ Qed.
 
 Theorem gc_sqrt_mul_not_ov :
   ∀ z₁ z₂ : GComplex T,
-  gc_mul_not_overflow z₁ z₂
+  gc_mul_not_overflow_prop z₁ z₂
   ↔ (√(z₁ * z₂))%C = (√z₁ * √z₂)%C.
 Proof.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
@@ -2981,7 +2980,6 @@ apply (rngl_leb_gt_iff Hto) in Hzz2.
 exfalso; revert Hzz.
 now apply gc_sqrt_mul_im_neg_neg_not_eq.
 Qed.
-*)
 
 (* to be completed
 (* trigonometry equivalent to (θ₁+θ₂)/2 = θ₁/2 + θ₂/2, which
