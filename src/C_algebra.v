@@ -3059,7 +3059,6 @@ destruct (gc_eq_dec Heo a 0) as [Haz| Haz]. {
   apply Nat.log2_up_le_pow2 in Hp; [ | now apply Nat.neq_0_lt_0 ].
   apply Nat.log2_up_le_pow2 in Hq; [ | now apply Nat.neq_0_lt_0 ].
   progress unfold gc_seq_to_div_nat.
-...
 Theorem gc_seq_to_div_nat_0_l :
   ∀ n k, 0 < 2 ^ k / n → gc_seq_to_div_nat 0 n k = 0%C.
 Proof.
@@ -3080,6 +3079,7 @@ remember (2 ^ k / n) as m eqn:Hm.
 clear n Hm; rename m into n.
 destruct n; [ easy | clear Hkn ].
 induction k; cbn; [ apply (gc_mul_0_l Hos) | ].
+cbn.
 cbn in IHk.
 apply gc_integral in IHk.
 destruct IHk as [H| H]. {
@@ -3094,7 +3094,6 @@ destruct IHk as [H| H]. {
   rewrite (rngl_mul_0_r Hos).
   apply (gc_mul_0_l Hos).
 }
-destruct H as [H| H]. {
 Theorem gc_sqrt_pow :
   ∀ n z, (gc_sqrt z ^ n)%L = gc_sqrt (z ^ n)%L.
 Proof.
@@ -3105,6 +3104,11 @@ induction n. {
 }
 cbn.
 rewrite IHn.
+symmetry.
+rewrite gc_sqrt_mul.
+remember (gc_mul_not_overflow _ _) as ov eqn:Hov.
+symmetry in Hov.
+destruct ov; [ easy | ].
 ...
     rewrite (gc_modulus_mul Hic Hop Hto).
       rewrite <- (rngl_abs_nonneg_eq Hop Hor (_ * _ * _)). 2: {
