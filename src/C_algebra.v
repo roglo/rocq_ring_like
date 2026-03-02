@@ -649,6 +649,8 @@ Context {ro : ring_like_op T}.
 Context {rp : ring_like_prop T}.
 Context {rl : real_like_prop T}.
 
+Definition gc_eqb z₁ z₂ := ((Re z₁ =? Re z₂)%L && (Im z₁ =? Im z₂)%L)%bool.
+
 Definition gc_opp (z : GComplex T) := {| Re := - Re z; Im := - Im z |}.
 Definition gc_sub (z₁ z₂ : GComplex T) :=
   {| Re := Re z₁ - Re z₂; Im := Im z₁ - Im z₂ |}.
@@ -667,6 +669,7 @@ Definition gc_sqrt (z : GComplex T) :=
 
 End a.
 
+Notation "x =? y" := (gc_eqb x y) : gc_scope.
 Notation "- x" := (gc_opp x) : gc_scope.
 Notation "x - y" := (gc_sub x y) : gc_scope.
 Notation " x / y" := (gc_div x y) : gc_scope.
@@ -947,6 +950,22 @@ Ltac fold_rngl_in H :=
   replace (let (_, rngl_one, _, _, _, _, _, _, _) := ro in rngl_one)
     with rngl_one in H by easy;
   repeat try rewrite strange_let in H.
+
+Theorem gc_eqb_eq z₁ z₂ : (z₁ =? z₂)%C = true ↔ z₁ = z₂.
+Proof.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
+split; intros H12. {
+  apply eq_gc_eq.
+  apply Bool.andb_true_iff in H12.
+  destruct H12 as (H1, H2).
+  now apply (rngl_eqb_eq Heo) in H1, H2.
+}
+subst.
+(* lemma to do: gc_eqb_refl *)
+apply Bool.andb_true_iff.
+now do 2 rewrite (rngl_eqb_refl Heo).
+Qed.
 
 Theorem gc_squ_sub_squ : ∀ z₁ z₂, (z₁² - z₂² = (z₁ + z₂) * (z₁ - z₂))%C.
 Proof.
@@ -2024,13 +2043,33 @@ Proof. easy. Qed.
 Theorem Im_mul : ∀ z₁ z2, Im (z₁ * z2) = (Im z₁ * Re z2 + Re z₁ * Im z2)%L.
 Proof. easy. Qed.
 
-Definition gc_negative_real z := (Re z < 0 ∧ Im z = 0)%L.
+Definition gc_negative_real z := ((Re z <? 0)%L && (Im z =? 0)%L)%bool.
+Definition gc_negative_real_prop z := (Re z < 0 ∧ Im z = 0)%L.
+
+Theorem gc_negative_real_bool_prop z :
+  gc_negative_real z = true ↔ gc_negative_real_prop z.
+Proof.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
+split; intros Hz. {
+  apply Bool.andb_true_iff in Hz.
+  split.
+  now apply (rngl_ltb_lt Heo).
+  now apply (rngl_eqb_eq Heo).
+} {
+  destruct Hz as (H1, H2).
+  apply Bool.andb_true_iff.
+  split.
+  now apply (rngl_ltb_lt Heo).
+  now apply (rngl_eqb_eq Heo).
+}
+Qed.
 
 Theorem gc_sqrt_mul_when_Im_nonneg_nonneg :
   ∀ z₁ z₂,
   (0 ≤ Im z₁)%L
   → (0 ≤ Im z₂)%L
-  → (¬ gc_negative_real z₁ ∨ ¬ gc_negative_real z₂)
+  → (¬ gc_negative_real_prop z₁ ∨ ¬ gc_negative_real_prop z₂)
   → (√(z₁ * z₂) = √z₁ * √z₂)%C.
 Proof.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
@@ -2157,7 +2196,7 @@ destruct H5 as [H5| H5]; cycle 1. {
 clear z Heqz H1 H2 H3.
 apply eq_gc_sqrt_add_modulus_Re_div_2_0 in H5.
 destruct H5 as (Hra, Hia).
-progress unfold gc_negative_real in Hrab.
+progress unfold gc_negative_real_prop in Hrab.
 destruct Hrab as [H| H]; apply H; clear H.
 1, 2: split; [ apply rngl_le_neq; split | easy ]; [ easy | ].
 now intros H; apply H1z; apply eq_gc_eq.
@@ -2554,15 +2593,61 @@ apply (rngl_mul_lt_mono_pos_l Hop Hiq Hto) in H2; [ easy | ].
 now apply (rngl_0_lt_2 Hos Hc1 Hto).
 Qed.
 
-Definition gc_mul_not_overflow z₁ z₂ :=
+Definition gc_mul_not_overflow (z₁ z₂ : GComplex T) :=
+  ((z₁ =? 0)%C || (z₂ =? 0)%C ||
+   ((0 ≤? Im z₁)%L && (0 ≤? Im z₂)%L &&
+      (negb (gc_negative_real z₁) || negb (gc_negative_real z₂)))%L ||
+   ((0 ≤? Im z₁)%L && (Im z₂ <? 0)%L &&
+      (Re z₂ * ‖ z₁ ‖ <? Re z₁ * ‖ z₂ ‖)%L) ||
+   ((0 ≤? Im z₂)%L && (Im z₁ <? 0)%L &&
+      (Re z₁ * ‖ z₂ ‖ <? Re z₂ * ‖ z₁ ‖)%L))%bool.
+
+Definition gc_mul_not_overflow_prop z₁ z₂ :=
   z₁ = 0%C ∨ z₂ = 0%C ∨
   (0 ≤ Im z₁ ∧ 0 ≤ Im z₂ ∧
-     (¬ gc_negative_real z₁ ∨ ¬ gc_negative_real z₂))%L ∨
+     (¬ gc_negative_real_prop z₁ ∨ ¬ gc_negative_real_prop z₂))%L ∨
   (0 ≤ Im z₁ ∧ Im z₂ < 0 ∧ Re z₂ * ‖ z₁ ‖ < Re z₁ * ‖ z₂ ‖)%L ∨
   (0 ≤ Im z₂ ∧ Im z₁ < 0 ∧ Re z₁ * ‖ z₂ ‖ < Re z₂ * ‖ z₁ ‖)%L.
 
+(* to be completed
+Theorem gc_mul_not_overflow_bool_prop z₁ z₂ :
+  gc_mul_not_overflow z₁ z₂ = true ↔ gc_mul_not_overflow_prop z₁ z₂.
+Proof.
+split; intros H12. {
+  progress unfold gc_mul_not_overflow in H12.
+  apply Bool.orb_true_iff in H12.
+  destruct H12 as [H12| H12]. {
+    apply Bool.orb_true_iff in H12.
+    destruct H12 as [H12| H12]. {
+      apply Bool.orb_true_iff in H12.
+      destruct H12 as [H12| H12]. {
+        apply Bool.orb_true_iff in H12.
+        destruct H12 as [H12| H12]; [ left | right; left ].
+        1, 2: now apply gc_eqb_eq.
+      }
+      right; right; left.
+      apply Bool.andb_true_iff in H12.
+      destruct H12 as (H1, H2).
+      apply Bool.andb_true_iff in H1.
+      split; [ now apply rngl_leb_le | ].
+      split; [ now apply rngl_leb_le | ].
+      apply Bool.orb_true_iff in H2.
+      destruct H2 as [H2| H2]; [ left | right ]. {
+        intros H.
+        apply Bool.eq_true_not_negb_iff in H2.
+        apply H2; clear H2.
+        now apply gc_negative_real_bool_prop.
+      } {
+        intros H.
+        apply Bool.eq_true_not_negb_iff in H2.
+        apply H2; clear H2.
+        now apply gc_negative_real_bool_prop.
+      }
+    }
+...
+
 Theorem gc_mul_not_overflow_symm :
-  ∀ z₁ z₂, gc_mul_not_overflow z₁ z₂ → gc_mul_not_overflow z₂ z₁.
+  ∀ z₁ z₂, gc_mul_not_overflow_prop z₁ z₂ → gc_mul_not_overflow_prop z₂ z₁.
 Proof.
 intros * H12.
 progress unfold gc_mul_not_overflow.
@@ -2807,6 +2892,7 @@ apply (rngl_leb_gt_iff Hto) in Hzz2.
 exfalso; revert Hzz.
 now apply gc_sqrt_mul_im_neg_neg_not_eq.
 Qed.
+*)
 
 (* to be completed
 (* trigonometry equivalent to (θ₁+θ₂)/2 = θ₁/2 + θ₂/2, which
