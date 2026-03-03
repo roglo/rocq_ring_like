@@ -3097,6 +3097,8 @@ destruct IHk as [H| H]. {
 Theorem gc_sqrt_pow :
   ∀ n z, (gc_sqrt z ^ n)%L = gc_sqrt (z ^ n)%L.
 Proof.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
 intros.
 induction n. {
   cbn; symmetry.
@@ -3109,6 +3111,28 @@ rewrite gc_sqrt_mul.
 remember (gc_mul_not_overflow _ _) as ov eqn:Hov.
 symmetry in Hov.
 destruct ov; [ easy | ].
+apply gc_mul_overflow_bool_prop in Hov.
+destruct (gc_eq_dec Heo (√z * √(z ^ n)%L) 0) as [Hsz| Hsz]. {
+  rewrite Hsz; apply gc_opp_0.
+}
+exfalso.
+apply Hov; clear Hov.
+generalize IHn; intros H1.
+(*
+apply eq_gc_eq in H1.
+destruct H1 as (H1, H2).
+...
+*)
+apply (f_equal gc_squ) in H1.
+rewrite gc_squ_sqrt in H1.
+progress unfold gc_squ in H1.
+progress unfold gc_mul in H1.
+apply eq_gc_eq in H1.
+cbn in H1.
+destruct H1 as (H1, H2).
+...
+rewrite IHn in H1, H2.
+cbn in H1, H2.
 ...
     rewrite (gc_modulus_mul Hic Hop Hto).
       rewrite <- (rngl_abs_nonneg_eq Hop Hor (_ * _ * _)). 2: {
