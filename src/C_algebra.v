@@ -3130,6 +3130,7 @@ progress unfold gc_mul in H1.
 apply eq_gc_eq in H1.
 cbn in H1.
 destruct H1 as (H1, H2).
+(* ouais, chais pas... *)
 ...
 rewrite IHn in H1, H2.
 cbn in H1, H2.
