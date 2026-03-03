@@ -2725,7 +2725,6 @@ destruct ov. {
 }
 Qed.
 
-(* to be completed
 Theorem c_sqrt_mul_im_nonneg_nonneg_not_ov :
   ∀ z₁ z₂,
   (√(z₁ * z₂))%C = (√z₁ * √z₂)%C
@@ -2747,19 +2746,16 @@ destruct (rngl_leb_dec 0 (Re z₁)) as [Hzr1| Hzr1]. {
   intros ((H1, _), (H2, _)).
   now apply (rngl_nle_gt Hor) in H1.
 }
-...
 apply (rngl_leb_gt_iff Hto) in Hzr1.
 move Hzr1 before Hzz2.
 destruct (rngl_leb_dec 0 (Re z₂)) as [Hzr2| Hzr2]. {
   apply rngl_leb_le in Hzr2.
-  right; right; left.
-  split; [ easy | ].
-  split; [ easy | ].
-  right.
-  intros H.
-  progress unfold is_negative_real_prop in H.
-  destruct H as (H, _).
-  now apply (rngl_nle_gt Hor) in H.
+  right; right.
+  apply rngl_leb_le in Hzz1, Hzz2.
+  rewrite Hzz1, Hzz2.
+  progress unfold is_negative_real_prop.
+  intros ((H1, _), (H2, _)).
+  now apply (rngl_nle_gt Hor) in H2.
 }
 apply (rngl_leb_gt_iff Hto) in Hzr2.
 move Hzr2 before Hzr1.
@@ -2816,20 +2812,21 @@ destruct (rngl_eqb_dec (Im z₁) 0) as [Hi1z| Hi1z]. {
   }
   apply (rngl_eqb_neq Heo) in Hi2z.
   move Hi2z before Hzz2.
-  right; right; left.
-  rewrite Hi1z.
-  split; [ apply (rngl_le_refl Hor) | ].
-  split; [ easy | right ].
-  now intros (H3, H4).
+  right; right.
+  apply rngl_leb_le in Hzz2.
+  rewrite Hi1z, Hzz2, (rngl_leb_refl Hor).
+  progress unfold is_negative_real_prop.
+  now intros (_, (_, H1)).
 }
 apply (rngl_eqb_neq Heo) in Hi1z.
-right; right; left.
-split; [ easy | ].
-split; [ easy | ].
-left.
-now intros (H3, H4).
+right; right.
+apply rngl_leb_le in Hzz1, Hzz2.
+rewrite Hzz1, Hzz2.
+progress unfold is_negative_real_prop.
+now intros ((_, H1), _).
 Qed.
 
+(* to be completed
 Theorem c_sqrt_mul_im_nonneg_neg_not_ov :
   ∀ z₁ z₂,
   (√(z₁ * z₂))%C = (√z₁ * √z₂)%C
@@ -2839,6 +2836,7 @@ Theorem c_sqrt_mul_im_nonneg_neg_not_ov :
   → c_mul_is_small_prop z₁ z₂.
 Proof.
 intros * Hzz H1z Hzz1 Hzz2.
+...
 right; right; right; left.
 split; [ easy | ].
 split; [ easy | ].
