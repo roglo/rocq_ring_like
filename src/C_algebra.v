@@ -2044,11 +2044,11 @@ Proof. easy. Qed.
 Theorem Im_mul : ∀ z₁ z2, Im (z₁ * z2) = (Im z₁ * Re z2 + Re z₁ * Im z2)%L.
 Proof. easy. Qed.
 
-Definition c_negative_real z := ((Re z <? 0)%L && (Im z =? 0)%L)%bool.
-Definition c_negative_real_prop z := (Re z < 0 ∧ Im z = 0)%L.
+Definition is_negative_real z := ((Re z <? 0)%L && (Im z =? 0)%L)%bool.
+Definition is_negative_real_prop z := (Re z < 0 ∧ Im z = 0)%L.
 
-Theorem c_negative_real_bool_prop z :
-  c_negative_real z = true ↔ c_negative_real_prop z.
+Theorem is_negative_real_bool_prop z :
+  is_negative_real z = true ↔ is_negative_real_prop z.
 Proof.
 specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
@@ -2070,7 +2070,7 @@ Theorem c_sqrt_mul_when_Im_nonneg_nonneg :
   ∀ z₁ z₂,
   (0 ≤ Im z₁)%L
   → (0 ≤ Im z₂)%L
-  → (¬ c_negative_real_prop z₁ ∨ ¬ c_negative_real_prop z₂)
+  → (¬ is_negative_real_prop z₁ ∨ ¬ is_negative_real_prop z₂)
   → (√(z₁ * z₂) = √z₁ * √z₂)%C.
 Proof.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
@@ -2197,7 +2197,7 @@ destruct H5 as [H5| H5]; cycle 1. {
 clear z Heqz H1 H2 H3.
 apply eq_c_sqrt_add_modulus_Re_div_2_0 in H5.
 destruct H5 as (Hra, Hia).
-progress unfold c_negative_real_prop in Hrab.
+progress unfold is_negative_real_prop in Hrab.
 destruct Hrab as [H| H]; apply H; clear H.
 1, 2: split; [ apply rngl_le_neq; split | easy ]; [ easy | ].
 now intros H; apply H1z; apply eq_c_eq.
@@ -2598,7 +2598,7 @@ Definition c_mul_is_small (z₁ z₂ : Complex T) :=
   ((z₁ =? 0)%C ||
    (z₂ =? 0)%C ||
    ((0 ≤? Im z₁)%L && (0 ≤? Im z₂)%L &&
-      (negb (c_negative_real z₁) || negb (c_negative_real z₂)))%L ||
+      (negb (is_negative_real z₁) || negb (is_negative_real z₂)))%L ||
    ((0 ≤? Im z₁)%L && (Im z₂ <? 0)%L &&
       (Re z₂ * ‖ z₁ ‖ <? Re z₁ * ‖ z₂ ‖)%L) ||
    ((0 ≤? Im z₂)%L && (Im z₁ <? 0)%L &&
@@ -2607,9 +2607,26 @@ Definition c_mul_is_small (z₁ z₂ : Complex T) :=
 Definition c_mul_is_small_prop z₁ z₂ :=
   z₁ = 0%C ∨ z₂ = 0%C ∨
   (0 ≤ Im z₁ ∧ 0 ≤ Im z₂ ∧
-     (¬ c_negative_real_prop z₁ ∨ ¬ c_negative_real_prop z₂))%L ∨
+     (¬ is_negative_real_prop z₁ ∨ ¬ is_negative_real_prop z₂))%L ∨
   (0 ≤ Im z₁ ∧ Im z₂ < 0 ∧ Re z₂ * ‖ z₁ ‖ < Re z₁ * ‖ z₂ ‖)%L ∨
   (0 ≤ Im z₂ ∧ Im z₁ < 0 ∧ Re z₁ * ‖ z₂ ‖ < Re z₂ * ‖ z₁ ‖)%L.
+
+(* proposition for a new definition of [c_mul_is_small]
+   perhaps more readable *)
+Definition c_mul_is_small' (z₁ z₂ : Complex T) :=
+  if (z₁ =? 0)%C then true
+  else if (z₂ =? 0)%C then true
+  else
+    match (0 ≤? Im z₁, 0 ≤? Im z₂)%L with
+    | (true, true) =>
+        negb (is_negative_real z₁ && is_negative_real z₂)
+    | (true, false) =>
+        (Re z₂ * ‖ z₁ ‖ <? Re z₁ * ‖ z₂ ‖)%L
+    | (false, true) =>
+        (Re z₁ * ‖ z₂ ‖ <? Re z₂ * ‖ z₁ ‖)%L
+    | (false, false) =>
+        false
+    end.
 
 Theorem c_mul_is_small_bool_prop z₁ z₂ :
   c_mul_is_small z₁ z₂ = true ↔ c_mul_is_small_prop z₁ z₂.
@@ -2639,12 +2656,12 @@ split; intros H12. {
         intros H.
         apply Bool.eq_true_not_negb_iff in H2.
         apply H2; clear H2.
-        now apply c_negative_real_bool_prop.
+        now apply is_negative_real_bool_prop.
       } {
         intros H.
         apply Bool.eq_true_not_negb_iff in H2.
         apply H2; clear H2.
-        now apply c_negative_real_bool_prop.
+        now apply is_negative_real_bool_prop.
       }
     }
     right; right; right; left.
@@ -2694,11 +2711,11 @@ split; intros H12. {
     destruct H12 as [H12| H12]; [ left | right ]. {
       apply Bool.eq_true_not_negb_iff.
       intros H; apply H12; clear H12.
-      now apply c_negative_real_bool_prop.
+      now apply is_negative_real_bool_prop.
     }
     apply Bool.eq_true_not_negb_iff.
     intros H1; apply H12; clear H12.
-    now apply c_negative_real_bool_prop.
+    now apply is_negative_real_bool_prop.
   }
   destruct H12 as [H12| H12]. {
     left; apply Bool.orb_true_iff.
@@ -2785,7 +2802,7 @@ destruct (rngl_leb_dec 0 (Re z₁)) as [Hzr1| Hzr1]. {
   split; [ easy | ].
   left.
   intros H.
-  progress unfold c_negative_real_prop in H.
+  progress unfold is_negative_real_prop in H.
   destruct H as (H, _).
   now apply (rngl_nle_gt Hor) in H.
 }
@@ -2798,7 +2815,7 @@ destruct (rngl_leb_dec 0 (Re z₂)) as [Hzr2| Hzr2]. {
   split; [ easy | ].
   right.
   intros H.
-  progress unfold c_negative_real_prop in H.
+  progress unfold is_negative_real_prop in H.
   destruct H as (H, _).
   now apply (rngl_nle_gt Hor) in H.
 }
