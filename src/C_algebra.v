@@ -670,6 +670,7 @@ Definition c_sqrt (z : Complex T) :=
 End a.
 
 Notation "x =? y" := (c_eqb x y) : c_scope.
+Notation "x ≠? y" := (negb (c_eqb x y)) : c_scope.
 Notation "- x" := (c_opp x) : c_scope.
 Notation "x - y" := (c_sub x y) : c_scope.
 Notation " x / y" := (c_div x y) : c_scope.
@@ -2593,8 +2594,9 @@ apply (rngl_mul_lt_mono_pos_l Hop Hiq Hto) in H2; [ easy | ].
 now apply (rngl_0_lt_2 Hos Hc1 Hto).
 Qed.
 
-Definition c_mul_not_overflow (z₁ z₂ : Complex T) :=
-  ((z₁ =? 0)%C || (z₂ =? 0)%C ||
+Definition c_mul_is_small (z₁ z₂ : Complex T) :=
+  ((z₁ =? 0)%C ||
+   (z₂ =? 0)%C ||
    ((0 ≤? Im z₁)%L && (0 ≤? Im z₂)%L &&
       (negb (c_negative_real z₁) || negb (c_negative_real z₂)))%L ||
    ((0 ≤? Im z₁)%L && (Im z₂ <? 0)%L &&
@@ -2602,20 +2604,20 @@ Definition c_mul_not_overflow (z₁ z₂ : Complex T) :=
    ((0 ≤? Im z₂)%L && (Im z₁ <? 0)%L &&
       (Re z₁ * ‖ z₂ ‖ <? Re z₂ * ‖ z₁ ‖)%L))%bool.
 
-Definition c_mul_not_overflow_prop z₁ z₂ :=
+Definition c_mul_is_small_prop z₁ z₂ :=
   z₁ = 0%C ∨ z₂ = 0%C ∨
   (0 ≤ Im z₁ ∧ 0 ≤ Im z₂ ∧
      (¬ c_negative_real_prop z₁ ∨ ¬ c_negative_real_prop z₂))%L ∨
   (0 ≤ Im z₁ ∧ Im z₂ < 0 ∧ Re z₂ * ‖ z₁ ‖ < Re z₁ * ‖ z₂ ‖)%L ∨
   (0 ≤ Im z₂ ∧ Im z₁ < 0 ∧ Re z₁ * ‖ z₂ ‖ < Re z₂ * ‖ z₁ ‖)%L.
 
-Theorem c_mul_not_overflow_bool_prop z₁ z₂ :
-  c_mul_not_overflow z₁ z₂ = true ↔ c_mul_not_overflow_prop z₁ z₂.
+Theorem c_mul_is_small_bool_prop z₁ z₂ :
+  c_mul_is_small z₁ z₂ = true ↔ c_mul_is_small_prop z₁ z₂.
 Proof.
 specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
 split; intros H12. {
-  progress unfold c_mul_not_overflow in H12.
+  progress unfold c_mul_is_small in H12.
   apply Bool.orb_true_iff in H12.
   destruct H12 as [H12| H12]. {
     apply Bool.orb_true_iff in H12.
@@ -2663,7 +2665,7 @@ split; intros H12. {
   split; [ now apply (rngl_ltb_lt Heo) | ].
   now apply (rngl_ltb_lt Heo).
 } {
-  progress unfold c_mul_not_overflow.
+  progress unfold c_mul_is_small.
   apply Bool.orb_true_iff.
   destruct H12 as [H12| H12]. {
     left; apply Bool.orb_true_iff.
@@ -2715,24 +2717,24 @@ split; intros H12. {
 Qed.
 
 Theorem c_mul_overflow_bool_prop z₁ z₂ :
-  c_mul_not_overflow z₁ z₂ = false ↔ ¬ c_mul_not_overflow_prop z₁ z₂.
+  c_mul_is_small z₁ z₂ = false ↔ ¬ c_mul_is_small_prop z₁ z₂.
 Proof.
 split; intros H12. {
   apply Bool.not_true_iff_false in H12.
   intros H; apply H12; clear H12.
-  now apply c_mul_not_overflow_bool_prop.
+  now apply c_mul_is_small_bool_prop.
 } {
   apply Bool.not_true_iff_false.
   intros H; apply H12; clear H12.
-  now apply c_mul_not_overflow_bool_prop.
+  now apply c_mul_is_small_bool_prop.
 }
 Qed.
 
-Theorem c_mul_not_overflow_symm :
-  ∀ z₁ z₂, c_mul_not_overflow_prop z₁ z₂ → c_mul_not_overflow_prop z₂ z₁.
+Theorem c_mul_is_small_symm :
+  ∀ z₁ z₂, c_mul_is_small_prop z₁ z₂ → c_mul_is_small_prop z₂ z₁.
 Proof.
 intros * H12.
-progress unfold c_mul_not_overflow_prop.
+progress unfold c_mul_is_small_prop.
 destruct H12 as [H12| H12]; [ now right; left | ].
 destruct H12 as [H12| H12]; [ now left | right; right ].
 destruct H12 as [H12| H12]; [ left | right ]. {
@@ -2744,23 +2746,23 @@ destruct H12 as [H12| H12]; [ left | right ]. {
 now destruct H12 as [H12| H12]; [ right | left ].
 Qed.
 
-Theorem c_mul_not_overflow_comm :
-  ∀ z₁ z₂, c_mul_not_overflow z₁ z₂ = c_mul_not_overflow z₂ z₁.
+Theorem c_mul_is_small_comm :
+  ∀ z₁ z₂, c_mul_is_small z₁ z₂ = c_mul_is_small z₂ z₁.
 Proof.
 intros.
-remember (c_mul_not_overflow z₂ z₁) as ov eqn:Hov.
+remember (c_mul_is_small z₂ z₁) as ov eqn:Hov.
 symmetry in Hov.
 destruct ov. {
-  apply c_mul_not_overflow_bool_prop.
-  apply c_mul_not_overflow_symm.
-  now apply c_mul_not_overflow_bool_prop.
+  apply c_mul_is_small_bool_prop.
+  apply c_mul_is_small_symm.
+  now apply c_mul_is_small_bool_prop.
 } {
   apply Bool.not_true_iff_false in Hov.
   apply Bool.not_true_iff_false.
   intros H; apply Hov; clear Hov.
-  apply c_mul_not_overflow_bool_prop.
-  apply c_mul_not_overflow_symm.
-  now apply c_mul_not_overflow_bool_prop.
+  apply c_mul_is_small_bool_prop.
+  apply c_mul_is_small_symm.
+  now apply c_mul_is_small_bool_prop.
 }
 Qed.
 
@@ -2769,7 +2771,7 @@ Theorem c_sqrt_mul_im_nonneg_nonneg_not_ov :
   (√(z₁ * z₂))%C = (√z₁ * √z₂)%C
   → (0 ≤ Im z₁)%L
   → (0 ≤ Im z₂)%L
-  → c_mul_not_overflow_prop z₁ z₂.
+  → c_mul_is_small_prop z₁ z₂.
 Proof.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
@@ -2875,7 +2877,7 @@ Theorem c_sqrt_mul_im_nonneg_neg_not_ov :
   → z₁ ≠ 0%C
   → (0 ≤ Im z₁)%L
   → (Im z₂ < 0)%L
-  → c_mul_not_overflow_prop z₁ z₂.
+  → c_mul_is_small_prop z₁ z₂.
 Proof.
 intros * Hzz H1z Hzz1 Hzz2.
 right; right; right; left.
@@ -2943,7 +2945,7 @@ Qed.
 
 Theorem c_sqrt_mul_not_ov :
   ∀ z₁ z₂ : Complex T,
-  c_mul_not_overflow_prop z₁ z₂
+  c_mul_is_small_prop z₁ z₂
   ↔ (√(z₁ * z₂))%C = (√z₁ * √z₂)%C.
 Proof.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
@@ -2985,7 +2987,7 @@ apply (rngl_leb_gt_iff Hto) in Hzz1.
 destruct (rngl_leb_dec 0 (Im z₂)) as [Hzz2| Hzz2]. {
   clear H1z.
   apply rngl_leb_le in Hzz2.
-  apply c_mul_not_overflow_symm.
+  apply c_mul_is_small_symm.
   rewrite (c_mul_comm Hic z₁) in Hzz.
   rewrite (c_mul_comm Hic √_) in Hzz.
   now apply c_sqrt_mul_im_nonneg_neg_not_ov.
@@ -3000,22 +3002,22 @@ Qed.
 Theorem c_sqrt_mul :
   ∀ z₁ z₂,
   (√(z₁ * z₂) =
-     if c_mul_not_overflow z₁ z₂ then √z₁ * √z₂ else - (√z₁ * √z₂))%C.
+     if c_mul_is_small z₁ z₂ then √z₁ * √z₂ else - (√z₁ * √z₂))%C.
 Proof.
 (**)
 intros.
-remember (c_mul_not_overflow _ _) as ov eqn:Hov.
+remember (c_mul_is_small _ _) as ov eqn:Hov.
 symmetry in Hov.
 destruct ov. {
   apply c_sqrt_mul_not_ov.
-  now apply c_mul_not_overflow_bool_prop.
+  now apply c_mul_is_small_bool_prop.
 }
 specialize (c_squ_sqrt_mul z₁ z₂) as H1.
 apply c_eq_cases in H1.
 destruct H1 as [H1| H1]; [ exfalso | easy ].
 apply Bool.not_true_iff_false in Hov.
 apply Hov; clear Hov.
-apply c_mul_not_overflow_bool_prop.
+apply c_mul_is_small_bool_prop.
 now apply c_sqrt_mul_not_ov.
 Qed.
 
@@ -3108,7 +3110,7 @@ cbn.
 rewrite IHn.
 symmetry.
 rewrite c_sqrt_mul.
-remember (c_mul_not_overflow _ _) as ov eqn:Hov.
+remember (c_mul_is_small _ _) as ov eqn:Hov.
 symmetry in Hov.
 destruct ov; [ easy | ].
 apply c_mul_overflow_bool_prop in Hov.
