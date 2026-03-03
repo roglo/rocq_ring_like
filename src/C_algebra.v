@@ -2597,26 +2597,6 @@ Qed.
 Definition c_mul_is_small (z₁ z₂ : Complex T) :=
   ((z₁ =? 0)%C ||
    (z₂ =? 0)%C ||
-   ((0 ≤? Im z₁)%L && (0 ≤? Im z₂)%L &&
-      (negb (is_negative_real z₁) || negb (is_negative_real z₂)))%L ||
-   ((0 ≤? Im z₁)%L && (Im z₂ <? 0)%L &&
-      (Re z₂ * ‖ z₁ ‖ <? Re z₁ * ‖ z₂ ‖)%L) ||
-   ((0 ≤? Im z₂)%L && (Im z₁ <? 0)%L &&
-      (Re z₁ * ‖ z₂ ‖ <? Re z₂ * ‖ z₁ ‖)%L))%bool.
-
-Definition c_mul_is_small_prop z₁ z₂ :=
-  z₁ = 0%C ∨ z₂ = 0%C ∨
-  (0 ≤ Im z₁ ∧ 0 ≤ Im z₂ ∧
-     (¬ is_negative_real_prop z₁ ∨ ¬ is_negative_real_prop z₂))%L ∨
-  (0 ≤ Im z₁ ∧ Im z₂ < 0 ∧ Re z₂ * ‖ z₁ ‖ < Re z₁ * ‖ z₂ ‖)%L ∨
-  (0 ≤ Im z₂ ∧ Im z₁ < 0 ∧ Re z₁ * ‖ z₂ ‖ < Re z₂ * ‖ z₁ ‖)%L.
-
-(* proposition for a new definition of [c_mul_is_small]
-   perhaps more readable *)
-Definition c_mul_is_small' (z₁ z₂ : Complex T) :=
-  if (z₁ =? 0)%C then true
-  else if (z₂ =? 0)%C then true
-  else
     match (0 ≤? Im z₁, 0 ≤? Im z₂)%L with
     | (true, true) =>
         negb (is_negative_real z₁ && is_negative_real z₂)%bool
@@ -2626,7 +2606,21 @@ Definition c_mul_is_small' (z₁ z₂ : Complex T) :=
         (Re z₁ * ‖ z₂ ‖ <? Re z₂ * ‖ z₁ ‖)%L
     | (false, false) =>
         false
-    end.
+    end)%bool.
+
+Definition c_mul_is_small_prop z₁ z₂ :=
+  z₁ = 0%C ∨
+  z₂ = 0%C ∨
+  match (0 ≤? Im z₁, 0 ≤? Im z₂)%L with
+  | (true, true) =>
+      ¬ (is_negative_real_prop z₁ ∧ is_negative_real_prop z₂)%L
+  | (true, false) =>
+      (Re z₂ * ‖ z₁ ‖ < Re z₁ * ‖ z₂ ‖)%L
+  | (false, true) =>
+      (Re z₁ * ‖ z₂ ‖ < Re z₂ * ‖ z₁ ‖)%L
+  | (false, false) =>
+      False
+  end.
 
 Theorem c_mul_is_small_bool_prop z₁ z₂ :
   c_mul_is_small z₁ z₂ = true ↔ c_mul_is_small_prop z₁ z₂.
@@ -2638,98 +2632,46 @@ split; intros H12. {
   apply Bool.orb_true_iff in H12.
   destruct H12 as [H12| H12]. {
     apply Bool.orb_true_iff in H12.
-    destruct H12 as [H12| H12]. {
-      apply Bool.orb_true_iff in H12.
-      destruct H12 as [H12| H12]. {
-        apply Bool.orb_true_iff in H12.
-        destruct H12 as [H12| H12]; [ left | right; left ].
-        1, 2: now apply c_eqb_eq.
-      }
-      right; right; left.
-      apply Bool.andb_true_iff in H12.
-      destruct H12 as (H1, H2).
-      apply Bool.andb_true_iff in H1.
-      split; [ now apply rngl_leb_le | ].
-      split; [ now apply rngl_leb_le | ].
-      apply Bool.orb_true_iff in H2.
-      destruct H2 as [H2| H2]; [ left | right ]. {
-        intros H.
-        apply Bool.eq_true_not_negb_iff in H2.
-        apply H2; clear H2.
-        now apply is_negative_real_bool_prop.
-      } {
-        intros H.
-        apply Bool.eq_true_not_negb_iff in H2.
-        apply H2; clear H2.
-        now apply is_negative_real_bool_prop.
-      }
+    destruct H12 as [H12| H12]; [ | right ].
+    1, 2: now left; apply c_eqb_eq.
+  }
+  right; right.
+  remember (0 ≤? Im z₁)%L as zi1 eqn:Hzi1.
+  remember (0 ≤? Im z₂)%L as zi2 eqn:Hzi2.
+  symmetry in Hzi1, Hzi2.
+  destruct zi1. {
+    destruct zi2. {
+      intros H1.
+      apply Bool.eq_true_not_negb_iff in H12.
+      apply H12; clear H12.
+      apply Bool.andb_true_iff.
+      now split; apply is_negative_real_bool_prop.
     }
-    right; right; right; left.
-    apply Bool.andb_true_iff in H12.
-    destruct H12 as (H12, H2).
-    apply Bool.andb_true_iff in H12.
-    destruct H12 as (H12, H1).
-    split; [ now apply rngl_leb_le | ].
-    split; [ now apply (rngl_ltb_lt Heo) | ].
     now apply (rngl_ltb_lt Heo).
   }
-  right; right; right; right.
-  apply Bool.andb_true_iff in H12.
-  destruct H12 as (H12, H2).
-  apply Bool.andb_true_iff in H12.
-  destruct H12 as (H12, H1).
-  split; [ now apply rngl_leb_le | ].
-  split; [ now apply (rngl_ltb_lt Heo) | ].
-  now apply (rngl_ltb_lt Heo).
+  destruct zi2; [ now apply (rngl_ltb_lt Heo) | easy ].
 } {
-  progress unfold c_mul_is_small.
   apply Bool.orb_true_iff.
   destruct H12 as [H12| H12]. {
-    left; apply Bool.orb_true_iff.
-    left; apply Bool.orb_true_iff.
     left; apply Bool.orb_true_iff.
     now left; apply c_eqb_eq.
   }
   destruct H12 as [H12| H12]. {
     left; apply Bool.orb_true_iff.
-    left; apply Bool.orb_true_iff.
-    left; apply Bool.orb_true_iff.
     now right; apply c_eqb_eq.
   }
-  destruct H12 as [H12| H12]. {
-    left; apply Bool.orb_true_iff.
-    left; apply Bool.orb_true_iff.
-    right; apply Bool.andb_true_iff.
-    split. {
-      apply Bool.andb_true_iff.
-      split.
-      now apply rngl_leb_le.
-      now apply rngl_leb_le.
-    }
-    apply Bool.orb_true_iff.
-    destruct H12 as (_ & _ & H12).
-    destruct H12 as [H12| H12]; [ left | right ]. {
-      apply Bool.eq_true_not_negb_iff.
-      intros H; apply H12; clear H12.
-      now apply is_negative_real_bool_prop.
-    }
+  right.
+  remember (0 ≤? Im z₁)%L as zi1 eqn:Hzi1.
+  remember (0 ≤? Im z₂)%L as zi2 eqn:Hzi2.
+  symmetry in Hzi1, Hzi2.
+  destruct zi1. {
+    destruct zi2; [ | now apply (rngl_ltb_lt Heo) ].
     apply Bool.eq_true_not_negb_iff.
     intros H1; apply H12; clear H12.
-    now apply is_negative_real_bool_prop.
+    apply Bool.andb_true_iff in H1.
+    now split; apply is_negative_real_bool_prop.
   }
-  destruct H12 as [H12| H12]. {
-    left; apply Bool.orb_true_iff.
-    right; apply Bool.andb_true_iff.
-    split; [ | now apply (rngl_ltb_lt Heo) ].
-    apply Bool.andb_true_iff.
-    split; [ | now apply (rngl_ltb_lt Heo) ].
-    now apply rngl_leb_le.
-  }
-  right; apply Bool.andb_true_iff.
-  split; [ | now apply (rngl_ltb_lt Heo) ].
-  apply Bool.andb_true_iff.
-  split; [ | now apply (rngl_ltb_lt Heo) ].
-  now apply rngl_leb_le.
+  destruct zi2; [ now apply (rngl_ltb_lt Heo) | easy ].
 }
 Qed.
 
@@ -2754,13 +2696,13 @@ intros * H12.
 progress unfold c_mul_is_small_prop.
 destruct H12 as [H12| H12]; [ now right; left | ].
 destruct H12 as [H12| H12]; [ now left | right; right ].
-destruct H12 as [H12| H12]; [ left | right ]. {
-  split; [ easy | ].
-  split; [ easy | ].
-  destruct H12 as (_ & _ & H12).
-  now destruct H12; [ right | left ].
-}
-now destruct H12 as [H12| H12]; [ right | left ].
+remember (0 ≤? Im z₁)%L as zi1 eqn:Hzi1.
+remember (0 ≤? Im z₂)%L as zi2 eqn:Hzi2.
+symmetry in Hzi1, Hzi2.
+destruct zi1; [ | easy ].
+destruct zi2; [ | easy ].
+intros H1; apply H12; clear H12.
+now apply and_comm.
 Qed.
 
 Theorem c_mul_is_small_comm :
@@ -2783,6 +2725,7 @@ destruct ov. {
 }
 Qed.
 
+(* to be completed
 Theorem c_sqrt_mul_im_nonneg_nonneg_not_ov :
   ∀ z₁ z₂,
   (√(z₁ * z₂))%C = (√z₁ * √z₂)%C
@@ -2797,15 +2740,14 @@ specialize (rngl_integral_or_inv_pdiv_eq_dec_order Hiv Hor) as Hio.
 intros * Hzz Hzz1 Hzz2.
 destruct (rngl_leb_dec 0 (Re z₁)) as [Hzr1| Hzr1]. {
   apply rngl_leb_le in Hzr1.
-  right; right; left.
-  split; [ easy | ].
-  split; [ easy | ].
-  left.
-  intros H.
-  progress unfold is_negative_real_prop in H.
-  destruct H as (H, _).
-  now apply (rngl_nle_gt Hor) in H.
+  right; right.
+  apply rngl_leb_le in Hzz1, Hzz2.
+  rewrite Hzz1, Hzz2.
+  progress unfold is_negative_real_prop.
+  intros ((H1, _), (H2, _)).
+  now apply (rngl_nle_gt Hor) in H1.
 }
+...
 apply (rngl_leb_gt_iff Hto) in Hzr1.
 move Hzr1 before Hzz2.
 destruct (rngl_leb_dec 0 (Re z₂)) as [Hzr2| Hzr2]. {
@@ -3037,6 +2979,7 @@ apply Hov; clear Hov.
 apply c_mul_is_small_bool_prop.
 now apply c_sqrt_mul_not_ov.
 Qed.
+*)
 
 (* to be completed
 Theorem c_seq_to_div_nat_is_Cauchy :
