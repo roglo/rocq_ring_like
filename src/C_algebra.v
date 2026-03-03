@@ -2826,7 +2826,6 @@ progress unfold is_negative_real_prop.
 now intros ((_, H1), _).
 Qed.
 
-(* to be completed
 Theorem c_sqrt_mul_im_nonneg_neg_not_ov :
   ∀ z₁ z₂,
   (√(z₁ * z₂))%C = (√z₁ * √z₂)%C
@@ -2835,11 +2834,15 @@ Theorem c_sqrt_mul_im_nonneg_neg_not_ov :
   → (Im z₂ < 0)%L
   → c_mul_is_small_prop z₁ z₂.
 Proof.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 intros * Hzz H1z Hzz1 Hzz2.
-...
-right; right; right; left.
-split; [ easy | ].
-split; [ easy | ].
+right; right.
+generalize Hzz1; intros H.
+apply rngl_leb_le in H.
+rewrite H; clear H.
+generalize Hzz2; intros H.
+apply (rngl_leb_gt Hor) in H.
+rewrite H; clear H.
 destruct (rngl_leb_dec 0 (Im (z₁ * z₂))) as [Hizz| Hizz]. {
   apply rngl_leb_le in Hizz.
   now apply c_sqrt_mul_im_nonneg_neg_nonneg.
@@ -2900,6 +2903,7 @@ destruct H3 as [H3| H3]. {
 }
 Qed.
 
+(* to be completed
 Theorem c_sqrt_mul_not_ov :
   ∀ z₁ z₂ : Complex T,
   c_mul_is_small_prop z₁ z₂
@@ -2920,6 +2924,7 @@ split; intros Hzz. {
     rewrite c_sqrt_0; symmetry.
     apply (c_mul_0_r Hos).
   }
+...
   destruct Hzz as [Hzz| Hzz].
   now apply c_sqrt_mul_when_Im_nonneg_nonneg.
   destruct Hzz as [Hzz| Hzz].
