@@ -2619,7 +2619,7 @@ Definition c_mul_is_small' (z₁ z₂ : Complex T) :=
   else
     match (0 ≤? Im z₁, 0 ≤? Im z₂)%L with
     | (true, true) =>
-        negb (is_negative_real z₁ && is_negative_real z₂)
+        negb (is_negative_real z₁ && is_negative_real z₂)%bool
     | (true, false) =>
         (Re z₂ * ‖ z₁ ‖ <? Re z₁ * ‖ z₂ ‖)%L
     | (false, true) =>
