@@ -2070,7 +2070,7 @@ Theorem c_sqrt_mul_when_Im_nonneg_nonneg :
   ∀ z₁ z₂,
   (0 ≤ Im z₁)%L
   → (0 ≤ Im z₂)%L
-  → (¬ is_negative_real_prop z₁ ∨ ¬ is_negative_real_prop z₂)
+  → ¬ (is_negative_real_prop z₁ ∧ is_negative_real_prop z₂)
   → (√(z₁ * z₂) = √z₁ * √z₂)%C.
 Proof.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
@@ -2198,125 +2198,19 @@ clear z Heqz H1 H2 H3.
 apply eq_c_sqrt_add_modulus_Re_div_2_0 in H5.
 destruct H5 as (Hra, Hia).
 progress unfold is_negative_real_prop in Hrab.
-destruct Hrab as [H| H]; apply H; clear H.
-1, 2: split; [ apply rngl_le_neq; split | easy ]; [ easy | ].
-now intros H; apply H1z; apply eq_c_eq.
-now intros H; apply H2z; apply eq_c_eq.
-Qed.
-
-(*
-Theorem c_sqrt_mul_when_Im_neg_neg :
-  ∀ z₁ z₂,
-  (Im z₁ < 0)%L
-  → (Im z₂ < 0)%L
-  → (√(z₁ * z₂) = - (√z₁ * √z₂))%C.
-Proof.
-specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
-specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
-specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
-specialize (rngl_integral_or_inv_pdiv_eq_dec_order Hiv Hor) as Hio.
-intros * Hi1 Hi2.
-destruct (c_eq_dec Heo z₁ 0) as [H1z| H1z]. {
-  subst z₁.
-  rewrite (c_mul_0_l Hos).
-  rewrite c_sqrt_0.
-  rewrite (c_mul_0_l Hos); symmetry.
-  apply c_opp_0.
-}
-destruct (c_eq_dec Heo z₂ 0) as [H2z| H2z]. {
-  subst z₂.
-  rewrite (c_mul_0_r Hos).
-  rewrite c_sqrt_0.
-  rewrite (c_mul_0_r Hos); symmetry.
-  apply c_opp_0.
-}
-specialize (c_squ_sqrt_mul z₁ z₂) as H12.
-apply c_eq_cases in H12.
-destruct H12 as [H12| ]; [ exfalso | easy ].
-progress unfold c_sqrt in H12.
-rewrite (rngl_signp_of_neg Hor (Im z₁)) in H12; [ | easy ].
-rewrite (rngl_signp_of_neg Hor (Im z₂)) in H12; [ | easy ].
-do 2 rewrite (rngl_mul_opp_l Hop) in H12.
-do 2 rewrite rngl_mul_1_l in H12.
-remember (z₁ * z₂)%C as z.
-move z before z₂.
-progress unfold c_mul in H12; cbn in H12.
-injection H12; clear H12; intros H2 H1.
-move H1 after H2.
-rewrite (rngl_mul_opp_opp Hop) in H1.
-rewrite (rngl_mul_opp_l Hop), (rngl_mul_opp_r Hop) in H2.
-rewrite (rngl_add_opp_r Hop) in H2.
-rewrite <- (rngl_opp_add_distr Hop) in H2.
-specialize (rl_sqrt_nonneg ((‖ z ‖ + Re z) / 2)%L) as H3.
-specialize (H3 (c_modulus_add_re_div_2_nonneg Hop Hiv Hto _)).
-specialize (rl_sqrt_nonneg ((‖ z ‖ - Re z) / 2)%L) as H4.
-specialize (H4 (c_modulus_sub_re_div_2_nonneg Hop Hiv Hto _)).
-apply (rngl_nlt_ge Hor) in H4.
-apply H4; clear H4.
-rewrite H2.
-apply rngl_le_neq.
+apply Hrab; clear Hrab.
 split. {
-  apply (rngl_opp_nonpos_nonneg Hop Hor).
-  apply (rngl_add_nonneg_nonneg Hos Hor). {
-    apply (rngl_mul_nonneg_nonneg Hos Hor).
-    apply rl_sqrt_sub_mod_re_div_2_nonneg.
-    apply rl_sqrt_add_mod_re_div_2_nonneg.
-  } {
-    apply (rngl_mul_nonneg_nonneg Hos Hor).
-    apply rl_sqrt_add_mod_re_div_2_nonneg.
-    apply rl_sqrt_sub_mod_re_div_2_nonneg.
-  }
-}
-intros H4.
-apply (f_equal rngl_opp) in H4.
-rewrite (rngl_opp_0 Hop) in H4.
-rewrite (rngl_opp_involutive Hop) in H4.
-apply (rngl_eq_add_0 Hos Hor) in H4; cycle 1. {
-  apply (rngl_mul_nonneg_nonneg Hos Hor).
-  apply rl_sqrt_sub_mod_re_div_2_nonneg.
-  apply rl_sqrt_add_mod_re_div_2_nonneg.
+  split; [ | easy ].
+  apply rngl_le_neq.
+  split; [ easy | ].
+  now intros H; apply H1z; apply eq_c_eq.
 } {
-  apply (rngl_mul_nonneg_nonneg Hos Hor).
-  apply rl_sqrt_add_mod_re_div_2_nonneg.
-  apply rl_sqrt_sub_mod_re_div_2_nonneg.
+  split; [ | easy ].
+  apply rngl_le_neq.
+  split; [ easy | ].
+  now intros H; apply H2z; apply eq_c_eq.
 }
-clear Hi1.
-destruct H4 as (H4, H5).
-rewrite H4, rngl_add_0_l in H2.
-rewrite H5, (rngl_opp_0 Hop) in H2.
-apply eq_c_sqrt_sub_modulus_Re_div_2_0 in H2.
-clear H3.
-destruct H2 as (Hr, Hi).
-rewrite Hi, rngl_signp_0, rngl_mul_1_l in H1.
-apply (rngl_integral Hos Hio) in H4.
-destruct H4 as [H4| H4]. {
-  rewrite H4, (rngl_mul_0_l Hos), (rngl_sub_0_r Hos) in H1.
-  apply eq_c_sqrt_sub_modulus_Re_div_2_0 in H4.
-  destruct H4 as (Hr1, H6).
-  move H6 after Hi2; rename H6 into Hi1.
-  apply (rngl_integral Hos Hio) in H5.
-  destruct H5 as [H5| H5]. {
-    rewrite H5, (rngl_mul_0_l Hos) in H1.
-    apply eq_c_sqrt_add_modulus_Re_div_2_0 in H1.
-    destruct H1 as (Hrz, _).
-    apply (rngl_le_antisymm Hor) in Hr; [ clear Hrz | easy ].
-    assert (H : z = 0%C) by now apply eq_c_eq.
-    rewrite Heqz in H.
-    now apply c_integral' in H; destruct H.
-  } {
-    apply eq_c_sqrt_sub_modulus_Re_div_2_0 in H5.
-    destruct H5 as (H5, H6).
-    rewrite H6 in Hi2.
-    now apply rngl_lt_irrefl in Hi2.
-  }
-}
-rewrite H4, (rngl_mul_0_r Hos), (rngl_sub_0_l Hop) in H1.
-apply eq_c_sqrt_add_modulus_Re_div_2_0 in H4.
-destruct H4 as (Hrb, H6).
-rewrite H6 in Hi2.
-now apply rngl_lt_irrefl in Hi2.
 Qed.
-*)
 
 Theorem c_sqrt_mul_when_Im_nonneg_neg :
   ∀ z₁ z₂,
@@ -2903,7 +2797,6 @@ destruct H3 as [H3| H3]. {
 }
 Qed.
 
-(* to be completed
 Theorem c_sqrt_mul_not_ov :
   ∀ z₁ z₂ : Complex T,
   c_mul_is_small_prop z₁ z₂
@@ -2924,11 +2817,20 @@ split; intros Hzz. {
     rewrite c_sqrt_0; symmetry.
     apply (c_mul_0_r Hos).
   }
-...
-  destruct Hzz as [Hzz| Hzz].
-  now apply c_sqrt_mul_when_Im_nonneg_nonneg.
-  destruct Hzz as [Hzz| Hzz].
-  now apply c_sqrt_mul_when_Im_nonneg_neg.
+  remember (0 ≤? Im z₁)%L as zi1 eqn:Hzi1.
+  remember (0 ≤? Im z₂)%L as zi2 eqn:Hzi2.
+  symmetry in Hzi1, Hzi2.
+  destruct zi1. {
+    apply rngl_leb_le in Hzi1.
+    destruct zi2.
+    apply rngl_leb_le in Hzi2.
+    now apply c_sqrt_mul_when_Im_nonneg_nonneg.
+    apply (rngl_leb_gt_iff Hto) in Hzi2.
+    now apply c_sqrt_mul_when_Im_nonneg_neg.
+  }
+  destruct zi2; [ | easy ].
+  apply (rngl_leb_gt_iff Hto) in Hzi1.
+  apply rngl_leb_le in Hzi2.
   rewrite (c_mul_comm Hic z₁).
   rewrite (c_mul_comm Hic √z₁).
   now apply c_sqrt_mul_when_Im_nonneg_neg.
@@ -2966,7 +2868,6 @@ Theorem c_sqrt_mul :
   (√(z₁ * z₂) =
      if c_mul_is_small z₁ z₂ then √z₁ * √z₂ else - (√z₁ * √z₂))%C.
 Proof.
-(**)
 intros.
 remember (c_mul_is_small _ _) as ov eqn:Hov.
 symmetry in Hov.
@@ -2982,7 +2883,6 @@ apply Hov; clear Hov.
 apply c_mul_is_small_bool_prop.
 now apply c_sqrt_mul_not_ov.
 Qed.
-*)
 
 (* to be completed
 Theorem c_seq_to_div_nat_is_Cauchy :
