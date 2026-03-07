@@ -677,6 +677,7 @@ Notation " x / y" := (c_div x y) : c_scope.
 Notation "x +ℹ y" := (mk_c x y) (at level 50) : c_scope.
 Notation "x ⁻¹" := (c_inv x) : c_scope.
 Notation "z ²" := (c_squ z) : c_scope.
+Notation "z ^ n" := (c_pow_nat z n) : c_scope.
 Notation "√ z" := (c_sqrt z) : c_scope.
 Notation "‖ x ‖" := (c_modulus x) (at level 35, x at level 30).
 
@@ -2569,7 +2570,7 @@ split; intros H12. {
 }
 Qed.
 
-Theorem c_mul_overflow_bool_prop z₁ z₂ :
+Theorem c_mul_is_not_small_bool_prop z₁ z₂ :
   c_mul_is_small z₁ z₂ = false ↔ ¬ c_mul_is_small_prop z₁ z₂.
 Proof.
 split; intros H12. {
@@ -2882,6 +2883,28 @@ apply rl_sqrt_mul; [ easy | ].
 now apply rngl_pow_nonneg.
 Qed.
 
+Theorem c_pow_rngl_pow : ∀ z n, (z ^ n)%C = (z ^ n)%L.
+Proof. easy. Qed.
+
+Theorem c_pow_1 : 1²%C = 1%C.
+Proof.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+apply eq_c_eq; cbn.
+do 2 rewrite (rngl_mul_0_l Hos).
+rewrite rngl_mul_1_l, (rngl_mul_0_r Hos).
+now rewrite (rngl_sub_0_r Hos), rngl_add_0_l.
+Qed.
+
+Theorem c_pow_squ : ∀ z n, (z ^ n)²%C = (z ^ (2 * n))%C.
+Proof.
+intros.
+rewrite Nat.mul_comm.
+induction n; [ apply c_pow_1 | cbn ].
+rewrite (c_squ_mul Hic Hop).
+rewrite <- c_pow_rngl_pow, IHn.
+now rewrite (c_mul_assoc Hop).
+Qed.
+
 (* trigonometry equivalent to (θ₁+θ₂)/2 = θ₁/2 + θ₂/2, which
    works only if θ₁+θ₂ < 2π. Otherwise π has to be added. *)
 Theorem c_sqrt_mul :
@@ -2997,22 +3020,21 @@ rewrite c_sqrt_mul.
 remember (c_mul_is_small _ _) as ov eqn:Hov.
 symmetry in Hov.
 destruct ov; [ easy | ].
-...
-apply c_mul_overflow_bool_prop in Hov.
+apply c_mul_is_not_small_bool_prop in Hov.
 destruct (c_eq_dec Heo (√z * √(z ^ n)%L) 0) as [Hsz| Hsz]. {
   rewrite Hsz; apply c_opp_0.
 }
 exfalso.
 apply Hov; clear Hov.
 generalize IHn; intros H1.
-(*
-apply eq_c_eq in H1.
-destruct H1 as (H1, H2).
-...
-*)
 apply (f_equal c_squ) in H1.
 rewrite c_squ_sqrt in H1.
+rewrite <- c_pow_rngl_pow in H1.
+rewrite c_pow_squ in H1.
+(* bon, chais pas... *)
+...
 progress unfold c_squ in H1.
+...
 progress unfold c_mul in H1.
 apply eq_c_eq in H1.
 cbn in H1.
