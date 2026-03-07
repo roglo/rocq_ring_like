@@ -2861,6 +2861,27 @@ exfalso; revert Hzz.
 now apply c_sqrt_mul_im_neg_neg_not_eq.
 Qed.
 
+Theorem rngl_pow_nonneg : ∀ a n, (0 ≤ a → 0 ≤ a ^ n)%L.
+Proof.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+intros * Hza.
+induction n; cbn.
+apply (rngl_0_le_1 Hos Hto).
+now apply (rngl_mul_nonneg_nonneg Hos Hor).
+Qed.
+
+Theorem rngl_sqrt_pow : ∀ n a, (0 ≤ a)%L → (√a ^ n)%L = √(a ^ n).
+Proof.
+specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
+intros * Hza.
+symmetry.
+induction n; cbn; [ apply (rl_sqrt_1 Hop Hiq Hto) | ].
+rewrite <- IHn.
+apply rl_sqrt_mul; [ easy | ].
+now apply rngl_pow_nonneg.
+Qed.
+
 (* trigonometry equivalent to (θ₁+θ₂)/2 = θ₁/2 + θ₂/2, which
    works only if θ₁+θ₂ < 2π. Otherwise π has to be added. *)
 Theorem c_sqrt_mul :
@@ -2976,6 +2997,7 @@ rewrite c_sqrt_mul.
 remember (c_mul_is_small _ _) as ov eqn:Hov.
 symmetry in Hov.
 destruct ov; [ easy | ].
+...
 apply c_mul_overflow_bool_prop in Hov.
 destruct (c_eq_dec Heo (√z * √(z ^ n)%L) 0) as [Hsz| Hsz]. {
   rewrite Hsz; apply c_opp_0.
@@ -2995,7 +3017,6 @@ progress unfold c_mul in H1.
 apply eq_c_eq in H1.
 cbn in H1.
 destruct H1 as (H1, H2).
-(* ouais, chais pas... *)
 ...
 rewrite IHn in H1, H2.
 cbn in H1, H2.
