@@ -3031,7 +3031,7 @@ apply (f_equal c_squ) in H1.
 rewrite c_squ_sqrt in H1.
 rewrite <- c_pow_rngl_pow in H1.
 rewrite c_pow_squ in H1.
-(* bon, chais pas... *)
+progress unfold c_mul_is_small_prop.
 ...
 progress unfold c_squ in H1.
 ...
