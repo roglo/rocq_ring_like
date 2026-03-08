@@ -3024,6 +3024,7 @@ apply c_mul_is_not_small_bool_prop in Hov.
 destruct (c_eq_dec Heo (√z * √(z ^ n)%L) 0) as [Hsz| Hsz]. {
   rewrite Hsz; apply c_opp_0.
 }
+...
 exfalso.
 apply Hov; clear Hov.
 generalize IHn; intros H1.
@@ -3040,10 +3041,30 @@ symmetry in Hziz, Hzin.
 destruct ziz. {
   destruct zin. {
     intros (H2, H3).
+(*
     rewrite <- H1 in H3.
     rewrite c_pow_rngl_pow in H3.
     rewrite <- c_squ_sqrt in H3.
     rewrite c_squ_sqrt in H3.
+*)
+    progress unfold is_negative_real_prop in H2.
+    progress unfold is_negative_real_prop in H3.
+    destruct H2 as (Hrzz, Hizz).
+    destruct H3 as (Hrnz, Hinz).
+    clear Hzz Hziz.
+    rewrite <- c_pow_rngl_pow in Hrnz, Hinz, Hzin, Hsz, H1.
+    do 2 rewrite <- c_pow_rngl_pow in IHn.
+    clear Hzin.
+...
+    rewrite <- H1 in Hrnz, Hinz.
+(*
+rewrite Nat.mul_comm in Hrnz.
+Search (_ ^ (_ * _))%C.
+*)
+rewrite <- c_pow_squ in Hrnz, Hinz.
+...
+Search (Re (_ ^ _)%L).
+Search (Im (_ ^ _)%L).
 ...
 progress unfold c_squ in H1.
 ...
