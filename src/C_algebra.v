@@ -3032,6 +3032,18 @@ rewrite c_squ_sqrt in H1.
 rewrite <- c_pow_rngl_pow in H1.
 rewrite c_pow_squ in H1.
 progress unfold c_mul_is_small_prop.
+destruct (c_eq_dec Heo z 0) as [Hzz| Hzz]; [ now left | right ].
+destruct (c_eq_dec Heo (z ^ n) 0) as [Hnz| Hnz]; [ now left | right ].
+remember (0 ≤? Im z)%L as ziz eqn:Hziz.
+remember (0 ≤? Im (z ^ n)%L)%L as zin eqn:Hzin.
+symmetry in Hziz, Hzin.
+destruct ziz. {
+  destruct zin. {
+    intros (H2, H3).
+    rewrite <- H1 in H3.
+    rewrite c_pow_rngl_pow in H3.
+    rewrite <- c_squ_sqrt in H3.
+    rewrite c_squ_sqrt in H3.
 ...
 progress unfold c_squ in H1.
 ...
