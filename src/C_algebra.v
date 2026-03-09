@@ -206,7 +206,7 @@ f_equal. {
 }
 Qed.
 
-Theorem c_opt_mul_1_l :
+Theorem c_mul_1_l :
   rngl_has_opp_or_psub T = true →
   ∀ z : Complex T, (1 * z)%C = z.
 Proof.
@@ -619,7 +619,7 @@ Instance c_ring_like_prop_not_alg_closed : ring_like_prop (Complex T) :=
      rngl_add_assoc := c_add_assoc;
      rngl_add_0_l := c_add_0_l;
      rngl_mul_assoc := c_mul_assoc Hop;
-     rngl_mul_1_l := c_opt_mul_1_l Hos;
+     rngl_mul_1_l := c_mul_1_l Hos;
      rngl_mul_add_distr_l := c_mul_add_distr_l Hop;
      rngl_opt_mul_comm := c_opt_mul_comm;
      rngl_opt_mul_1_r := c_opt_mul_1_r Hos;
@@ -2883,8 +2883,22 @@ apply rl_sqrt_mul; [ easy | ].
 now apply rngl_pow_nonneg.
 Qed.
 
+Theorem c_mul_rngl_mul : ∀ z₁ z₂, (z₁ * z₂)%C = (z₁ * z₂)%L.
+Proof. easy. Qed.
+
+Theorem c_squ_rngl_squ : ∀ z, z²%C = z²%L.
+Proof. easy. Qed.
+
 Theorem c_pow_rngl_pow : ∀ z n, (z ^ n)%C = (z ^ n)%L.
 Proof. easy. Qed.
+
+Theorem c_mul_1_r : ∀ z, (z * 1)%C = z.
+Proof.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+intros.
+rewrite (c_mul_comm Hic).
+apply (c_mul_1_l Hos).
+Qed.
 
 Theorem c_pow_1 : 1²%C = 1%C.
 Proof.
@@ -3006,6 +3020,7 @@ destruct IHk as [H| H]. {
 Theorem c_sqrt_pow :
   ∀ n z, (c_sqrt z ^ n)%L = c_sqrt (z ^ n)%L.
 Proof.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
 intros.
@@ -3024,7 +3039,6 @@ apply c_mul_is_not_small_bool_prop in Hov.
 destruct (c_eq_dec Heo (√z * √(z ^ n)%L) 0) as [Hsz| Hsz]. {
   rewrite Hsz; apply c_opp_0.
 }
-...
 exfalso.
 apply Hov; clear Hov.
 generalize IHn; intros H1.
@@ -3055,13 +3069,66 @@ destruct ziz. {
     rewrite <- c_pow_rngl_pow in Hrnz, Hinz, Hzin, Hsz, H1.
     do 2 rewrite <- c_pow_rngl_pow in IHn.
     clear Hzin.
-...
     rewrite <- H1 in Hrnz, Hinz.
 (*
 rewrite Nat.mul_comm in Hrnz.
 Search (_ ^ (_ * _))%C.
 *)
-rewrite <- c_pow_squ in Hrnz, Hinz.
+    rewrite <- c_pow_squ in Hrnz, Hinz.
+(*
+    clear IHn.
+    clear Hsz H1 Hnz.
+*)
+    destruct n. {
+      cbn in Hrnz.
+      rewrite rngl_mul_1_l, (rngl_mul_0_l Hos), (rngl_sub_0_r Hos) in Hrnz.
+      apply (rngl_nle_gt Hor) in Hrnz.
+      apply Hrnz; clear Hrnz.
+      apply (rngl_0_le_1 Hos Hto).
+    }
+(**)
+    destruct n. {
+      clear Hrnz Hinz.
+(* pas prouvable et pourtant ça l'est au départ du théorème (pour n=1) *)
+...
+    rewrite c_pow_rngl_pow in Hrnz.
+    rewrite rngl_pow_succ_r in Hrnz.
+    rewrite <- c_pow_rngl_pow in Hrnz.
+    progress unfold c_squ in Hrnz.
+    rewrite <- c_mul_rngl_mul in Hrnz.
+    rewrite c_pow_rngl_pow in Hrnz.
+    rewrite (c_mul_assoc Hop) in Hrnz.
+    rewrite c_mul_rngl_mul in Hrnz.
+    rewrite (c_mul_comm Hic √z) in Hrnz.
+    rewrite <- c_mul_rngl_mul in Hrnz.
+    rewrite (c_mul_comm Hic) in Hrnz.
+    rewrite <- (c_mul_assoc Hop) in Hrnz.
+    do 3 rewrite c_mul_rngl_mul in Hrnz.
+    rewrite fold_rngl_squ in Hrnz.
+    do 2 rewrite <- c_mul_rngl_mul in Hrnz.
+    rewrite <- c_pow_rngl_pow in Hrnz.
+    rewrite <- c_squ_rngl_squ in Hrnz.
+    rewrite c_squ_sqrt in Hrnz.
+    rewrite (c_mul_assoc Hop) in Hrnz.
+    do 2 rewrite c_mul_rngl_mul in Hrnz.
+    rewrite fold_rngl_squ in Hrnz.
+    rewrite <- c_squ_rngl_squ in Hrnz.
+    rewrite <- c_mul_rngl_mul in Hrnz.
+...
+    rewrite rngl_squ_sqrt in Hrnz.
+Search (_²%L = _²%C).
+...
+    rewrite <- c_mul_assoc in Hrnz.
+    rewrite fold_squ_mul in Hrnz.
+    rewrite <- fold_c_squ in Hrnz.
+...
+Set Printing All.
+rewrite rngl_mul_assoc in Hrnz.
+Search (Re _²).
+rewrite <- c_pow_rngl_pow in Hrnz.
+progress unfold c_pow_nat in Hrnz.
+Search (Re (_ * _)).
+    rewrite Re_mul in Hrnz.
 ...
 Search (Re (_ ^ _)%L).
 Search (Im (_ ^ _)%L).
