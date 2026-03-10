@@ -3018,12 +3018,38 @@ destruct IHk as [H| H]. {
   apply (c_mul_0_l Hos).
 }
 Theorem c_sqrt_pow :
-  ∀ n z, (c_sqrt z ^ n)%C = c_sqrt (z ^ n)%C.
+  ∀ n z, (√z ^ n)%C = (√(z ^ n))%C.
 Proof.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
 intros.
+(**)
+(* je soupçonne qu'il faille multiplier par (-1)^n... *)
+(* voyons voir... *)
+destruct (Nat.eq_dec n 2) as [Hn2| Hn2]. {
+  subst n.
+  cbn.
+  do 2 rewrite c_mul_1_r.
+  (* lemma *)
+  do 2 rewrite c_mul_rngl_mul.
+  do 2 rewrite fold_rngl_squ.
+  do 2 rewrite <- c_squ_rngl_squ.
+  rewrite c_squ_sqrt; symmetry.
+  progress unfold c_sqrt.
+  cbn.
+  rewrite (rngl_mul_comm Hic (Im z)).
+  rewrite <- rngl_mul_2_l.
+  do 2 rewrite fold_rngl_squ.
+  progress unfold c_modulus.
+  cbn.
+  do 2 rewrite fold_rngl_squ.
+  rewrite (rngl_mul_comm Hic (Im z)).
+  rewrite <- (rngl_mul_2_l (_ * _)).
+  progress unfold rl_sqrt.
+  progress unfold rl_modl.
+(* hou la la... *)
+...
 induction n. {
   cbn; symmetry.
   apply c_sqrt_1.
