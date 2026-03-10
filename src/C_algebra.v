@@ -2492,30 +2492,30 @@ Qed.
 Definition c_mul_is_small (z₁ z₂ : Complex T) :=
    ((z₁ =? 0)%C ||
     (z₂ =? 0)%C ||
-     match (0 ≤? Im z₁, 0 ≤? Im z₂)%L with
-     | (true, true) =>
-          negb (is_negative_real z₁ && is_negative_real z₂)
-     | (true, false) =>
-         (Re z₂ * ‖ z₁ ‖ <? Re z₁ * ‖ z₂ ‖)%L
-     | (false, true) =>
-         (Re z₁ * ‖ z₂ ‖ <? Re z₂ * ‖ z₁ ‖)%L
-     | (false, false) =>
-         false
-     end)%bool.
+    if (0 ≤? Im z₁)%L then
+      if (0 ≤? Im z₂)%L then
+        negb (is_negative_real z₁ && is_negative_real z₂)
+      else
+        (Re z₂ * ‖ z₁ ‖ <? Re z₁ * ‖ z₂ ‖)%L
+    else
+      if (0 ≤? Im z₂)%L then
+        (Re z₁ * ‖ z₂ ‖ <? Re z₂ * ‖ z₁ ‖)%L
+      else
+        false)%bool.
 
 Definition c_mul_is_small_prop z₁ z₂ :=
   z₁ = 0%C ∨
   z₂ = 0%C ∨
-  match (0 ≤? Im z₁, 0 ≤? Im z₂)%L with
-  | (true, true) =>
+  if (0 ≤? Im z₁)%L then
+    if (0 ≤? Im z₂)%L then
       ¬ (is_negative_real_prop z₁ ∧ is_negative_real_prop z₂)%L
-  | (true, false) =>
+    else
       (Re z₂ * ‖ z₁ ‖ < Re z₁ * ‖ z₂ ‖)%L
-  | (false, true) =>
+  else
+    if (0 ≤? Im z₂)%L then
       (Re z₁ * ‖ z₂ ‖ < Re z₂ * ‖ z₁ ‖)%L
-  | (false, false) =>
-      False
-  end.
+    else
+      False.
 
 Theorem c_mul_is_small_bool_prop z₁ z₂ :
   c_mul_is_small z₁ z₂ = true ↔ c_mul_is_small_prop z₁ z₂.
@@ -2945,6 +2945,62 @@ apply c_mul_is_small_bool_prop.
 now apply c_sqrt_mul_not_ov.
 Qed.
 
+Theorem c_sqrt_squ :
+  ∀ z,
+  (√z²)%C =
+    if ((0 ≤? Im z)%L && negb (is_negative_real z))%bool then z else (-z)%C.
+Proof.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
+intros.
+remember (_ && _)%bool as zi eqn:Hzi.
+symmetry in Hzi.
+destruct zi. {
+  apply Bool.andb_true_iff in Hzi.
+  destruct Hzi as (Hzi, Hnr).
+  apply Bool.negb_true_iff in Hnr.
+  progress unfold c_squ.
+  rewrite (proj1 (c_sqrt_mul_not_ov _ _)); cycle 1. {
+    right; right.
+    rewrite Hzi.
+    intros (H1, _).
+    apply is_negative_real_bool_prop in H1.
+    congruence.
+  }
+  rewrite fold_c_squ.
+  apply c_squ_sqrt.
+} {
+  apply Bool.andb_false_iff in Hzi.
+  progress unfold c_squ.
+  rewrite c_sqrt_mul.
+  progress unfold c_mul_is_small.
+  remember (z =? 0)%C as zz eqn:Hzz.
+  symmetry in Hzz.
+  destruct zz. {
+    apply c_eqb_eq in Hzz; subst z; cbn.
+    rewrite c_sqrt_0, c_opp_0.
+    apply (c_mul_0_l Hos).
+  }
+  cbn.
+  destruct Hzi as [Hzi| Hzi]. {
+    rewrite Hzi.
+    progress f_equal.
+    rewrite fold_c_squ.
+    apply c_squ_sqrt.
+  }
+  apply Bool.negb_false_iff in Hzi.
+  rewrite Hzi; cbn.
+  progress unfold is_negative_real in Hzi.
+  apply Bool.andb_true_iff in Hzi.
+  destruct Hzi as (Hrz, Hiz).
+  apply (rngl_eqb_eq Heo) in Hiz.
+  rewrite Hiz, (rngl_leb_refl Hor).
+  progress f_equal.
+  apply c_squ_sqrt.
+}
+Qed.
+
 (* to be completed
 Theorem c_seq_to_div_nat_is_Cauchy :
   rngl_is_archimedean T = true →
@@ -3020,54 +3076,14 @@ destruct IHk as [H| H]. {
   rewrite (rngl_mul_0_r Hos).
   apply (c_mul_0_l Hos).
 }
-Search (√(_²))%L.
-Theorem c_sqrt_squ :
-  ∀ z,
-  (√z²)%C =
-    if ((0 ≤? Im z)%L && negb (is_negative_real z))%bool then z else (-z)%C.
-Proof.
-intros.
-remember (_ && _)%bool as zi eqn:Hzi.
-symmetry in Hzi.
-destruct zi. {
-  apply Bool.andb_true_iff in Hzi.
-  destruct Hzi as (Hzi, Hnr).
-  apply Bool.negb_true_iff in Hnr.
-  progress unfold c_squ.
-  rewrite (proj1 (c_sqrt_mul_not_ov _ _)); cycle 1. {
-    right; right.
-    rewrite Hzi.
-    intros (H1, _).
-    apply is_negative_real_bool_prop in H1.
-    congruence.
-  }
-  rewrite fold_c_squ.
-  apply c_squ_sqrt.
-} {
-  apply Bool.andb_false_iff in Hzi.
-  progress unfold c_squ.
-  rewrite c_sqrt_mul.
-(* mouais, bon, faut voir... *)
-Print c_mul_is_small.
-...
-progress unfold c_mul_is_small.
-Search (c_mul_is_small).
-Search (√ (_ * _)%C = _)%C.
-...
-Search (_ * _ = _²)%L.
-  rewrite fold_c_squ.
-  progress unfold c_sqrt; cbn.
-...
 Theorem c_sqrt_pow :
-  ∀ n z, (√z ^ n)%C = (√(z ^ n))%C.
+  ∀ n z, (√z ^ n)%C = ((-1%C) ^ (n + 1) * √(z ^ n))%C.
 Proof.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
 intros.
-(**)
-(* je soupçonne qu'il faille multiplier par (-1)^n... *)
-(* voyons voir... *)
+(*
 destruct (Nat.eq_dec n 2) as [Hn2| Hn2]. {
   subst n.
   cbn.
@@ -3077,6 +3093,10 @@ destruct (Nat.eq_dec n 2) as [Hn2| Hn2]. {
   do 2 rewrite fold_rngl_squ.
   do 2 rewrite <- c_squ_rngl_squ.
   rewrite c_squ_sqrt; symmetry.
+  rewrite c_sqrt_squ.
+(* ouais, hein (-1)^{n+1} *)
+Search ((-1) ^ _)%L.
+...
   progress unfold c_sqrt.
   cbn.
   rewrite (rngl_mul_comm Hic (Im z)).
@@ -3091,8 +3111,11 @@ destruct (Nat.eq_dec n 2) as [Hn2| Hn2]. {
   progress unfold rl_modl.
 (* hou la la... *)
 ...
+*)
 induction n. {
   cbn; symmetry.
+(* faut peut-être faire un i^n au lieu de (-1)^n ? *)
+...
   apply c_sqrt_1.
 }
 cbn.
