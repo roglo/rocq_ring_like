@@ -2892,6 +2892,9 @@ Proof. easy. Qed.
 Theorem c_pow_rngl_pow : ∀ z n, (z ^ n)%C = (z ^ n)%L.
 Proof. easy. Qed.
 
+Theorem fold_c_squ: ∀ z, (z * z)%C = z²%C.
+Proof. easy. Qed.
+
 Theorem c_mul_1_r : ∀ z, (z * 1)%C = z.
 Proof.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
@@ -3017,6 +3020,44 @@ destruct IHk as [H| H]. {
   rewrite (rngl_mul_0_r Hos).
   apply (c_mul_0_l Hos).
 }
+Search (√(_²))%L.
+Theorem c_sqrt_squ :
+  ∀ z,
+  (√z²)%C =
+    if ((0 ≤? Im z)%L && negb (is_negative_real z))%bool then z else (-z)%C.
+Proof.
+intros.
+remember (_ && _)%bool as zi eqn:Hzi.
+symmetry in Hzi.
+destruct zi. {
+  apply Bool.andb_true_iff in Hzi.
+  destruct Hzi as (Hzi, Hnr).
+  apply Bool.negb_true_iff in Hnr.
+  progress unfold c_squ.
+  rewrite (proj1 (c_sqrt_mul_not_ov _ _)); cycle 1. {
+    right; right.
+    rewrite Hzi.
+    intros (H1, _).
+    apply is_negative_real_bool_prop in H1.
+    congruence.
+  }
+  rewrite fold_c_squ.
+  apply c_squ_sqrt.
+} {
+  apply Bool.andb_false_iff in Hzi.
+  progress unfold c_squ.
+  rewrite c_sqrt_mul.
+(* mouais, bon, faut voir... *)
+Print c_mul_is_small.
+...
+progress unfold c_mul_is_small.
+Search (c_mul_is_small).
+Search (√ (_ * _)%C = _)%C.
+...
+Search (_ * _ = _²)%L.
+  rewrite fold_c_squ.
+  progress unfold c_sqrt; cbn.
+...
 Theorem c_sqrt_pow :
   ∀ n z, (√z ^ n)%C = (√(z ^ n))%C.
 Proof.
