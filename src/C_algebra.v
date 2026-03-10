@@ -3018,7 +3018,7 @@ destruct IHk as [H| H]. {
   apply (c_mul_0_l Hos).
 }
 Theorem c_sqrt_pow :
-  ∀ n z, (c_sqrt z ^ n)%L = c_sqrt (z ^ n)%L.
+  ∀ n z, (c_sqrt z ^ n)%C = c_sqrt (z ^ n)%C.
 Proof.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
@@ -3029,6 +3029,7 @@ induction n. {
   apply c_sqrt_1.
 }
 cbn.
+do 2 rewrite <- c_pow_rngl_pow.
 rewrite IHn.
 symmetry.
 rewrite c_sqrt_mul.
@@ -3036,7 +3037,7 @@ remember (c_mul_is_small _ _) as ov eqn:Hov.
 symmetry in Hov.
 destruct ov; [ easy | ].
 apply c_mul_is_not_small_bool_prop in Hov.
-destruct (c_eq_dec Heo (√z * √(z ^ n)%L) 0) as [Hsz| Hsz]. {
+destruct (c_eq_dec Heo (√z * √(z ^ n)%C) 0) as [Hsz| Hsz]. {
   rewrite Hsz; apply c_opp_0.
 }
 exfalso.
@@ -3044,13 +3045,12 @@ apply Hov; clear Hov.
 generalize IHn; intros H1.
 apply (f_equal c_squ) in H1.
 rewrite c_squ_sqrt in H1.
-rewrite <- c_pow_rngl_pow in H1.
 rewrite c_pow_squ in H1.
 progress unfold c_mul_is_small_prop.
 destruct (c_eq_dec Heo z 0) as [Hzz| Hzz]; [ now left | right ].
 destruct (c_eq_dec Heo (z ^ n) 0) as [Hnz| Hnz]; [ now left | right ].
 remember (0 ≤? Im z)%L as ziz eqn:Hziz.
-remember (0 ≤? Im (z ^ n)%L)%L as zin eqn:Hzin.
+remember (0 ≤? Im (z ^ n))%L as zin eqn:Hzin.
 symmetry in Hziz, Hzin.
 destruct ziz. {
   destruct zin. {
@@ -3066,8 +3066,10 @@ destruct ziz. {
     destruct H2 as (Hrzz, Hizz).
     destruct H3 as (Hrnz, Hinz).
     clear Hzz Hziz.
+(*
     rewrite <- c_pow_rngl_pow in Hrnz, Hinz, Hzin, Hsz, H1.
     do 2 rewrite <- c_pow_rngl_pow in IHn.
+*)
     clear Hzin.
     rewrite <- H1 in Hrnz, Hinz.
 (*
@@ -3089,7 +3091,7 @@ Search (_ ^ (_ * _))%C.
 (**)
     destruct n. {
       clear Hrnz Hinz.
-(* pas prouvable et pourtant ça l'est au départ du théorème (pour n=1) *)
+(* correspond au cas n=2 dans le théorème *)
 ...
     rewrite c_pow_rngl_pow in Hrnz.
     rewrite rngl_pow_succ_r in Hrnz.
