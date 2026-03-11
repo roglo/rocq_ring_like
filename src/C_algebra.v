@@ -2883,6 +2883,18 @@ apply rl_sqrt_mul; [ easy | ].
 now apply rngl_pow_nonneg.
 Qed.
 
+Theorem c_opp_rngl_opp : ∀ z, (- z)%C = (- z)%L.
+Proof.
+intros.
+progress unfold c_ring_like_op.
+progress unfold c_opp.
+progress unfold rngl_opp.
+progress unfold c_opt_opp_or_psub.
+cbn.
+destruct (rngl_opt_opp_or_psub T) as [s| ]; [ | easy ].
+now destruct s.
+Qed.
+
 Theorem c_mul_rngl_mul : ∀ z₁ z₂, (z₁ * z₂)%C = (z₁ * z₂)%L.
 Proof. easy. Qed.
 
@@ -3156,6 +3168,27 @@ Print c_nth_2_pow_root.
   π /₂^(Nat.log2 n - 1), c'est
   c_nth_2_pow_root (Nat.log2 n - 1) (-1)
 *)
+...
+Theorem glop :
+  ∀ z i n,
+  z ≠ 0%C
+  → (Im (c_nth_2_pow_root (Nat.log2 n - 1) (-1)) ≤
+       Im (c_nth_2_pow_root i z ^ (2 ^ i / n)))%L.
+Proof.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+intros * Hzz; cbn.
+destruct n. {
+  rewrite <- c_opp_rngl_opp; cbn.
+  rewrite (rngl_opp_0 Hop).
+  apply (rngl_le_refl Hor).
+}
+destruct n. {
+  rewrite Nat.div_1_r; cbn.
+  rewrite <- c_opp_rngl_opp; cbn.
+  rewrite (rngl_opp_0 Hop).
+  rewrite c_nth_2_pow_root_pow_2_pow.
+... ...
+eapply (rngl_le_trans Hor); [ | apply glop ].
 ...
 Theorem seq_angle_to_div_nat_le_straight_div_pow2_log2_pred :
   ∀ n i α,
