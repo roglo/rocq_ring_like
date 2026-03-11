@@ -3145,7 +3145,33 @@ destruct (Nat.eq_dec n 1) as [Hn1| Hn1]. {
   now rewrite c_eucl_dist_diag.
 }
 (* see SeqAngleIsCauchy.v in TrigoWithoutPi *)
-assert (Hss : ∀ i, (seq_angle_to_div_nat α n i ≤ π)%A). {
+assert (Hss : ∀ i, (0 ≤ Im (c_seq_to_div_nat z n i))%L). {
+  intros.
+(**)
+  progress unfold c_seq_to_div_nat.
+...
+(**)
+Search c_nth_2_pow_root.
+Theorem c_seq_to_div_nat_le_straight_div_pow2_log2_pred :
+  ∀ n i z,
+  n ≠ 1
+  → (c_nth_2_pow_root ... c_seq_to_div_nat z n i ≤ π /₂^(Nat.log2 n - 1))%A.
+Proof.
+intros * Hn1.
+...
+Theorem seq_angle_to_div_nat_le_straight_div_pow2_log2_pred :
+  ∀ n i α,
+  n ≠ 1
+  → (seq_angle_to_div_nat α n i ≤ π /₂^(Nat.log2 n - 1))%A.
+Proof.
+intros * Hn1.
+...
+  specialize seq_angle_to_div_nat_le_straight_div_pow2_log2_pred as H1.
+  specialize (H1 n i α Hn1).
+  eapply angle_le_trans; [ apply H1 | ].
+  apply angle_div_2_pow_le_diag.
+}
+assert (Hsr : n ≤ 3 ∨ ∀ i, (seq_angle_to_div_nat α n i ≤ π/₂)%A). {
 ...
 *)
 
