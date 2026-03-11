@@ -3001,52 +3001,13 @@ destruct zi. {
 }
 Qed.
 
-(* to be completed
-Theorem c_seq_to_div_nat_is_Cauchy :
-  rngl_is_archimedean T = true →
-  ∀ n a, is_Cauchy_sequence c_eucl_dist (c_seq_to_div_nat a n).
-Proof.
-intros Har.
-specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
-specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
-specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
-specialize (rngl_int_dom_or_inv_pdiv Hiv) as Hii.
-destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
-  specialize (rngl_characteristic_1 Hos Hc1) as H1.
-  intros * ε Hε.
-  rewrite H1 in Hε.
-  now apply rngl_lt_irrefl in Hε.
-}
-intros *.
-intros ε Hε.
-(*
-Check gre_lt_c_eucl_dist_lt.
-...
-  → (1 - z₁² / 2 < rngl_cos (α2 - α1))%L
-  ↔ (angle_eucl_dist α1 α2 < a)%L.
-...
-*)
-destruct (c_eq_dec Heo a 0) as [Haz| Haz]. {
-  subst a.
-  exists (Nat.log2_up n).
-  intros * Hp Hq.
-  destruct (Nat.eq_dec n 0) as [Hnz| Hnz]. {
-    subst n.
-    progress unfold c_seq_to_div_nat; cbn.
-    (* lemma *)
-    progress unfold c_eucl_dist.
-    rewrite (c_sub_diag Hos).
-    now rewrite (c_modulus_0 Hop Hii Hto).
-  }
-  apply Nat.log2_up_le_pow2 in Hp; [ | now apply Nat.neq_0_lt_0 ].
-  apply Nat.log2_up_le_pow2 in Hq; [ | now apply Nat.neq_0_lt_0 ].
-  progress unfold c_seq_to_div_nat.
 Theorem c_seq_to_div_nat_0_l :
   ∀ n k, 0 < 2 ^ k / n → c_seq_to_div_nat 0 n k = 0%C.
 Proof.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
 specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
 specialize (rngl_int_dom_or_inv_pdiv Hiv) as Hii.
 specialize (rngl_integral_or_inv_pdiv_eq_dec_order Hiv Hor) as Hio.
 destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
@@ -3076,385 +3037,59 @@ destruct IHk as [H| H]. {
   rewrite (rngl_mul_0_r Hos).
   apply (c_mul_0_l Hos).
 }
-Theorem c_sqrt_pow :
-  ∀ n z, (√z ^ n)%C = ((-1%C) ^ (n + 1) * √(z ^ n))%C.
+destruct (c_eq_dec Heo (c_nth_2_pow_root k 0) 0) as [Hcz| Hcz]. {
+  rewrite Hcz.
+  rewrite c_sqrt_0.
+  apply (c_mul_0_l Hos).
+}
+now apply (c_pow_neq_0 Hc1) in H.
+Qed.
+
+(* to be completed
+Theorem c_seq_to_div_nat_is_Cauchy :
+  rngl_is_archimedean T = true →
+  ∀ n a, is_Cauchy_sequence c_eucl_dist (c_seq_to_div_nat a n).
 Proof.
+intros Har.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
-intros.
-(*
-destruct (Nat.eq_dec n 2) as [Hn2| Hn2]. {
-  subst n.
-  cbn.
-  do 2 rewrite c_mul_1_r.
-  (* lemma *)
-  do 2 rewrite c_mul_rngl_mul.
-  do 2 rewrite fold_rngl_squ.
-  do 2 rewrite <- c_squ_rngl_squ.
-  rewrite c_squ_sqrt; symmetry.
-  rewrite c_sqrt_squ.
-(* ouais, hein (-1)^{n+1} *)
-Search ((-1) ^ _)%L.
-...
-  progress unfold c_sqrt.
-  cbn.
-  rewrite (rngl_mul_comm Hic (Im z)).
-  rewrite <- rngl_mul_2_l.
-  do 2 rewrite fold_rngl_squ.
-  progress unfold c_modulus.
-  cbn.
-  do 2 rewrite fold_rngl_squ.
-  rewrite (rngl_mul_comm Hic (Im z)).
-  rewrite <- (rngl_mul_2_l (_ * _)).
-  progress unfold rl_sqrt.
-  progress unfold rl_modl.
-(* hou la la... *)
-...
-*)
-induction n. {
-  cbn; symmetry.
-(* faut peut-être faire un i^n au lieu de (-1)^n ? *)
-...
-  apply c_sqrt_1.
+specialize (rngl_int_dom_or_inv_pdiv Hiv) as Hii.
+destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
+  specialize (rngl_characteristic_1 Hos Hc1) as H1.
+  intros * ε Hε.
+  rewrite H1 in Hε.
+  now apply rngl_lt_irrefl in Hε.
 }
-cbn.
-do 2 rewrite <- c_pow_rngl_pow.
-rewrite IHn.
-symmetry.
-rewrite c_sqrt_mul.
-remember (c_mul_is_small _ _) as ov eqn:Hov.
-symmetry in Hov.
-destruct ov; [ easy | ].
-apply c_mul_is_not_small_bool_prop in Hov.
-destruct (c_eq_dec Heo (√z * √(z ^ n)%C) 0) as [Hsz| Hsz]. {
-  rewrite Hsz; apply c_opp_0.
-}
-exfalso.
-apply Hov; clear Hov.
-generalize IHn; intros H1.
-apply (f_equal c_squ) in H1.
-rewrite c_squ_sqrt in H1.
-rewrite c_pow_squ in H1.
-progress unfold c_mul_is_small_prop.
-destruct (c_eq_dec Heo z 0) as [Hzz| Hzz]; [ now left | right ].
-destruct (c_eq_dec Heo (z ^ n) 0) as [Hnz| Hnz]; [ now left | right ].
-remember (0 ≤? Im z)%L as ziz eqn:Hziz.
-remember (0 ≤? Im (z ^ n))%L as zin eqn:Hzin.
-symmetry in Hziz, Hzin.
-destruct ziz. {
-  destruct zin. {
-    intros (H2, H3).
-(*
-    rewrite <- H1 in H3.
-    rewrite c_pow_rngl_pow in H3.
-    rewrite <- c_squ_sqrt in H3.
-    rewrite c_squ_sqrt in H3.
-*)
-    progress unfold is_negative_real_prop in H2.
-    progress unfold is_negative_real_prop in H3.
-    destruct H2 as (Hrzz, Hizz).
-    destruct H3 as (Hrnz, Hinz).
-    clear Hzz Hziz.
-(*
-    rewrite <- c_pow_rngl_pow in Hrnz, Hinz, Hzin, Hsz, H1.
-    do 2 rewrite <- c_pow_rngl_pow in IHn.
-*)
-    clear Hzin.
-    rewrite <- H1 in Hrnz, Hinz.
-(*
-rewrite Nat.mul_comm in Hrnz.
-Search (_ ^ (_ * _))%C.
-*)
-    rewrite <- c_pow_squ in Hrnz, Hinz.
-(*
-    clear IHn.
-    clear Hsz H1 Hnz.
-*)
-    destruct n. {
-      cbn in Hrnz.
-      rewrite rngl_mul_1_l, (rngl_mul_0_l Hos), (rngl_sub_0_r Hos) in Hrnz.
-      apply (rngl_nle_gt Hor) in Hrnz.
-      apply Hrnz; clear Hrnz.
-      apply (rngl_0_le_1 Hos Hto).
-    }
-(**)
-    destruct n. {
-      clear Hrnz Hinz.
-(* correspond au cas n=2 dans le théorème *)
-...
-    rewrite c_pow_rngl_pow in Hrnz.
-    rewrite rngl_pow_succ_r in Hrnz.
-    rewrite <- c_pow_rngl_pow in Hrnz.
-    progress unfold c_squ in Hrnz.
-    rewrite <- c_mul_rngl_mul in Hrnz.
-    rewrite c_pow_rngl_pow in Hrnz.
-    rewrite (c_mul_assoc Hop) in Hrnz.
-    rewrite c_mul_rngl_mul in Hrnz.
-    rewrite (c_mul_comm Hic √z) in Hrnz.
-    rewrite <- c_mul_rngl_mul in Hrnz.
-    rewrite (c_mul_comm Hic) in Hrnz.
-    rewrite <- (c_mul_assoc Hop) in Hrnz.
-    do 3 rewrite c_mul_rngl_mul in Hrnz.
-    rewrite fold_rngl_squ in Hrnz.
-    do 2 rewrite <- c_mul_rngl_mul in Hrnz.
-    rewrite <- c_pow_rngl_pow in Hrnz.
-    rewrite <- c_squ_rngl_squ in Hrnz.
-    rewrite c_squ_sqrt in Hrnz.
-    rewrite (c_mul_assoc Hop) in Hrnz.
-    do 2 rewrite c_mul_rngl_mul in Hrnz.
-    rewrite fold_rngl_squ in Hrnz.
-    rewrite <- c_squ_rngl_squ in Hrnz.
-    rewrite <- c_mul_rngl_mul in Hrnz.
-...
-    rewrite rngl_squ_sqrt in Hrnz.
-Search (_²%L = _²%C).
-...
-    rewrite <- c_mul_assoc in Hrnz.
-    rewrite fold_squ_mul in Hrnz.
-    rewrite <- fold_c_squ in Hrnz.
-...
-Set Printing All.
-rewrite rngl_mul_assoc in Hrnz.
-Search (Re _²).
-rewrite <- c_pow_rngl_pow in Hrnz.
-progress unfold c_pow_nat in Hrnz.
-Search (Re (_ * _)).
-    rewrite Re_mul in Hrnz.
-...
-Search (Re (_ ^ _)%L).
-Search (Im (_ ^ _)%L).
-...
-progress unfold c_squ in H1.
-...
-progress unfold c_mul in H1.
-apply eq_c_eq in H1.
-cbn in H1.
-destruct H1 as (H1, H2).
-...
-rewrite IHn in H1, H2.
-cbn in H1, H2.
-...
-    rewrite (c_modulus_mul Hic Hop Hto).
-      rewrite <- (rngl_abs_nonneg_eq Hop Hor (_ * _ * _)). 2: {
-        apply (rngl_mul_nonneg_nonneg Hos Hor). {
-(**)
-          progress unfold rngl_signp.
-          remember (0 ≤? Im z₁)%L as zia eqn:Hzia.
-          remember (0 ≤? Im z₂)%L as zib eqn:Hzib.
-          symmetry in Hzia, Hzib.
-          destruct zia. {
-            destruct zib; [ | exfalso ]. {
-              rewrite rngl_mul_1_l.
-              apply (rngl_0_le_1 Hos Hto).
-            }
-            apply rngl_leb_le in Hzia.
-            apply (rngl_leb_gt_iff Hto) in Hzib.
-            apply (rngl_nle_gt Hor) in Hzib.
-            apply Hzib; clear Hzib.
-(* contre-exemple : a=i, b=-i *)
-...
-          apply (rngl_mul_nonneg_nonneg Hos Hor). {
-            progress unfold rngl_signp.
-            remember (0 ≤? Im z₁)%L as zia eqn:Hzia.
-            symmetry in Hzia.
-            destruct zia; [ apply (rngl_0_le_1 Hos Hto) | exfalso ].
-            apply (rngl_leb_gt_iff Hto) in Hzia.
-            apply (rngl_nle_gt Hor) in Hzia.
-            apply Hzia; clear Hzia.
-(* contre-exemple : a=-i, b=-i *)
-...
-cbn in Hiab.
-rewrite <- (rngl_mul_signp_abs (Im z₁)) in Hiab.
-rewrite <- (rngl_mul_signp_abs (Im z₂)) in Hiab.
-    enough (H : ‖ a ‖ = 1%L ∧ ‖ b ‖ = 1%L).
-    destruct H as (Ha, Hb).
-    rewrite Ha, Hb.
-    rewrite rngl_mul_1_l.
-    cbn.
-rewrite <- (rngl_mul_signp_abs (Im z₁)) at 1.
-rewrite <- (rngl_mul_signp_abs (Im z₂)) at 1.
-    rewrite (rngl_mul_mul_swap Hic (rngl_signp (Im z₁))).
-    rewrite rngl_mul_assoc.
-    remember (rngl_signp (Im z₁) * rngl_signp (Im z₂))%L as sab eqn:Hsab.
-    symmetry in Hsab.
-    destruct (rngl_eqb_dec sab 1) as [Hs1| Hs1]. {
-      apply (rngl_eqb_eq Heo) in Hs1; move Hs1 at top; subst sab.
-      do 2 rewrite rngl_mul_1_l.
-      rewrite (rngl_add_sub_assoc Hop).
-      apply (rngl_mul_move_r Hiq); [ apply (rngl_2_neq_0 Hos Hc1 Hto) | ].
-      symmetry.
-      apply (rngl_add_sub_eq_l Hos).
-      rewrite <- (rngl_abs_nonneg_eq Hop Hor (_ + _)). 2: {
-        apply (rngl_add_nonneg_nonneg Hos Hor). {
-          apply rl_sqrt_nonneg.
-          apply (rngl_mul_nonneg_nonneg Hos Hor). {
-            apply (rngl_le_0_sub Hop Hor).
-            rewrite <- Ha.
-            apply Re_bound.
-          } {
-            apply (rngl_le_0_sub Hop Hor).
-            rewrite <- Hb.
-            apply Re_bound.
-          }
-        }
-        apply (rngl_mul_nonneg_nonneg Hos Hor). 2: {
-          apply (rngl_0_le_2 Hos Hto).
-        }
-        apply rl_sqrt_nonneg.
-        apply (rngl_div_nonneg Hop Hiv Hto). 2: {
-          apply (rngl_0_lt_2 Hos Hc1 Hto).
-        }
-        apply (rngl_le_0_sub Hop Hor).
-...
-    destruct (rngl_eqb_dec (Im z₁ * Im z₂)%L 0) as [Habz| Habz]. {
-      apply (rngl_eqb_eq Heo) in Habz.
-cbn.
-progress unfold c_modulus; cbn.
-progress unfold rl_modl.
-Check Brahmagupta_Fibonacci_identity.
-rewrite (rngl_add_comm (Im z₁ * Re z₂)).
-rewrite <- (Brahmagupta_Fibonacci_identity Hic Hop).
-Theorem glop :
-  ∀ z₁ z₂,
-  c_modulus (z₁ * z₂) =
-  √ (((Re z₁)² + (Im z₁)²) * ((Re z₂)² + (Im z₂)²))%L.
-Proof.
-intros.
-rewrite rl_sqrt_mul.
-do 2 rewrite fold_rl_modl.
-do 2 rewrite fold_c_modulus.
-Search (‖ (_ * _) ‖)%L.
-About c_modulus_mul.
-...
-progress unfold c_modulus; cbn.
-progress unfold rl_modl.
-rewrite (rngl_add_comm (Im z₁ * Re z₂)).
-rewrite (Brahmagupta_Fibonacci_identity Hic Hop).
-easy.
-...
-progress unfold rl_modl.
-rewrite <- (Brahmagupta_Fibonacci_identity Hic Hop).
-...
-    rewrite <- rngl_signp_mul. 2: {
-      cbn in Hiab.
-...
-Search (Re (_ * _)).
-Search (Im (_ * _)).
-... ...
-Search (√ (_ * _))%C.
-Search (√ (_ * _))%L.
-rewrite c_sqrt_mul.
-...
-  rewrite H.
-  (* lemma *)
-  progress unfold c_sqrt; cbn.
-  rewrite rngl_add_0_r.
-  rewrite c_modulus_0.
-  rewrite (rngl_sub_diag Hos).
-  rewrite (rngl_div_0_l Hos Hiq); [ | apply (rngl_2_neq_0 Hos Hc1 Hto) ].
-  rewrite (rl_sqrt_0 Hop Hto Hii).
-  rewrite (rngl_mul_0_r Hos).
-  apply (c_mul_0_l Hos).
-...
-enough (H :
-  ∃ N, ∀ p q,
-  N ≤ p
-  → N ≤ q
-  → (1 - ε² / 2 <
-      Re (c_seq_to_div_nat a n p / c_seq_to_div_nat a n q))%L). {
-  destruct H as (N, HN).
-  exists N.
-  intros p q Hp Hq.
-(*
-  apply rngl_lt_le_incl in Hε.
-*)
-  apply gre_lt_c_eucl_dist_lt; [ now apply rngl_lt_le_incl | | ]. {
-    progress unfold c_seq_to_div_nat.
-    apply (c_pow_neq_0 Hc1).
-    intros H.
-Print c_nth_2_pow_root.
-...
-    induction p; cbn in H. 2: {
-      subst a.
-...
-specialize (@rngl_integral (Complex T)) as H1.
-specialize (H1 (c_ring_like_op T)).
-specialize (H1 (c_ring_like_prop_not_alg_closed Hic Hop Hiv Hto)).
-apply H1 in H; [ now destruct H | | ]. {
-  cbn.
-  progress unfold rngl_has_opp_or_psub; cbn.
-  progress unfold rngl_has_opp_or_psub in Hos.
-  progress unfold c_opt_opp_or_psub.
-  destruct (rngl_opt_opp_or_psub T); [ | easy ].
-  now destruct s.
-} {
-  cbn.
-  apply Bool.andb_true_iff.
-  split. {
-...
-  induction n; cbn.
-  rewrite rngl_pow_0_l.
-specialize (H1 c_ring_like_prop).
-rngl_eq_mul_0_l:
-  ∀ {T : Type} {ro : ring_like_op T},
-    ring_like_prop T
-    → rngl_has_opp_or_psub T = true
-      → rngl_has_inv_or_pdiv T = true → ∀ z₁ z₂ : T, (z₁ * z₂)%L = 0%L → b ≠ 0%L → a = 0%L
-injection H; clear H; intros H1 H2.
-...
-apply glop.
-...
-Print c_nth_2_pow_root.
-Inspect 1.
-Print rl_sqrt.
-Theorem c_nth_root_2_pow_root_modulus :
-  ∀ n z, ‖ c_nth_2_pow_root n z ‖ = rl_nth_root (2 ^ n) (‖ z ‖).
-Proof.
-intros.
-induction n. {
-  cbn; symmetry.
-  rewrite <- (rl_nth_root_pow 1); [ symmetry; apply rngl_pow_1_r | ].
-  apply c_modulus_nonneg.
-}
-rewrite Nat.pow_succ_r'.
-Search (rl_nth_root).
-Theorem rl_nth_root_mul_l :
-  ∀ m n a, rl_nth_root (m * n) a = rl_nth_root m (rl_nth_root n a).
-Proof.
-intros.
-Search rl_nth_root.
-Print rl_nth_root.
-Print real_like_prop.
-(* peut-être manque-t-il rl_nth_root_mul_l comme axiome ?
-   alors il faudrait renommer rl_nth_root_mul : rl_nth_root_mul_r *)
-...
-  rewrite rl_nth_root_mul_l.
-Print rl_sqrt.
-  rewrite fold_rl_sqrt.
-...
-rewrite c_sqrt_modulus.
-Search rl_nth_root.
-rewrite rl_nth_root_
-rewrite IHn.
-...
-Print c_nth_2_pow_root.
-Print c_sqrt.
-Inspect 1.
-...
-rewrite rl_sqrt_mul.
-
-remember (‖ z ‖ + Re z)%L as xx.
-rewrite rngl_squ_sqrt.
-rewrite rl_sqrt_squ.
-...
-Arguments c_modulus {T}%type_scope {ro rp rl} z%c_scope
-
-rewrite fold_c_modulus.
-remember (rl_modl (Re z) (Im z)
-progress f_equal.
-...
-  apply (HN _ _ Hq Hp).
+intros *.
+intros ε Hε.
+destruct (c_eq_dec Heo a 0) as [Haz| Haz]. {
+  subst a.
+  exists (Nat.log2_up n).
+  intros * Hp Hq.
+  destruct (Nat.eq_dec n 0) as [Hnz| Hnz]. {
+    subst n.
+    progress unfold c_seq_to_div_nat; cbn.
+    (* lemma *)
+    progress unfold c_eucl_dist.
+    rewrite (c_sub_diag Hos).
+    now rewrite (c_modulus_0 Hop Hii Hto).
+  }
+  apply Nat.log2_up_le_pow2 in Hp; [ | now apply Nat.neq_0_lt_0 ].
+  apply Nat.log2_up_le_pow2 in Hq; [ | now apply Nat.neq_0_lt_0 ].
+  rewrite c_seq_to_div_nat_0_l; cycle 1. {
+    apply Nat.div_str_pos.
+    split; [ | easy ].
+    now apply Nat.neq_0_lt_0.
+  }
+  rewrite c_seq_to_div_nat_0_l; cycle 1. {
+    apply Nat.div_str_pos.
+    split; [ | easy ].
+    now apply Nat.neq_0_lt_0.
+  }
+  progress unfold c_eucl_dist.
+  rewrite (c_sub_diag Hos).
+  now rewrite (c_modulus_0 Hop Hii Hto).
 }
 ...
 *)
