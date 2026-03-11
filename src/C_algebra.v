@@ -3045,10 +3045,46 @@ destruct (c_eq_dec Heo (c_nth_2_pow_root k 0) 0) as [Hcz| Hcz]. {
 now apply (c_pow_neq_0 Hc1) in H.
 Qed.
 
+Theorem c_eucl_dist_diag : ∀ z, c_eucl_dist z z = 0%L.
+Proof.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+specialize (rngl_int_dom_or_inv_pdiv Hiv) as Hii.
+intros.
+progress unfold c_eucl_dist.
+rewrite (c_sub_diag Hos).
+apply (c_modulus_0 Hop Hii Hto).
+Qed.
+
+Theorem c_pow_mul_r: ∀ z m n, (z ^ (m * n))%C = ((z ^ m) ^ n)%C.
+Proof.
+intros.
+do 3 rewrite c_pow_rngl_pow.
+set (rpc := c_ring_like_prop_not_alg_closed Hic Hop Hiv Hto).
+apply rngl_pow_mul_r.
+Qed.
+
+Theorem c_squ_pow_2 : ∀ z, (z² = z ^ 2)%C.
+Proof.
+intros; cbn.
+now rewrite c_mul_1_r.
+Qed.
+
+Theorem c_nth_2_pow_root_pow_2_pow :
+  ∀ n z, (c_nth_2_pow_root n z ^ 2 ^ n)%C = z.
+Proof.
+intros.
+induction n; [ apply c_mul_1_r | ].
+cbn - [ "^" ].
+rewrite Nat.pow_succ_r'.
+rewrite c_pow_mul_r.
+rewrite <- c_squ_pow_2.
+now rewrite c_squ_sqrt.
+Qed.
+
 (* to be completed
 Theorem c_seq_to_div_nat_is_Cauchy :
   rngl_is_archimedean T = true →
-  ∀ n a, is_Cauchy_sequence c_eucl_dist (c_seq_to_div_nat a n).
+  ∀ n z, is_Cauchy_sequence c_eucl_dist (c_seq_to_div_nat z n).
 Proof.
 intros Har.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
@@ -3061,10 +3097,9 @@ destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
   rewrite H1 in Hε.
   now apply rngl_lt_irrefl in Hε.
 }
-intros *.
-intros ε Hε.
-destruct (c_eq_dec Heo a 0) as [Haz| Haz]. {
-  subst a.
+intros.
+destruct (c_eq_dec Heo z 0) as [Hzz| Hzz]. {
+  subst z.
   exists (Nat.log2_up n).
   intros * Hp Hq.
   destruct (Nat.eq_dec n 0) as [Hnz| Hnz]. {
@@ -3091,6 +3126,26 @@ destruct (c_eq_dec Heo a 0) as [Haz| Haz]. {
   rewrite (c_sub_diag Hos).
   now rewrite (c_modulus_0 Hop Hii Hto).
 }
+intros * ε Hε.
+destruct (Nat.eq_dec n 0) as [Hnz| Hnz]. {
+  subst n.
+  exists 0.
+  intros * _ _.
+  cbn.
+  now rewrite c_eucl_dist_diag.
+}
+destruct (Nat.eq_dec n 1) as [Hn1| Hn1]. {
+  subst n.
+  exists 0.
+  intros * _ _.
+  progress unfold c_seq_to_div_nat.
+  do 2 rewrite Nat.div_1_r.
+  do 2 rewrite <- c_pow_rngl_pow.
+  do 2 rewrite c_nth_2_pow_root_pow_2_pow.
+  now rewrite c_eucl_dist_diag.
+}
+(* see SeqAngleIsCauchy.v in TrigoWithoutPi *)
+assert (Hss : ∀ i, (seq_angle_to_div_nat α n i ≤ π)%A). {
 ...
 *)
 
