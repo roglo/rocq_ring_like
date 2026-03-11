@@ -3149,13 +3149,13 @@ assert (Hss : ∀ i, (0 ≤ Im (c_seq_to_div_nat z n i))%L). {
   intros.
 (**)
   progress unfold c_seq_to_div_nat.
-...
+Print c_nth_2_pow_root.
 (**)
 Search c_nth_2_pow_root.
 Theorem c_seq_to_div_nat_le_straight_div_pow2_log2_pred :
   ∀ n i z,
   n ≠ 1
-  → (c_nth_2_pow_root ... c_seq_to_div_nat z n i ≤ π /₂^(Nat.log2 n - 1))%A.
+  → (Re (c_nth_2_pow_root (2 ^ i / n) z ≤
 Proof.
 intros * Hn1.
 ...
