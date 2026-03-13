@@ -3169,10 +3169,12 @@ Print c_nth_2_pow_root.
   c_nth_2_pow_root (Nat.log2 n - 1) (-1)
 *)
   set (z' := mk_c (Re z / ‖z‖) (Im z / ‖z‖)).
-  assert
-    ((Re (c_nth_2_pow_root i z' ^ (2 ^ i / n)) ≤
-      Re (c_nth_2_pow_root i z ^ (2 ^ i / n)))%L). {
-(* Ah oui, mais non, ça marche pas si ‖z‖ < 1 *)
+  destruct (rngl_ltb_dec 1 (‖z‖)%L) as [H1z| H1z]. {
+    assert
+      ((Re (c_nth_2_pow_root i z' ^ (2 ^ i / n)) ≤
+        Re (c_nth_2_pow_root i z ^ (2 ^ i / n)))%L). {
+(* bon, faut faire plus général, avec "i" (quelconque) à la place
+   de "(2 ^ i / n)" *)
 ... ...
   assert
     ((Re (c_nth_2_pow_root (Nat.log2 n - 1) (-1)) ≤
