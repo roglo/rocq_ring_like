@@ -3160,7 +3160,6 @@ destruct (Nat.eq_dec n 1) as [Hn1| Hn1]. {
 (* see SeqAngleIsCauchy.v in TrigoWithoutPi *)
 assert (Hss : ∀ i, (0 ≤ Im (c_seq_to_div_nat z n i))%L). {
   intros.
-(**)
   progress unfold c_seq_to_div_nat.
 Print c_nth_2_pow_root.
 (*
@@ -3169,15 +3168,15 @@ Print c_nth_2_pow_root.
   π /₂^(Nat.log2 n - 1), c'est
   c_nth_2_pow_root (Nat.log2 n - 1) (-1)
 *)
-rename i into m.
-(* n_nth_2_pow_root m z, c'est rac.ine 2^m-ième de z *)
-(* à voir sur papier *)
+  set (z' := mk_c (Re z / ‖z‖) (Im z / ‖z‖)).
+  assert
+    ((Re (c_nth_2_pow_root i z' ^ (2 ^ i / n)) ≤
+      Re (c_nth_2_pow_root i z ^ (2 ^ i / n)))%L). {
+(* Ah oui, mais non, ça marche pas si ‖z‖ < 1 *)
+... ...
   assert
     ((Re (c_nth_2_pow_root (Nat.log2 n - 1) (-1)) ≤
-      Re (c_nth_2_pow_root m z ^ (2 ^ m / n)))%L). {
-(* ah non, en fait, faut pas oublier que je suis dans un contexte
-   où ‖z‖ n'est pas forcément égal à 1 et donc, quand on prend
-   la racine n-ième, ça ne permet pas de comparer avec -1 *)
+      Re (c_nth_2_pow_root i z' ^ (2 ^ i / n)))%L). {
 ...
     clear Hn1.
     induction n; [ easy | ].
