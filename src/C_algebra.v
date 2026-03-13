@@ -672,6 +672,7 @@ End a.
 Notation "x =? y" := (c_eqb x y) : c_scope.
 Notation "x ≠? y" := (negb (c_eqb x y)) : c_scope.
 Notation "- x" := (c_opp x) : c_scope.
+Notation "- 1" := (c_opp c_one) : c_scope.
 Notation "x - y" := (c_sub x y) : c_scope.
 Notation " x / y" := (c_div x y) : c_scope.
 Notation "x +ℹ y" := (mk_c x y) (at level 50) : c_scope.
@@ -3171,6 +3172,17 @@ Print c_nth_2_pow_root.
 rename i into m.
 (* n_nth_2_pow_root m z, c'est rac.ine 2^m-ième de z *)
 (* à voir sur papier *)
+  assert
+    ((Re (c_nth_2_pow_root (Nat.log2 n - 1) (-1)) ≤
+      Re (c_nth_2_pow_root m z ^ (2 ^ m / n)))%L). {
+(* ah non, en fait, faut pas oublier que je suis dans un contexte
+   où ‖z‖ n'est pas forcément égal à 1 et donc, quand on prend
+   la racine n-ième, ça ne permet pas de comparer avec -1 *)
+...
+    clear Hn1.
+    induction n; [ easy | ].
+    destruct n.
+    cbn.
 ...
 Theorem seq_angle_to_div_nat_le_straight_div_pow2_log2_pred :
   ∀ n i α,
