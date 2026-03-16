@@ -3160,8 +3160,10 @@ destruct (Nat.eq_dec n 1) as [Hn1| Hn1]. {
 (* see SeqAngleIsCauchy.v in TrigoWithoutPi *)
 assert (Hss : ∀ i, (0 ≤ Im (c_seq_to_div_nat z n i))%L). {
   intros.
+(*
   progress unfold c_seq_to_div_nat.
 Print c_nth_2_pow_root.
+*)
 (*
   → (seq_angle_to_div_nat α n i ≤ π /₂^(Nat.log2 n - 1))%A.
 
@@ -3170,12 +3172,14 @@ Print c_nth_2_pow_root.
 *)
   set (z' := mk_c (Re z / ‖z‖) (Im z / ‖z‖)).
   rename i into j.
-  assert (∀ k, (0 ≤ Im (c_nth_2_pow_root k (-1)))%L). {
+  assert (H1 : ∀ k, (0 ≤ Im (c_nth_2_pow_root k (-1)))%L). {
     intros.
-    induction k; cbn. {
+    destruct k; cbn. {
       rewrite (rngl_opp_0 Hop).
       apply (rngl_le_refl Hor).
     }
+    apply rl_sqrt_sub_mod_re_div_2_nonneg.
+  }
 ...
   assert
     ((Re (c_nth_2_pow_root (Nat.log2 j -1) (-1)) ≤
