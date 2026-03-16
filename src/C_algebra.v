@@ -3169,6 +3169,21 @@ Print c_nth_2_pow_root.
   c_nth_2_pow_root (Nat.log2 n - 1) (-1)
 *)
   set (z' := mk_c (Re z / ‖z‖) (Im z / ‖z‖)).
+  rename i into j.
+  assert (∀ k, (0 ≤ Im (c_nth_2_pow_root k (-1)))%L). {
+    intros.
+    induction k; cbn. {
+      rewrite (rngl_opp_0 Hop).
+      apply (rngl_le_refl Hor).
+    }
+...
+  assert
+    ((Re (c_nth_2_pow_root (Nat.log2 j -1) (-1)) ≤
+      Re (c_nth_2_pow_root j z ^ (2 ^ j / n)))%L). {
+    _admit.
+  }
+  eapply (rngl_le_trans Hor).
+...
   destruct (rngl_ltb_dec 1 (‖z‖)%L) as [H1z| H1z]. {
 ...
     assert
