@@ -3162,6 +3162,8 @@ assert (Hss : ∀ i, (0 ≤ Im (c_seq_to_div_nat z n i))%L). {
   intros.
 (*
   progress unfold c_seq_to_div_nat.
+*)
+(*
 Print c_nth_2_pow_root.
 *)
 (*
@@ -3180,6 +3182,14 @@ Print c_nth_2_pow_root.
     }
     apply rl_sqrt_sub_mod_re_div_2_nonneg.
   }
+  specialize (H1 (Nat.log2 n - 1)).
+  remember (c_nth_2_pow_root (Nat.log2 j - 1) (- 1)) as x.
+  remember (c_seq_to_div_nat z n j) as y.
+  assert (0 ≤ Im x ∧ Re y ≤ Re x)%L. {
+    subst x y.
+    progress unfold c_seq_to_div_nat.
+    destruct n; [ easy | clear Hnz ].
+    destruct n; [ easy | clear Hn1 ].
 ...
   assert
     ((Re (c_nth_2_pow_root (Nat.log2 j -1) (-1)) ≤
@@ -3218,12 +3228,11 @@ Theorem seq_angle_to_div_nat_le_straight_div_pow2_log2_pred :
 Proof.
 intros * Hn1.
 ...
-  specialize seq_angle_to_div_nat_le_straight_div_pow2_log2_pred as H1.
-  specialize (H1 n i α Hn1).
-  eapply angle_le_trans; [ apply H1 | ].
-  apply angle_div_2_pow_le_diag.
-}
-assert (Hsr : n ≤ 3 ∨ ∀ i, (seq_angle_to_div_nat α n i ≤ π/₂)%A). {
+Theorem seq_angle_to_div_nat_div_2_le_straight_div_pow2_log2 :
+  ∀ n i α, (seq_angle_to_div_nat α n i /₂ ≤ π /₂^Nat.log2 n)%A.
+Proof.
+intros.
+progress unfold seq_angle_to_div_nat.
 ...
 *)
 
