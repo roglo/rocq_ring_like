@@ -3234,6 +3234,21 @@ induction n; cbn; [ apply c_sqrt_1 | ].
 do 2 rewrite <- c_pow_rngl_pow.
 assert (H : c_mul_is_small_prop z (z ^ n)). {
   cbn in Hs.
+  progress unfold c_mul_is_small_prop in Hs.
+  progress unfold c_mul_is_small_prop.
+  destruct Hs as [Hs| Hs]; [ now left | ].
+  destruct Hs as [Hs| Hs]. {
+    apply c_integral in Hs.
+    now destruct Hs as [Hs| Hs]; [ | right ]; left.
+  }
+  remember (0 ≤? Im z)%L as ziz eqn:Hziz.
+  symmetry in Hziz.
+  destruct ziz. {
+...
+angle_mul_nat_div_2π_succ_l_false :
+∀ {T : Type} {ro : ring_like_op T} {rp : ring_like_prop T} {ac : angle_ctx T} (α : angle T) (n : nat),
+  angle_mul_nat_div_2π (S n) α = 0
+  ↔ angle_mul_nat_div_2π n α = 0 ∧ angle_add_overflow α (n * α) = false
 ...
 rewrite <- IHn.
 rewrite c_sqrt_mul.
