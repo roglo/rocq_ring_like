@@ -3190,6 +3190,69 @@ Print c_nth_2_pow_root.
     progress unfold c_seq_to_div_nat.
     destruct n; [ easy | clear Hnz ].
     destruct n; [ easy | clear Hn1 ].
+Theorem sqrt_c_seq_to_div_nat_ge_div_pow2_log2 :
+  ∀ n i α,
+    (Re (c_nth_2_pow_root (Nat.log2 n) (-1)) ≤
+     Re √(c_seq_to_div_nat α n i))%L.
+Proof.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
+  specialize (rngl_characteristic_1 Hos Hc1) as H1.
+  intros.
+  rewrite (H1 (Re (c_nth_2_pow_root _ _))).
+  rewrite (H1 (Re √_))%L.
+  apply (rngl_le_refl Hor).
+}
+intros.
+progress unfold c_seq_to_div_nat.
+destruct (Nat.eq_dec n 0) as [Hnz| Hnz]. {
+  subst n; cbn.
+  rewrite rngl_signp_0, rngl_mul_1_l.
+  apply (rngl_le_trans Hor _ 0).
+  apply (rngl_opp_1_le_0 Hop Hto).
+  apply rl_sqrt_nonneg.
+  apply (rngl_div_nonneg Hop Hiv Hto).
+  apply (rngl_add_nonneg_nonneg Hos Hor).
+  apply c_modulus_nonneg.
+  apply (rngl_0_le_1 Hos Hto).
+  apply (rngl_0_lt_2 Hos Hc1 Hto).
+}
+assert (Hin : 2 ^ i / n ≤ 2 ^ i). {
+  apply Nat.Div0.div_le_upper_bound.
+  now apply Nat.le_mul_l.
+}
+Search (√(_ ^ _))%L.
+Theorem c_sqrt_pow :
+  ∀ n z,
+  c_mul_is_small_prop z (z ^ n)
+  → (√z ^ n = √(z ^ n))%C.
+Proof.
+intros * Hs.
+symmetry.
+induction n; cbn; [ apply c_sqrt_1 | ].
+do 2 rewrite <- c_pow_rngl_pow.
+assert (H : c_mul_is_small_prop z (z ^ n)). {
+  cbn in Hs.
+...
+rewrite <- IHn.
+rewrite c_sqrt_mul.
+... ...
+rewrite <- c_pow_rngl_pow.
+rewrite <- c_sqrt_pow.
+...
+Check angle_mul_nat_div_2.
+angle_mul_nat_div_2
+     : ∀ (n : nat) (α : angle T),
+         angle_mul_nat_div_2π n α = 0 → (n * (α /₂))%A = ((n * α) /₂)%A
+...
+...
+rewrite <- angle_mul_nat_div_2; cycle 1. {
+...
+Theorem seq_angle_to_div_nat_div_2_le_straight_div_pow2_log2 :
+  ∀ n i α, (seq_angle_to_div_nat α n i /₂ ≤ π /₂^Nat.log2 n)%A.
+Proof.
+intros.
 ...
   assert
     ((Re (c_nth_2_pow_root (Nat.log2 j -1) (-1)) ≤
