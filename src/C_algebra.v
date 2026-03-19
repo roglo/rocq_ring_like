@@ -3286,6 +3286,15 @@ apply Nat.succ_le_mono in Hmn.
 apply c_mul_nat_nb_turns_succ_l_false.
 split; [ now apply IHn | ].
 Print c_mul_is_small.
+(*
+Definition angle_leb α1 α2 :=
+  if (0 ≤? rngl_sin α1)%L then
+    if (0 ≤? rngl_sin α2)%L then (rngl_cos α2 ≤? rngl_cos α1)%L
+    else true
+  else
+    if (0 ≤? rngl_sin α2)%L then false
+    else (rngl_cos α1 ≤? rngl_cos α2)%L.
+*)
 Definition c_leb z1 z2 :=
   if (0 ≤? Im z1)%L then
     if (0 ≤? Im z2)%L then (Re z2 * ‖ z1 ‖ ≤? Re z1 * ‖ z2 ‖)%L
@@ -3301,6 +3310,7 @@ Theorem angle_add_overflow_le :
   → c_mul_is_small z1 z3 = true.
 Proof.
 specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
 destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
   specialize (rngl_characteristic_1_c_0 Hc1) as H1.
   intros * H32 H12.
@@ -3323,6 +3333,13 @@ destruct H12 as [H12| H12]. {
   symmetry in Hzi3.
   destruct zi3; [ | easy ].
   clear H32.
+  destruct (c_eq_dec Heo z1 0) as [Hz1c| Hz1c]; [ now left | right ].
+  destruct (c_eq_dec Heo z3 0) as [Hz3c| Hz3c]; [ now left | right ].
+  remember (0 ≤? Im z1)%L as zi1 eqn:Hzi1.
+  symmetry in Hzi1.
+  destruct zi1. {
+    intros ((H1, H2), (H3, H4)).
+    clear Hzi3 Hzi1.
 ...
   rewrite <- angle_add_overflow_equiv2.
   progress unfold angle_add_overflow2.
