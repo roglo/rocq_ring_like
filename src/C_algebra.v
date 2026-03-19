@@ -3094,6 +3094,38 @@ rewrite <- c_squ_pow_2.
 now rewrite c_squ_sqrt.
 Qed.
 
+Fixpoint c_pow_nat_nb_turns n z :=
+  match n with
+  | 0 => 0
+  | S m =>
+      c_pow_nat_nb_turns m z + Nat.b2n (negb (c_mul_is_small z (z ^ m)))
+  end.
+
+Theorem c_mul_nat_nb_turns_succ_l_false :
+  ∀ n z,
+  c_pow_nat_nb_turns (S n) z = 0
+  ↔ c_pow_nat_nb_turns n z = 0 ∧ c_mul_is_small z (z ^ n) = true.
+Proof.
+intros; cbn.
+destruct (c_pow_nat_nb_turns _ _); [ | easy ].
+now destruct (c_mul_is_small _ _).
+Qed.
+
+Theorem c_sqrt_pow :
+  ∀ n z,
+  c_pow_nat_nb_turns n z = 0
+  → (√z ^ n = √(z ^ n))%C.
+Proof.
+intros * Hs.
+symmetry.
+induction n; cbn; [ apply c_sqrt_1 | ].
+do 2 rewrite <- c_pow_rngl_pow.
+apply c_mul_nat_nb_turns_succ_l_false in Hs.
+rewrite <- IHn; [ | easy ].
+apply c_sqrt_mul_not_ov.
+now apply c_mul_is_small_bool_prop.
+Qed.
+
 (* to be completed
 Theorem c_seq_to_div_nat_is_Cauchy :
   rngl_is_archimedean T = true →
@@ -3222,45 +3254,14 @@ assert (Hin : 2 ^ i / n ≤ 2 ^ i). {
   apply Nat.Div0.div_le_upper_bound.
   now apply Nat.le_mul_l.
 }
-Search (√(_ ^ _))%L.
-Theorem c_sqrt_pow :
-  ∀ n z,
-  c_mul_is_small_prop z (z ^ n)
-  → (√z ^ n = √(z ^ n))%C.
-Proof.
-intros * Hs.
-symmetry.
-induction n; cbn; [ apply c_sqrt_1 | ].
-do 2 rewrite <- c_pow_rngl_pow.
-assert (H : c_mul_is_small_prop z (z ^ n)). {
-  cbn in Hs.
-  progress unfold c_mul_is_small_prop in Hs.
-  progress unfold c_mul_is_small_prop.
-  destruct Hs as [Hs| Hs]; [ now left | ].
-  destruct Hs as [Hs| Hs]. {
-    apply c_integral in Hs.
-    now destruct Hs as [Hs| Hs]; [ | right ]; left.
-  }
-  remember (0 ≤? Im z)%L as ziz eqn:Hziz.
-  symmetry in Hziz.
-  destruct ziz. {
-...
-angle_mul_nat_div_2π_succ_l_false :
-∀ {T : Type} {ro : ring_like_op T} {rp : ring_like_prop T} {ac : angle_ctx T} (α : angle T) (n : nat),
-  angle_mul_nat_div_2π (S n) α = 0
-  ↔ angle_mul_nat_div_2π n α = 0 ∧ angle_add_overflow α (n * α) = false
-...
-rewrite <- IHn.
-rewrite c_sqrt_mul.
-... ...
 rewrite <- c_pow_rngl_pow.
-rewrite <- c_sqrt_pow.
+rewrite <- c_sqrt_pow; cycle 1. {
 ...
-Check angle_mul_nat_div_2.
-angle_mul_nat_div_2
-     : ∀ (n : nat) (α : angle T),
-         angle_mul_nat_div_2π n α = 0 → (n * (α /₂))%A = ((n * α) /₂)%A
-...
+  apply (angle_mul_nat_not_overflow_le_l _ (2 ^ i)); [ easy | ].
+  apply angle_mul_nat_div_2π_pow_div.
+}
+rewrite <- angle_div_2_pow_succ_r_1.
+apply angle_le_pow2_log2; [ easy | | ]. {
 ...
 rewrite <- angle_mul_nat_div_2; cycle 1. {
 ...
