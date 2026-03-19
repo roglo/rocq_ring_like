@@ -3256,7 +3256,57 @@ assert (Hin : 2 ^ i / n ≤ 2 ^ i). {
 }
 rewrite <- c_pow_rngl_pow.
 rewrite <- c_sqrt_pow; cycle 1. {
+(* AngleAddLeMonoL.v *)
+Theorem angle_mul_nat_not_overflow_le_l :
+  ∀ m n,
+  m ≤ n
+  → ∀ z, c_pow_nat_nb_turns n z = 0
+  → c_pow_nat_nb_turns m z = 0.
+Proof.
+intros * Hmn * Hn.
+revert z m Hmn Hn.
+induction n; intros. {
+  now apply Nat.le_0_r in Hmn; subst m.
+}
+apply c_mul_nat_nb_turns_succ_l_false in Hn.
+destruct m; [ easy | ].
+apply Nat.succ_le_mono in Hmn.
+apply c_mul_nat_nb_turns_succ_l_false.
+split; [ now apply IHn | ].
+Search c_mul_is_small.
 ...
+Theorem angle_add_overflow_le :
+  ∀ α1 α2 α3,
+  (α3 ≤ α2)%A
+  → angle_add_overflow α1 α2 = false
+  → angle_add_overflow α1 α3 = false.
+Proof.
+destruct_ac.
+destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
+  specialize (rngl_characteristic_1 Hos Hc1) as H1.
+  intros * H32 H12.
+  rewrite <- angle_add_overflow_equiv2.
+  progress unfold angle_add_overflow2.
+  progress unfold angle_ltb.
+  rewrite (H1 (rngl_sin α1)).
+  rewrite (rngl_leb_refl Hor).
+  rewrite (H1 (rngl_sin (α1 + α3))).
+  rewrite (rngl_leb_refl Hor).
+  apply (rngl_ltb_ge Hor).
+  rewrite H1.
+  rewrite (H1 (rngl_cos _)).
+  apply (rngl_le_refl Hor).
+}
+intros * H32 H12.
+generalize H12; intros Haov.
+rewrite <- angle_add_overflow_equiv2 in H12 |-*.
+...
+apply (angle_add_overflow_le _ (n * α)); [ | easy ].
+now apply angle_mul_le_mono_r.
+Qed.
+...
+(* cf seq_angle_to_div_nat_div_2_le_straight_div_pow2_log2
+   in SeqAngleIsCauchy.v *)
   apply (angle_mul_nat_not_overflow_le_l _ (2 ^ i)); [ easy | ].
   apply angle_mul_nat_div_2π_pow_div.
 }
