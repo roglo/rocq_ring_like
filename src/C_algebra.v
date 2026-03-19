@@ -3126,6 +3126,18 @@ apply c_sqrt_mul_not_ov.
 now apply c_mul_is_small_bool_prop.
 Qed.
 
+Theorem rngl_characteristic_1_c_0 :
+  rngl_characteristic T = 1 →
+  ∀ z, (z = 0)%C.
+Proof.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+intros Hc1 *.
+specialize (rngl_characteristic_1 Hos Hc1) as H1.
+apply eq_c_eq.
+do 2 rewrite (H1 (Re _)).
+now do 2 rewrite (H1 (Im _)).
+Qed.
+
 (* to be completed
 Theorem c_seq_to_div_nat_is_Cauchy :
   rngl_is_archimedean T = true →
@@ -3273,18 +3285,45 @@ destruct m; [ easy | ].
 apply Nat.succ_le_mono in Hmn.
 apply c_mul_nat_nb_turns_succ_l_false.
 split; [ now apply IHn | ].
-Search c_mul_is_small.
-...
+Print c_mul_is_small.
+Definition c_leb z1 z2 :=
+  if (0 ≤? Im z1)%L then
+    if (0 ≤? Im z2)%L then (Re z2 * ‖ z1 ‖ ≤? Re z1 * ‖ z2 ‖)%L
+    else true
+  else
+    if (0 ≤? Im z2)%L then false
+    else (Re z1 * ‖ z2 ‖ ≤? Re z2 * ‖ z1 ‖)%L.
+Notation "z1 ≤ z2" := (c_leb z1 z2 = true) : c_scope.
 Theorem angle_add_overflow_le :
-  ∀ α1 α2 α3,
-  (α3 ≤ α2)%A
-  → angle_add_overflow α1 α2 = false
-  → angle_add_overflow α1 α3 = false.
+  ∀ z1 z2 z3,
+  (z3 ≤ z2)%C
+  → c_mul_is_small z1 z2 = true
+  → c_mul_is_small z1 z3 = true.
 Proof.
-destruct_ac.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
-  specialize (rngl_characteristic_1 Hos Hc1) as H1.
+  specialize (rngl_characteristic_1_c_0 Hc1) as H1.
   intros * H32 H12.
+  rewrite (H1 z1).
+  apply c_mul_is_small_bool_prop.
+  now left.
+}
+intros * H32 H12.
+apply c_mul_is_small_bool_prop in H12.
+apply c_mul_is_small_bool_prop.
+progress unfold c_mul_is_small_prop in H12.
+progress unfold c_mul_is_small_prop.
+progress unfold c_leb in H32.
+destruct H12 as [H12| H12]; [ now left | ].
+destruct H12 as [H12| H12]. {
+  subst z2.
+  cbn in H32.
+  rewrite (rngl_leb_refl Hor) in H32.
+  remember (0 ≤? Im z3)%L as zi3 eqn:Hzi3.
+  symmetry in Hzi3.
+  destruct zi3; [ | easy ].
+  clear H32.
+...
   rewrite <- angle_add_overflow_equiv2.
   progress unfold angle_add_overflow2.
   progress unfold angle_ltb.
@@ -3297,10 +3336,10 @@ destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
   rewrite (H1 (rngl_cos _)).
   apply (rngl_le_refl Hor).
 }
-intros * H32 H12.
+prog
+...
 generalize H12; intros Haov.
 rewrite <- angle_add_overflow_equiv2 in H12 |-*.
-...
 apply (angle_add_overflow_le _ (n * α)); [ | easy ].
 now apply angle_mul_le_mono_r.
 Qed.
