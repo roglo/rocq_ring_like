@@ -3148,6 +3148,176 @@ rewrite Hiz, (rngl_squ_0 Hos), rngl_add_0_r.
 apply (rl_sqrt_squ Hop Hto).
 Qed.
 
+Definition c_leb z1 z2 :=
+  if (0 ≤? Im z1)%L then
+    if (0 ≤? Im z2)%L then (Re z2 * ‖ z1 ‖ ≤? Re z1 * ‖ z2 ‖)%L
+    else true
+  else
+    if (0 ≤? Im z2)%L then false
+    else (Re z1 * ‖ z2 ‖ ≤? Re z2 * ‖ z1 ‖)%L.
+
+Notation "z1 ≤ z2" := (c_leb z1 z2 = true) : c_scope.
+
+Theorem c_mul_is_small_le :
+  ∀ z1 z2 z3,
+  z2 ≠ 0%C
+  → (z3 ≤ z2)%C
+  → c_mul_is_small z1 z2 = true
+  → c_mul_is_small z1 z3 = true.
+Proof.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
+destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
+  specialize (rngl_characteristic_1_c_0 Hc1) as H1.
+  intros * H2z H32 H12.
+  rewrite (H1 z1).
+  apply c_mul_is_small_bool_prop.
+  now left.
+}
+intros * H2z H32 H12.
+apply c_mul_is_small_bool_prop in H12.
+apply c_mul_is_small_bool_prop.
+progress unfold c_mul_is_small_prop in H12.
+progress unfold c_mul_is_small_prop.
+progress unfold c_leb in H32.
+destruct H12 as [H12| H12]; [ now left | ].
+destruct H12 as [H12| H12]; [ easy | ].
+destruct (c_eq_dec Heo z1 0) as [H1z| H1z]; [ now left | right ].
+destruct (c_eq_dec Heo z3 0) as [H3z| H3z]; [ now left | right ].
+move H1z after H2z; move H3z before H2z.
+remember (0 ≤? Im z1)%L as zi1 eqn:Hzi1.
+remember (0 ≤? Im z2)%L as zi2 eqn:Hzi2.
+remember (0 ≤? Im z3)%L as zi3 eqn:Hzi3.
+symmetry in Hzi1, Hzi2, Hzi3.
+destruct zi1. {
+  destruct zi3. {
+    intros ((H1, H2), (H3, H4)).
+    move H3 before H1.
+    destruct zi2. {
+      apply H12; clear H12.
+      split; [ easy | ].
+      progress unfold is_negative_real_prop.
+      move Hzi1 after Hzi2.
+      apply rngl_leb_le in Hzi1, Hzi2, Hzi3, H32.
+      clear Hzi1 Hzi3.
+      rewrite c_modulus_when_Im_0 in H32; [ | easy ].
+      split. {
+        apply (rngl_mul_lt_mono_pos_r Hop Hiq Hto (rngl_abs (Re z3))). {
+          apply rngl_le_neq.
+          split; [ apply (rngl_abs_nonneg Hop Hto) | ].
+          intros H; symmetry in H.
+          apply (eq_rngl_abs_0 Hop) in H.
+          rewrite H in H3.
+          now apply rngl_lt_irrefl in H3.
+        }
+        rewrite (rngl_mul_0_l Hos).
+        eapply (rngl_le_lt_trans Hor); [ apply H32 | ].
+(*
+        apply (rngl_mul_neg_pos).
+*)
+        rewrite (rngl_mul_comm Hic).
+        apply (rngl_mul_pos_neg Hop Hiq Hor); [ | easy ].
+        apply rngl_le_neq.
+        split; [ apply c_modulus_nonneg | ].
+        intros H; symmetry in H.
+        now apply eq_c_modulus_0 in H.
+      }
+      clear Hzi2.
+      rewrite (rngl_abs_nonpos_eq Hop Hto) in H32; cycle 1. {
+        now apply rngl_lt_le_incl.
+      }
+      rewrite (rngl_mul_opp_r Hop), (rngl_mul_comm Hic) in H32.
+      apply (rngl_le_opp_l Hop Hor) in H32.
+      rewrite <- rngl_mul_add_distr_l in H32.
+      destruct (rngl_eqb_dec (Im z2) 0) as [Hi2| Hi2]. {
+        now apply (rngl_eqb_eq Heo).
+      }
+      exfalso; apply (rngl_eqb_neq Heo) in Hi2.
+      apply (rngl_nlt_ge Hor) in H32.
+      apply H32; clear H32.
+      rewrite (rngl_mul_comm Hic).
+      apply (rngl_mul_pos_neg Hop Hiq Hor); [ | easy ].
+      rewrite rngl_add_comm.
+      apply rngl_le_neq.
+      split; [ apply (c_add_modulus_re Hop Hiv Hto) | ].
+      intros H; symmetry in H.
+      now apply eq_rngl_add_modulus_re_0 in H.
+    } {
+      clear H32.
+      rewrite c_modulus_when_Im_0 in H12; [ | easy ].
+      rewrite (rngl_abs_nonpos_eq Hop Hto) in H12; cycle 1. {
+        now apply rngl_lt_le_incl.
+      }
+      rewrite (rngl_mul_opp_r Hop), (rngl_mul_comm Hic) in H12.
+      apply (rngl_lt_opp_l Hop Hor) in H12.
+      rewrite <- rngl_mul_add_distr_l in H12.
+      apply (rngl_nle_gt Hor) in H12.
+      apply H12; clear H12.
+      apply (rngl_mul_nonpos_nonneg Hop Hor).
+      now apply rngl_lt_le_incl.
+      rewrite rngl_add_comm.
+      apply (c_add_modulus_re Hop Hiv Hto).
+    }
+  }
+  destruct zi2; [ easy | ].
+  move Hzi1 after Hzi2.
+  apply rngl_leb_le in H32.
+  apply (rngl_mul_lt_mono_pos_r Hop Hiq Hto (‖ z2 ‖)). {
+    apply rngl_le_neq.
+    split; [ apply c_modulus_nonneg | ].
+    intros H; symmetry in H.
+    now apply eq_c_modulus_0 in H.
+  }
+  rewrite (rngl_mul_mul_swap Hic).
+  eapply (rngl_le_lt_trans Hor). {
+    apply (rngl_mul_le_mono_pos_r Hop Hiq Hto _ _ (‖ z1 ‖)) in H32; cycle 1. {
+      clear H.
+      apply rngl_le_neq.
+      split; [ apply c_modulus_nonneg | ].
+      intros H; symmetry in H.
+      now apply eq_c_modulus_0 in H.
+    }
+    apply H32.
+  }
+  do 2 rewrite (rngl_mul_mul_swap Hic _ (‖ z3 ‖)).
+  apply (rngl_mul_lt_mono_pos_r Hop Hiq Hto); [ | easy ].
+  apply rngl_le_neq.
+  split; [ apply c_modulus_nonneg | ].
+  intros H; symmetry in H.
+  now apply eq_c_modulus_0 in H.
+}
+destruct zi2; [ | easy ].
+destruct zi3; [ | easy ].
+move Hzi1 after Hzi2.
+apply (rngl_mul_lt_mono_pos_r Hop Hiq Hto (‖ z2 ‖)). {
+  apply rngl_le_neq.
+  split; [ apply c_modulus_nonneg | ].
+  intros H; symmetry in H.
+  now apply eq_c_modulus_0 in H.
+}
+rewrite (rngl_mul_mul_swap Hic).
+eapply (rngl_lt_le_trans Hor). {
+  apply (rngl_mul_lt_mono_pos_r Hop Hiq Hto (‖ z3 ‖)) in H12; cycle 1. {
+    clear H.
+    apply rngl_le_neq.
+    split; [ apply c_modulus_nonneg | ].
+    intros H; symmetry in H.
+    now apply eq_c_modulus_0 in H.
+  }
+  apply H12.
+}
+do 2 rewrite (rngl_mul_mul_swap Hic _ (‖ z1 ‖)).
+apply (rngl_mul_le_mono_pos_r Hop Hiq Hto). {
+  apply rngl_le_neq.
+  split; [ apply c_modulus_nonneg | ].
+  intros H; symmetry in H.
+  now apply eq_c_modulus_0 in H.
+}
+now apply rngl_leb_le.
+Qed.
+
 (* to be completed
 Theorem c_seq_to_div_nat_is_Cauchy :
   rngl_is_archimedean T = true →
@@ -3295,129 +3465,8 @@ destruct m; [ easy | ].
 apply Nat.succ_le_mono in Hmn.
 apply c_mul_nat_nb_turns_succ_l_false.
 split; [ now apply IHn | ].
-Print c_mul_is_small.
-(*
-Definition angle_leb α1 α2 :=
-  if (0 ≤? rngl_sin α1)%L then
-    if (0 ≤? rngl_sin α2)%L then (rngl_cos α2 ≤? rngl_cos α1)%L
-    else true
-  else
-    if (0 ≤? rngl_sin α2)%L then false
-    else (rngl_cos α1 ≤? rngl_cos α2)%L.
-*)
-Definition c_leb z1 z2 :=
-  if (0 ≤? Im z1)%L then
-    if (0 ≤? Im z2)%L then (Re z2 * ‖ z1 ‖ ≤? Re z1 * ‖ z2 ‖)%L
-    else true
-  else
-    if (0 ≤? Im z2)%L then false
-    else (Re z1 * ‖ z2 ‖ ≤? Re z2 * ‖ z1 ‖)%L.
-Notation "z1 ≤ z2" := (c_leb z1 z2 = true) : c_scope.
-Theorem angle_add_overflow_le :
-  ∀ z1 z2 z3,
-  z2 ≠ 0%C
-  → (z3 ≤ z2)%C
-  → c_mul_is_small z1 z2 = true
-  → c_mul_is_small z1 z3 = true.
-Proof.
-specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
-specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
-specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
-specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
-destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
-  specialize (rngl_characteristic_1_c_0 Hc1) as H1.
-  intros * H2z H32 H12.
-  rewrite (H1 z1).
-  apply c_mul_is_small_bool_prop.
-  now left.
-}
-intros * H2z H32 H12.
-apply c_mul_is_small_bool_prop in H12.
-apply c_mul_is_small_bool_prop.
-progress unfold c_mul_is_small_prop in H12.
-progress unfold c_mul_is_small_prop.
-progress unfold c_leb in H32.
-destruct H12 as [H12| H12]; [ now left | ].
-destruct H12 as [H12| H12]; [ easy | ].
-destruct (c_eq_dec Heo z1 0) as [H1z| H1z]; [ now left | right ].
-destruct (c_eq_dec Heo z3 0) as [H3z| H3z]; [ now left | right ].
-move H1z after H2z; move H3z before H2z.
-remember (0 ≤? Im z1)%L as zi1 eqn:Hzi1.
-remember (0 ≤? Im z2)%L as zi2 eqn:Hzi2.
-remember (0 ≤? Im z3)%L as zi3 eqn:Hzi3.
-symmetry in Hzi1, Hzi2, Hzi3.
-destruct zi1. {
-  destruct zi3. {
-    intros ((H1, H2), (H3, H4)).
-    move H3 before H1.
-    destruct zi2. {
-      apply H12; clear H12.
-      split; [ easy | ].
-      progress unfold is_negative_real_prop.
-      move Hzi1 after Hzi2.
-      apply rngl_leb_le in Hzi1, Hzi2, Hzi3, H32.
-      clear Hzi1 Hzi3.
-      rewrite c_modulus_when_Im_0 in H32; [ | easy ].
-      split. {
-        apply (rngl_mul_lt_mono_pos_r Hop Hiq Hto (rngl_abs (Re z3))). {
-          apply rngl_le_neq.
-          split; [ apply (rngl_abs_nonneg Hop Hto) | ].
-          intros H; symmetry in H.
-          apply (eq_rngl_abs_0 Hop) in H.
-          rewrite H in H3.
-          now apply rngl_lt_irrefl in H3.
-        }
-        rewrite (rngl_mul_0_l Hos).
-        eapply (rngl_le_lt_trans Hor); [ apply H32 | ].
-(*
-        apply (rngl_mul_neg_pos).
-*)
-        rewrite (rngl_mul_comm Hic).
-        apply (rngl_mul_pos_neg Hop Hiq Hor); [ | easy ].
-        apply rngl_le_neq.
-        split; [ apply c_modulus_nonneg | ].
-        intros H; symmetry in H.
-        now apply eq_c_modulus_0 in H.
-      }
-      clear Hzi2.
-      rewrite (rngl_abs_nonpos_eq Hop Hto) in H32; cycle 1. {
-        now apply rngl_lt_le_incl.
-      }
-      rewrite (rngl_mul_opp_r Hop), (rngl_mul_comm Hic) in H32.
-      apply (rngl_le_opp_l Hop Hor) in H32.
-      rewrite <- rngl_mul_add_distr_l in H32.
-      destruct (rngl_eqb_dec (Im z2) 0) as [Hi2| Hi2]. {
-        now apply (rngl_eqb_eq Heo).
-      }
-      exfalso; apply (rngl_eqb_neq Heo) in Hi2.
-      apply (rngl_nlt_ge Hor) in H32.
-      apply H32; clear H32.
-      rewrite (rngl_mul_comm Hic).
-      apply (rngl_mul_pos_neg Hop Hiq Hor); [ | easy ].
-      rewrite rngl_add_comm.
-      apply rngl_le_neq.
-      split; [ apply (c_add_modulus_re Hop Hiv Hto) | ].
-      intros H; symmetry in H.
-      now apply eq_rngl_add_modulus_re_0 in H.
-    } {
-      clear H32.
-      rewrite c_modulus_when_Im_0 in H12; [ | easy ].
-      rewrite (rngl_abs_nonpos_eq Hop Hto) in H12; cycle 1. {
-        now apply rngl_lt_le_incl.
-      }
-      rewrite (rngl_mul_opp_r Hop), (rngl_mul_comm Hic) in H12.
-      apply (rngl_lt_opp_l Hop Hor) in H12.
-      rewrite <- rngl_mul_add_distr_l in H12.
-      apply (rngl_nle_gt Hor) in H12.
-      apply H12; clear H12.
-      apply (rngl_mul_nonpos_nonneg Hop Hor).
-      now apply rngl_lt_le_incl.
-      rewrite rngl_add_comm.
-      apply (c_add_modulus_re Hop Hiv Hto).
-    }
-  }
-  destruct zi2; [ easy | ].
-  move Hzi1 after Hzi2.
+apply (c_mul_is_small_le _ (z ^ n)); [ | | easy ]. {
+Search (_ ^ _ = 0)%C.
 ...
 remember (0 ≤? Im z3)%L as zi3 eqn:Hzi3.
 symmetry in Hzi3.
