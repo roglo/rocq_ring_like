@@ -3495,20 +3495,67 @@ apply (c_mul_is_small_le _ (z ^ n)); [ | | easy ]. {
   now apply (c_pow_neq_0 Hc1).
 }
 Search (_ ^ _ ≤ _ ^ _)%C.
-Theorem c_arg_pow_le_mono_r : ∀ z a b, a ≤ b → (z ^ a ≤ z ^ b)%C.
+Theorem c_arg_pow_le_mono_r :
+  ∀ z a b,
+  c_pow_nat_nb_turns b z = 0
+  → a ≤ b
+  → (z ^ a ≤ z ^ b)%C.
 Proof.
-intros * Hab.
+specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+intros * Hb Hab.
 revert a Hab.
 induction b; intros. {
   apply Nat.le_0_r in Hab; subst a.
   apply c_arg_le_refl.
 }
 destruct a. {
-  cbn.
-...
-destruct a; [ apply angle_nonneg | cbn ].
+  clear Hab.
+  progress unfold c_arg_leb.
+  remember (z ^ S b)%C as x; cbn; subst x.
+  rewrite (rngl_leb_refl Hor).
+  rewrite (c_modulus_1 Hop Hiq Hto).
+  rewrite rngl_mul_1_l, rngl_mul_1_r.
+  remember (0 ≤? _)%L as ziz eqn:Hziz.
+  symmetry in Hziz.
+  destruct ziz; [ | easy ].
+  apply rngl_leb_le.
+  apply Re_bound.
+}
 move a after b.
 apply Nat.succ_le_mono in Hab.
+apply c_mul_nat_nb_turns_succ_l_false in Hb.
+destruct Hb as (H1, H2).
+specialize (IHb H1 _ Hab).
+cbn.
+Theorem c_mul_le_mono_nonneg_l :
+  ∀ z1 z2 z3,
+  c_mul_is_small_prop z1 z3
+  → (z2 ≤ z3)%C
+  → (z1 * z2 ≤ z1 * z3)%C.
+Proof.
+intros * Hs13 Hz23.
+progress unfold c_mul_is_small_prop in Hs13.
+progress unfold c_arg_leb in Hz23.
+progress unfold c_arg_leb.
+... ...
+apply c_mul_le_mono_nonneg_l; [ | easy ].
+now apply c_mul_is_small_bool_prop.
+...
+rngl_mul_le_mono_nonneg_l:
+  ∀ {T : Type} {ro : ring_like_op T},
+    ring_like_prop T
+    → rngl_has_opp T = true
+      → rngl_is_ordered T = true → ∀ a b c : T, (0 ≤ a)%L → (b ≤ c)%L → (a * b ≤ a * c)%L
+Search (_ * _ ≤ _ * _)%C.
+...
+apply c_mul_le_mono_l.
+now apply angle_add_le_mono_l.
+...
+Theorem c_mul_nat_nb_turns_succ_l_false :
+  ∀ n z,
+  c_pow_nat_nb_turns (S n) z = 0
+...
 apply (angle_mul_nat_div_2π_succ_l_false α b) in Hb.
 destruct Hb as (H1, H2).
 specialize (IHb H1 _ Hab).
