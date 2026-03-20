@@ -3318,6 +3318,14 @@ apply (rngl_mul_le_mono_pos_r Hop Hiq Hto). {
 now apply rngl_leb_le.
 Qed.
 
+Theorem c_arg_le_refl : ∀ z, (z ≤ z)%C.
+Proof.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+intros.
+progress unfold c_arg_leb.
+destruct (0 ≤? Im z)%L; apply (rngl_leb_refl Hor).
+Qed.
+
 (* to be completed
 Theorem c_seq_to_div_nat_is_Cauchy :
   rngl_is_archimedean T = true →
@@ -3493,9 +3501,11 @@ intros * Hab.
 revert a Hab.
 induction b; intros. {
   apply Nat.le_0_r in Hab; subst a.
-...
   apply c_arg_le_refl.
 }
+destruct a. {
+  cbn.
+...
 destruct a; [ apply angle_nonneg | cbn ].
 move a after b.
 apply Nat.succ_le_mono in Hab.
