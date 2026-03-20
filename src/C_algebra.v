@@ -3487,8 +3487,24 @@ apply (c_mul_is_small_le _ (z ^ n)); [ | | easy ]. {
   now apply (c_pow_neq_0 Hc1).
 }
 Search (_ ^ _ ≤ _ ^ _)%C.
+Theorem c_arg_pow_le_mono_r : ∀ z a b, a ≤ b → (z ^ a ≤ z ^ b)%C.
+Proof.
+intros * Hab.
+revert a Hab.
+induction b; intros. {
+  apply Nat.le_0_r in Hab; subst a.
 ...
-now apply angle_mul_le_mono_r.
+  apply c_arg_le_refl.
+}
+destruct a; [ apply angle_nonneg | cbn ].
+move a after b.
+apply Nat.succ_le_mono in Hab.
+apply (angle_mul_nat_div_2π_succ_l_false α b) in Hb.
+destruct Hb as (H1, H2).
+specialize (IHb H1 _ Hab).
+now apply angle_add_le_mono_l.
+... ...
+now apply c_arg_pow_le_mono_r.
 ...
 remember (0 ≤? Im z3)%L as zi3 eqn:Hzi3.
 symmetry in Hzi3.
