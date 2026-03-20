@@ -3399,8 +3399,25 @@ destruct zi1. {
       split; [ apply (c_add_modulus_re Hop Hiv Hto) | ].
       intros H; symmetry in H.
       now apply eq_rngl_add_modulus_re_0 in H.
+    } {
+      clear H32.
+      rewrite c_modulus_when_Im_0 in H12; [ | easy ].
+      rewrite (rngl_abs_nonpos_eq Hop Hto) in H12; cycle 1. {
+        now apply rngl_lt_le_incl.
+      }
+      rewrite (rngl_mul_opp_r Hop), (rngl_mul_comm Hic) in H12.
+      apply (rngl_lt_opp_l Hop Hor) in H12.
+      rewrite <- rngl_mul_add_distr_l in H12.
+      apply (rngl_nle_gt Hor) in H12.
+      apply H12; clear H12.
+      apply (rngl_mul_nonpos_nonneg Hop Hor).
+      now apply rngl_lt_le_incl.
+      rewrite rngl_add_comm.
+      apply (c_add_modulus_re Hop Hiv Hto).
     }
-    clear H32.
+  }
+  destruct zi2; [ easy | ].
+  move Hzi1 after Hzi2.
 ...
 remember (0 ≤? Im z3)%L as zi3 eqn:Hzi3.
 symmetry in Hzi3.
