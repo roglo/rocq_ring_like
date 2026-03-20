@@ -3349,12 +3349,12 @@ symmetry in Hzi1, Hzi2, Hzi3.
 destruct zi1. {
   destruct zi3. {
     intros ((H1, H2), (H3, H4)).
+    move H3 before H1.
     destruct zi2. {
       apply H12; clear H12.
       split; [ easy | ].
       progress unfold is_negative_real_prop.
       move Hzi1 after Hzi2.
-      move H3 before H1.
       apply rngl_leb_le in Hzi1, Hzi2, Hzi3, H32.
       clear Hzi1 Hzi3.
       rewrite c_modulus_when_Im_0 in H32; [ | easy ].
@@ -3380,6 +3380,27 @@ destruct zi1. {
         now apply eq_c_modulus_0 in H.
       }
       clear Hzi2.
+      rewrite (rngl_abs_nonpos_eq Hop Hto) in H32; cycle 1. {
+        now apply rngl_lt_le_incl.
+      }
+      rewrite (rngl_mul_opp_r Hop), (rngl_mul_comm Hic) in H32.
+      apply (rngl_le_opp_l Hop Hor) in H32.
+      rewrite <- rngl_mul_add_distr_l in H32.
+      destruct (rngl_eqb_dec (Im z2) 0) as [Hi2| Hi2]. {
+        now apply (rngl_eqb_eq Heo).
+      }
+      exfalso; apply (rngl_eqb_neq Heo) in Hi2.
+      apply (rngl_nlt_ge Hor) in H32.
+      apply H32; clear H32.
+      rewrite (rngl_mul_comm Hic).
+      apply (rngl_mul_pos_neg Hop Hiq Hor); [ | easy ].
+      rewrite rngl_add_comm.
+      apply rngl_le_neq.
+      split; [ apply (c_add_modulus_re Hop Hiv Hto) | ].
+      intros H; symmetry in H.
+      now apply eq_rngl_add_modulus_re_0 in H.
+    }
+    clear H32.
 ...
 remember (0 ≤? Im z3)%L as zi3 eqn:Hzi3.
 symmetry in Hzi3.
