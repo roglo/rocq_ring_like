@@ -1359,7 +1359,7 @@ Qed.
 
 Theorem c_pow_neq_0 :
   rngl_characteristic T ≠ 1 →
-  ∀ z n, z ≠ 0%C → (z ^ n)%L ≠ 0%C.
+  ∀ z n, z ≠ 0%C → (z ^ n)%C ≠ 0%C.
 Proof.
 intros Hc1.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
@@ -3455,18 +3455,40 @@ Theorem angle_mul_nat_not_overflow_le_l :
   → ∀ z, c_pow_nat_nb_turns n z = 0
   → c_pow_nat_nb_turns m z = 0.
 Proof.
-intros * Hmn * Hn.
-revert z m Hmn Hn.
-induction n; intros. {
-  now apply Nat.le_0_r in Hmn; subst m.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
+destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
+  specialize (rngl_characteristic_1_c_0 Hc1) as H1.
+  intros * Hmn * Hn.
+  rewrite (H1 z).
+  clear Hmn.
+  induction m; [ easy | ].
+  apply c_mul_nat_nb_turns_succ_l_false.
+  split; [ easy | ].
+  now apply c_mul_is_small_bool_prop; left.
 }
+intros * Hmn * Hn.
+destruct (c_eq_dec Heo z 0) as [Hzz| Hzz]. {
+  subst z.
+  clear n Hmn Hn.
+  induction m; intros; [ easy | ].
+  apply c_mul_nat_nb_turns_succ_l_false.
+  split; [ easy | ].
+  now apply c_mul_is_small_bool_prop; left.
+}
+revert m Hmn Hn.
+induction n; intros; [ now apply Nat.le_0_r in Hmn; subst m | ].
 apply c_mul_nat_nb_turns_succ_l_false in Hn.
 destruct m; [ easy | ].
 apply Nat.succ_le_mono in Hmn.
 apply c_mul_nat_nb_turns_succ_l_false.
 split; [ now apply IHn | ].
 apply (c_mul_is_small_le _ (z ^ n)); [ | | easy ]. {
-Search (_ ^ _ = 0)%C.
+  now apply (c_pow_neq_0 Hc1).
+}
+Search (_ ^ _ ≤ _ ^ _)%C.
+...
+now apply angle_mul_le_mono_r.
 ...
 remember (0 ≤? Im z3)%L as zi3 eqn:Hzi3.
 symmetry in Hzi3.
