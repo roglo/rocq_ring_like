@@ -3148,7 +3148,7 @@ rewrite Hiz, (rngl_squ_0 Hos), rngl_add_0_r.
 apply (rl_sqrt_squ Hop Hto).
 Qed.
 
-Definition c_leb z1 z2 :=
+Definition c_arg_leb z1 z2 :=
   if (0 ≤? Im z1)%L then
     if (0 ≤? Im z2)%L then (Re z2 * ‖ z1 ‖ ≤? Re z1 * ‖ z2 ‖)%L
     else true
@@ -3156,7 +3156,7 @@ Definition c_leb z1 z2 :=
     if (0 ≤? Im z2)%L then false
     else (Re z1 * ‖ z2 ‖ ≤? Re z2 * ‖ z1 ‖)%L.
 
-Notation "z1 ≤ z2" := (c_leb z1 z2 = true) : c_scope.
+Notation "z1 ≤ z2" := (c_arg_leb z1 z2 = true) : c_scope.
 
 Theorem c_mul_is_small_le :
   ∀ z1 z2 z3,
@@ -3181,7 +3181,7 @@ apply c_mul_is_small_bool_prop in H12.
 apply c_mul_is_small_bool_prop.
 progress unfold c_mul_is_small_prop in H12.
 progress unfold c_mul_is_small_prop.
-progress unfold c_leb in H32.
+progress unfold c_arg_leb in H32.
 destruct H12 as [H12| H12]; [ now left | ].
 destruct H12 as [H12| H12]; [ easy | ].
 destruct (c_eq_dec Heo z1 0) as [H1z| H1z]; [ now left | right ].
