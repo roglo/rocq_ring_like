@@ -3535,9 +3535,15 @@ Theorem c_mul_le_mono_nonneg_l :
   → (z1 * z2 ≤ z1 * z3)%C.
 Proof.
 intros * Hs13 Hz23.
-progress unfold c_mul_is_small_prop in Hs13.
-progress unfold c_arg_leb in Hz23.
 progress unfold c_arg_leb.
+remember (0 ≤? Im (z1 * z2))%L as zi12 eqn:Hzi12.
+symmetry in Hzi12.
+destruct zi12. {
+  remember (0 ≤? Im (z1 * z3))%L as zi13 eqn:Hzi13.
+  symmetry in Hzi13.
+  destruct zi13; [ | easy ].
+  apply rngl_leb_le in Hzi12, Hzi13.
+  apply rngl_leb_le.
 ... ...
 apply c_mul_le_mono_nonneg_l; [ | easy ].
 now apply c_mul_is_small_bool_prop.
