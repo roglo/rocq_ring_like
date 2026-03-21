@@ -3318,6 +3318,25 @@ progress unfold c_arg_leb.
 destruct (0 ≤? Im z)%L; apply (rngl_leb_refl Hor).
 Qed.
 
+Theorem c_arg_le_0_r : ∀ z, (z ≤ 0)%C ↔ (0 ≤ Im z)%L.
+Proof.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+specialize (rngl_int_dom_or_inv_pdiv Hiv) as Hii.
+intros.
+progress unfold c_arg_leb; cbn.
+rewrite (rngl_leb_refl Hor).
+rewrite (rngl_mul_0_l Hos).
+rewrite (c_modulus_0 Hop Hii Hto).
+rewrite (rngl_mul_0_r Hos).
+rewrite (rngl_leb_refl Hor).
+remember (0 ≤? Im z)%L as zi eqn:Hzi.
+symmetry in Hzi.
+apply iff_sym.
+destruct zi; [ now apply rngl_leb_le in Hzi | ].
+now apply rngl_leb_nle in Hzi.
+Qed.
+
 (* to be completed
 Theorem c_seq_to_div_nat_is_Cauchy :
   rngl_is_archimedean T = true →
@@ -3536,6 +3555,15 @@ destruct (c_eq_dec Heo z1 0) as [H1z| H1z]. {
   do 2 rewrite (c_mul_0_l Hos).
   apply c_arg_le_refl.
 }
+destruct (c_eq_dec Heo z3 0) as [H3z| H3z]. {
+  subst z3.
+  apply c_arg_le_0_r in Hz23.
+  rewrite (c_mul_0_r Hos).
+  apply c_arg_le_0_r.
+...
+  do 2 rewrite (c_mul_0_l Hos).
+  apply c_arg_le_refl.
+}
 progress unfold c_arg_leb.
 remember (0 ≤? Im (z1 * z2))%L as zi12 eqn:Hzi12.
 symmetry in Hzi12.
@@ -3550,15 +3578,21 @@ destruct zi12. {
   remember (0 ≤? Im z3)%L as zi3 eqn:Hzi3.
   symmetry in Hzi2, Hzi3.
   move Hz23 at bottom.
-  destruct zi2. {
-    destruct zi3. {
-      apply rngl_leb_le in Hz23.
-      do 2 rewrite (c_modulus_mul Hic Hop Hto).
-      do 2 rewrite (rngl_mul_comm Hic (‖ z1 ‖)).
-      do 2 rewrite rngl_mul_assoc.
-      apply (rngl_mul_le_mono_pos_r Hop Hiq Hto). {
-        now apply c_modulus_pos_nonzero.
-      }
+  destruct zi2; cycle 1. {
+    destruct zi3; [ easy | ].
+    apply (rngl_leb_gt_iff Hto) in Hzi2, Hzi3.
+    apply rngl_leb_le in Hz23.
+    apply c_mul_is_small_bool_prop in Hs13.
+    assert (Haov12 : c_mul_is_small z1 z2 = true). {
+      apply (c_mul_is_small_le _ z3); [ | | easy ].
+...
+      apply (angle_add_overflow_le _ α3); [ | easy ].
+      progress unfold angle_leb.
+      apply (rngl_leb_gt_iff Hto) in Hzs2, Hzs3.
+      rewrite Hzs2, Hzs3.
+      now apply rngl_leb_le.
+    }
+    destruct (rngl_ltb_dec (rngl_cos α3) 0)%L as [Hc3z| Hzc3]. {
 ...
 (* AngleAddLeMonoL_3.v *)
 Theorem angle_add_le_mono_l_sin_lb_nonneg :
