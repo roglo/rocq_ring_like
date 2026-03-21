@@ -3158,6 +3158,21 @@ Definition c_arg_leb z1 z2 :=
 
 Notation "z1 ≤ z2" := (c_arg_leb z1 z2 = true) : c_scope.
 
+Theorem c_modulus_pos_nonzero : ∀ z, (0 < ‖ z ‖)%L ↔ z ≠ 0%C.
+Proof.
+specialize (rngl_int_dom_or_inv_pdiv Hiv) as Hii.
+intros.
+split; intros Hz. {
+  intros H; rewrite H in Hz.
+  rewrite (c_modulus_0 Hop Hii Hto) in Hz.
+  now apply rngl_lt_irrefl in Hz.
+}
+apply rngl_le_neq.
+split; [ apply c_modulus_nonneg | ].
+intros H; symmetry in H.
+now apply eq_c_modulus_0 in H.
+Qed.
+
 Theorem c_mul_is_small_le :
   ∀ z1 z2 z3,
   z2 ≠ 0%C
@@ -3219,10 +3234,7 @@ destruct zi1. {
 *)
         rewrite (rngl_mul_comm Hic).
         apply (rngl_mul_pos_neg Hop Hiq Hor); [ | easy ].
-        apply rngl_le_neq.
-        split; [ apply c_modulus_nonneg | ].
-        intros H; symmetry in H.
-        now apply eq_c_modulus_0 in H.
+        now apply c_modulus_pos_nonzero.
       }
       clear Hzi2.
       rewrite (rngl_abs_nonpos_eq Hop Hto) in H32; cycle 1. {
@@ -3265,55 +3277,35 @@ destruct zi1. {
   move Hzi1 after Hzi2.
   apply rngl_leb_le in H32.
   apply (rngl_mul_lt_mono_pos_r Hop Hiq Hto (‖ z2 ‖)). {
-    apply rngl_le_neq.
-    split; [ apply c_modulus_nonneg | ].
-    intros H; symmetry in H.
-    now apply eq_c_modulus_0 in H.
+    now apply c_modulus_pos_nonzero.
   }
   rewrite (rngl_mul_mul_swap Hic).
   eapply (rngl_le_lt_trans Hor). {
     apply (rngl_mul_le_mono_pos_r Hop Hiq Hto _ _ (‖ z1 ‖)) in H32; cycle 1. {
-      clear H.
-      apply rngl_le_neq.
-      split; [ apply c_modulus_nonneg | ].
-      intros H; symmetry in H.
-      now apply eq_c_modulus_0 in H.
+      now apply c_modulus_pos_nonzero.
     }
     apply H32.
   }
   do 2 rewrite (rngl_mul_mul_swap Hic _ (‖ z3 ‖)).
   apply (rngl_mul_lt_mono_pos_r Hop Hiq Hto); [ | easy ].
-  apply rngl_le_neq.
-  split; [ apply c_modulus_nonneg | ].
-  intros H; symmetry in H.
-  now apply eq_c_modulus_0 in H.
+  now apply c_modulus_pos_nonzero.
 }
 destruct zi2; [ | easy ].
 destruct zi3; [ | easy ].
 move Hzi1 after Hzi2.
 apply (rngl_mul_lt_mono_pos_r Hop Hiq Hto (‖ z2 ‖)). {
-  apply rngl_le_neq.
-  split; [ apply c_modulus_nonneg | ].
-  intros H; symmetry in H.
-  now apply eq_c_modulus_0 in H.
+  now apply c_modulus_pos_nonzero.
 }
 rewrite (rngl_mul_mul_swap Hic).
 eapply (rngl_lt_le_trans Hor). {
   apply (rngl_mul_lt_mono_pos_r Hop Hiq Hto (‖ z3 ‖)) in H12; cycle 1. {
-    clear H.
-    apply rngl_le_neq.
-    split; [ apply c_modulus_nonneg | ].
-    intros H; symmetry in H.
-    now apply eq_c_modulus_0 in H.
+    now apply c_modulus_pos_nonzero.
   }
   apply H12.
 }
 do 2 rewrite (rngl_mul_mul_swap Hic _ (‖ z1 ‖)).
 apply (rngl_mul_le_mono_pos_r Hop Hiq Hto). {
-  apply rngl_le_neq.
-  split; [ apply c_modulus_nonneg | ].
-  intros H; symmetry in H.
-  now apply eq_c_modulus_0 in H.
+  now apply c_modulus_pos_nonzero.
 }
 now apply rngl_leb_le.
 Qed.
@@ -3534,7 +3526,16 @@ Theorem c_mul_le_mono_nonneg_l :
   → (z2 ≤ z3)%C
   → (z1 * z2 ≤ z1 * z3)%C.
 Proof.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
 intros * Hs13 Hz23.
+destruct (c_eq_dec Heo z1 0) as [H1z| H1z]. {
+  subst z1.
+  do 2 rewrite (c_mul_0_l Hos).
+  apply c_arg_le_refl.
+}
 progress unfold c_arg_leb.
 remember (0 ≤? Im (z1 * z2))%L as zi12 eqn:Hzi12.
 symmetry in Hzi12.
@@ -3544,6 +3545,31 @@ destruct zi12. {
   destruct zi13; [ | easy ].
   apply rngl_leb_le in Hzi12, Hzi13.
   apply rngl_leb_le.
+  progress unfold c_arg_leb in Hz23.
+  remember (0 ≤? Im z2)%L as zi2 eqn:Hzi2.
+  remember (0 ≤? Im z3)%L as zi3 eqn:Hzi3.
+  symmetry in Hzi2, Hzi3.
+  move Hz23 at bottom.
+  destruct zi2. {
+    destruct zi3. {
+      apply rngl_leb_le in Hz23.
+      do 2 rewrite (c_modulus_mul Hic Hop Hto).
+      do 2 rewrite (rngl_mul_comm Hic (‖ z1 ‖)).
+      do 2 rewrite rngl_mul_assoc.
+      apply (rngl_mul_le_mono_pos_r Hop Hiq Hto). {
+        now apply c_modulus_pos_nonzero.
+      }
+...
+(* AngleAddLeMonoL_3.v *)
+Theorem angle_add_le_mono_l_sin_lb_nonneg :
+  ∀ α1 α2 α3,
+  (0 ≤ rngl_sin (α1 + α2))%L
+  → angle_add_overflow α1 α3 = false
+  → (α2 ≤ α3)%A
+  → (α1 + α2 ≤ α1 + α3)%A.
+Proof.
+...
+  now apply angle_add_le_mono_l_sin_lb_nonneg.
 ... ...
 apply c_mul_le_mono_nonneg_l; [ | easy ].
 now apply c_mul_is_small_bool_prop.
