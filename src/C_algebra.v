@@ -3541,7 +3541,8 @@ specialize (IHb H1 _ Hab).
 cbn.
 Theorem c_mul_le_mono_nonneg_l :
   ∀ z1 z2 z3,
-  c_mul_is_small_prop z1 z3
+  z3 ≠ 0%C
+  → c_mul_is_small_prop z1 z3
   → (z2 ≤ z3)%C
   → (z1 * z2 ≤ z1 * z3)%C.
 Proof.
@@ -3549,20 +3550,23 @@ specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
 specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
-intros * Hs13 Hz23.
+specialize (rngl_int_dom_or_inv_pdiv Hiv) as Hii.
+intros * H3z Hs13 Hz23.
 destruct (c_eq_dec Heo z1 0) as [H1z| H1z]. {
   subst z1.
   do 2 rewrite (c_mul_0_l Hos).
   apply c_arg_le_refl.
 }
-destruct (c_eq_dec Heo z3 0) as [H3z| H3z]. {
-  subst z3.
-  apply c_arg_le_0_r in Hz23.
+destruct (c_eq_dec Heo z2 0) as [H2z| H2z]. {
+  subst z2.
   rewrite (c_mul_0_r Hos).
-  apply c_arg_le_0_r.
-...
-  do 2 rewrite (c_mul_0_l Hos).
-  apply c_arg_le_refl.
+  progress unfold c_arg_leb.
+  cbn - [ "*"%C ].
+  rewrite (rngl_leb_refl Hor).
+  rewrite (c_modulus_0 Hop Hii Hto).
+  rewrite (rngl_mul_0_r Hos), (rngl_mul_0_l Hos).
+  rewrite (rngl_leb_refl Hor).
+  now destruct (_ ≤? _)%L.
 }
 progress unfold c_arg_leb.
 remember (0 ≤? Im (z1 * z2))%L as zi12 eqn:Hzi12.
@@ -3584,15 +3588,13 @@ destruct zi12. {
     apply rngl_leb_le in Hz23.
     apply c_mul_is_small_bool_prop in Hs13.
     assert (Haov12 : c_mul_is_small z1 z2 = true). {
-      apply (c_mul_is_small_le _ z3); [ | | easy ].
-...
-      apply (angle_add_overflow_le _ α3); [ | easy ].
-      progress unfold angle_leb.
-      apply (rngl_leb_gt_iff Hto) in Hzs2, Hzs3.
-      rewrite Hzs2, Hzs3.
+      apply (c_mul_is_small_le _ z3); [ easy | | easy ].
+      progress unfold c_arg_leb.
+      apply (rngl_leb_gt Hor) in Hzi2, Hzi3.
+      rewrite Hzi2, Hzi3.
       now apply rngl_leb_le.
     }
-    destruct (rngl_ltb_dec (rngl_cos α3) 0)%L as [Hc3z| Hzc3]. {
+    destruct (rngl_ltb_dec (Re z3) 0)%L as [Hc3z| Hzc3]. {
 ...
 (* AngleAddLeMonoL_3.v *)
 Theorem angle_add_le_mono_l_sin_lb_nonneg :
