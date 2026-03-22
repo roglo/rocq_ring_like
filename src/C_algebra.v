@@ -3595,9 +3595,35 @@ destruct zi12. {
       now apply rngl_leb_le.
     }
     destruct (rngl_ltb_dec (Re z3) 0)%L as [Hc3z| Hzc3]. {
+      apply (rngl_ltb_lt Heo) in Hc3z.
+      exfalso.
+      apply Bool.not_false_iff_true in Hs13.
+      apply Hs13.
+      (* lemma *)
 ...
+(* AngleAddLeMonoL_prop.v *)
+Theorem angle_add_le_mono_l_lemma_11 :
+  ∀ α1 α2,
+  (rngl_sin α2 < 0)%L
+  → (rngl_cos α2 < 0)%L
+  → (0 ≤ rngl_sin (α1 + α2))%L
+  → angle_add_overflow α1 α2 = true.
+Proof.
+destruct_ac.
+destruct (Nat.eq_dec (rngl_characteristic T) 1) as [Hc1| Hc1]. {
+  specialize (rngl_characteristic_1 Hos Hc1) as H1.
+  intros * Hzs2 Hc2z Hzs12.
+  rewrite (H1 (rngl_sin _)) in Hzs2.
+  now apply rngl_lt_irrefl in Hzs2.
+}
+intros * Hzs2 Hc2z Hzs12.
+change_angle_add_r α2 π.
+progress sin_cos_add_sub_straight_hyp T Hzs12.
+...
+      now apply angle_add_le_mono_l_lemma_11.
+...T
 (* AngleAddLeMonoL_3.v *)
-Theorem angle_add_le_mono_l_sin_lb_nonneg :
+heorem angle_add_le_mono_l_sin_lb_nonneg :
   ∀ α1 α2 α3,
   (0 ≤ rngl_sin (α1 + α2))%L
   → angle_add_overflow α1 α3 = false
