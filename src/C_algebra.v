@@ -3577,6 +3577,7 @@ destruct zi12. {
   destruct zi13; [ | easy ].
   apply rngl_leb_le in Hzi12, Hzi13.
   apply rngl_leb_le.
+  (* lemma *)
   progress unfold c_arg_leb in Hz23.
   remember (0 ≤? Im z2)%L as zi2 eqn:Hzi2.
   remember (0 ≤? Im z3)%L as zi3 eqn:Hzi3.
@@ -3598,8 +3599,39 @@ destruct zi12. {
       apply (rngl_ltb_lt Heo) in Hc3z.
       exfalso.
       apply Bool.not_false_iff_true in Hs13.
-      apply Hs13.
+      apply Hs13; clear Hs13.
+      rename z3 into z; rename z2 into z3; rename z into z2.
+      rename Hzi3 into H; rename Hzi2 into Hi3z; rename H into Hi2z.
+      rename Hc3z into Hr2z.
+      rename Hzi13 into H; rename Hzi12 into Hzi13; rename H into Hzi12.
+      move Hi2z at bottom.
+      move Hzi12 at bottom.
       (* lemma *)
+      apply c_mul_is_not_small_bool_prop.
+      intros Hs12.
+      progress unfold c_mul_is_small_prop in Hs12.
+      destruct Hs12 as [Hs12| Hs12]; [ easy | ].
+      destruct Hs12 as [Hs12| Hs12]; [ easy | ].
+      generalize Hi2z; intros H.
+      apply (rngl_leb_gt_iff Hto) in H.
+      rewrite H in Hs12; clear H.
+      remember (0 ≤? Im z1)%L as zi1 eqn:Hzi1.
+      symmetry in Hzi1.
+      destruct zi1; [ | easy ].
+      apply rngl_leb_le in Hzi1.
+      cbn in Hzi12.
+      destruct (rngl_ltb_dec 0 (Re z1)) as [Hzr1| Hzr1]. {
+        apply (rngl_ltb_lt Heo) in Hzr1.
+        apply (rngl_nlt_ge Hor) in Hzi12.
+        apply Hzi12; clear Hzi12.
+        apply (rngl_add_nonpos_neg Hop Hor). {
+          apply (rngl_mul_nonneg_nonpos Hop Hor); [ easy | ].
+          now apply rngl_lt_le_incl.
+        } {
+          now apply (rngl_mul_pos_neg Hop Hiq Hor).
+        }
+      }
+      apply (rngl_ltb_ge_iff Hto) in Hzr1.
 ...
 (* AngleAddLeMonoL_prop.v *)
 Theorem angle_add_le_mono_l_lemma_11 :
