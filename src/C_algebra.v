@@ -3380,47 +3380,17 @@ destruct (rngl_ltb_dec 0 (Re z1)) as [Hzr1| Hzr1]. {
 }
 apply (rngl_ltb_ge_iff Hto) in Hzr1.
 move Hzi1 after Hr2z; move Hzr1 before Hzi1.
-
-remember (- z2)%C as z eqn:Hz.
-apply (f_equal c_opp) in Hz.
-rewrite c_opp_involutive in Hz.
-subst z2; rename z into z2.
-cbn in Hs12, Hzi12, Hi2z, Hr2z.
-apply (rngl_opp_neg_pos Hop Hor) in Hi2z, Hr2z.
-do 2 rewrite (rngl_mul_opp_r Hop) in Hzi12.
-rewrite (rngl_add_opp_r Hop) in Hzi12.
-remember (mk_c (Im z1) (- Re z1)) as z eqn:Hz.
-assert (z1 = mk_c (- Im z) (Re z)). {
-  subst z; cbn.
-  rewrite (rngl_opp_involutive Hop).
-  now apply eq_c_eq.
-}
-clear Hz.
-subst z1; rename z into z1.
-cbn in Hzi12, Hs12, Hzr1, Hzi1.
-rewrite (rngl_mul_opp_l Hop) in Hzi12.
-rewrite (rngl_sub_opp_r Hop) in Hzi12.
-rewrite (rngl_add_opp_l Hop) in Hzi12.
-apply -> (rngl_le_0_sub Hop Hor) in Hzi12.
-rewrite (c_modulus_opp Hop) in Hs12.
-apply (rngl_opp_nonpos_nonneg Hop Hor) in Hzr1.
-move H1z after H2z.
-do 2 rewrite (rngl_mul_opp_l Hop) in Hs12.
-apply (rngl_opp_lt_compat Hop Hor) in Hs12.
-replace (‖ mk_c (- _) _ ‖) with (‖ z1 ‖) in Hs12; cycle 1. {
-  progress unfold c_modulus.
-  progress unfold rl_modl; cbn.
-  rewrite (rngl_squ_opp Hop).
-  progress f_equal.
-  apply rngl_add_comm.
-}
 generalize Hs12; intros H.
-rewrite <- (rngl_abs_nonneg_eq Hop Hor (_ * _)) in H; cycle 1. {
-  apply (rngl_mul_nonneg_nonneg Hos Hor); [ easy | ].
+apply (rngl_opp_lt_compat Hop Hor) in H.
+do 2 rewrite <- (rngl_mul_opp_l Hop) in H.
+rewrite <- (rngl_abs_nonneg_eq Hop Hor (- _ * _)%L) in H; cycle 1. {
+  apply (rngl_mul_nonneg_nonneg Hos Hor).
+  now apply (rngl_opp_nonneg_nonpos Hop Hor).
   apply c_modulus_nonneg.
 }
-rewrite <- (rngl_abs_nonneg_eq Hop Hor (Re z2 * _)) in H; cycle 1. {
+rewrite <- (rngl_abs_nonneg_eq Hop Hor (- Re z2 * _)) in H; cycle 1. {
   apply (rngl_mul_nonneg_nonneg Hos Hor).
+  apply (rngl_opp_nonneg_nonpos Hop Hor).
   now apply rngl_lt_le_incl.
   apply c_modulus_nonneg.
 }
@@ -3433,23 +3403,26 @@ apply (rngl_add_squ_nonneg Hos Hto).
 rewrite rngl_squ_sqrt in H; cycle 1.
 apply (rngl_add_squ_nonneg Hos Hto).
 do 2 rewrite rngl_mul_add_distr_l in H.
-rewrite (rngl_mul_comm Hic), rngl_add_comm in H.
-apply (rngl_add_lt_mono_r Hos Hor) in H.
+do 2 rewrite (rngl_squ_opp Hop) in H.
+rewrite (rngl_mul_comm Hic (Re z1)²) in H.
+apply (rngl_add_lt_mono_l Hos Hor) in H.
 do 2 rewrite <- (rngl_squ_mul Hic) in H.
 apply (rngl_squ_lt_abs_lt Hop Hiq Hto) in H.
 rewrite (rngl_abs_nonneg_eq Hop Hor) in H; cycle 1. {
-  apply (rngl_mul_nonneg_nonneg Hos Hor); [ easy | ].
+  apply (rngl_mul_nonpos_nonpos Hos Hor); [ easy | ].
   now apply rngl_lt_le_incl.
 }
-rewrite (rngl_abs_nonneg_eq Hop Hor) in H; cycle 1. {
-  apply (rngl_mul_nonneg_nonneg Hos Hor); [ | easy ].
+rewrite (rngl_abs_nonpos_eq Hop Hto) in H; cycle 1. {
+  apply (rngl_mul_nonpos_nonneg Hop Hor); [ | easy ].
   now apply rngl_lt_le_incl.
 }
+apply (rngl_lt_opp_r Hop Hor) in H.
+rewrite rngl_add_comm in H.
 rewrite (rngl_mul_comm Hic (Re z2)) in H.
 now apply (rngl_nle_gt Hor) in H.
 Qed.
 
-(* to be completed
+(* to be completed *)
 Theorem c_seq_to_div_nat_is_Cauchy :
   rngl_is_archimedean T = true →
   ∀ n z, is_Cauchy_sequence c_eucl_dist (c_seq_to_div_nat z n).
