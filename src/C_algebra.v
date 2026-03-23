@@ -3710,7 +3710,7 @@ destruct zi12. {
       apply Hs13; clear Hs13.
       now apply Im_mul_nonneg_c_mul_is_not_small.
     }
-    assert ((0 ≤ Im z1)%L). {
+    assert (Hzi1 : (0 ≤ Im z1)%L). {
       apply (rngl_nlt_ge_iff Hto).
       intros Hzi1.
       apply (c_im_neg_neg_mul_is_not_small z1) in Hzi2; [ | easy ].
