@@ -3422,7 +3422,30 @@ rewrite (rngl_mul_comm Hic (Re z2)) in H.
 now apply (rngl_nle_gt Hor) in H.
 Qed.
 
-(* to be completed *)
+Theorem c_im_neg_neg_mul_is_not_small :
+  ∀ z1 z2,
+  (Im z1 < 0)%L
+  → (Im z2 < 0)%L
+  → c_mul_is_small z1 z2 = false.
+Proof.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+intros * Hi1z Hi2z.
+apply c_mul_is_not_small_bool_prop.
+intros Hs.
+progress unfold c_mul_is_small_prop in Hs.
+destruct Hs as [H| Hs]; [ now subst; apply rngl_lt_irrefl in Hi1z | ].
+destruct Hs as [H| Hs]; [ now subst; apply rngl_lt_irrefl in Hi2z | ].
+remember (0 ≤? Im z1)%L as zi1 eqn:Hzi1.
+symmetry in Hzi1.
+destruct zi1. {
+  apply rngl_leb_le in Hzi1.
+  now apply (rngl_nlt_ge Hor) in Hzi1.
+}
+apply (rngl_leb_gt Hor) in Hi2z.
+now rewrite Hi2z in Hs.
+Qed.
+
+(* to be completed
 Theorem c_seq_to_div_nat_is_Cauchy :
   rngl_is_archimedean T = true →
   ∀ n z, is_Cauchy_sequence c_eucl_dist (c_seq_to_div_nat z n).
@@ -3687,6 +3710,25 @@ destruct zi12. {
       apply Hs13; clear Hs13.
       now apply Im_mul_nonneg_c_mul_is_not_small.
     }
+    assert ((0 ≤ Im z1)%L). {
+      apply (rngl_nlt_ge_iff Hto).
+      intros Hzi1.
+      apply (c_im_neg_neg_mul_is_not_small z1) in Hzi2; [ | easy ].
+      congruence.
+    }
+...
+Theorem angle_lt_rngl_sin_add_nonneg_sin_nonneg :
+  ∀ α1 α2,
+  (α2 < - α1)%A ∨ (π - α1 < α2)%A
+  → (0 ≤ rngl_sin (α1 + α2))%L
+  → (0 ≤ rngl_sin α1)%L.
+Proof.
+destruct_ac.
+intros * H21 Hzs12.
+apply (rngl_nlt_ge_iff Hto).
+intros Hs1z.
+change_angle_add_r α1 π/₂.
+progress sin_cos_add_sub_right_hyp T Hs1z.
 ...
 (* AngleAddLeMonoL_3.v *)
 Theorem angle_add_le_mono_l_sin_lb_nonneg :
