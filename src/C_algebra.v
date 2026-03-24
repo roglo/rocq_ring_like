@@ -3790,6 +3790,38 @@ destruct zi12. {
       apply c_modulus_nonneg.
     }
     apply rngl_leb_le in Hzr1.
+apply c_mul_is_small_bool_prop in Hs13.
+progress unfold c_mul_is_small_prop in Hs13.
+destruct Hs13 as [Hs13| Hs13]; [ easy | ].
+destruct Hs13 as [Hs13| Hs13]; [ easy | ].
+generalize Hzi1; intros H.
+apply rngl_leb_le in H.
+rewrite H in Hs13; clear H.
+generalize Hzi3; intros H.
+apply (rngl_leb_gt Hor) in H.
+rewrite H in Hs13; clear H.
+    do 2 rewrite (c_modulus_mul Hic Hop Hto).
+(*
+    do 2 rewrite rngl_mul_assoc.
+    do 2 rewrite (rngl_mul_mul_swap Hic _ (‖ z1 ‖)).
+    apply (rngl_mul_le_mono_pos_r Hop Hiq Hto).
+    now apply c_modulus_pos.
+*)
+    cbn.
+    do 2 rewrite <- (rngl_add_opp_r Hop).
+    do 2 rewrite <- (rngl_mul_opp_r Hop).
+    do 2 rewrite rngl_mul_add_distr_r.
+    do 4 rewrite rngl_mul_assoc.
+...
+    cbn in Hzi13.
+    rewrite rngl_add_comm in Hzi13.
+    apply (rngl_le_opp_l Hop Hor) in Hzi13.
+    rewrite <- (rngl_mul_opp_r Hop) in Hzi13.
+    cbn in Hzi12.
+    rewrite rngl_add_comm in Hzi12.
+    apply (rngl_le_opp_l Hop Hor) in Hzi12.
+    rewrite <- (rngl_mul_opp_r Hop) in Hzi12.
+...
 (**)
 ...
 (* mouais, bof *)
@@ -3807,20 +3839,6 @@ Proof.
 ...
   apply angle_add_le_mono_l_lemma_3; try easy. {
     apply angle_add_overflow_le with (α2 := (α3 - π/₂)%A); try easy.
-...
-    do 2 rewrite (c_modulus_mul Hic Hop Hto).
-    do 2 rewrite rngl_mul_assoc.
-    do 2 rewrite (rngl_mul_mul_swap Hic _ (‖ z1 ‖)).
-    apply (rngl_mul_le_mono_pos_r Hop Hiq Hto).
-    now apply c_modulus_pos.
-    cbn.
-    do 2 rewrite <- (rngl_add_opp_r Hop).
-    do 2 rewrite <- (rngl_mul_opp_r Hop).
-    do 2 rewrite rngl_mul_add_distr_r.
-    cbn in Hzi13.
-    rewrite rngl_add_comm in Hzi13.
-    apply (rngl_le_opp_l Hop Hor) in Hzi13.
-    rewrite <- (rngl_mul_opp_r Hop) in Hzi13.
 ...
     apply (rngl_mul_le_mono_pos_l Hop Hiq Hto (Re z1)); [ | ].
     rewrite rngl_mul_add_distr_l.
