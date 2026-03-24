@@ -3158,7 +3158,7 @@ Definition c_arg_leb z1 z2 :=
 
 Notation "z1 ≤ z2" := (c_arg_leb z1 z2 = true) : c_scope.
 
-Theorem c_modulus_pos_nonzero : ∀ z, (0 < ‖ z ‖)%L ↔ z ≠ 0%C.
+Theorem c_modulus_pos : ∀ z, (0 < ‖ z ‖)%L ↔ z ≠ 0%C.
 Proof.
 specialize (rngl_int_dom_or_inv_pdiv Hiv) as Hii.
 intros.
@@ -3229,12 +3229,9 @@ destruct zi1. {
         }
         rewrite (rngl_mul_0_l Hos).
         eapply (rngl_le_lt_trans Hor); [ apply H32 | ].
-(*
-        apply (rngl_mul_neg_pos).
-*)
         rewrite (rngl_mul_comm Hic).
         apply (rngl_mul_pos_neg Hop Hiq Hor); [ | easy ].
-        now apply c_modulus_pos_nonzero.
+        now apply c_modulus_pos.
       }
       clear Hzi2.
       rewrite (rngl_abs_nonpos_eq Hop Hto) in H32; cycle 1. {
@@ -3277,35 +3274,35 @@ destruct zi1. {
   move Hzi1 after Hzi2.
   apply rngl_leb_le in H32.
   apply (rngl_mul_lt_mono_pos_r Hop Hiq Hto (‖ z2 ‖)). {
-    now apply c_modulus_pos_nonzero.
+    now apply c_modulus_pos.
   }
   rewrite (rngl_mul_mul_swap Hic).
   eapply (rngl_le_lt_trans Hor). {
     apply (rngl_mul_le_mono_pos_r Hop Hiq Hto _ _ (‖ z1 ‖)) in H32; cycle 1. {
-      now apply c_modulus_pos_nonzero.
+      now apply c_modulus_pos.
     }
     apply H32.
   }
   do 2 rewrite (rngl_mul_mul_swap Hic _ (‖ z3 ‖)).
   apply (rngl_mul_lt_mono_pos_r Hop Hiq Hto); [ | easy ].
-  now apply c_modulus_pos_nonzero.
+  now apply c_modulus_pos.
 }
 destruct zi2; [ | easy ].
 destruct zi3; [ | easy ].
 move Hzi1 after Hzi2.
 apply (rngl_mul_lt_mono_pos_r Hop Hiq Hto (‖ z2 ‖)). {
-  now apply c_modulus_pos_nonzero.
+  now apply c_modulus_pos.
 }
 rewrite (rngl_mul_mul_swap Hic).
 eapply (rngl_lt_le_trans Hor). {
   apply (rngl_mul_lt_mono_pos_r Hop Hiq Hto (‖ z3 ‖)) in H12; cycle 1. {
-    now apply c_modulus_pos_nonzero.
+    now apply c_modulus_pos.
   }
   apply H12.
 }
 do 2 rewrite (rngl_mul_mul_swap Hic _ (‖ z1 ‖)).
 apply (rngl_mul_le_mono_pos_r Hop Hiq Hto). {
-  now apply c_modulus_pos_nonzero.
+  now apply c_modulus_pos.
 }
 now apply rngl_leb_le.
 Qed.
@@ -3737,6 +3734,62 @@ destruct zi12. {
       congruence.
     }
     apply (rngl_ltb_ge_iff Hto) in Hzc3.
+    apply c_mul_is_small_bool_prop in Haov12.
+    destruct Haov12 as [Hs21| Hs21]; [ easy | ].
+    destruct Hs21 as [Hs21| Hs21]; [ easy | ].
+    generalize Hzi1; intros H.
+    apply rngl_leb_le in H.
+    rewrite H in Hs21; clear H.
+    generalize Hzi2; intros H.
+    apply (rngl_leb_gt Hor) in H.
+    rewrite H in Hs21; clear H.
+(*
+    do 2 rewrite (c_modulus_mul Hic Hop Hto).
+    do 2 rewrite rngl_mul_assoc.
+    do 2 rewrite (rngl_mul_mul_swap Hic _ (‖ z1 ‖)).
+    apply (rngl_mul_le_mono_pos_r Hop Hiq Hto).
+    now apply c_modulus_pos.
+    cbn.
+    do 2 rewrite (rngl_mul_sub_distr_r Hop).
+    apply (rngl_le_sub_le_add_r Hop Hor).
+    rewrite <- (rngl_add_sub_swap Hop).
+    apply (rngl_le_add_le_sub_r Hop Hor).
+*)
+    destruct (rngl_leb_dec (Re z2) 0)%L as [Hr2z| Hr2z]. {
+      apply rngl_leb_le in Hr2z.
+      exfalso.
+      destruct (rngl_ltb_dec 0 (Re z1))%L as [Hzr1| Hzr1]. {
+        apply (rngl_ltb_lt Heo) in Hzr1.
+        cbn in Hzi12.
+        apply (rngl_nlt_ge Hor) in Hzi12.
+        apply Hzi12; clear Hzi12.
+        apply (rngl_add_nonpos_neg Hop Hor).
+        now apply (rngl_mul_nonneg_nonpos Hop Hor).
+        now apply (rngl_mul_pos_neg Hop Hiq Hor).
+      }
+      apply (rngl_ltb_ge_iff Hto) in Hzr1.
+      cbn in Hzi12.
+      apply (rngl_nle_gt Hor) in Hs21.
+      apply Hs21; clear Hs21.
+      apply rngl_lt_le_incl in Hzi2.
+      now apply mul_Re_mod_le_mul_Re_mod.
+    }
+    apply (rngl_leb_gt_iff Hto) in Hr2z.
+    destruct (rngl_leb_dec 0 (Re z1))%L as [Hzr1| Hzr1]; cycle 1. {
+      exfalso.
+      apply (rngl_leb_gt_iff Hto) in Hzr1.
+      apply (rngl_nle_gt Hor) in Hs21.
+      apply Hs21; clear Hs21.
+      apply (rngl_le_trans Hor _ 0). {
+        apply (rngl_mul_nonpos_nonneg Hop Hor).
+        now apply rngl_lt_le_incl.
+        apply c_modulus_nonneg.
+      }
+      apply (rngl_mul_nonneg_nonneg Hos Hor).
+      now apply rngl_lt_le_incl.
+      apply c_modulus_nonneg.
+    }
+    apply rngl_leb_le in Hzr1.
 ...
 (* AngleAddLeMonoL_3.v *)
 Theorem angle_add_le_mono_l_sin_lb_nonneg :
