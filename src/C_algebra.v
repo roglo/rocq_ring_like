@@ -3790,6 +3790,49 @@ destruct zi12. {
       apply c_modulus_nonneg.
     }
     apply rngl_leb_le in Hzr1.
+(**)
+...
+(* mouais, bof *)
+(* AngleAddLeMono_prop.v *)
+Theorem angle_add_le_mono_l_lemma_3 :
+  ∀ α1 α2 α3,
+  angle_add_overflow α1 α3 = false
+  → (0 ≤ rngl_sin α2)%L
+  → (0 ≤ rngl_sin α3)%L
+  → (0 ≤ rngl_sin (α1 + α2))%L
+  → (0 ≤ rngl_sin (α1 + α3))%L
+  → (rngl_cos α3 ≤ rngl_cos α2)%L
+  → (rngl_cos (α1 + α3) ≤ rngl_cos (α1 + α2))%L.
+Proof.
+...
+  apply angle_add_le_mono_l_lemma_3; try easy. {
+    apply angle_add_overflow_le with (α2 := (α3 - π/₂)%A); try easy.
+...
+    do 2 rewrite (c_modulus_mul Hic Hop Hto).
+    do 2 rewrite rngl_mul_assoc.
+    do 2 rewrite (rngl_mul_mul_swap Hic _ (‖ z1 ‖)).
+    apply (rngl_mul_le_mono_pos_r Hop Hiq Hto).
+    now apply c_modulus_pos.
+    cbn.
+    do 2 rewrite <- (rngl_add_opp_r Hop).
+    do 2 rewrite <- (rngl_mul_opp_r Hop).
+    do 2 rewrite rngl_mul_add_distr_r.
+    cbn in Hzi13.
+    rewrite rngl_add_comm in Hzi13.
+    apply (rngl_le_opp_l Hop Hor) in Hzi13.
+    rewrite <- (rngl_mul_opp_r Hop) in Hzi13.
+...
+    apply (rngl_mul_le_mono_pos_l Hop Hiq Hto (Re z1)); [ | ].
+    rewrite rngl_mul_add_distr_l.
+    eapply (rngl_le_trans Hor). {
+      apply (rngl_add_le_mono_l Hos Hor).
+      rewrite rngl_mul_assoc.
+      rewrite (rngl_mul_mul_swap Hic).
+      apply (rngl_mul_le_mono_pos_r Hop Hiq Hto). {
+        apply rngl_le_neq.
+        split. {
+          apply (rngl_mul_nonneg_nonneg Hos Hor); [ easy | ].
+
 ...
 (* AngleAddLeMonoL_3.v *)
 Theorem angle_add_le_mono_l_sin_lb_nonneg :
