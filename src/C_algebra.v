@@ -3462,6 +3462,16 @@ apply (rngl_leb_gt Hor) in Hi2z.
 now rewrite Hi2z in Hs.
 Qed.
 
+Theorem c_squ_modulus : ∀ z, ‖ z ‖² = ((Re z)² + (Im z)²)%L.
+Proof.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+intros.
+progress unfold c_modulus.
+progress unfold rl_modl.
+apply rngl_squ_sqrt.
+apply (rngl_add_squ_nonneg Hos Hto).
+Qed.
+
 (* to be completed
 Theorem c_seq_to_div_nat_is_Cauchy :
   rngl_is_archimedean T = true →
@@ -3790,6 +3800,7 @@ destruct zi12. {
       apply c_modulus_nonneg.
     }
     apply rngl_leb_le in Hzr1.
+(*
     assert (H : (0 < Re z1)%L). {
       apply rngl_le_neq.
       split; [ easy | ].
@@ -3801,17 +3812,46 @@ destruct zi12. {
       now apply rngl_lt_le_incl.
       apply c_modulus_nonneg.
     }
+*)
+    exfalso.
+(*
     clear Hzr1; rename H into Hzr1.
-apply c_mul_is_small_bool_prop in Hs13.
-progress unfold c_mul_is_small_prop in Hs13.
-destruct Hs13 as [Hs13| Hs13]; [ easy | ].
-destruct Hs13 as [Hs13| Hs13]; [ easy | ].
-generalize Hzi1; intros H.
-apply rngl_leb_le in H.
-rewrite H in Hs13; clear H.
-generalize Hzi3; intros H.
-apply (rngl_leb_gt Hor) in H.
-rewrite H in Hs13; clear H.
+*)
+clear - Hs13 Hto H1z H3z Hzi1 Hzi3 Hor Hop Hiq Hic Hos Hzc3 Hzi13 Hzr1.
+    apply c_mul_is_small_bool_prop in Hs13.
+    progress unfold c_mul_is_small_prop in Hs13.
+    destruct Hs13 as [Hs13| Hs13]; [ easy | ].
+    destruct Hs13 as [Hs13| Hs13]; [ easy | ].
+    generalize Hzi1; intros H.
+    apply rngl_leb_le in H.
+    rewrite H in Hs13; clear H.
+    generalize Hzi3; intros H.
+    apply (rngl_leb_gt Hor) in H.
+    rewrite H in Hs13; clear H.
+    apply (rngl_lt_lt_squ Hop Hiq Hto) in Hs13; [ | ring | ]; cycle 1. {
+      apply (rngl_mul_nonneg_nonneg Hos Hor); [ easy | ].
+      apply c_modulus_nonneg.
+    }
+    do 2 rewrite (rngl_squ_mul Hic) in Hs13.
+    do 2 rewrite c_squ_modulus in Hs13.
+    do 2 rewrite rngl_mul_add_distr_l in Hs13.
+    rewrite (rngl_mul_comm Hic) in Hs13.
+    apply (rngl_add_lt_mono_l Hos Hor) in Hs13.
+    cbn in Hzi13.
+    apply (rngl_nlt_ge Hor) in Hzi13.
+    apply Hzi13; clear Hzi13.
+    apply (rngl_lt_opp_r Hop Hor).
+    rewrite <- (rngl_mul_opp_r Hop).
+    apply (rngl_lt_squ_lt Hop Hiq Hto).
+    now apply (rngl_mul_nonneg_nonneg Hos Hor).
+    apply (rngl_mul_nonneg_nonneg Hos Hor); [ easy | ].
+    apply (rngl_opp_nonneg_nonpos Hop Hor).
+    now apply rngl_lt_le_incl.
+    rewrite (rngl_mul_comm Hic).
+    do 2 rewrite (rngl_squ_mul Hic).
+    now rewrite (rngl_squ_opp Hop).
+  }
+...
     do 2 rewrite (c_modulus_mul Hic Hop Hto).
 (*
     do 2 rewrite rngl_mul_assoc.
