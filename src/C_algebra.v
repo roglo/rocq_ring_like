@@ -3790,6 +3790,18 @@ destruct zi12. {
       apply c_modulus_nonneg.
     }
     apply rngl_leb_le in Hzr1.
+    assert (H : (0 < Re z1)%L). {
+      apply rngl_le_neq.
+      split; [ easy | ].
+      intros H; rewrite <- H in Hs21.
+      apply (rngl_nle_gt Hor) in Hs21.
+      apply Hs21; clear Hs21.
+      rewrite (rngl_mul_0_l Hos).
+      apply (rngl_mul_nonneg_nonneg Hos Hor).
+      now apply rngl_lt_le_incl.
+      apply c_modulus_nonneg.
+    }
+    clear Hzr1; rename H into Hzr1.
 apply c_mul_is_small_bool_prop in Hs13.
 progress unfold c_mul_is_small_prop in Hs13.
 destruct Hs13 as [Hs13| Hs13]; [ easy | ].
@@ -3812,6 +3824,16 @@ rewrite H in Hs13; clear H.
     do 2 rewrite <- (rngl_mul_opp_r Hop).
     do 2 rewrite rngl_mul_add_distr_r.
     do 4 rewrite rngl_mul_assoc.
+    eapply (rngl_le_trans Hor). {
+      apply (rngl_add_le_mono_r Hos Hor).
+      apply (rngl_mul_le_mono_pos_r Hop Hiq Hto).
+      now apply c_modulus_pos.
+      rewrite <- rngl_mul_assoc.
+      apply (rngl_mul_le_mono_pos_l Hop Hiq Hto); [ easy | ].
+      apply rngl_lt_le_incl.
+      apply Hs13.
+    }
+(* pfff, chais pas si ça sert à quelque chose *)
 ...
     cbn in Hzi13.
     rewrite rngl_add_comm in Hzi13.
