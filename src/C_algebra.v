@@ -2068,6 +2068,20 @@ split; intros Hz. {
 }
 Qed.
 
+Theorem is_not_negative_real_bool_prop z :
+  is_negative_real z = false ↔ ¬ is_negative_real_prop z.
+Proof.
+split; intros Hz. {
+  apply Bool.not_true_iff_false in Hz.
+  intros H; apply Hz; clear Hz.
+  now apply is_negative_real_bool_prop.
+} {
+  apply Bool.not_true_iff_false.
+  intros H; apply Hz; clear Hz.
+  now apply is_negative_real_bool_prop.
+}
+Qed.
+
 Theorem c_sqrt_mul_when_Im_nonneg_nonneg :
   ∀ z₁ z₂,
   (0 ≤ Im z₁)%L
@@ -3855,6 +3869,31 @@ destruct zi12. {
     symmetry in Hzi1.
     destruct zi1. {
       apply rngl_leb_le in Hzi1.
+      remember (is_negative_real z1) as nr1 eqn:Hnr1.
+      remember (is_negative_real z3) as nr3 eqn:Hnr3.
+      symmetry in Hnr1, Hnr3.
+      destruct nr1. {
+        apply is_negative_real_bool_prop in Hnr1.
+        destruct nr3. {
+          apply is_negative_real_bool_prop in Hnr3.
+          now exfalso; apply Hs13.
+        }
+        destruct Hnr1 as (H1, H2).
+        clear Hzi1.
+        cbn in Hzi13.
+        rewrite H2, (rngl_mul_0_l Hos), rngl_add_0_l in Hzi13.
+        apply (rngl_nlt_ge Hor) in Hzi13.
+        apply (rngl_nlt_ge_iff Hto).
+        intros Hrr.
+        apply Hzi13; clear Hzi13.
+        apply (rngl_mul_neg_pos Hop Hiq Hor); [ easy | ].
+        apply rngl_le_neq.
+        split; [ easy | ].
+        intros Hi3z; symmetry in Hi3z.
+        apply Bool.andb_false_iff in Hnr3.
+        destruct Hnr3 as [Hr3z| H]; [ | now apply (rngl_eqb_neq Heo) in H ].
+        apply (rngl_ltb_ge_iff Hto) in Hr3z.
+        clear Hs13 Hzi3.
 ...
 (* AngleAddLeMonoL_3.v *)
 Theorem angle_add_le_mono_l_sin_lb_nonneg :

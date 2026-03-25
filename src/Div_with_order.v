@@ -949,6 +949,31 @@ apply (rngl_eq_mul_0_l Hos Hiq) in H. {
 }
 Qed.
 
+Theorem rngl_mul_neg_pos :
+  rngl_has_opp T = true →
+  rngl_has_inv_or_pdiv T = true →
+  rngl_is_ordered T = true →
+  ∀ a b, (a < 0 → 0 < b → a * b < 0)%L.
+Proof.
+intros Hop Hiq Hor.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+intros * Hza Hbz.
+apply rngl_le_neq.
+split. {
+  apply (rngl_mul_nonpos_nonneg Hop Hor).
+  now apply rngl_lt_le_incl.
+  now apply rngl_lt_le_incl.
+}
+intros H.
+apply (rngl_eq_mul_0_l Hos Hiq) in H. {
+  subst a.
+  now apply rngl_lt_irrefl in Hza.
+} {
+  intros H1; subst b.
+  now apply rngl_lt_irrefl in Hbz.
+}
+Qed.
+
 Theorem eq_rngl_add_square_0 :
   rngl_has_opp T = true →
   rngl_has_inv_or_pdiv T = true →
