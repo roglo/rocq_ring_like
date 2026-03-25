@@ -3824,24 +3824,37 @@ destruct zi12. {
       now apply mul_Re_mod_le_mul_Re_mod.
     }
     apply (rngl_leb_gt_iff Hto) in Hr2z.
-    destruct (rngl_leb_dec 0 (Re z1))%L as [Hzr1| Hzr1]; cycle 1. {
-      exfalso.
-      apply (rngl_leb_gt_iff Hto) in Hzr1.
-      apply (rngl_nle_gt Hor) in Hs21.
-      apply Hs21; clear Hs21.
-      apply (rngl_le_trans Hor _ 0). {
-        apply (rngl_mul_nonpos_nonneg Hop Hor).
-        now apply rngl_lt_le_incl.
-        apply c_modulus_nonneg.
-      }
-      apply (rngl_mul_nonneg_nonneg Hos Hor).
+    destruct (rngl_leb_dec 0 (Re z1))%L as [Hzr1| Hzr1]. {
+      apply rngl_leb_le in Hzr1.
+      apply (rngl_nle_gt Hor) in Hzi3.
+      now apply (c_mul_small_Im_mul_nonneg z1 z3) in Hzi13.
+    }
+    exfalso.
+    apply (rngl_leb_gt_iff Hto) in Hzr1.
+    apply (rngl_nle_gt Hor) in Hs21.
+    apply Hs21; clear Hs21.
+    apply (rngl_le_trans Hor _ 0). {
+      apply (rngl_mul_nonpos_nonneg Hop Hor).
       now apply rngl_lt_le_incl.
       apply c_modulus_nonneg.
     }
-    apply rngl_leb_le in Hzr1.
-    apply (rngl_nle_gt Hor) in Hzi3.
-    now apply (c_mul_small_Im_mul_nonneg z1 z3) in Hzi13.
+    apply (rngl_mul_nonneg_nonneg Hos Hor).
+    now apply rngl_lt_le_incl.
+    apply c_modulus_nonneg.
   }
+  apply rngl_leb_le in Hzi2.
+  destruct zi3. {
+    apply rngl_leb_le in Hzi3, Hz23.
+    progress unfold c_mul_is_small_prop in Hs13.
+    destruct Hs13 as [Hs13| Hs13]; [ easy | ].
+    destruct Hs13 as [Hs13| Hs13]; [ easy | ].
+    generalize Hzi3; intros H.
+    apply rngl_leb_le in H.
+    rewrite H in Hs13; clear H.
+    remember (0 ≤? Im z1)%L as zi1 eqn:Hzi1.
+    symmetry in Hzi1.
+    destruct zi1. {
+      apply rngl_leb_le in Hzi1.
 ...
 (* AngleAddLeMonoL_3.v *)
 Theorem angle_add_le_mono_l_sin_lb_nonneg :
