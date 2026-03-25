@@ -3472,6 +3472,57 @@ apply rngl_squ_sqrt.
 apply (rngl_add_squ_nonneg Hos Hto).
 Qed.
 
+Theorem c_mul_small_Im_mul_nonneg :
+  ∀ z1 z2,
+  z1 ≠ 0%C
+  → z2 ≠ 0%C
+  → c_mul_is_small z1 z2 = true
+  → (0 ≤ Im (z1 * z2))%L
+  → (0 ≤ Re z2)%L
+  → (0 ≤ Im z1)%L
+  → (0 ≤ Re z1)%L
+  → (0 ≤ Im z2)%L.
+Proof.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+intros * H1z H2z Hs12 Hzi12 Hzc2 Hzi1 Hzr1.
+apply c_mul_is_small_bool_prop in Hs12.
+progress unfold c_mul_is_small_prop in Hs12.
+destruct Hs12 as [Hs12| Hs12]; [ easy | ].
+destruct Hs12 as [Hs12| Hs12]; [ easy | ].
+generalize Hzi1; intros H.
+apply rngl_leb_le in H.
+rewrite H in Hs12; clear H.
+apply (rngl_nlt_ge_iff Hto).
+intros Hzi2.
+generalize Hzi2; intros H.
+apply (rngl_leb_gt Hor) in H.
+rewrite H in Hs12; clear H.
+apply (rngl_lt_lt_squ Hop Hiq Hto) in Hs12; [ | ring | ]; cycle 1. {
+  apply (rngl_mul_nonneg_nonneg Hos Hor); [ easy | ].
+  apply c_modulus_nonneg.
+}
+do 2 rewrite (rngl_squ_mul Hic) in Hs12.
+do 2 rewrite c_squ_modulus in Hs12.
+do 2 rewrite rngl_mul_add_distr_l in Hs12.
+rewrite (rngl_mul_comm Hic) in Hs12.
+apply (rngl_add_lt_mono_l Hos Hor) in Hs12.
+cbn in Hzi12.
+apply (rngl_nlt_ge Hor) in Hzi12.
+apply Hzi12; clear Hzi12.
+apply (rngl_lt_opp_r Hop Hor).
+rewrite <- (rngl_mul_opp_r Hop).
+apply (rngl_lt_squ_lt Hop Hiq Hto).
+now apply (rngl_mul_nonneg_nonneg Hos Hor).
+apply (rngl_mul_nonneg_nonneg Hos Hor); [ easy | ].
+apply (rngl_opp_nonneg_nonpos Hop Hor).
+now apply rngl_lt_le_incl.
+rewrite (rngl_mul_comm Hic).
+do 2 rewrite (rngl_squ_mul Hic).
+now rewrite (rngl_squ_opp Hop).
+Qed.
+
 (* to be completed
 Theorem c_seq_to_div_nat_is_Cauchy :
   rngl_is_archimedean T = true →
@@ -3753,18 +3804,6 @@ destruct zi12. {
     generalize Hzi2; intros H.
     apply (rngl_leb_gt Hor) in H.
     rewrite H in Hs21; clear H.
-(*
-    do 2 rewrite (c_modulus_mul Hic Hop Hto).
-    do 2 rewrite rngl_mul_assoc.
-    do 2 rewrite (rngl_mul_mul_swap Hic _ (‖ z1 ‖)).
-    apply (rngl_mul_le_mono_pos_r Hop Hiq Hto).
-    now apply c_modulus_pos.
-    cbn.
-    do 2 rewrite (rngl_mul_sub_distr_r Hop).
-    apply (rngl_le_sub_le_add_r Hop Hor).
-    rewrite <- (rngl_add_sub_swap Hop).
-    apply (rngl_le_add_le_sub_r Hop Hor).
-*)
     destruct (rngl_leb_dec (Re z2) 0)%L as [Hr2z| Hr2z]. {
       apply rngl_leb_le in Hr2z.
       exfalso.
@@ -3800,119 +3839,9 @@ destruct zi12. {
       apply c_modulus_nonneg.
     }
     apply rngl_leb_le in Hzr1.
-(*
-    assert (H : (0 < Re z1)%L). {
-      apply rngl_le_neq.
-      split; [ easy | ].
-      intros H; rewrite <- H in Hs21.
-      apply (rngl_nle_gt Hor) in Hs21.
-      apply Hs21; clear Hs21.
-      rewrite (rngl_mul_0_l Hos).
-      apply (rngl_mul_nonneg_nonneg Hos Hor).
-      now apply rngl_lt_le_incl.
-      apply c_modulus_nonneg.
-    }
-*)
-    exfalso.
-(*
-    clear Hzr1; rename H into Hzr1.
-*)
-clear - Hs13 Hto H1z H3z Hzi1 Hzi3 Hor Hop Hiq Hic Hos Hzc3 Hzi13 Hzr1.
-    apply c_mul_is_small_bool_prop in Hs13.
-    progress unfold c_mul_is_small_prop in Hs13.
-    destruct Hs13 as [Hs13| Hs13]; [ easy | ].
-    destruct Hs13 as [Hs13| Hs13]; [ easy | ].
-    generalize Hzi1; intros H.
-    apply rngl_leb_le in H.
-    rewrite H in Hs13; clear H.
-    generalize Hzi3; intros H.
-    apply (rngl_leb_gt Hor) in H.
-    rewrite H in Hs13; clear H.
-    apply (rngl_lt_lt_squ Hop Hiq Hto) in Hs13; [ | ring | ]; cycle 1. {
-      apply (rngl_mul_nonneg_nonneg Hos Hor); [ easy | ].
-      apply c_modulus_nonneg.
-    }
-    do 2 rewrite (rngl_squ_mul Hic) in Hs13.
-    do 2 rewrite c_squ_modulus in Hs13.
-    do 2 rewrite rngl_mul_add_distr_l in Hs13.
-    rewrite (rngl_mul_comm Hic) in Hs13.
-    apply (rngl_add_lt_mono_l Hos Hor) in Hs13.
-    cbn in Hzi13.
-    apply (rngl_nlt_ge Hor) in Hzi13.
-    apply Hzi13; clear Hzi13.
-    apply (rngl_lt_opp_r Hop Hor).
-    rewrite <- (rngl_mul_opp_r Hop).
-    apply (rngl_lt_squ_lt Hop Hiq Hto).
-    now apply (rngl_mul_nonneg_nonneg Hos Hor).
-    apply (rngl_mul_nonneg_nonneg Hos Hor); [ easy | ].
-    apply (rngl_opp_nonneg_nonpos Hop Hor).
-    now apply rngl_lt_le_incl.
-    rewrite (rngl_mul_comm Hic).
-    do 2 rewrite (rngl_squ_mul Hic).
-    now rewrite (rngl_squ_opp Hop).
+    apply (rngl_nle_gt Hor) in Hzi3.
+    now apply (c_mul_small_Im_mul_nonneg z1 z3) in Hzi13.
   }
-...
-    do 2 rewrite (c_modulus_mul Hic Hop Hto).
-(*
-    do 2 rewrite rngl_mul_assoc.
-    do 2 rewrite (rngl_mul_mul_swap Hic _ (‖ z1 ‖)).
-    apply (rngl_mul_le_mono_pos_r Hop Hiq Hto).
-    now apply c_modulus_pos.
-*)
-    cbn.
-    do 2 rewrite <- (rngl_add_opp_r Hop).
-    do 2 rewrite <- (rngl_mul_opp_r Hop).
-    do 2 rewrite rngl_mul_add_distr_r.
-    do 4 rewrite rngl_mul_assoc.
-    eapply (rngl_le_trans Hor). {
-      apply (rngl_add_le_mono_r Hos Hor).
-      apply (rngl_mul_le_mono_pos_r Hop Hiq Hto).
-      now apply c_modulus_pos.
-      rewrite <- rngl_mul_assoc.
-      apply (rngl_mul_le_mono_pos_l Hop Hiq Hto); [ easy | ].
-      apply rngl_lt_le_incl.
-      apply Hs13.
-    }
-(* pfff, chais pas si ça sert à quelque chose *)
-...
-    cbn in Hzi13.
-    rewrite rngl_add_comm in Hzi13.
-    apply (rngl_le_opp_l Hop Hor) in Hzi13.
-    rewrite <- (rngl_mul_opp_r Hop) in Hzi13.
-    cbn in Hzi12.
-    rewrite rngl_add_comm in Hzi12.
-    apply (rngl_le_opp_l Hop Hor) in Hzi12.
-    rewrite <- (rngl_mul_opp_r Hop) in Hzi12.
-...
-(**)
-...
-(* mouais, bof *)
-(* AngleAddLeMono_prop.v *)
-Theorem angle_add_le_mono_l_lemma_3 :
-  ∀ α1 α2 α3,
-  angle_add_overflow α1 α3 = false
-  → (0 ≤ rngl_sin α2)%L
-  → (0 ≤ rngl_sin α3)%L
-  → (0 ≤ rngl_sin (α1 + α2))%L
-  → (0 ≤ rngl_sin (α1 + α3))%L
-  → (rngl_cos α3 ≤ rngl_cos α2)%L
-  → (rngl_cos (α1 + α3) ≤ rngl_cos (α1 + α2))%L.
-Proof.
-...
-  apply angle_add_le_mono_l_lemma_3; try easy. {
-    apply angle_add_overflow_le with (α2 := (α3 - π/₂)%A); try easy.
-...
-    apply (rngl_mul_le_mono_pos_l Hop Hiq Hto (Re z1)); [ | ].
-    rewrite rngl_mul_add_distr_l.
-    eapply (rngl_le_trans Hor). {
-      apply (rngl_add_le_mono_l Hos Hor).
-      rewrite rngl_mul_assoc.
-      rewrite (rngl_mul_mul_swap Hic).
-      apply (rngl_mul_le_mono_pos_r Hop Hiq Hto). {
-        apply rngl_le_neq.
-        split. {
-          apply (rngl_mul_nonneg_nonneg Hos Hor); [ easy | ].
-
 ...
 (* AngleAddLeMonoL_3.v *)
 Theorem angle_add_le_mono_l_sin_lb_nonneg :
