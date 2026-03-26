@@ -3941,6 +3941,42 @@ destruct zi12. {
         now apply c_modulus_pos.
         rewrite c_modulus_when_Im_0 in Hrr; [ | easy ].
         rewrite c_modulus_when_Im_0 in Hrr; [ | easy ].
+        clear Hzi12.
+        rewrite (rngl_mul_comm Hic) in Hrr.
+        destruct (rngl_ltb_dec 0 (Re z2)) as [Hzr2| Hzr2]. {
+          apply (rngl_ltb_lt Heo) in Hzr2.
+          rewrite (rngl_abs_nonneg_eq Hop Hor) in Hrr; cycle 1.
+          now apply rngl_lt_le_incl.
+          apply (rngl_mul_lt_mono_pos_l Hop Hiq Hto) in Hrr; [ | easy ].
+          apply (rngl_nle_gt Hor) in Hrr.
+          apply Hrr; clear Hrr.
+          (* lemma *)
+          apply -> (rngl_abs_le Hop Hto).
+          split; [ | apply (rngl_le_refl Hor) ].
+          apply (rngl_le_trans Hor _ 0); [ | easy ].
+          now apply (rngl_le_opp_0 Hop Hor).
+        }
+        apply (rngl_ltb_ge_iff Hto) in Hzr2.
+        destruct (rngl_ltb_dec (Re z2) 0) as [Hr2z| Hr2z]. {
+          apply (rngl_ltb_lt Heo) in Hr2z.
+          rewrite (rngl_abs_nonpos_eq Hop Hto) in Hrr; [ | easy ].
+          rewrite (rngl_mul_opp_l Hop) in Hrr.
+          rewrite <- (rngl_mul_opp_r Hop) in Hrr.
+          apply (rngl_opp_lt_compat Hop Hor) in Hrr.
+          do 2 rewrite <- (rngl_mul_opp_l Hop) in Hrr.
+          apply (rngl_mul_lt_mono_pos_l Hop Hiq Hto) in Hrr; cycle 1.
+          now apply (rngl_lt_0_opp Hop Hor).
+          apply (rngl_nle_gt Hor) in Hrr.
+          apply Hrr; clear Hrr.
+          apply (rngl_le_opp_abs_diag Hop Hto).
+        }
+        apply (rngl_ltb_ge_iff Hto) in Hr2z.
+        apply (rngl_le_antisymm Hor) in Hr2z; [ | easy ].
+        rewrite Hr2z in Hrr.
+        rewrite (rngl_abs_0 Hop) in Hrr.
+        do 2 rewrite (rngl_mul_0_l Hos) in Hrr.
+        now apply rngl_lt_irrefl in Hrr.
+      }
 ...
 (* AngleAddLeMonoL_3.v *)
 Theorem angle_add_le_mono_l_sin_lb_nonneg :
