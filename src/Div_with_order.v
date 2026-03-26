@@ -1137,8 +1137,8 @@ intros Hop Hiq Hor.
 intros * Haz Hbz.
 rewrite <- (rngl_mul_opp_opp Hop).
 apply (rngl_mul_pos_pos Hop Hiq Hor).
-now apply (rngl_opp_pos_neg Hop Hor).
-now apply (rngl_opp_pos_neg Hop Hor).
+now apply (rngl_lt_0_opp Hop Hor).
+now apply (rngl_lt_0_opp Hop Hor).
 Qed.
 
 Theorem rngl_mul_lt_mono_nonneg :

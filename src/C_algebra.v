@@ -3911,8 +3911,12 @@ destruct zi12. {
         do 2 rewrite (rngl_sub_0_r Hos) in Hrr.
         do 2 rewrite (c_modulus_mul Hic Hop Hto) in Hrr.
         do 2 rewrite <- rngl_mul_assoc in Hrr.
-(* bon, chais pas *)
-        apply (rngl_mul_lt_mono_pos_l Hop Hiq Hto) in Hrr.
+        apply (rngl_opp_lt_compat Hop Hor) in Hrr.
+        do 2 rewrite <- (rngl_mul_opp_l Hop (Re z1)) in Hrr.
+        apply (rngl_mul_lt_mono_pos_l Hop Hiq Hto) in Hrr; cycle 1.
+Search (0 < - _)%L.
+now apply (rngl_lt_0_opp Hop Hor).
+About rngl_lt_0_opp.
 ...
 (* AngleAddLeMonoL_3.v *)
 Theorem angle_add_le_mono_l_sin_lb_nonneg :

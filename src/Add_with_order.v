@@ -321,7 +321,7 @@ split; intros Ha. {
 }
 Qed.
 
-Theorem rngl_opp_pos_neg :
+Theorem rngl_lt_0_opp :
   rngl_has_opp T = true →
   rngl_is_ordered T = true →
   ∀ a, (0 < - a)%L ↔ (a < 0)%L.

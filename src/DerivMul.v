@@ -322,7 +322,7 @@ destruct b. {
         eapply (rngl_le_trans Hor). {
           apply (rngl_mul_le_mono_pos_l Hop Hiq Hto). {
             rewrite <- (rngl_opp_add_distr Hop).
-            apply (rngl_opp_pos_neg Hop Hor).
+            apply (rngl_lt_0_opp Hop Hor).
             rewrite <- (rngl_mul_2_l).
             apply (rngl_mul_pos_neg Hop Hiq Hor); [ easy | ].
             now apply rngl_le_neq.
@@ -404,7 +404,7 @@ destruct b. {
         eapply (rngl_le_trans Hor). {
           apply (rngl_mul_le_mono_pos_l Hop Hiq Hto). {
             rewrite <- (rngl_opp_add_distr Hop).
-            apply (rngl_opp_pos_neg Hop Hor).
+            apply (rngl_lt_0_opp Hop Hor).
             rewrite <- (rngl_mul_2_l).
             apply (rngl_mul_pos_neg Hop Hiq Hor); [ easy | ].
             now apply rngl_le_neq.
