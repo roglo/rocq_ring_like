@@ -310,7 +310,7 @@ Proof.
 intros Hop Hto.
 specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
-apply (rngl_opp_nonpos_nonneg Hop Hor).
+apply (rngl_le_opp_0 Hop Hor).
 apply (rngl_0_le_1 Hos Hto).
 Qed.
 

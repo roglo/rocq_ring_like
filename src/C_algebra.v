@@ -1907,7 +1907,7 @@ split. {
     apply (f_equal rngl_opp) in Hz.
     rewrite (rngl_opp_involutive Hop) in Hz.
     rewrite <- Hz.
-    apply (rngl_opp_nonpos_nonneg Hop Hor).
+    apply (rngl_le_opp_0 Hop Hor).
     apply (c_modulus_sub_re_div_2_nonneg Hop Hiv Hto).
   }
   apply (f_equal (rngl_mul 2)) in Hz.
@@ -3905,6 +3905,26 @@ destruct zi12. {
         apply (rngl_mul_le_mono_pos_r Hop Hiq Hto) in Hz23; cycle 1.
         apply rngl_le_neq.
         split; [ easy | now symmetry ].
+        assert (Hi2z : Im z2 = 0%L). {
+          apply (rngl_le_le_squ Hop Hto) in Hz23; cycle 1.
+          apply c_modulus_nonneg.
+          rewrite c_squ_modulus in Hz23.
+          apply (rngl_le_add_le_sub_l Hop Hor) in Hz23.
+          rewrite (rngl_sub_diag Hos) in Hz23.
+          rewrite <- (rngl_squ_0 Hos) in Hz23.
+          apply (rngl_squ_le_abs_le Hop Hiq Hto) in Hz23.
+          rewrite (rngl_abs_0 Hop) in Hz23.
+          progress unfold rngl_abs in Hz23.
+          remember (Im z2 ≤? 0)%L as iz2 eqn:Hiz2.
+          symmetry in Hiz2.
+          destruct iz2. {
+            apply rngl_leb_le in Hiz2.
+Search (- _ ≤ 0)%L.
+About rngl_le_opp_0.
+            apply (rngl_le_opp_0) in Hiz2.
+...
+          apply (rngl_le_squ_le Hop Hiq Hto) in Hz23.
+...
         cbn in Hrr.
         rewrite H2, Hi3z in Hrr.
         do 2 rewrite (rngl_mul_0_l Hos) in Hrr.
@@ -3914,9 +3934,13 @@ destruct zi12. {
         apply (rngl_opp_lt_compat Hop Hor) in Hrr.
         do 2 rewrite <- (rngl_mul_opp_l Hop (Re z1)) in Hrr.
         apply (rngl_mul_lt_mono_pos_l Hop Hiq Hto) in Hrr; cycle 1.
-Search (0 < - _)%L.
-now apply (rngl_lt_0_opp Hop Hor).
-About rngl_lt_0_opp.
+        now apply (rngl_lt_0_opp Hop Hor).
+        do 2 rewrite (rngl_mul_comm Hic (‖ z1 ‖)) in Hrr.
+        do 2 rewrite rngl_mul_assoc in Hrr.
+        apply (rngl_mul_lt_mono_pos_r Hop Hiq Hto) in Hrr; cycle 1.
+        now apply c_modulus_pos.
+        rewrite c_modulus_when_Im_0 in Hrr; cycle 1.
+Search (_² ≤ _²).
 ...
 (* AngleAddLeMonoL_3.v *)
 Theorem angle_add_le_mono_l_sin_lb_nonneg :

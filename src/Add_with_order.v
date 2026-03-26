@@ -336,7 +336,7 @@ split; intros Ha. {
 }
 Qed.
 
-Theorem rngl_opp_nonpos_nonneg :
+Theorem rngl_le_opp_0 :
   rngl_has_opp T = true →
   rngl_is_ordered T = true →
   ∀ a, (- a ≤ 0)%L ↔ (0 ≤ a)%L.
@@ -1053,7 +1053,7 @@ symmetry in Ha.
 destruct az; [ now apply rngl_leb_le in Ha | ].
 apply (rngl_leb_gt_iff Hto) in Ha.
 rewrite Haz.
-apply (rngl_opp_nonpos_nonneg Hop Hor).
+apply (rngl_le_opp_0 Hop Hor).
 now apply rngl_lt_le_incl.
 Qed.
 
