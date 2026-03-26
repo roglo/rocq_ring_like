@@ -3894,6 +3894,25 @@ destruct zi12. {
         destruct Hnr3 as [Hr3z| H]; [ | now apply (rngl_eqb_neq Heo) in H ].
         apply (rngl_ltb_ge_iff Hto) in Hr3z.
         clear Hs13 Hzi3.
+        rewrite (c_modulus_when_Im_0 z3) in Hz23; [ | easy ].
+        rewrite (rngl_abs_nonneg_eq Hop Hor) in Hz23; [ | easy ].
+        rewrite (rngl_mul_comm Hic) in Hz23.
+        destruct (rngl_eqb_dec (Re z3) 0) as [Hrz3| Hrz3]. {
+          apply (rngl_eqb_eq Heo) in Hrz3.
+          now apply H3z, eq_c_eq.
+        }
+        apply (rngl_eqb_neq Heo) in Hrz3.
+        apply (rngl_mul_le_mono_pos_r Hop Hiq Hto) in Hz23; cycle 1.
+        apply rngl_le_neq.
+        split; [ easy | now symmetry ].
+        cbn in Hrr.
+        rewrite H2, Hi3z in Hrr.
+        do 2 rewrite (rngl_mul_0_l Hos) in Hrr.
+        do 2 rewrite (rngl_sub_0_r Hos) in Hrr.
+        do 2 rewrite (c_modulus_mul Hic Hop Hto) in Hrr.
+        do 2 rewrite <- rngl_mul_assoc in Hrr.
+(* bon, chais pas *)
+        apply (rngl_mul_lt_mono_pos_l Hop Hiq Hto) in Hrr.
 ...
 (* AngleAddLeMonoL_3.v *)
 Theorem angle_add_le_mono_l_sin_lb_nonneg :
