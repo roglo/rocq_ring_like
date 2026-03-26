@@ -3919,12 +3919,12 @@ destruct zi12. {
           symmetry in Hiz2.
           destruct iz2. {
             apply rngl_leb_le in Hiz2.
-Search (- _ ≤ 0)%L.
-About rngl_le_opp_0.
-            apply (rngl_le_opp_0) in Hiz2.
-...
-          apply (rngl_le_squ_le Hop Hiq Hto) in Hz23.
-...
+            apply (rngl_le_opp_0 Hop Hor) in Hz23.
+            now apply (rngl_le_antisymm Hor).
+          }
+          now apply rngl_leb_nle in Hiz2.
+        }
+        clear Hz23 Hzi2.
         cbn in Hrr.
         rewrite H2, Hi3z in Hrr.
         do 2 rewrite (rngl_mul_0_l Hos) in Hrr.
@@ -3939,8 +3939,8 @@ About rngl_le_opp_0.
         do 2 rewrite rngl_mul_assoc in Hrr.
         apply (rngl_mul_lt_mono_pos_r Hop Hiq Hto) in Hrr; cycle 1.
         now apply c_modulus_pos.
-        rewrite c_modulus_when_Im_0 in Hrr; cycle 1.
-Search (_² ≤ _²).
+        rewrite c_modulus_when_Im_0 in Hrr; [ | easy ].
+        rewrite c_modulus_when_Im_0 in Hrr; [ | easy ].
 ...
 (* AngleAddLeMonoL_3.v *)
 Theorem angle_add_le_mono_l_sin_lb_nonneg :
