@@ -3870,16 +3870,18 @@ destruct zi12. {
     destruct zi1. {
       apply rngl_leb_le in Hzi1.
       remember (is_negative_real z1) as nr1 eqn:Hnr1.
-      remember (is_negative_real z3) as nr3 eqn:Hnr3.
-      symmetry in Hnr1, Hnr3.
+      symmetry in Hnr1.
       destruct nr1. {
-        apply is_negative_real_bool_prop in Hnr1.
+        remember (is_negative_real z3) as nr3 eqn:Hnr3.
+        symmetry in Hnr3.
         destruct nr3. {
-          apply is_negative_real_bool_prop in Hnr3.
+          apply is_negative_real_bool_prop in Hnr1, Hnr3.
           now exfalso; apply Hs13.
         }
+clear - Hnr1 Hnr3 Hto Hzi13 Hos Hor Hop Hiq Hzi3 Heo Hz23 Hic H3z Hiv H1z.
+move H1z after H3z.
+        apply is_negative_real_bool_prop in Hnr1.
         destruct Hnr1 as (H1, H2).
-        clear Hzi1.
         cbn in Hzi13.
         rewrite H2, (rngl_mul_0_l Hos), rngl_add_0_l in Hzi13.
         apply (rngl_nlt_ge Hor) in Hzi13.
@@ -3893,7 +3895,6 @@ destruct zi12. {
         apply Bool.andb_false_iff in Hnr3.
         destruct Hnr3 as [Hr3z| H]; [ | now apply (rngl_eqb_neq Heo) in H ].
         apply (rngl_ltb_ge_iff Hto) in Hr3z.
-        clear Hs13 Hzi3.
         rewrite (c_modulus_when_Im_0 z3) in Hz23; [ | easy ].
         rewrite (rngl_abs_nonneg_eq Hop Hor) in Hz23; [ | easy ].
         rewrite (rngl_mul_comm Hic) in Hz23.
@@ -3924,7 +3925,6 @@ destruct zi12. {
           }
           now apply rngl_leb_nle in Hiz2.
         }
-        clear Hz23 Hzi2.
         cbn in Hrr.
         rewrite H2, Hi3z in Hrr.
         do 2 rewrite (rngl_mul_0_l Hos) in Hrr.
@@ -3941,7 +3941,6 @@ destruct zi12. {
         now apply c_modulus_pos.
         rewrite c_modulus_when_Im_0 in Hrr; [ | easy ].
         rewrite c_modulus_when_Im_0 in Hrr; [ | easy ].
-        clear Hzi12.
         rewrite (rngl_mul_comm Hic) in Hrr.
         destruct (rngl_ltb_dec 0 (Re z2)) as [Hzr2| Hzr2]. {
           apply (rngl_ltb_lt Heo) in Hzr2.
@@ -3976,6 +3975,7 @@ destruct zi12. {
         rewrite (rngl_abs_0 Hop) in Hrr.
         do 2 rewrite (rngl_mul_0_l Hos) in Hrr.
         now apply rngl_lt_irrefl in Hrr.
+...
       }
       clear Hs13.
 (* pfff... chais pas... faut-il que je teste nr3 ou bien que
