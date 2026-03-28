@@ -3977,6 +3977,9 @@ destruct zi12. {
         do 2 rewrite (rngl_mul_0_l Hos) in Hrr.
         now apply rngl_lt_irrefl in Hrr.
       }
+      clear Hs13.
+(* pfff... chais pas... faut-il que je teste nr3 ou bien que
+   je décompose Hnr1 ? *)
 ...
 (* AngleAddLeMonoL_3.v *)
 Theorem angle_add_le_mono_l_sin_lb_nonneg :
