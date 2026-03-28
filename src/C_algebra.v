@@ -3880,8 +3880,23 @@ destruct zi12. {
         }
 clear - Hnr1 Hnr3 Hto Hzi13 Hos Hor Hop Hiq Hzi3 Heo Hz23 Hic H3z Hiv H1z.
 move H1z after H3z.
-        apply is_negative_real_bool_prop in Hnr1.
-        destruct Hnr1 as (H1, H2).
+cbn.
+generalize Hnr1; intros H.
+        apply is_negative_real_bool_prop in H.
+        destruct H as (H1, H2).
+rewrite H2.
+do 2 rewrite (rngl_mul_0_l Hos), (rngl_sub_0_r Hos).
+do 2 rewrite (c_modulus_mul Hic Hop Hto).
+do 2 rewrite <- rngl_mul_assoc.
+apply (rngl_opp_le_compat Hop Hor).
+do 2 rewrite <- (rngl_mul_opp_l Hop (Re z1)).
+apply (rngl_mul_le_mono_pos_l Hop Hiq Hto).
+now apply (rngl_lt_0_opp Hop Hor).
+do 2 rewrite (rngl_mul_comm Hic (‖ z1 ‖)).
+do 2 rewrite rngl_mul_assoc.
+apply (rngl_mul_le_mono_pos_r Hop Hiq Hto).
+now apply c_modulus_pos.
+clear Hnr1.
         cbn in Hzi13.
         rewrite H2, (rngl_mul_0_l Hos), rngl_add_0_l in Hzi13.
         apply (rngl_nlt_ge Hor) in Hzi13.
@@ -3925,20 +3940,6 @@ move H1z after H3z.
           }
           now apply rngl_leb_nle in Hiz2.
         }
-        cbn in Hrr.
-        rewrite H2, Hi3z in Hrr.
-        do 2 rewrite (rngl_mul_0_l Hos) in Hrr.
-        do 2 rewrite (rngl_sub_0_r Hos) in Hrr.
-        do 2 rewrite (c_modulus_mul Hic Hop Hto) in Hrr.
-        do 2 rewrite <- rngl_mul_assoc in Hrr.
-        apply (rngl_opp_lt_compat Hop Hor) in Hrr.
-        do 2 rewrite <- (rngl_mul_opp_l Hop (Re z1)) in Hrr.
-        apply (rngl_mul_lt_mono_pos_l Hop Hiq Hto) in Hrr; cycle 1.
-        now apply (rngl_lt_0_opp Hop Hor).
-        do 2 rewrite (rngl_mul_comm Hic (‖ z1 ‖)) in Hrr.
-        do 2 rewrite rngl_mul_assoc in Hrr.
-        apply (rngl_mul_lt_mono_pos_r Hop Hiq Hto) in Hrr; cycle 1.
-        now apply c_modulus_pos.
         rewrite c_modulus_when_Im_0 in Hrr; [ | easy ].
         rewrite c_modulus_when_Im_0 in Hrr; [ | easy ].
         rewrite (rngl_mul_comm Hic) in Hrr.
