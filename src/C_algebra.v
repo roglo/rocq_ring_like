@@ -3896,7 +3896,14 @@ do 2 rewrite (rngl_mul_comm Hic (‖ z1 ‖)).
 do 2 rewrite rngl_mul_assoc.
 apply (rngl_mul_le_mono_pos_r Hop Hiq Hto).
 now apply c_modulus_pos.
-clear Hnr1.
+clear H1 H2.
+(**)
+(* bizarre, il y a a ≤ b dans les hypothèses et b ≤ a dans la
+   conclusion : peut-on faire un théorème sérieux avec ça ? *)
+...
+generalize Hnr1; intros H.
+        apply is_negative_real_bool_prop in H.
+        destruct H as (H1, H2).
         cbn in Hzi13.
         rewrite H2, (rngl_mul_0_l Hos), rngl_add_0_l in Hzi13.
         apply (rngl_nlt_ge Hor) in Hzi13.
