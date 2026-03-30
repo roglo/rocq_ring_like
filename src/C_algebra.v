@@ -3968,8 +3968,12 @@ destruct zi12. {
         generalize Hnr1; intros H.
         now apply is_negative_real_bool_prop in H.
         now apply (mul_Re_mod_le_mul_Re_mod_2 z1).
-      } {
-        apply is_not_negative_real_if in Hnr1.
+      }
+      clear Hs13.
+      do 2 rewrite (rngl_mul_sub_distr_r Hop).
+      apply (rngl_le_add_le_sub_l Hop Hor).
+      rewrite (rngl_add_sub_assoc Hop).
+      apply (rngl_le_sub_le_add_l Hop Hor).
 ...
         rewrite H2.
         do 2 rewrite (rngl_mul_0_l Hos), (rngl_sub_0_r Hos).
