@@ -2082,6 +2082,27 @@ split; intros Hz. {
 }
 Qed.
 
+Theorem is_not_negative_real_if z :
+  is_negative_real z = false → (0 ≤ Re z)%L ∨ Im z ≠ 0%L.
+Proof.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
+intros * Hnr.
+apply is_not_negative_real_bool_prop in Hnr.
+progress unfold is_negative_real_prop in Hnr.
+apply Decidable.not_and in Hnr; cycle 1. {
+  progress unfold Decidable.decidable.
+  destruct (rngl_ltb_dec (Re z) 0) as [H1| H1]. {
+    apply (rngl_ltb_lt Heo) in H1.
+    now left.
+  }
+  apply (rngl_ltb_nlt Heo) in H1.
+  now right.
+}
+destruct Hnr; [ left | now right ].
+now apply (rngl_nlt_ge_iff Hto).
+Qed.
+
 Theorem c_sqrt_mul_when_Im_nonneg_nonneg :
   ∀ z₁ z₂,
   (0 ≤ Im z₁)%L
@@ -3354,7 +3375,7 @@ Theorem mul_Re_mod_le_mul_Re_mod :
   → (Re z1 ≤ 0)%L
   → (Re z2 ≤ 0)%L
   → (Im z2 ≤ 0)%L
-  → (0 ≤ Im z1 * Re z2 + Re z1 * Im z2)%L
+  → (0 ≤ Im (z1 * z2))%L
   → (Re z1 * ‖ z2 ‖ ≤ Re z2 * ‖ z1 ‖)%L.
 Proof.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
@@ -3403,6 +3424,54 @@ rewrite (rngl_mul_opp_l Hop).
 rewrite (rngl_mul_opp_opp Hop).
 apply (rngl_le_opp_l Hop Hor).
 now rewrite (rngl_mul_comm Hic).
+Qed.
+
+Theorem mul_Re_mod_le_mul_Re_mod_2 :
+  ∀ z1 z2 z3,
+  (0 ≤ Im z3)%L
+  → (0 ≤ Im (z1 * z3))%L
+  → is_negative_real z1 = true
+  → is_negative_real z3 = false
+  → (Re z2 * ‖ z3 ‖ ≤ Re z3 * ‖ z2 ‖)%L.
+Proof.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
+specialize (rngl_int_dom_or_inv_pdiv Hiv) as Hii.
+intros * Hzi3 Hzi13 Hnr1 Hnr3.
+destruct (c_eq_dec Heo z3 0) as [H3z| H3z]. {
+  subst z3.
+  rewrite (c_modulus_0 Hop Hii Hto).
+  rewrite (rngl_mul_0_r Hos), (rngl_mul_0_l Hos).
+  apply (rngl_le_refl Hor).
+}
+generalize Hnr1; intros H.
+apply is_negative_real_bool_prop in H.
+destruct H as (H1, H2).
+cbn in Hzi13.
+rewrite H2, (rngl_mul_0_l Hos), rngl_add_0_l in Hzi13.
+apply (rngl_nlt_ge Hor) in Hzi13.
+apply (rngl_nlt_ge_iff Hto).
+intros Hrr.
+apply Hzi13; clear Hzi13.
+apply (rngl_mul_neg_pos Hop Hiq Hor); [ easy | ].
+apply rngl_le_neq.
+split; [ easy | ].
+intros Hi3z; symmetry in Hi3z.
+apply Bool.andb_false_iff in Hnr3.
+destruct Hnr3 as [Hr3z| H]; [ | now apply (rngl_eqb_neq Heo) in H ].
+apply (rngl_ltb_ge_iff Hto) in Hr3z.
+rewrite (c_modulus_when_Im_0 z3) in Hrr; [ | easy ].
+rewrite (rngl_abs_nonneg_eq Hop Hor) in Hrr; [ | easy ].
+rewrite (rngl_mul_comm Hic) in Hrr.
+apply (rngl_mul_lt_mono_pos_r Hop Hiq Hto) in Hrr; cycle 1.
+apply rngl_le_neq.
+split; [ easy | ].
+intros H3; symmetry in H3.
+now apply H3z, eq_c_eq.
+apply (rngl_nle_gt Hor) in Hrr.
+apply Hrr, Re_bound.
 Qed.
 
 Theorem Im_mul_nonneg_c_mul_is_not_small :
@@ -3869,6 +3938,12 @@ destruct zi12. {
     symmetry in Hzi1.
     destruct zi1. {
       apply rngl_leb_le in Hzi1.
+      do 2 rewrite (c_modulus_mul Hic Hop Hto).
+      do 2 rewrite (rngl_mul_comm Hic (c_modulus z1)).
+      do 2 rewrite rngl_mul_assoc.
+      apply (rngl_mul_le_mono_nonneg_r Hop Hor).
+      apply c_modulus_nonneg.
+      cbn.
       remember (is_negative_real z1) as nr1 eqn:Hnr1.
       symmetry in Hnr1.
       destruct nr1. {
@@ -3880,63 +3955,37 @@ destruct zi12. {
         }
         clear - Hnr1 Hnr3 Hto Hzi13 Hos Hor Hop Hiq Hzi3 Heo Hic H3z Hiv H1z Hii.
         move H1z after H3z.
-        cbn.
         generalize Hnr1; intros H.
         apply is_negative_real_bool_prop in H.
         destruct H as (H1, H2).
         rewrite H2.
         do 2 rewrite (rngl_mul_0_l Hos), (rngl_sub_0_r Hos).
-        do 2 rewrite (c_modulus_mul Hic Hop Hto).
         do 2 rewrite <- rngl_mul_assoc.
         apply (rngl_opp_le_compat Hop Hor).
         do 2 rewrite <- (rngl_mul_opp_l Hop (Re z1)).
         apply (rngl_mul_le_mono_pos_l Hop Hiq Hto).
-        now apply (rngl_lt_0_opp Hop Hor).
-        do 2 rewrite (rngl_mul_comm Hic (‖ z1 ‖)).
-        do 2 rewrite rngl_mul_assoc.
-        apply (rngl_mul_le_mono_pos_r Hop Hiq Hto).
-        now apply c_modulus_pos.
-        clear H1 H2.
-clear - Hnr1 Hto Hzi13 Hos Hor Hop Hiq Hzi3 Hnr3 Heo Hic Hiv Hii.
-(**)
-...
-destruct (c_eq_dec Heo z3 0) as [H3z| H3z]. {
-  subst z3.
-  rewrite (c_modulus_0 Hop Hii Hto).
-  rewrite (rngl_mul_0_r Hos), (rngl_mul_0_l Hos).
-  apply (rngl_le_refl Hor).
-}
+        apply (rngl_lt_0_opp Hop Hor).
         generalize Hnr1; intros H.
-        apply is_negative_real_bool_prop in H.
-        destruct H as (H1, H2).
-        cbn in Hzi13.
-        rewrite H2, (rngl_mul_0_l Hos), rngl_add_0_l in Hzi13.
-        apply (rngl_nlt_ge Hor) in Hzi13.
-        apply (rngl_nlt_ge_iff Hto).
-        intros Hrr.
-        apply Hzi13; clear Hzi13.
-        apply (rngl_mul_neg_pos Hop Hiq Hor); [ easy | ].
-        apply rngl_le_neq.
-        split; [ easy | ].
-        intros Hi3z; symmetry in Hi3z.
-        apply Bool.andb_false_iff in Hnr3.
-        destruct Hnr3 as [Hr3z| H]; [ | now apply (rngl_eqb_neq Heo) in H ].
-        apply (rngl_ltb_ge_iff Hto) in Hr3z.
-        rewrite (c_modulus_when_Im_0 z3) in Hrr; [ | easy ].
-        rewrite (rngl_abs_nonneg_eq Hop Hor) in Hrr; [ | easy ].
-        rewrite (rngl_mul_comm Hic) in Hrr.
-        apply (rngl_mul_lt_mono_pos_r Hop Hiq Hto) in Hrr; cycle 1.
-        apply rngl_le_neq.
-        split; [ easy | ].
-        intros H3; symmetry in H3.
-        now apply H3z, eq_c_eq.
-        apply (rngl_nle_gt Hor) in Hrr.
-        apply Hrr, Re_bound.
+        now apply is_negative_real_bool_prop in H.
+        now apply (mul_Re_mod_le_mul_Re_mod_2 z1).
+      } {
+        apply is_not_negative_real_if in Hnr1.
 ...
-      }
-      clear Hs13.
-(* pfff... chais pas... faut-il que je teste nr3 ou bien que
-   je décompose Hnr1 ? *)
+        rewrite H2.
+        do 2 rewrite (rngl_mul_0_l Hos), (rngl_sub_0_r Hos).
+        do 2 rewrite (c_modulus_mul Hic Hop Hto).
+        do 2 rewrite (rngl_mul_comm Hic (c_modulus z1)).
+        do 2 rewrite rngl_mul_assoc.
+        apply (rngl_mul_le_mono_nonneg_r Hop Hor).
+        apply c_modulus_nonneg.
+        remember (is_negative_real z3) as nr3 eqn:Hnr3.
+        symmetry in Hnr3.
+        destruct nr3. {
+          apply is_negative_real_bool_prop in Hnr1, Hnr3.
+          now exfalso; apply Hs13.
+        }
+        clear - Hnr1 Hnr3 Hto Hzi13 Hos Hor Hop Hiq Hzi3 Heo Hic H3z Hiv H1z Hii.
+        move H1z after H3z.
 ...
 (* AngleAddLeMonoL_3.v *)
 Theorem angle_add_le_mono_l_sin_lb_nonneg :
