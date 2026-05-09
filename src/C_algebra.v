@@ -3974,6 +3974,13 @@ destruct zi12. {
       apply (rngl_le_add_le_sub_l Hop Hor).
       rewrite (rngl_add_sub_assoc Hop).
       apply (rngl_le_sub_le_add_l Hop Hor).
+      destruct (rngl_leb_dec 0 (Re z1)) as [Hzr1| Hzr1]. {
+        apply rngl_leb_le in Hzr1.
+        apply (rngl_add_le_mono Hos Hor). {
+          do 2 rewrite <- rngl_mul_assoc.
+          apply (rngl_mul_le_mono_nonneg_l Hop Hor); [ easy | ].
+(* bof, faut peut-être que je considère Re z2 et Re z3 positifs ou pas ?
+   à moins qu'il faille regarder avec Hzi12 et Hzs13 ? *)
 ...
         rewrite H2.
         do 2 rewrite (rngl_mul_0_l Hos), (rngl_sub_0_r Hos).
