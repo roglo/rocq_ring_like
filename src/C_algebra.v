@@ -3607,7 +3607,6 @@ now rewrite (rngl_squ_opp Hop).
 Qed.
 
 (* experiment: nothing to do with the rest
-
 (* A function f is bijective if and only if it has both a left inverse (f')
    and a right inverse (f'). This is equivalent to saying that f is both
    surjective (∀ y, ∃ x, f x = y) and injective (∃! x, f x = y). *)
@@ -3633,6 +3632,23 @@ assert (H4 : x' = x) by now apply H2.
 subst x'.
 symmetry; apply H2.
 apply H1.
+Qed.
+
+Theorem inj_surj_inv A B (f : A → B) :
+  (∀ x x', f x = f x' → x = x')
+  → (∀ y, ∃ x, f x = y)
+  → ∃ f', (∀ x, f' (f x) = x) ∧ (∀ y, f (f' y) = y).
+Proof.
+intros Hinj Hsurj.
+apply left_and_right_inverse.
+intros.
+specialize (Hsurj y) as H1.
+destruct H1 as (x, H1).
+exists x.
+split; [ easy | ].
+intros x' Hfxy.
+apply Hinj.
+congruence.
 Qed.
 ...
 *)
