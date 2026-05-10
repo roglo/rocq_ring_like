@@ -3606,6 +3606,37 @@ do 2 rewrite (rngl_squ_mul Hic).
 now rewrite (rngl_squ_opp Hop).
 Qed.
 
+(* experiment: nothing to do with the rest
+
+(* A function f is bijective if and only if it has both a left inverse (f')
+   and a right inverse (f'). This is equivalent to saying that f is both
+   surjective (∀ y, ∃ x, f x = y) and injective (∃! x, f x = y). *)
+From Stdlib Require Import ClassicalChoice.
+Theorem left_and_right_inverse A B (f : A → B) :
+  (∀ y, ∃! x, f x = y)
+  → ∃ f', (∀ x, f' (f x) = x) ∧ (∀ y, f (f' y) = y).
+Proof.
+intros H.
+generalize H; intros H1.
+apply dependent_unique_choice in H1.
+destruct H1 as (f', H1).
+remember (∀ y, _) as u in H1; subst u. (* renaming *)
+exists f'.
+split; [ | easy ].
+intros x.
+specialize (H (f x)) as H2.
+destruct H2 as (x', H2).
+progress unfold unique in H2.
+destruct H2 as (_, H2).
+remember (∀ x'', _) as u in H2; subst u. (* renaming *)
+assert (H4 : x' = x) by now apply H2.
+subst x'.
+symmetry; apply H2.
+apply H1.
+Qed.
+...
+*)
+
 (* to be completed
 Theorem c_seq_to_div_nat_is_Cauchy :
   rngl_is_archimedean T = true →
@@ -3976,9 +4007,11 @@ destruct zi12. {
       apply (rngl_le_sub_le_add_l Hop Hor).
       destruct (rngl_leb_dec 0 (Re z1)) as [Hzr1| Hzr1]. {
         apply rngl_leb_le in Hzr1.
+...
         apply (rngl_add_le_mono Hos Hor). {
           do 2 rewrite <- rngl_mul_assoc.
           apply (rngl_mul_le_mono_nonneg_l Hop Hor); [ easy | ].
+Search (_ * _ ≤ _)%L.
 (* bof, faut peut-être que je considère Re z2 et Re z3 positifs ou pas ?
    à moins qu'il faille regarder avec Hzi12 et Hzs13 ? *)
 ...
