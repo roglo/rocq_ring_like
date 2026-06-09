@@ -201,7 +201,6 @@ Qed.
 (* multiplication *)
 
 Definition I_mul_subset_prop I J z lxy :=
-  length lxy ≠ 0 ∧
   (∀ x y, (x, y) ∈ lxy → (x ∈ I)%I ∧ (y ∈ J)%I) ∧
   z = ∑ ((x, y) ∈ lxy), x * y.
 
@@ -213,7 +212,6 @@ Theorem I_mul_zero I J : I_mul_subset I J 0%L.
 Proof.
 destruct_ix.
 exists [(0, 0)%L].
-split; [ easy | ].
 split. {
   cbn; intros x y Hxy; destruct Hxy as [Hxy| ]; [ | easy ].
   injection Hxy; clear Hxy; intros; subst x y.
@@ -229,14 +227,12 @@ Theorem I_mul_add I J :
   ∀ x y, I_mul_subset I J x → I_mul_subset I J y → I_mul_subset I J (x + y)%L.
 Proof.
 intros * Hx Hy.
-destruct Hx as (lab1 & Hlab1 & Hab1 & Hx).
-destruct Hy as (lab2 & Hlab2 & Hab2 & Hy).
+destruct Hx as (lab1 & Hab1 & Hx).
+destruct Hy as (lab2 & Hab2 & Hy).
 subst x y.
 progress unfold I_mul_subset.
 progress unfold I_mul_subset_prop.
 exists (lab1 ++ lab2).
-rewrite List.length_app.
-split; [ flia Hlab1 Hlab2 | ].
 split. {
   intros x y Hxy.
   apply List.in_app_or in Hxy.
@@ -250,13 +246,11 @@ Theorem I_mul_mul_l I J :
   ∀ x y, I_mul_subset I J y → I_mul_subset I J (x * y).
 Proof.
 destruct_ix.
-intros * (lxy & Hlxy & Hab & Hz).
+intros * (lxy & Hab & Hz).
 subst y; rename x into t.
 progress unfold I_mul_subset.
 progress unfold I_mul_subset_prop.
 exists (List.map (λ '(x, y), (t * x, y)%L) lxy).
-rewrite List.length_map.
-split; [ easy | ].
 split. {
   intros x' y' Hxy'.
   apply List.in_map_iff in Hxy'.
@@ -277,13 +271,11 @@ Theorem I_mul_mul_r I J :
   ∀ x y, I_mul_subset I J x → I_mul_subset I J (x * y).
 Proof.
 destruct_ix.
-intros * (lxy & Hlxy & Hab & Hz).
+intros * (lxy & Hab & Hz).
 subst x; rename y into t.
 progress unfold I_mul_subset.
 progress unfold I_mul_subset_prop.
 exists (List.map (λ '(x, y), (x, y * t)%L) lxy).
-rewrite List.length_map.
-split; [ easy | ].
 split. {
   intros x y Hxy.
   apply List.in_map_iff in Hxy.
@@ -511,14 +503,12 @@ Theorem I_subset_mul_assoc_l :
 Proof.
 intros * Ha Hb Hc.
 exists [(x * y, z)]%L.
-split; [ easy | ].
 split. {
   intros x' y' Hxy.
   destruct Hxy as [Hxy| Hxy]; [ | easy ].
   injection Hxy; clear Hxy; intros; subst x' y'.
   split; [ | now apply Hc; left ].
   exists [(x, y)].
-  split; [ easy | ].
   split. {
     intros x' y' Hxy.
     destruct Hxy as [Hxy| Hxy]; [ | easy ].
@@ -536,14 +526,12 @@ Theorem I_subset_mul_assoc_r :
 Proof.
 intros * Ha Hb Hc.
 exists [(x, y * z)]%L.
-split; [ easy | ].
 split. {
   intros x' y' Hxy.
   destruct Hxy as [Hxy| Hxy]; [ | easy ].
   injection Hxy; clear Hxy; intros; subst x' y'.
   split; [ easy | ].
   exists [(y, z)].
-  split; [ easy | ].
   split. {
     intros x' y' Hxy.
     destruct Hxy as [Hxy| Hxy]; [ | easy ].
@@ -635,7 +623,6 @@ intros * Ha Hb Hc.
 induction li as [| i1]. {
   rewrite rngl_summation_list_empty; [ | easy ].
   exists [(0, 0)]%L.
-  split; [ easy | ].
   split. {
     intros x y Hxy.
     destruct Hxy as [Hxy| Hxy]; [ | easy ].
@@ -678,7 +665,6 @@ intros * Ha Hb Hc.
 induction li as [| i1]. {
   rewrite rngl_summation_list_empty; [ | easy ].
   exists [(0, 0)]%L.
-  split; [ easy | ].
   split. {
     intros x y Hxy.
     destruct Hxy as [Hxy| Hxy]; [ | easy ].
@@ -717,7 +703,7 @@ destruct_ix.
 intros t Ht.
 cbn in Ht.
 progress unfold I_mul_subset in Ht.
-destruct Ht as (lx_yz & Hlx_yz & Ha_bc & Ht).
+destruct Ht as (lx_yz & Ha_bc & Ht).
 remember (∀ x yz, _) as x in Ha_bc; subst x. (* renaming *)
 rewrite rngl_summation_list_pair in Ht.
 remember (∑ (x_yz ∈ _), _) as x in Ht; subst x. (* renaming *)
@@ -730,14 +716,11 @@ clear Ha_bc; rename H1 into Ha_bc.
 apply (forall_exists_exists_forall (0, 0)%L []) in Ha_bc.
 destruct Ha_bc as (llyz & Hllyz & Hxyz).
 remember (length lx_yz) as n eqn:Hn.
-rename Hlx_yz into H; rename Hn into Hlx_yz; rename H into Hn.
-move Hn before n; symmetry in Hlx_yz.
-move Hlx_yz before Hllyz.
 move llyz before lx_yz.
 rewrite Hllyz in Hxyz.
 set (P u v := (fst u ∈ I)%I ∧ I_mul_subset_prop J K (snd u) v).
 specialize (forall_in_seq (0, 0)%L [] lx_yz llyz P) as H1.
-rewrite Hlx_yz, Hllyz in H1.
+rewrite <- Hn, Hllyz in H1.
 specialize (H1 eq_refl).
 subst P; cbn in H1.
 specialize (proj1 H1) as H2; clear H1.
@@ -745,15 +728,13 @@ specialize (H2 Hxyz).
 clear Hxyz; rename H2 into Hxyz.
 destruct Hxyz as (lxyz & Hllyzm & Hlx_yzm & Hxyz).
 subst lx_yz llyz.
-move Hllyz before Hlx_yz.
-rewrite List.length_map in Hlx_yz, Hllyz.
-clear Hlx_yz; rename Hllyz into Hlxyz.
+rewrite List.length_map in Hllyz.
 rewrite rngl_summation_list_map in Ht.
 remember (∀ xyz, _) as x in Hxyz; subst x. (* renaming *)
 remember (∑ (xyz ∈ _), _) as x in Ht; subst x. (* renaming *)
 assert (∀ xyz, xyz ∈ lxyz → snd (fst xyz) = ∑ ((y, z) ∈ snd xyz), y * z). {
   intros * H.
-  now specialize (Hxyz _ H) as (Ha & Hllxyz & Hbc & H1).
+  now specialize (Hxyz _ H) as (Hllxyz & Hbc & H1).
 }
 erewrite rngl_summation_list_eq_compat in Ht; [ | now intros; rewrite H ].
 clear H.
@@ -780,14 +761,14 @@ apply I_subset_sum_sum_mul_assoc_l. {
   intros * Hi Hj.
   specialize (Hxyz _ Hi).
   destruct Hxyz as (_, H).
-  destruct H as (lli & H1 & H2).
+  destruct H as (H1 & H2).
   destruct j as (j, k).
   now specialize (H1 j k Hj).
 } {
   intros * Hi Hj.
   specialize (Hxyz _ Hi).
   destruct Hxyz as (_, H).
-  destruct H as (lli & H1 & H2).
+  destruct H as (H1 & H2).
   destruct j as (j, k).
   now specialize (H1 j k Hj).
 }
@@ -801,7 +782,7 @@ destruct_ix.
 intros t Ht.
 cbn in Ht.
 progress unfold I_mul_subset in Ht.
-destruct Ht as (lx_yz & Hlx_yz & Ha_bc & Ht).
+destruct Ht as (lx_yz & Ha_bc & Ht).
 remember (∀ x yz, _) as x in Ha_bc; subst x. (* renaming *)
 rewrite rngl_summation_list_pair in Ht.
 remember (∑ (x_yz ∈ _), _) as x in Ht; subst x. (* renaming *)
@@ -819,14 +800,11 @@ apply (forall_exists_exists_forall (0, 0)%L []) in H.
 clear Ha_bc; rename H into Ha_bc.
 destruct Ha_bc as (llyz & Hllyz & Hxyz).
 remember (length lx_yz) as n eqn:Hn.
-rename Hlx_yz into H; rename Hn into Hlx_yz; rename H into Hn.
-move Hn before n; symmetry in Hlx_yz.
-move Hlx_yz before Hllyz.
 move llyz before lx_yz.
 rewrite Hllyz in Hxyz.
 set (P u v := (snd u ∈ K)%I ∧ I_mul_subset_prop I J (fst u) v).
 specialize (forall_in_seq (0, 0)%L [] lx_yz llyz P) as H1.
-rewrite Hlx_yz, Hllyz in H1.
+rewrite Hllyz, <- Hn in H1.
 specialize (H1 eq_refl).
 subst P; cbn in H1.
 specialize (proj1 H1) as H2; clear H1.
@@ -834,15 +812,13 @@ specialize (H2 Hxyz).
 clear Hxyz; rename H2 into Hxyz.
 destruct Hxyz as (lxyz & Hllyzm & Hlx_yzm & Hxyz).
 subst lx_yz llyz.
-move Hllyz before Hlx_yz.
-rewrite List.length_map in Hlx_yz, Hllyz.
-clear Hlx_yz; rename Hllyz into Hlxyz.
+rewrite List.length_map in Hllyz.
 rewrite rngl_summation_list_map in Ht.
 remember (∀ xyz, _) as x in Hxyz; subst x. (* renaming *)
 remember (∑ (xyz ∈ _), _) as x in Ht; subst x. (* renaming *)
 assert (∀ xyz, xyz ∈ lxyz → fst (fst xyz) = ∑ ((y, z) ∈ snd xyz), y * z). {
   intros * H.
-  now specialize (Hxyz _ H) as (Ha & Hllxyz & Hbc & H1).
+  now specialize (Hxyz _ H) as (Ha & Hbc & H1).
 }
 erewrite rngl_summation_list_eq_compat in Ht; [ | now intros; rewrite H ].
 clear H.
@@ -861,14 +837,14 @@ apply I_subset_sum_sum_mul_assoc_r. {
   intros * Hi Hj.
   specialize (Hxyz _ Hi).
   destruct Hxyz as (_, H).
-  destruct H as (lli & H1 & H2).
+  destruct H as (H1 & H2).
   destruct j as (j, k).
   now specialize (H1 j k Hj).
 } {
   intros * Hi Hj.
   specialize (Hxyz _ Hi).
   destruct Hxyz as (_, H).
-  destruct H as (lli & H1 & H2).
+  destruct H as (H1 & H2).
   destruct j as (j, k).
   now specialize (H1 j k Hj).
 } {
@@ -899,10 +875,12 @@ destruct_ix.
 intros.
 apply propositional_extensionality.
 split. {
-  intros (lxy & Hlxy & H1 & H); subst x.
+  intros (lxy & H1 & H); subst x.
   rewrite rngl_summation_list_pair.
-  induction lxy as [| (x, y)]; [ easy | ].
-  clear Hlxy.
+  induction lxy as [| (x, y)]. {
+    rewrite rngl_summation_list_empty; [ | easy ].
+    apply i_zero.
+  }
   destruct (Nat.eq_dec (length lxy) 0) as [Hnz| Hnz]. {
     apply List.length_zero_iff_nil in Hnz.
     subst lxy.
@@ -910,7 +888,6 @@ split. {
     apply i_mul_l; cbn.
     now apply (H1 x y); left.
   }
-  specialize (IHlxy Hnz).
   rewrite rngl_summation_list_cons; cbn.
   apply i_add. {
     apply i_mul_l.
@@ -922,7 +899,6 @@ split. {
 } {
   intros Hax.
   exists [(1%L, x)].
-  split; [ easy | ].
   split. {
     intros y z Hyz.
     destruct Hyz as [Hy| Hy]; [ | easy ].
@@ -952,7 +928,7 @@ destruct_ix.
 intros t Ht.
 cbn in Ht.
 progress unfold I_mul_subset in Ht.
-destruct Ht as (lx_yz & Hlx_yz & Ha_bc & Ht).
+destruct Ht as (lx_yz & Ha_bc & Ht).
 remember (∀ x yz, _) as x in Ha_bc; subst x. (* renaming *)
 rewrite rngl_summation_list_pair in Ht.
 remember (∑ (x_yz ∈ _), _) as x in Ht; subst x. (* renaming *)
@@ -984,13 +960,9 @@ move lb before la.
 move Hlb before Hla.
 move lxyz before lx_yz.
 remember (length lx_yz) as n eqn:Hn.
-rename Hlx_yz into H; rename Hn into Hlx_yz; rename H into Hn.
 move la before lxyz; move lb before la.
-symmetry in Hlx_yz.
-move Hla before Hlx_yz; move Hlb before Hla.
 assert (Hlxyz : length lxyz = n). {
-  rewrite <- Hlx_yz.
-  rewrite Hlxxyz; symmetry.
+  rewrite <- Hla, Hlaxyz; symmetry.
   apply List.length_map.
 }
 move Hn before n.
@@ -1014,8 +986,7 @@ rename lxyz' into lxyz.
 rewrite List.map_map in Hlxxyz.
 rewrite List.map_map in Hlaxyz.
 subst lx_yz.
-rewrite List.length_map in Hlx_yz, Hlxyz.
-clear Hlx_yz.
+rewrite List.length_map in Hlxyz.
 rewrite rngl_summation_list_map in Ht.
 remember (∀ xyz, _) as x in Hxyz; subst x. (* renaming *)
 remember (∑ (xyz ∈ _), _) as x in Ht; subst x. (* renaming *)
@@ -1047,7 +1018,6 @@ apply i_add. {
   rewrite rngl_add_0_r.
   split. {
     exists [(fst (snd (snd xyzt)), fst (snd xyzt))].
-    split; [ easy | ].
     split. {
       intros x y Hxy.
       destruct Hxy as [Hxy| ]; [ | easy ].
@@ -1065,7 +1035,6 @@ apply i_add. {
   split; [ apply i_zero | ].
   split; [ | easy ].
   exists [(fst (snd (snd xyzt)), fst xyzt)].
-  split; [ easy | ].
   split. {
     intros x y Hxy.
     destruct Hxy as [Hxy| ]; [ | easy ].
@@ -1084,7 +1053,7 @@ destruct_ix.
 intros t Ht.
 cbn in Ht.
 progress unfold I_mul_subset in Ht.
-destruct Ht as (lx_yz & Hlx_yz & Ha_bc & Ht).
+destruct Ht as (lx_yz & Ha_bc & Ht).
 remember (∀ x yz, _) as x in Ha_bc; subst x. (* renaming *)
 rewrite rngl_summation_list_pair in Ht.
 remember (∑ (x_yz ∈ _), _) as x in Ht; subst x. (* renaming *)
@@ -1123,13 +1092,9 @@ move lb before la.
 move Hlb before Hla.
 move lxyz before lx_yz.
 remember (length lx_yz) as n eqn:Hn.
-rename Hlx_yz into H; rename Hn into Hlx_yz; rename H into Hn.
 move la before lxyz; move lb before la.
-symmetry in Hlx_yz.
-move Hla before Hlx_yz; move Hlb before Hla.
 assert (Hlxyz : length lxyz = n). {
-  rewrite <- Hlx_yz.
-  rewrite Hlxxyz; symmetry.
+  rewrite <- Hla, Hlaxyz; symmetry.
   apply List.length_map.
 }
 move Hn before n.
@@ -1153,8 +1118,7 @@ rename lxyz' into lxyz.
 rewrite List.map_map in Hlxxyz.
 rewrite List.map_map in Hlaxyz.
 subst lx_yz.
-rewrite List.length_map in Hlx_yz, Hlxyz.
-clear Hlx_yz.
+rewrite List.length_map in Hlxyz.
 rewrite rngl_summation_list_map in Ht.
 remember (∀ xyz, _) as x in Hxyz; subst x. (* renaming *)
 remember (∑ (xyz ∈ _), _) as x in Ht; subst x. (* renaming *)
@@ -1186,7 +1150,6 @@ apply i_add. {
   rewrite rngl_add_0_r.
   split. {
     exists [(fst (snd xyzt), snd (snd (snd xyzt)))].
-    split; [ easy | ].
     split. {
       intros x y Hxy.
       destruct Hxy as [Hxy| ]; [ | easy ].
@@ -1204,7 +1167,6 @@ apply i_add. {
   split; [ apply i_zero | ].
   split; [ | easy ].
   exists [(fst xyzt, snd (snd (snd xyzt)))].
-  split; [ easy | ].
   split. {
     intros x y Hxy.
     destruct Hxy as [Hxy| ]; [ | easy ].
@@ -1216,15 +1178,13 @@ apply i_add. {
 Qed.
 
 Theorem I_mul_subset_add_distr_l_2_lemma I J K lab :
-  length lab ≠ 0
-  → (∀ x y, (x, y) ∈ lab → (x ∈ I)%I ∧ (y ∈ J)%I)
+  (∀ x y, (x, y) ∈ lab → (x ∈ I)%I ∧ (y ∈ J)%I)
   → (∑ ((x, y) ∈ lab), x * y ∈ I * (J + K))%I.
 Proof.
-intros Hlab Hab; cbn.
-induction lab as [| (x, y) lxy]; [ easy | clear Hlab ].
+intros Hab; cbn.
+induction lab as [| (x, y) lxy]; [ apply I_mul_zero | ].
 destruct lxy as [| (x', y')]. {
   exists [(x, y)].
-  split; [ easy | ].
   split; [ | easy ].
   intros x' y' H.
   destruct H as [H| ]; [ | easy ].
@@ -1237,7 +1197,6 @@ destruct lxy as [| (x', y')]. {
   split; [ now apply (Hab x y); left | ].
   split; [ apply i_zero | easy ].
 }
-specialize (IHlxy (Nat.neq_succ_0 _)).
 rewrite rngl_summation_list_pair.
 rewrite rngl_summation_list_cons; cbn.
 rewrite <- rngl_summation_list_pair.
@@ -1246,9 +1205,8 @@ assert (H : ∀ x y, (x, y) ∈ (x', y') :: lxy → (x ∈ I ∧ y ∈ J)%I). {
   now apply Hab; right.
 }
 specialize (IHlxy H); clear H.
-destruct IHlxy as (lxy' & Hlxy' & H3 & H4).
+destruct IHlxy as (lxy' & H3 & H4).
 exists ((x, y) :: lxy').
-split; [ easy | ].
 rewrite H4.
 split. {
   intros x'' y'' Hxy.
@@ -1266,15 +1224,13 @@ now rewrite rngl_summation_list_cons.
 Qed.
 
 Theorem I_mul_subset_add_distr_r_2_lemma I J K lab :
-  length lab ≠ 0
-  → (∀ x y : T, (x, y) ∈ lab → (x ∈ I)%I ∧ (y ∈ K)%I)
+  (∀ x y : T, (x, y) ∈ lab → (x ∈ I)%I ∧ (y ∈ K)%I)
   → (∑ ((x, y) ∈ lab), x * y ∈ (I + J) * K)%I.
 Proof.
-intros Hlab Hab; cbn.
-induction lab as [| (x, y) lxy]; [ easy | clear Hlab ].
+intros Hab; cbn.
+induction lab as [| (x, y) lxy]; [ apply I_mul_zero | ].
 destruct lxy as [| (x', y')]. {
   exists [(x, y)].
-  split; [ easy | ].
   split; [ | easy ].
   intros x' y' H.
   destruct H as [H| ]; [ | easy ].
@@ -1287,7 +1243,6 @@ destruct lxy as [| (x', y')]. {
   split; [ now apply (Hab x y); left | ].
   split; [ apply i_zero | easy ].
 }
-specialize (IHlxy (Nat.neq_succ_0 _)).
 rewrite rngl_summation_list_pair.
 rewrite rngl_summation_list_cons; cbn.
 rewrite <- rngl_summation_list_pair.
@@ -1296,9 +1251,8 @@ assert (H : ∀ x y, (x, y) ∈ (x', y') :: lxy → (x ∈ I ∧ y ∈ K)%I). {
   now apply Hab; right.
 }
 specialize (IHlxy H); clear H.
-destruct IHlxy as (lxy' & Hlxy' & H3 & H4).
+destruct IHlxy as (lxy' & H3 & H4).
 exists ((x, y) :: lxy').
-split; [ easy | ].
 rewrite H4.
 split. {
   intros x'' y'' Hxy.
@@ -1325,9 +1279,8 @@ cbn in Ht.
 progress unfold I_add_subset in Ht.
 destruct Ht as (xy & xz & Hxy & Hxz & Ht).
 cbn in Hxy, Hxz.
-destruct Hxy as (lab & Hlab & Hab & Hxy).
-destruct Hxz as (lac & Hlac & Hac & Hxz).
-move lac before lab; move Hlac before Hlab.
+destruct Hxy as (lab & Hab & Hxy).
+destruct Hxz as (lac & Hac & Hxz).
 move Hac before Hab.
 remember (∀ x z, _) as x in Hac; subst x. (* renaming *)
 remember (∑ ((x, z) ∈ _), _) as x in Hxz; subst x. (* renaming *)
@@ -1350,9 +1303,8 @@ cbn in Ht.
 progress unfold I_add_subset in Ht.
 destruct Ht as (xy & xz & Hxy & Hxz & Ht).
 cbn in Hxy, Hxz.
-destruct Hxy as (lab & Hlab & Hab & Hxy).
-destruct Hxz as (lac & Hlac & Hac & Hxz).
-move lac before lab; move Hlac before Hlab.
+destruct Hxy as (lab & Hab & Hxy).
+destruct Hxz as (lac & Hac & Hxz).
 move Hac before Hab.
 remember (∀ x z, _) as x in Hac; subst x. (* renaming *)
 remember (∑ ((x, z) ∈ _), _) as x in Hxz; subst x. (* renaming *)
@@ -1407,10 +1359,8 @@ intros Hic *.
 progress unfold I_mul_subset.
 progress unfold I_mul_subset_prop.
 apply propositional_extensionality.
-split; intros (lxy & Hlxy & H1 & H). {
+split; intros (lxy & H1 & H). {
   exists (List.map (λ xy, (snd xy, fst xy)) lxy).
-  rewrite List.length_map.
-  split; [ easy | ].
   split. {
     intros y z Hyz.
     apply List.in_map_iff in Hyz.
@@ -1427,8 +1377,6 @@ split; intros (lxy & Hlxy & H1 & H). {
   apply (rngl_mul_comm Hic).
 } {
   exists (List.map (λ xy, (snd xy, fst xy)) lxy).
-  rewrite List.length_map.
-  split; [ easy | ].
   split. {
     intros y z Hyz.
     apply List.in_map_iff in Hyz.
@@ -1466,10 +1414,9 @@ destruct_ix.
 intros.
 apply propositional_extensionality.
 split. {
-  intros (lxy & Hlxy & H1 & H); subst x.
+  intros (lxy & H1 & H); subst x.
   rewrite rngl_summation_list_pair.
-  induction lxy as [| (x, y)]; [ easy | ].
-  clear Hlxy.
+  induction lxy as [| (x, y)]; [ apply i_zero | ].
   destruct (Nat.eq_dec (length lxy) 0) as [Hnz| Hnz]. {
     apply List.length_zero_iff_nil in Hnz.
     subst lxy.
@@ -1477,7 +1424,6 @@ split. {
     apply i_mul_r; cbn.
     now apply (H1 x y); left.
   }
-  specialize (IHlxy Hnz).
   rewrite rngl_summation_list_cons; cbn.
   apply i_add. {
     apply i_mul_r.
@@ -1489,7 +1435,6 @@ split. {
 } {
   intros Hax.
   exists [(x, 1%L)].
-  split; [ easy | ].
   split. {
     intros y z Hyz.
     destruct Hyz as [Hy| Hy]; [ | easy ].
@@ -1681,10 +1626,9 @@ apply H1; clear H1.
 destruct (I ⊂ K)%I as [H1| H1]; [ clear Hik | easy ].
 destruct (J ⊂ L)%I as [H2| H2]; [ clear Hjl | easy ].
 intros u Hu.
-destruct Hu as (xy & Hx & Hu & Hv).
+destruct Hu as (xy & Hu & Hv).
 subst u.
 exists xy.
-split; [ easy | ].
 split; [ | easy ].
 intros x y Hxy.
 specialize (Hu _ _ Hxy).
@@ -1704,10 +1648,9 @@ apply H1; clear H1.
 destruct (I ⊂ 0)%I as [H3| H3]; [ clear Hi | easy ].
 destruct (J ⊂ 0)%I as [H4| H4]; [ clear Hj | easy ].
 intros u Hu.
-destruct Hu as (xy & Hx & Hu & Hv).
+destruct Hu as (xy & Hu & Hv).
 subst u.
 exists xy.
-split; [ easy | ].
 split; [ | easy ].
 intros x y Hxy.
 specialize (Hu _ _ Hxy).
