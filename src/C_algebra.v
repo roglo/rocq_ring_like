@@ -3653,6 +3653,27 @@ Qed.
 ...
 *)
 
+Theorem mul_re_1_mod_2_le_mul_2_mod_1 :
+  ∀ z1 z2,
+  (0 ≤ Re z1)%L
+  → (Re z1 * ‖ z2 ‖ ≤ Re z2 * ‖ z1 ‖)%L
+  → ((Re z1 * Im z2)² ≤ (Re z2 * Im z1)²)%L.
+Proof.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+intros * Hzr1 H12.
+apply (rngl_le_le_squ Hop Hto) in H12. 2: {
+  apply (rngl_mul_nonneg_nonneg Hos Hor); [ easy | ].
+  apply c_modulus_nonneg.
+}
+do 2 rewrite (rngl_squ_mul Hic) in H12.
+do 2 rewrite c_squ_modulus in H12.
+do 2 rewrite rngl_mul_add_distr_l in H12.
+rewrite (rngl_mul_comm Hic) in H12.
+apply (rngl_add_le_mono_l Hos Hor) in H12.
+now do 2 rewrite <- (rngl_squ_mul Hic) in H12.
+Qed.
+
 (* to be completed
 Theorem c_seq_to_div_nat_is_Cauchy :
   rngl_is_archimedean T = true →
@@ -4024,30 +4045,57 @@ destruct zi12. {
       destruct (rngl_leb_dec 0 (Re z1)) as [Hzr1| Hzr1]. {
         apply rngl_leb_le in Hzr1.
         clear Hnr1.
-destruct (rngl_leb_dec 0 (Re z3)) as [Hzr3| Hzr3]. {
-  apply rngl_leb_le in Hzr3.
-  destruct (rngl_leb_dec 0 (Re z2)) as [Hzr2| Hzr2]. 2: {
-    apply (rngl_leb_gt_iff Hto) in Hzr2.
-    exfalso.
-    apply (rngl_nlt_ge Hor) in Hz23.
-    apply Hz23; clear Hz23.
-    apply (rngl_lt_le_trans Hor _ 0). {
-      apply rngl_le_neq.
-      split. {
-        apply (rngl_mul_neg_pos Hop Hiq Hor); [ easy | ].
-        now apply c_modulus_pos.
-      }
-      apply (rngl_neq_mul_0 Hos Hiq). {
-        intros H; rewrite H in Hzr2.
-        now apply rngl_lt_irrefl in Hzr2.
-      }
-      intros H.
-      now apply eq_c_modulus_0 in H.
-    }
-    apply (rngl_mul_nonneg_nonneg Hos Hor); [ easy | ].
-    apply c_modulus_nonneg.
-  }
-  apply rngl_leb_le in Hzr2.
+        destruct (rngl_leb_dec 0 (Re z3)) as [Hzr3| Hzr3]. {
+          apply rngl_leb_le in Hzr3.
+          destruct (rngl_leb_dec 0 (Re z2)) as [Hzr2| Hzr2]. 2: {
+            apply (rngl_leb_gt_iff Hto) in Hzr2.
+            exfalso.
+            apply (rngl_nlt_ge Hor) in Hz23.
+            apply Hz23; clear Hz23.
+            apply (rngl_lt_le_trans Hor _ 0). {
+              apply rngl_le_neq.
+              split. {
+                apply (rngl_mul_neg_pos Hop Hiq Hor); [ easy | ].
+                now apply c_modulus_pos.
+              }
+              apply (rngl_neq_mul_0 Hos Hiq). {
+                intros H; rewrite H in Hzr2.
+                now apply rngl_lt_irrefl in Hzr2.
+              }
+              intros H.
+              now apply eq_c_modulus_0 in H.
+            }
+            apply (rngl_mul_nonneg_nonneg Hos Hor); [ easy | ].
+            apply c_modulus_nonneg.
+          }
+          apply rngl_leb_le in Hzr2.
+          clear Hzi12 Hzi13.
+          do 4 rewrite <- rngl_mul_assoc.
+          apply (rngl_add_le_mono Hos Hor). 2: {
+            now apply (rngl_mul_le_mono_nonneg_l Hop Hor).
+          }
+          apply (rngl_mul_le_mono_nonneg_l Hop Hor); [ easy | ].
+          apply mul_re_1_mod_2_le_mul_2_mod_1 in Hz23; [ | easy ].
+          apply (rngl_le_squ_le Hop Hiq Hto). {
+            apply (rngl_mul_nonneg_nonneg Hos Hor); [ easy | ].
+            apply c_modulus_nonneg.
+          } {
+            apply (rngl_mul_nonneg_nonneg Hos Hor); [ easy | ].
+            apply c_modulus_nonneg.
+          }
+          do 2 rewrite (rngl_squ_mul Hic).
+          do 2 rewrite c_squ_modulus.
+          do 2 rewrite rngl_mul_add_distr_l.
+          rewrite (rngl_mul_comm Hic (Im z2)²(Im z3)²).
+          apply (rngl_add_le_mono_r Hos Hor).
+          do 2 rewrite (rngl_mul_comm Hic (Im _)²).
+          now do 2 rewrite <- (rngl_squ_mul Hic).
+        }
+        apply (rngl_leb_gt_iff Hto) in Hzr3.
+        cbn in Hzi13.
+...
+}
+apply (rngl_leb_gt_iff Hto) in Hzr1.
 ...
         do 4 rewrite <- rngl_mul_assoc.
         apply (rngl_add_le_mono Hos Hor). 2: {
