@@ -4023,6 +4023,40 @@ destruct zi12. {
       apply (rngl_le_sub_le_add_l Hop Hor).
       destruct (rngl_leb_dec 0 (Re z1)) as [Hzr1| Hzr1]. {
         apply rngl_leb_le in Hzr1.
+        clear Hnr1.
+destruct (rngl_leb_dec 0 (Re z3)) as [Hzr3| Hzr3]. {
+  apply rngl_leb_le in Hzr3.
+  destruct (rngl_leb_dec 0 (Re z2)) as [Hzr2| Hzr2]. 2: {
+    apply (rngl_leb_gt_iff Hto) in Hzr2.
+    exfalso.
+    apply (rngl_nlt_ge Hor) in Hz23.
+    apply Hz23; clear Hz23.
+    apply (rngl_lt_le_trans Hor _ 0). {
+      apply rngl_le_neq.
+      split. {
+        apply (rngl_mul_neg_pos Hop Hiq Hor); [ easy | ].
+        now apply c_modulus_pos.
+      }
+      apply (rngl_neq_mul_0 Hos Hiq). {
+        intros H; rewrite H in Hzr2.
+        now apply rngl_lt_irrefl in Hzr2.
+      }
+      intros H.
+      now apply eq_c_modulus_0 in H.
+    }
+    apply (rngl_mul_nonneg_nonneg Hos Hor); [ easy | ].
+    apply c_modulus_nonneg.
+  }
+  apply rngl_leb_le in Hzr2.
+...
+        do 4 rewrite <- rngl_mul_assoc.
+        apply (rngl_add_le_mono Hos Hor). 2: {
+          now apply (rngl_mul_le_mono_nonneg_l Hop Hor).
+        }
+        apply (rngl_mul_le_mono_nonneg_l Hop Hor); [ easy | ].
+...
+Search (_ * ‖ _ ‖ ≤ _)%L.
+cbn in Hzi12, Hzi13.
 ...
         apply (rngl_add_le_mono Hos Hor). {
           do 2 rewrite <- rngl_mul_assoc.
