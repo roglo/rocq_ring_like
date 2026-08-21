@@ -3662,16 +3662,16 @@ Proof.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 intros * Hzr1 H12.
-apply (rngl_le_le_squ Hop Hto) in H12. 2: {
-  apply (rngl_mul_nonneg_nonneg Hos Hor); [ easy | ].
-  apply c_modulus_nonneg.
+apply (rngl_le_le_squ Hop Hto) in H12. {
+  do 2 rewrite (rngl_squ_mul Hic) in H12.
+  do 2 rewrite c_squ_modulus in H12.
+  do 2 rewrite rngl_mul_add_distr_l in H12.
+  rewrite (rngl_mul_comm Hic) in H12.
+  apply (rngl_add_le_mono_l Hos Hor) in H12.
+  now do 2 rewrite <- (rngl_squ_mul Hic) in H12.
 }
-do 2 rewrite (rngl_squ_mul Hic) in H12.
-do 2 rewrite c_squ_modulus in H12.
-do 2 rewrite rngl_mul_add_distr_l in H12.
-rewrite (rngl_mul_comm Hic) in H12.
-apply (rngl_add_le_mono_l Hos Hor) in H12.
-now do 2 rewrite <- (rngl_squ_mul Hic) in H12.
+apply (rngl_mul_nonneg_nonneg Hos Hor); [ easy | ].
+apply c_modulus_nonneg.
 Qed.
 
 (* to be completed
@@ -4113,6 +4113,7 @@ destruct zi12. {
           apply (rngl_add_le_mono_r Hos Hor).
           do 2 rewrite (rngl_mul_comm Hic (Im _)²).
           do 2 rewrite <- (rngl_squ_mul Hic).
+          clear Hz23.
 Check mul_re_1_mod_2_le_mul_2_mod_1.
 ...
 }
