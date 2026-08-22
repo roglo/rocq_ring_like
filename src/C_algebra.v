@@ -3915,6 +3915,7 @@ specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
 specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
 specialize (rngl_has_eq_dec_or_is_ordered_r Hor) as Heo.
 specialize (rngl_int_dom_or_inv_pdiv Hiv) as Hii.
+specialize (rngl_integral_or_inv_pdiv_eq_dec_order Hiv Hor) as Hio.
 intros * H3z Hs13 Hz23.
 destruct (c_eq_dec Heo z1 0) as [H1z| H1z]. {
   subst z1.
@@ -4072,6 +4073,15 @@ destruct zi12. {
       destruct (rngl_leb_dec 0 (Re z1)) as [Hzr1| Hzr1]. {
         apply rngl_leb_le in Hzr1.
         clear Hnr1.
+destruct (rngl_eqb_dec (Im z1) 0) as [Hiz1| Hiz1]. {
+  apply (rngl_eqb_eq Heo) in Hiz1.
+  rewrite Hiz1.
+  do 4 rewrite (rngl_mul_0_l Hos).
+  do 2 rewrite rngl_add_0_l.
+  do 2 rewrite <- rngl_mul_assoc.
+  now apply (rngl_mul_le_mono_nonneg_l Hop Hor).
+}
+apply (rngl_eqb_neq Heo) in Hiz1.
         destruct (rngl_leb_dec 0 (Re z3)) as [Hzr3| Hzr3]. {
           apply rngl_leb_le in Hzr3.
           destruct (rngl_leb_dec 0 (Re z2)) as [Hzr2| Hzr2]. {
@@ -4156,7 +4166,6 @@ destruct zi12. {
           rewrite <- (rngl_squ_mul Hic).
 apply rngl_lt_le_incl in Hzr3.
           apply mul_re_1_mod_2_le_mul_2_mod_1; [ easy | ].
-Search (_ * ‖ _ ‖ ≤ _)%L.
 apply (rngl_le_squ_le Hop Hiq Hto). {
   apply (rngl_mul_nonneg_nonneg Hos Hor); [ easy | ].
   apply c_modulus_nonneg.
@@ -4169,10 +4178,26 @@ do 2 rewrite c_squ_modulus.
 do 2 rewrite rngl_mul_add_distr_l.
 rewrite (rngl_mul_comm Hic (Re z3)² (Re z2)²).
 apply (rngl_add_le_mono_l Hos Hor).
-cbn in Hzi12.
+clear Hzi12.
 apply -> (rngl_le_0_sub Hop Hor) in Hzi13.
 apply (rngl_le_le_squ Hop Hto) in Hzi13. 2: {
   now apply (rngl_mul_nonneg_nonneg Hos Hor).
+}
+apply (rngl_mul_le_mono_pos_l Hop Hiq Hto (Im z1)²). {
+  now apply (rngl_squ_pos Hos Hto Hio).
+}
+do 2 rewrite rngl_mul_assoc.
+eapply (rngl_le_trans Hor). {
+  apply (rngl_mul_le_mono_nonneg_r Hop Hor _ _ (Im z2)²) in Hzi13. 2: {
+    apply (rngl_squ_nonneg Hos Hto).
+  }
+  rewrite (rngl_squ_mul Hic) in Hzi13.
+  apply Hzi13.
+}
+rewrite (rngl_squ_mul Hic).
+rewrite (rngl_mul_mul_swap Hic).
+apply (rngl_mul_le_mono_nonneg_r Hop Hor). {
+  apply (rngl_squ_nonneg Hos Hto).
 }
 ...
 do 2 rewrite <- (rngl_squ_mul Hic).
