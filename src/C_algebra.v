@@ -3674,6 +3674,33 @@ apply (rngl_mul_nonneg_nonneg Hos Hor); [ easy | ].
 apply c_modulus_nonneg.
 Qed.
 
+Theorem mul_im_2_mod_1_le_mul_im_1_mod_2 :
+  ∀ z1 z2,
+  (0 ≤ Im z1)%L
+  → (0 ≤ Im z2)%L
+  → ((Re z1 * Im z2)² ≤ (Re z2 * Im z1)²)%L
+  → (Im z2 * ‖ z1 ‖ ≤ Im z1 * ‖ z2 ‖)%L.
+Proof.
+specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
+specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
+specialize (rngl_is_totally_ordered_is_ordered Hto) as Hor.
+intros * Hiz1 Hzi2 Hz12.
+apply (rngl_le_squ_le Hop Hiq Hto). {
+  apply (rngl_mul_nonneg_nonneg Hos Hor); [ easy | ].
+  apply c_modulus_nonneg.
+} {
+  apply (rngl_mul_nonneg_nonneg Hos Hor); [ easy | ].
+  apply c_modulus_nonneg.
+}
+do 2 rewrite (rngl_squ_mul Hic).
+do 2 rewrite c_squ_modulus.
+do 2 rewrite rngl_mul_add_distr_l.
+rewrite (rngl_mul_comm Hic (Im z2)² (Im z1)²).
+apply (rngl_add_le_mono_r Hos Hor).
+do 2 rewrite (rngl_mul_comm Hic (Im _)²).
+now do 2 rewrite <- (rngl_squ_mul Hic).
+Qed.
+
 (* to be completed
 Theorem c_seq_to_div_nat_is_Cauchy :
   rngl_is_archimedean T = true →
@@ -4056,20 +4083,7 @@ destruct zi12. {
             }
             apply (rngl_mul_le_mono_nonneg_l Hop Hor); [ easy | ].
             apply mul_re_1_mod_2_le_mul_2_mod_1 in Hz23; [ | easy ].
-            apply (rngl_le_squ_le Hop Hiq Hto). {
-              apply (rngl_mul_nonneg_nonneg Hos Hor); [ easy | ].
-              apply c_modulus_nonneg.
-            } {
-              apply (rngl_mul_nonneg_nonneg Hos Hor); [ easy | ].
-              apply c_modulus_nonneg.
-            }
-            do 2 rewrite (rngl_squ_mul Hic).
-            do 2 rewrite c_squ_modulus.
-            do 2 rewrite rngl_mul_add_distr_l.
-            rewrite (rngl_mul_comm Hic (Im z2)²(Im z3)²).
-            apply (rngl_add_le_mono_r Hos Hor).
-            do 2 rewrite (rngl_mul_comm Hic (Im _)²).
-            now do 2 rewrite <- (rngl_squ_mul Hic).
+            now apply mul_im_2_mod_1_le_mul_im_1_mod_2.
           }
           apply (rngl_leb_gt_iff Hto) in Hzr2.
           exfalso.
@@ -4114,7 +4128,39 @@ destruct zi12. {
           do 2 rewrite (rngl_mul_comm Hic (Im _)²).
           do 2 rewrite <- (rngl_squ_mul Hic).
           clear Hz23.
-Check mul_re_1_mod_2_le_mul_2_mod_1.
+          remember {| Re := - Re z3; Im := Im z3 |} as z eqn:Hz.
+          apply eq_c_eq in Hz; cbn in Hz.
+          destruct Hz as (H1, H2).
+          cbn in Hzi13.
+          rewrite <- H2 in Hzi3, Hzi13 |-*.
+          apply (f_equal rngl_opp) in H1.
+          rewrite (rngl_opp_involutive Hop) in H1.
+          rewrite <- H1 in Hzi13, Hzr3 |-*.
+          assert (H : z ≠ 0%C). {
+            intros H; subst z.
+            cbn in Hzr3.
+            rewrite (rngl_opp_0 Hop) in Hzr3.
+            now apply rngl_lt_irrefl in Hzr3.
+          }
+          clear z3 H3z H1 H2.
+          rename z into z3.
+          rename H into H3z.
+          move H3z before H2z.
+          move z3 before z2.
+          rewrite (rngl_mul_opp_r Hop) in Hzi13.
+          rewrite (rngl_add_opp_l Hop) in Hzi13.
+          apply (rngl_opp_neg_pos Hop Hor) in Hzr3.
+          move Hzr3 after Hzr3.
+          rewrite (rngl_squ_mul Hic).
+          rewrite (rngl_squ_opp Hop).
+          rewrite <- (rngl_squ_mul Hic).
+          apply mul_re_1_mod_2_le_mul_2_mod_1. {
+            now apply rngl_lt_le_incl.
+          }
+Search (_ * ‖ _ ‖ ≤ _)%L.
+...
+  ============================
+  (Re z3 * ‖ z2 ‖ ≤ Re z2 * ‖ z3 ‖)%L
 ...
 }
 apply (rngl_leb_gt_iff Hto) in Hzr1.
