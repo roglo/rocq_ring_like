@@ -4217,33 +4217,32 @@ destruct zi12. {
         eapply (rngl_le_trans Hor); [ | apply Hri12 ].
         now apply (rngl_mul_nonneg_nonneg Hos Hor).
       }
-...
-do 2 rewrite <- (rngl_squ_mul Hic).
-do 2 rewrite (rngl_mul_comm Hic (Im _)²).
-now do 2 rewrite <- (rngl_squ_mul Hic).
-Qed.
-...
-  ============================
-  (Re z3 * ‖ z2 ‖ ≤ Re z2 * ‖ z3 ‖)%L
-...
-}
-apply (rngl_leb_gt_iff Hto) in Hzr1.
-...
-        do 4 rewrite <- rngl_mul_assoc.
-        apply (rngl_add_le_mono Hos Hor). 2: {
-          now apply (rngl_mul_le_mono_nonneg_l Hop Hor).
-        }
-        apply (rngl_mul_le_mono_nonneg_l Hop Hor); [ easy | ].
-...
-Search (_ * ‖ _ ‖ ≤ _)%L.
-cbn in Hzi12, Hzi13.
-...
-        apply (rngl_add_le_mono Hos Hor). {
-          do 2 rewrite <- rngl_mul_assoc.
-          apply (rngl_mul_le_mono_nonneg_l Hop Hor); [ easy | ].
-Search (_ * _ ≤ _)%L.
-(* bof, faut peut-être que je considère Re z2 et Re z3 positifs ou pas ?
-   à moins qu'il faille regarder avec Hzi12 et Hzs13 ? *)
+      apply (rngl_leb_gt_iff Hto) in Hzr1.
+      apply is_not_negative_real_if in Hnr1.
+      destruct Hnr1 as [H| Hiz1]; [ now apply (rngl_nlt_ge Hor) in H | ].
+      remember {| Re := - Re z1; Im := Im z1 |} as z eqn:Hz.
+      apply eq_c_eq in Hz; cbn in Hz.
+      destruct Hz as (H1, H2).
+      cbn in Hzi12, Hzi13.
+      rewrite <- H2 in Hzi1, Hri12, Hzi12, Hzi13, Hiz1 |-*.
+      apply (f_equal rngl_opp) in H1.
+      rewrite (rngl_opp_involutive Hop) in H1.
+      rewrite <- H1 in Hri12, Hzi12, Hzi13, Hzr1 |-*.
+      assert (H : z ≠ 0%C) by now intros H; subst z.
+      clear z1 H1z H1 H2.
+      rename z into z1.
+      rename H into H1z.
+      move H1z after H2z.
+      move z1 after z2.
+      rewrite (rngl_mul_opp_l Hop) in Hzi12, Hzi13.
+      rewrite (rngl_add_opp_r Hop) in Hzi12, Hzi13.
+      apply (rngl_opp_neg_pos Hop Hor) in Hzr1.
+      do 4 rewrite (rngl_mul_opp_l Hop).
+      do 2 rewrite (rngl_add_opp_r Hop).
+      rewrite (rngl_mul_opp_l Hop) in Hri12.
+      apply (rngl_le_opp_l Hop Hor) in Hri12.
+      apply -> (rngl_le_0_sub Hop Hor) in Hzi12.
+      apply -> (rngl_le_0_sub Hop Hor) in Hzi13.
 ...
         rewrite H2.
         do 2 rewrite (rngl_mul_0_l Hos), (rngl_sub_0_r Hos).
