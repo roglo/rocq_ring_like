@@ -4154,10 +4154,31 @@ destruct zi12. {
           rewrite (rngl_squ_mul Hic).
           rewrite (rngl_squ_opp Hop).
           rewrite <- (rngl_squ_mul Hic).
-          apply mul_re_1_mod_2_le_mul_2_mod_1. {
-            now apply rngl_lt_le_incl.
-          }
+apply rngl_lt_le_incl in Hzr3.
+          apply mul_re_1_mod_2_le_mul_2_mod_1; [ easy | ].
 Search (_ * ‖ _ ‖ ≤ _)%L.
+apply (rngl_le_squ_le Hop Hiq Hto). {
+  apply (rngl_mul_nonneg_nonneg Hos Hor); [ easy | ].
+  apply c_modulus_nonneg.
+} {
+  apply (rngl_mul_nonneg_nonneg Hos Hor); [ easy | ].
+  apply c_modulus_nonneg.
+}
+do 2 rewrite (rngl_squ_mul Hic).
+do 2 rewrite c_squ_modulus.
+do 2 rewrite rngl_mul_add_distr_l.
+rewrite (rngl_mul_comm Hic (Re z3)² (Re z2)²).
+apply (rngl_add_le_mono_l Hos Hor).
+cbn in Hzi12.
+apply -> (rngl_le_0_sub Hop Hor) in Hzi13.
+apply (rngl_le_le_squ Hop Hto) in Hzi13. 2: {
+  now apply (rngl_mul_nonneg_nonneg Hos Hor).
+}
+...
+do 2 rewrite <- (rngl_squ_mul Hic).
+do 2 rewrite (rngl_mul_comm Hic (Im _)²).
+now do 2 rewrite <- (rngl_squ_mul Hic).
+Qed.
 ...
   ============================
   (Re z3 * ‖ z2 ‖ ≤ Re z2 * ‖ z3 ‖)%L
