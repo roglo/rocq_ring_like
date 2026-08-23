@@ -3701,7 +3701,7 @@ do 2 rewrite (rngl_mul_comm Hic (Im _)²).
 now do 2 rewrite <- (rngl_squ_mul Hic).
 Qed.
 
-(* to be completed *)
+(* to be completed
 Theorem c_seq_to_div_nat_is_Cauchy :
   rngl_is_archimedean T = true →
   ∀ n z, is_Cauchy_sequence c_eucl_dist (c_seq_to_div_nat z n).
