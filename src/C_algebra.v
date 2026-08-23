@@ -4243,6 +4243,37 @@ destruct (rngl_leb_dec (Re z1 * Im z2) (Im z1 * Re z2)) as [Hri12|Hri12]. {
         apply (rngl_le_opp_l Hop Hor) in Hri12.
         apply -> (rngl_le_0_sub Hop Hor) in Hzi12.
         apply -> (rngl_le_0_sub Hop Hor) in Hzi13.
+        apply (rngl_le_sub_le_add_l Hop Hor).
+        rewrite (rngl_add_sub_assoc Hop).
+        apply (rngl_le_add_le_sub_r Hop Hor).
+        do 2 rewrite <- rngl_mul_add_distr_r.
+        destruct (rngl_leb_dec 0 (Re z2)) as [Hzr2| Hzr2]; cycle 1. {
+          exfalso.
+          apply (rngl_leb_nle) in Hzr2.
+          apply Hzr2; clear Hzr2.
+          apply (rngl_mul_le_mono_pos_l Hop Hiq Hto (Im z1)). {
+            now apply rngl_le_neq.
+          }
+          rewrite (rngl_mul_0_r Hos).
+          eapply (rngl_le_trans Hor); [ | apply Hzi12 ].
+          apply rngl_lt_le_incl in Hzr1.
+          now apply (rngl_mul_nonneg_nonneg Hos Hor).
+        }
+        apply rngl_leb_le in Hzr2.
+        destruct (rngl_leb_dec 0 (Re z3)) as [Hzr3| Hzr3]; cycle 1. {
+          exfalso.
+          apply (rngl_leb_nle) in Hzr3.
+          apply Hzr3; clear Hzr3.
+          apply (rngl_mul_le_mono_pos_l Hop Hiq Hto (Im z1)). {
+            now apply rngl_le_neq.
+          }
+          rewrite (rngl_mul_0_r Hos).
+          eapply (rngl_le_trans Hor); [ | apply Hzi13 ].
+          apply rngl_lt_le_incl in Hzr1.
+          now apply (rngl_mul_nonneg_nonneg Hos Hor).
+        }
+        apply rngl_leb_le in Hzr3.
+        clear Hri12.
 ...
         rewrite H2.
         do 2 rewrite (rngl_mul_0_l Hos), (rngl_sub_0_r Hos).
