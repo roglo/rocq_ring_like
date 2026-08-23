@@ -4274,22 +4274,7 @@ destruct (rngl_leb_dec (Re z1 * Im z2) (Im z1 * Re z2)) as [Hri12|Hri12]. {
         }
         apply rngl_leb_le in Hzr3.
         clear Hri12.
-...
-        rewrite H2.
-        do 2 rewrite (rngl_mul_0_l Hos), (rngl_sub_0_r Hos).
-        do 2 rewrite (c_modulus_mul Hic Hop Hto).
-        do 2 rewrite (rngl_mul_comm Hic (c_modulus z1)).
-        do 2 rewrite rngl_mul_assoc.
-        apply (rngl_mul_le_mono_nonneg_r Hop Hor).
-        apply c_modulus_nonneg.
-        remember (is_negative_real z3) as nr3 eqn:Hnr3.
-        symmetry in Hnr3.
-        destruct nr3. {
-          apply is_negative_real_bool_prop in Hnr1, Hnr3.
-          now exfalso; apply Hs13.
-        }
-        clear - Hnr1 Hnr3 Hto Hzi13 Hos Hor Hop Hiq Hzi3 Heo Hic H3z Hiv H1z Hii.
-        move H1z after H3z.
+        apply mul_re_1_mod_2_le_mul_2_mod_1 in Hz23; [ | easy ].
 ...
 (* AngleAddLeMonoL_3.v *)
 Theorem angle_add_le_mono_l_sin_lb_nonneg :
