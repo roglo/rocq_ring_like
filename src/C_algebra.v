@@ -3701,7 +3701,7 @@ do 2 rewrite (rngl_mul_comm Hic (Im _)²).
 now do 2 rewrite <- (rngl_squ_mul Hic).
 Qed.
 
-(* to be completed
+(* to be completed *)
 Theorem c_seq_to_div_nat_is_Cauchy :
   rngl_is_archimedean T = true →
   ∀ n z, is_Cauchy_sequence c_eucl_dist (c_seq_to_div_nat z n).
@@ -3919,330 +3919,330 @@ specialize (rngl_integral_or_inv_pdiv_eq_dec_order Hiv Hor) as Hio.
 intros * H3z Hs13 Hz23.
 (**)
 destruct (rngl_leb_dec (Re z1 * Im z2) (Im z1 * Re z2)) as [Hri12|Hri12]. {
-apply rngl_leb_le in Hri12.
-(**)
-destruct (c_eq_dec Heo z1 0) as [H1z| H1z]. {
-  subst z1.
-  do 2 rewrite (c_mul_0_l Hos).
-  apply c_arg_le_refl.
-}
-destruct (c_eq_dec Heo z2 0) as [H2z| H2z]. {
-  subst z2.
-  rewrite (c_mul_0_r Hos).
+  apply rngl_leb_le in Hri12.
+  (**)
+  destruct (c_eq_dec Heo z1 0) as [H1z| H1z]. {
+    subst z1.
+    do 2 rewrite (c_mul_0_l Hos).
+    apply c_arg_le_refl.
+  }
+  destruct (c_eq_dec Heo z2 0) as [H2z| H2z]. {
+    subst z2.
+    rewrite (c_mul_0_r Hos).
+    progress unfold c_arg_leb.
+    cbn - [ "*"%C ].
+    rewrite (rngl_leb_refl Hor).
+    rewrite (c_modulus_0 Hop Hii Hto).
+    rewrite (rngl_mul_0_r Hos), (rngl_mul_0_l Hos).
+    rewrite (rngl_leb_refl Hor).
+    now destruct (_ ≤? _)%L.
+  }
   progress unfold c_arg_leb.
-  cbn - [ "*"%C ].
-  rewrite (rngl_leb_refl Hor).
-  rewrite (c_modulus_0 Hop Hii Hto).
-  rewrite (rngl_mul_0_r Hos), (rngl_mul_0_l Hos).
-  rewrite (rngl_leb_refl Hor).
-  now destruct (_ ≤? _)%L.
-}
-progress unfold c_arg_leb.
-remember (0 ≤? Im (z1 * z2))%L as zi12 eqn:Hzi12.
-symmetry in Hzi12.
-destruct zi12. {
-  remember (0 ≤? Im (z1 * z3))%L as zi13 eqn:Hzi13.
-  symmetry in Hzi13.
-  destruct zi13; [ | easy ].
-  apply rngl_leb_le in Hzi12, Hzi13.
-  apply rngl_leb_le.
-  (* lemma *)
-  progress unfold c_arg_leb in Hz23.
-  remember (0 ≤? Im z2)%L as zi2 eqn:Hzi2.
-  remember (0 ≤? Im z3)%L as zi3 eqn:Hzi3.
-  symmetry in Hzi2, Hzi3.
-  move Hz23 at bottom.
-  destruct zi2; cycle 1. {
-    destruct zi3; [ easy | ].
-    apply (rngl_leb_gt_iff Hto) in Hzi2, Hzi3.
-    apply rngl_leb_le in Hz23.
-    apply c_mul_is_small_bool_prop in Hs13.
-    assert (Haov12 : c_mul_is_small z1 z2 = true). {
-      apply (c_mul_is_small_le _ z3); [ easy | | easy ].
-      progress unfold c_arg_leb.
-      apply (rngl_leb_gt Hor) in Hzi2, Hzi3.
-      rewrite Hzi2, Hzi3.
-      now apply rngl_leb_le.
-    }
-    destruct (rngl_ltb_dec (Re z3) 0)%L as [Hc3z| Hzc3]. {
-      apply (rngl_ltb_lt Heo) in Hc3z.
-      exfalso.
-      apply Bool.not_false_iff_true in Hs13.
-      apply Hs13; clear Hs13.
-      now apply Im_mul_nonneg_c_mul_is_not_small.
-    }
-    assert (Hzi1 : (0 ≤ Im z1)%L). {
-      apply (rngl_nlt_ge_iff Hto).
-      intros Hzi1.
-      apply (c_im_neg_neg_mul_is_not_small z1) in Hzi2; [ | easy ].
-      congruence.
-    }
-    apply (rngl_ltb_ge_iff Hto) in Hzc3.
-    apply c_mul_is_small_bool_prop in Haov12.
-    destruct Haov12 as [Hs21| Hs21]; [ easy | ].
-    destruct Hs21 as [Hs21| Hs21]; [ easy | ].
-    generalize Hzi1; intros H.
-    apply rngl_leb_le in H.
-    rewrite H in Hs21; clear H.
-    generalize Hzi2; intros H.
-    apply (rngl_leb_gt Hor) in H.
-    rewrite H in Hs21; clear H.
-    destruct (rngl_leb_dec (Re z2) 0)%L as [Hr2z| Hr2z]. {
-      apply rngl_leb_le in Hr2z.
-      exfalso.
-      destruct (rngl_ltb_dec 0 (Re z1))%L as [Hzr1| Hzr1]. {
-        apply (rngl_ltb_lt Heo) in Hzr1.
-        cbn in Hzi12.
-        apply (rngl_nlt_ge Hor) in Hzi12.
-        apply Hzi12; clear Hzi12.
-        apply (rngl_add_nonpos_neg Hop Hor).
-        now apply (rngl_mul_nonneg_nonpos Hop Hor).
-        now apply (rngl_mul_pos_neg Hop Hiq Hor).
+  remember (0 ≤? Im (z1 * z2))%L as zi12 eqn:Hzi12.
+  symmetry in Hzi12.
+  destruct zi12. {
+    remember (0 ≤? Im (z1 * z3))%L as zi13 eqn:Hzi13.
+    symmetry in Hzi13.
+    destruct zi13; [ | easy ].
+    apply rngl_leb_le in Hzi12, Hzi13.
+    apply rngl_leb_le.
+    (* lemma *)
+    progress unfold c_arg_leb in Hz23.
+    remember (0 ≤? Im z2)%L as zi2 eqn:Hzi2.
+    remember (0 ≤? Im z3)%L as zi3 eqn:Hzi3.
+    symmetry in Hzi2, Hzi3.
+    move Hz23 at bottom.
+    destruct zi2; cycle 1. {
+      destruct zi3; [ easy | ].
+      apply (rngl_leb_gt_iff Hto) in Hzi2, Hzi3.
+      apply rngl_leb_le in Hz23.
+      apply c_mul_is_small_bool_prop in Hs13.
+      assert (Haov12 : c_mul_is_small z1 z2 = true). {
+        apply (c_mul_is_small_le _ z3); [ easy | | easy ].
+        progress unfold c_arg_leb.
+        apply (rngl_leb_gt Hor) in Hzi2, Hzi3.
+        rewrite Hzi2, Hzi3.
+        now apply rngl_leb_le.
       }
-      apply (rngl_ltb_ge_iff Hto) in Hzr1.
-      cbn in Hzi12.
+      destruct (rngl_ltb_dec (Re z3) 0)%L as [Hc3z| Hzc3]. {
+        apply (rngl_ltb_lt Heo) in Hc3z.
+        exfalso.
+        apply Bool.not_false_iff_true in Hs13.
+        apply Hs13; clear Hs13.
+        now apply Im_mul_nonneg_c_mul_is_not_small.
+      }
+      assert (Hzi1 : (0 ≤ Im z1)%L). {
+        apply (rngl_nlt_ge_iff Hto).
+        intros Hzi1.
+        apply (c_im_neg_neg_mul_is_not_small z1) in Hzi2; [ | easy ].
+        congruence.
+      }
+      apply (rngl_ltb_ge_iff Hto) in Hzc3.
+      apply c_mul_is_small_bool_prop in Haov12.
+      destruct Haov12 as [Hs21| Hs21]; [ easy | ].
+      destruct Hs21 as [Hs21| Hs21]; [ easy | ].
+      generalize Hzi1; intros H.
+      apply rngl_leb_le in H.
+      rewrite H in Hs21; clear H.
+      generalize Hzi2; intros H.
+      apply (rngl_leb_gt Hor) in H.
+      rewrite H in Hs21; clear H.
+      destruct (rngl_leb_dec (Re z2) 0)%L as [Hr2z| Hr2z]. {
+        apply rngl_leb_le in Hr2z.
+        exfalso.
+        destruct (rngl_ltb_dec 0 (Re z1))%L as [Hzr1| Hzr1]. {
+          apply (rngl_ltb_lt Heo) in Hzr1.
+          cbn in Hzi12.
+          apply (rngl_nlt_ge Hor) in Hzi12.
+          apply Hzi12; clear Hzi12.
+          apply (rngl_add_nonpos_neg Hop Hor).
+          now apply (rngl_mul_nonneg_nonpos Hop Hor).
+          now apply (rngl_mul_pos_neg Hop Hiq Hor).
+        }
+        apply (rngl_ltb_ge_iff Hto) in Hzr1.
+        cbn in Hzi12.
+        apply (rngl_nle_gt Hor) in Hs21.
+        apply Hs21; clear Hs21.
+        apply rngl_lt_le_incl in Hzi2.
+        now apply mul_Re_mod_le_mul_Re_mod.
+      }
+      apply (rngl_leb_gt_iff Hto) in Hr2z.
+      destruct (rngl_leb_dec 0 (Re z1))%L as [Hzr1| Hzr1]. {
+        apply rngl_leb_le in Hzr1.
+        apply (rngl_nle_gt Hor) in Hzi3.
+        now apply (c_mul_small_Im_mul_nonneg z1 z3) in Hzi13.
+      }
+      exfalso.
+      apply (rngl_leb_gt_iff Hto) in Hzr1.
       apply (rngl_nle_gt Hor) in Hs21.
       apply Hs21; clear Hs21.
-      apply rngl_lt_le_incl in Hzi2.
-      now apply mul_Re_mod_le_mul_Re_mod.
-    }
-    apply (rngl_leb_gt_iff Hto) in Hr2z.
-    destruct (rngl_leb_dec 0 (Re z1))%L as [Hzr1| Hzr1]. {
-      apply rngl_leb_le in Hzr1.
-      apply (rngl_nle_gt Hor) in Hzi3.
-      now apply (c_mul_small_Im_mul_nonneg z1 z3) in Hzi13.
-    }
-    exfalso.
-    apply (rngl_leb_gt_iff Hto) in Hzr1.
-    apply (rngl_nle_gt Hor) in Hs21.
-    apply Hs21; clear Hs21.
-    apply (rngl_le_trans Hor _ 0). {
-      apply (rngl_mul_nonpos_nonneg Hop Hor).
+      apply (rngl_le_trans Hor _ 0). {
+        apply (rngl_mul_nonpos_nonneg Hop Hor).
+        now apply rngl_lt_le_incl.
+        apply c_modulus_nonneg.
+      }
+      apply (rngl_mul_nonneg_nonneg Hos Hor).
       now apply rngl_lt_le_incl.
       apply c_modulus_nonneg.
     }
-    apply (rngl_mul_nonneg_nonneg Hos Hor).
-    now apply rngl_lt_le_incl.
-    apply c_modulus_nonneg.
-  }
-  apply rngl_leb_le in Hzi2.
-  destruct zi3. {
-    apply rngl_leb_le in Hzi3, Hz23.
-    progress unfold c_mul_is_small_prop in Hs13.
-    destruct Hs13 as [Hs13| Hs13]; [ easy | ].
-    destruct Hs13 as [Hs13| Hs13]; [ easy | ].
-    generalize Hzi3; intros H.
-    apply rngl_leb_le in H.
-    rewrite H in Hs13; clear H.
-    remember (0 ≤? Im z1)%L as zi1 eqn:Hzi1.
-    symmetry in Hzi1.
-    destruct zi1. {
-      apply rngl_leb_le in Hzi1.
-      do 2 rewrite (c_modulus_mul Hic Hop Hto).
-      do 2 rewrite (rngl_mul_comm Hic (c_modulus z1)).
-      do 2 rewrite rngl_mul_assoc.
-      apply (rngl_mul_le_mono_nonneg_r Hop Hor).
-      apply c_modulus_nonneg.
-      cbn.
-      remember (is_negative_real z1) as nr1 eqn:Hnr1.
-      symmetry in Hnr1.
-      destruct nr1. {
-        remember (is_negative_real z3) as nr3 eqn:Hnr3.
-        symmetry in Hnr3.
-        destruct nr3. {
-          apply is_negative_real_bool_prop in Hnr1, Hnr3.
-          now exfalso; apply Hs13.
-        }
-        clear - Hnr1 Hnr3 Hto Hzi13 Hos Hor Hop Hiq Hzi3 Heo Hic H3z Hiv H1z Hii.
-        move H1z after H3z.
-        generalize Hnr1; intros H.
-        apply is_negative_real_bool_prop in H.
-        destruct H as (H1, H2).
-        rewrite H2.
-        do 2 rewrite (rngl_mul_0_l Hos), (rngl_sub_0_r Hos).
-        do 2 rewrite <- rngl_mul_assoc.
-        apply (rngl_opp_le_compat Hop Hor).
-        do 2 rewrite <- (rngl_mul_opp_l Hop (Re z1)).
-        apply (rngl_mul_le_mono_pos_l Hop Hiq Hto).
-        apply (rngl_lt_0_opp Hop Hor).
-        generalize Hnr1; intros H.
-        now apply is_negative_real_bool_prop in H.
-        now apply (mul_Re_mod_le_mul_Re_mod_2 z1).
-      }
-      clear Hs13.
-      do 2 rewrite (rngl_mul_sub_distr_r Hop).
-      apply (rngl_le_add_le_sub_l Hop Hor).
-      rewrite (rngl_add_sub_assoc Hop).
-      apply (rngl_le_sub_le_add_l Hop Hor).
-      destruct (rngl_leb_dec 0 (Re z1)) as [Hzr1| Hzr1]. {
-        apply rngl_leb_le in Hzr1.
-        clear Hnr1.
-        destruct (rngl_eqb_dec (Im z1) 0) as [Hiz1| Hiz1]. {
-          apply (rngl_eqb_eq Heo) in Hiz1.
-          rewrite Hiz1.
-          do 4 rewrite (rngl_mul_0_l Hos).
-          do 2 rewrite rngl_add_0_l.
+    apply rngl_leb_le in Hzi2.
+    destruct zi3. {
+      apply rngl_leb_le in Hzi3, Hz23.
+      progress unfold c_mul_is_small_prop in Hs13.
+      destruct Hs13 as [Hs13| Hs13]; [ easy | ].
+      destruct Hs13 as [Hs13| Hs13]; [ easy | ].
+      generalize Hzi3; intros H.
+      apply rngl_leb_le in H.
+      rewrite H in Hs13; clear H.
+      remember (0 ≤? Im z1)%L as zi1 eqn:Hzi1.
+      symmetry in Hzi1.
+      destruct zi1. {
+        apply rngl_leb_le in Hzi1.
+        do 2 rewrite (c_modulus_mul Hic Hop Hto).
+        do 2 rewrite (rngl_mul_comm Hic (c_modulus z1)).
+        do 2 rewrite rngl_mul_assoc.
+        apply (rngl_mul_le_mono_nonneg_r Hop Hor).
+        apply c_modulus_nonneg.
+        cbn.
+        remember (is_negative_real z1) as nr1 eqn:Hnr1.
+        symmetry in Hnr1.
+        destruct nr1. {
+          remember (is_negative_real z3) as nr3 eqn:Hnr3.
+          symmetry in Hnr3.
+          destruct nr3. {
+            apply is_negative_real_bool_prop in Hnr1, Hnr3.
+            now exfalso; apply Hs13.
+          }
+          clear - Hnr1 Hnr3 Hto Hzi13 Hos Hor Hop Hiq Hzi3 Heo Hic H3z Hiv H1z Hii.
+          move H1z after H3z.
+          generalize Hnr1; intros H.
+          apply is_negative_real_bool_prop in H.
+          destruct H as (H1, H2).
+          rewrite H2.
+          do 2 rewrite (rngl_mul_0_l Hos), (rngl_sub_0_r Hos).
           do 2 rewrite <- rngl_mul_assoc.
-          now apply (rngl_mul_le_mono_nonneg_l Hop Hor).
+          apply (rngl_opp_le_compat Hop Hor).
+          do 2 rewrite <- (rngl_mul_opp_l Hop (Re z1)).
+          apply (rngl_mul_le_mono_pos_l Hop Hiq Hto).
+          apply (rngl_lt_0_opp Hop Hor).
+          generalize Hnr1; intros H.
+          now apply is_negative_real_bool_prop in H.
+          now apply (mul_Re_mod_le_mul_Re_mod_2 z1).
         }
-        apply (rngl_eqb_neq Heo) in Hiz1.
-        destruct (rngl_leb_dec 0 (Re z3)) as [Hzr3| Hzr3]. {
-          apply rngl_leb_le in Hzr3.
+        clear Hs13.
+        do 2 rewrite (rngl_mul_sub_distr_r Hop).
+        apply (rngl_le_add_le_sub_l Hop Hor).
+        rewrite (rngl_add_sub_assoc Hop).
+        apply (rngl_le_sub_le_add_l Hop Hor).
+        destruct (rngl_leb_dec 0 (Re z1)) as [Hzr1| Hzr1]. {
+          apply rngl_leb_le in Hzr1.
+          clear Hnr1.
+          destruct (rngl_eqb_dec (Im z1) 0) as [Hiz1| Hiz1]. {
+            apply (rngl_eqb_eq Heo) in Hiz1.
+            rewrite Hiz1.
+            do 4 rewrite (rngl_mul_0_l Hos).
+            do 2 rewrite rngl_add_0_l.
+            do 2 rewrite <- rngl_mul_assoc.
+            now apply (rngl_mul_le_mono_nonneg_l Hop Hor).
+          }
+          apply (rngl_eqb_neq Heo) in Hiz1.
+          destruct (rngl_leb_dec 0 (Re z3)) as [Hzr3| Hzr3]. {
+            apply rngl_leb_le in Hzr3.
+            destruct (rngl_leb_dec 0 (Re z2)) as [Hzr2| Hzr2]. {
+              apply rngl_leb_le in Hzr2.
+              clear Hzi12 Hzi13.
+              do 4 rewrite <- rngl_mul_assoc.
+              apply (rngl_add_le_mono Hos Hor); cycle 1. {
+                now apply (rngl_mul_le_mono_nonneg_l Hop Hor).
+              }
+              apply (rngl_mul_le_mono_nonneg_l Hop Hor); [ easy | ].
+              apply mul_re_1_mod_2_le_mul_2_mod_1 in Hz23; [ | easy ].
+              now apply mul_im_2_mod_1_le_mul_im_1_mod_2.
+            }
+            apply (rngl_leb_gt_iff Hto) in Hzr2.
+            exfalso.
+            apply (rngl_nlt_ge Hor) in Hz23.
+            apply Hz23; clear Hz23.
+            apply (rngl_lt_le_trans Hor _ 0). {
+              apply rngl_le_neq.
+              split. {
+                apply (rngl_mul_neg_pos Hop Hiq Hor); [ easy | ].
+                now apply c_modulus_pos.
+              }
+              apply (rngl_neq_mul_0 Hos Hiq). {
+                intros H; rewrite H in Hzr2.
+                now apply rngl_lt_irrefl in Hzr2.
+              }
+              intros H.
+              now apply eq_c_modulus_0 in H.
+            }
+            apply (rngl_mul_nonneg_nonneg Hos Hor); [ easy | ].
+            apply c_modulus_nonneg.
+          }
+          apply (rngl_leb_gt_iff Hto) in Hzr3.
           destruct (rngl_leb_dec 0 (Re z2)) as [Hzr2| Hzr2]. {
             apply rngl_leb_le in Hzr2.
-            clear Hzi12 Hzi13.
             do 4 rewrite <- rngl_mul_assoc.
-            apply (rngl_add_le_mono Hos Hor). 2: {
+            apply (rngl_add_le_mono Hos Hor); cycle 1. {
               now apply (rngl_mul_le_mono_nonneg_l Hop Hor).
             }
             apply (rngl_mul_le_mono_nonneg_l Hop Hor); [ easy | ].
-            apply mul_re_1_mod_2_le_mul_2_mod_1 in Hz23; [ | easy ].
-            now apply mul_im_2_mod_1_le_mul_im_1_mod_2.
-          }
-          apply (rngl_leb_gt_iff Hto) in Hzr2.
-          exfalso.
-          apply (rngl_nlt_ge Hor) in Hz23.
-          apply Hz23; clear Hz23.
-          apply (rngl_lt_le_trans Hor _ 0). {
-            apply rngl_le_neq.
-            split. {
-              apply (rngl_mul_neg_pos Hop Hiq Hor); [ easy | ].
-              now apply c_modulus_pos.
+            apply (rngl_le_squ_le Hop Hiq Hto). {
+              apply (rngl_mul_nonneg_nonneg Hos Hor); [ easy | ].
+              apply c_modulus_nonneg.
+            } {
+              apply (rngl_mul_nonneg_nonneg Hos Hor); [ easy | ].
+              apply c_modulus_nonneg.
             }
-            apply (rngl_neq_mul_0 Hos Hiq). {
-              intros H; rewrite H in Hzr2.
-              now apply rngl_lt_irrefl in Hzr2.
+            do 2 rewrite (rngl_squ_mul Hic).
+            do 2 rewrite c_squ_modulus.
+            do 2 rewrite rngl_mul_add_distr_l.
+            rewrite (rngl_mul_comm Hic (Im z2)² (Im z3)²).
+            apply (rngl_add_le_mono_r Hos Hor).
+            do 2 rewrite (rngl_mul_comm Hic (Im _)²).
+            do 2 rewrite <- (rngl_squ_mul Hic).
+            clear Hz23.
+            remember {| Re := - Re z3; Im := Im z3 |} as z eqn:Hz.
+            apply eq_c_eq in Hz; cbn in Hz.
+            destruct Hz as (H1, H2).
+            cbn in Hzi13.
+            rewrite <- H2 in Hzi3, Hzi13 |-*.
+            apply (f_equal rngl_opp) in H1.
+            rewrite (rngl_opp_involutive Hop) in H1.
+            rewrite <- H1 in Hzi13, Hzr3 |-*.
+            assert (H : z ≠ 0%C). {
+              intros H; subst z.
+              cbn in Hzr3.
+              rewrite (rngl_opp_0 Hop) in Hzr3.
+              now apply rngl_lt_irrefl in Hzr3.
             }
-            intros H.
-            now apply eq_c_modulus_0 in H.
-          }
-          apply (rngl_mul_nonneg_nonneg Hos Hor); [ easy | ].
-          apply c_modulus_nonneg.
-        }
-        apply (rngl_leb_gt_iff Hto) in Hzr3.
-        destruct (rngl_leb_dec 0 (Re z2)) as [Hzr2| Hzr2]. {
-          apply rngl_leb_le in Hzr2.
-          do 4 rewrite <- rngl_mul_assoc.
-          apply (rngl_add_le_mono Hos Hor). 2: {
-            now apply (rngl_mul_le_mono_nonneg_l Hop Hor).
-          }
-          apply (rngl_mul_le_mono_nonneg_l Hop Hor); [ easy | ].
-          apply (rngl_le_squ_le Hop Hiq Hto). {
-            apply (rngl_mul_nonneg_nonneg Hos Hor); [ easy | ].
-            apply c_modulus_nonneg.
-          } {
-            apply (rngl_mul_nonneg_nonneg Hos Hor); [ easy | ].
-            apply c_modulus_nonneg.
-          }
-          do 2 rewrite (rngl_squ_mul Hic).
-          do 2 rewrite c_squ_modulus.
-          do 2 rewrite rngl_mul_add_distr_l.
-          rewrite (rngl_mul_comm Hic (Im z2)² (Im z3)²).
-          apply (rngl_add_le_mono_r Hos Hor).
-          do 2 rewrite (rngl_mul_comm Hic (Im _)²).
-          do 2 rewrite <- (rngl_squ_mul Hic).
-          clear Hz23.
-          remember {| Re := - Re z3; Im := Im z3 |} as z eqn:Hz.
-          apply eq_c_eq in Hz; cbn in Hz.
-          destruct Hz as (H1, H2).
-          cbn in Hzi13.
-          rewrite <- H2 in Hzi3, Hzi13 |-*.
-          apply (f_equal rngl_opp) in H1.
-          rewrite (rngl_opp_involutive Hop) in H1.
-          rewrite <- H1 in Hzi13, Hzr3 |-*.
-          assert (H : z ≠ 0%C). {
-            intros H; subst z.
-            cbn in Hzr3.
-            rewrite (rngl_opp_0 Hop) in Hzr3.
-            now apply rngl_lt_irrefl in Hzr3.
-          }
-          clear z3 H3z H1 H2.
-          rename z into z3.
-          rename H into H3z.
-          move H3z before H2z.
-          move z3 before z2.
-          rewrite (rngl_mul_opp_r Hop) in Hzi13.
-          rewrite (rngl_add_opp_l Hop) in Hzi13.
-          apply (rngl_opp_neg_pos Hop Hor) in Hzr3.
-          move Hzr3 after Hzr3.
-          rewrite (rngl_squ_mul Hic).
-          rewrite (rngl_squ_opp Hop).
-          rewrite <- (rngl_squ_mul Hic).
-          apply rngl_lt_le_incl in Hzr3.
-          apply mul_re_1_mod_2_le_mul_2_mod_1; [ easy | ].
-          apply (rngl_le_squ_le Hop Hiq Hto). {
-            apply (rngl_mul_nonneg_nonneg Hos Hor); [ easy | ].
-            apply c_modulus_nonneg.
-          } {
-            apply (rngl_mul_nonneg_nonneg Hos Hor); [ easy | ].
-            apply c_modulus_nonneg.
-          }
-          do 2 rewrite (rngl_squ_mul Hic).
-          do 2 rewrite c_squ_modulus.
-          do 2 rewrite rngl_mul_add_distr_l.
-          rewrite (rngl_mul_comm Hic (Re z3)² (Re z2)²).
-          apply (rngl_add_le_mono_l Hos Hor).
-          clear Hzi12.
-          apply -> (rngl_le_0_sub Hop Hor) in Hzi13.
-          apply (rngl_le_le_squ Hop Hto) in Hzi13; cycle 1. {
-            now apply (rngl_mul_nonneg_nonneg Hos Hor).
-          }
-          apply (rngl_mul_le_mono_pos_l Hop Hiq Hto (Im z1)²). {
-            now apply (rngl_squ_pos Hos Hto Hio).
-          }
-          do 2 rewrite rngl_mul_assoc.
-          eapply (rngl_le_trans Hor). {
-            apply (rngl_mul_le_mono_nonneg_r Hop Hor _ _ (Im z2)²) in Hzi13;
-              cycle 1. {
+            clear z3 H3z H1 H2.
+            rename z into z3.
+            rename H into H3z.
+            move H3z before H2z.
+            move z3 before z2.
+            rewrite (rngl_mul_opp_r Hop) in Hzi13.
+            rewrite (rngl_add_opp_l Hop) in Hzi13.
+            apply (rngl_opp_neg_pos Hop Hor) in Hzr3.
+            move Hzr3 after Hzr3.
+            rewrite (rngl_squ_mul Hic).
+            rewrite (rngl_squ_opp Hop).
+            rewrite <- (rngl_squ_mul Hic).
+            apply rngl_lt_le_incl in Hzr3.
+            apply mul_re_1_mod_2_le_mul_2_mod_1; [ easy | ].
+            apply (rngl_le_squ_le Hop Hiq Hto). {
+              apply (rngl_mul_nonneg_nonneg Hos Hor); [ easy | ].
+              apply c_modulus_nonneg.
+            } {
+              apply (rngl_mul_nonneg_nonneg Hos Hor); [ easy | ].
+              apply c_modulus_nonneg.
+            }
+            do 2 rewrite (rngl_squ_mul Hic).
+            do 2 rewrite c_squ_modulus.
+            do 2 rewrite rngl_mul_add_distr_l.
+            rewrite (rngl_mul_comm Hic (Re z3)² (Re z2)²).
+            apply (rngl_add_le_mono_l Hos Hor).
+            clear Hzi12.
+            apply -> (rngl_le_0_sub Hop Hor) in Hzi13.
+            apply (rngl_le_le_squ Hop Hto) in Hzi13; cycle 1. {
+              now apply (rngl_mul_nonneg_nonneg Hos Hor).
+            }
+            apply (rngl_mul_le_mono_pos_l Hop Hiq Hto (Im z1)²). {
+              now apply (rngl_squ_pos Hos Hto Hio).
+            }
+            do 2 rewrite rngl_mul_assoc.
+            eapply (rngl_le_trans Hor). {
+              apply (rngl_mul_le_mono_nonneg_r Hop Hor _ _ (Im z2)²) in Hzi13;
+                cycle 1. {
+                apply (rngl_squ_nonneg Hos Hto).
+              }
+              rewrite (rngl_squ_mul Hic) in Hzi13.
+              apply Hzi13.
+            }
+            rewrite (rngl_squ_mul Hic).
+            rewrite (rngl_mul_mul_swap Hic).
+            apply (rngl_mul_le_mono_nonneg_r Hop Hor). {
               apply (rngl_squ_nonneg Hos Hto).
             }
-            rewrite (rngl_squ_mul Hic) in Hzi13.
-            apply Hzi13.
+            do 2 rewrite <- (rngl_squ_mul Hic).
+            apply (rngl_le_le_squ Hop Hto); [ | easy ]. (**)
+            now apply (rngl_mul_nonneg_nonneg Hos Hor).
           }
-          rewrite (rngl_squ_mul Hic).
-          rewrite (rngl_mul_mul_swap Hic).
-          apply (rngl_mul_le_mono_nonneg_r Hop Hor). {
-            apply (rngl_squ_nonneg Hos Hto).
+          apply rngl_leb_nle in Hzr2.
+          exfalso; apply Hzr2; clear Hzr2.
+          apply (rngl_mul_le_mono_pos_l Hop Hiq Hto (Im z1)). {
+            now apply rngl_le_neq.
           }
-          do 2 rewrite <- (rngl_squ_mul Hic).
-          apply (rngl_le_le_squ Hop Hto); [ | easy ]. (**)
+          rewrite (rngl_mul_0_r Hos).
+          eapply (rngl_le_trans Hor); [ | apply Hri12 ].
           now apply (rngl_mul_nonneg_nonneg Hos Hor).
         }
-        apply rngl_leb_nle in Hzr2.
-        exfalso; apply Hzr2; clear Hzr2.
-        apply (rngl_mul_le_mono_pos_l Hop Hiq Hto (Im z1)). {
-          now apply rngl_le_neq.
-        }
-        rewrite (rngl_mul_0_r Hos).
-        eapply (rngl_le_trans Hor); [ | apply Hri12 ].
-        now apply (rngl_mul_nonneg_nonneg Hos Hor).
-      }
-      apply (rngl_leb_gt_iff Hto) in Hzr1.
-      apply is_not_negative_real_if in Hnr1.
-      destruct Hnr1 as [H| Hiz1]; [ now apply (rngl_nlt_ge Hor) in H | ].
-      remember {| Re := - Re z1; Im := Im z1 |} as z eqn:Hz.
-      apply eq_c_eq in Hz; cbn in Hz.
-      destruct Hz as (H1, H2).
-      cbn in Hzi12, Hzi13.
-      rewrite <- H2 in Hzi1, Hri12, Hzi12, Hzi13, Hiz1 |-*.
-      apply (f_equal rngl_opp) in H1.
-      rewrite (rngl_opp_involutive Hop) in H1.
-      rewrite <- H1 in Hri12, Hzi12, Hzi13, Hzr1 |-*.
-      assert (H : z ≠ 0%C) by now intros H; subst z.
-      clear z1 H1z H1 H2.
-      rename z into z1.
-      rename H into H1z.
-      move H1z after H2z.
-      move z1 after z2.
-      rewrite (rngl_mul_opp_l Hop) in Hzi12, Hzi13.
-      rewrite (rngl_add_opp_r Hop) in Hzi12, Hzi13.
-      apply (rngl_opp_neg_pos Hop Hor) in Hzr1.
-      do 4 rewrite (rngl_mul_opp_l Hop).
-      do 2 rewrite (rngl_add_opp_r Hop).
-      rewrite (rngl_mul_opp_l Hop) in Hri12.
-      apply (rngl_le_opp_l Hop Hor) in Hri12.
-      apply -> (rngl_le_0_sub Hop Hor) in Hzi12.
-      apply -> (rngl_le_0_sub Hop Hor) in Hzi13.
+        apply (rngl_leb_gt_iff Hto) in Hzr1.
+        apply is_not_negative_real_if in Hnr1.
+        destruct Hnr1 as [H| Hiz1]; [ now apply (rngl_nlt_ge Hor) in H | ].
+        remember {| Re := - Re z1; Im := Im z1 |} as z eqn:Hz.
+        apply eq_c_eq in Hz; cbn in Hz.
+        destruct Hz as (H1, H2).
+        cbn in Hzi12, Hzi13.
+        rewrite <- H2 in Hzi1, Hri12, Hzi12, Hzi13, Hiz1 |-*.
+        apply (f_equal rngl_opp) in H1.
+        rewrite (rngl_opp_involutive Hop) in H1.
+        rewrite <- H1 in Hri12, Hzi12, Hzi13, Hzr1 |-*.
+        assert (H : z ≠ 0%C) by now intros H; subst z.
+        clear z1 H1z H1 H2.
+        rename z into z1.
+        rename H into H1z.
+        move H1z after H2z.
+        move z1 after z2.
+        rewrite (rngl_mul_opp_l Hop) in Hzi12, Hzi13.
+        rewrite (rngl_add_opp_r Hop) in Hzi12, Hzi13.
+        apply (rngl_opp_neg_pos Hop Hor) in Hzr1.
+        do 4 rewrite (rngl_mul_opp_l Hop).
+        do 2 rewrite (rngl_add_opp_r Hop).
+        rewrite (rngl_mul_opp_l Hop) in Hri12.
+        apply (rngl_le_opp_l Hop Hor) in Hri12.
+        apply -> (rngl_le_0_sub Hop Hor) in Hzi12.
+        apply -> (rngl_le_0_sub Hop Hor) in Hzi13.
 ...
         rewrite H2.
         do 2 rewrite (rngl_mul_0_l Hos), (rngl_sub_0_r Hos).
