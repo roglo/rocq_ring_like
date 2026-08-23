@@ -3937,6 +3937,7 @@ destruct (rngl_leb_dec (Re z1 * Im z2) (Im z1 * Re z2)) as [Hri12|Hri12]. {
     rewrite (rngl_leb_refl Hor).
     now destruct (_ ≤? _)%L.
   }
+  move H1z after H3z; move H2z after H3z.
   progress unfold c_arg_leb.
   remember (0 ≤? Im (z1 * z2))%L as zi12 eqn:Hzi12.
   symmetry in Hzi12.
@@ -4275,6 +4276,12 @@ destruct (rngl_leb_dec (Re z1 * Im z2) (Im z1 * Re z2)) as [Hri12|Hri12]. {
         apply rngl_leb_le in Hzr3.
         clear Hri12.
         apply mul_re_1_mod_2_le_mul_2_mod_1 in Hz23; [ | easy ].
+        apply (rngl_le_squ_le Hop Hiq Hto) in Hz23; cycle 1. {
+          now apply (rngl_mul_nonneg_nonneg Hos Hor).
+        } {
+          now apply (rngl_mul_nonneg_nonneg Hos Hor).
+        }
+(* en fait, y a pas de raison que ça soit vrai *)
 ...
 (* AngleAddLeMonoL_3.v *)
 Theorem angle_add_le_mono_l_sin_lb_nonneg :
