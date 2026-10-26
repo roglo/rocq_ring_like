@@ -355,7 +355,7 @@ Theorem c_inv_re :
   rngl_mul_is_comm T = true →
   rngl_has_inv T = true →
   ∀ z : Complex T, z ≠ 0%L →
-  Re z⁻¹ = (Re z / (Re z * Re z + Im z * Im z))%L.
+  Re z⁻¹%L = (Re z / (Re z * Re z + Im z * Im z))%L.
 Proof.
 intros Hic Hiv * Haz.
 specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
@@ -372,7 +372,7 @@ Theorem c_inv_im :
   rngl_mul_is_comm T = true →
   rngl_has_inv T = true →
   ∀ z : Complex T, z ≠ 0%L →
-  Im z⁻¹ = (- Im z / (Re z * Re z + Im z * Im z))%L.
+  Im z⁻¹%L = (- Im z / (Re z * Re z + Im z * Im z))%L.
 Proof.
 intros Hic Hiv * Haz.
 specialize (rngl_has_inv_has_inv_or_pdiv Hiv) as Hiq.
@@ -978,7 +978,7 @@ apply eq_c_eq.
 split; cbn; ring.
 Qed.
 
-Theorem c_inv_rngl_inv : ∀ z, z⁻¹%C = z⁻¹.
+Theorem c_inv_rngl_inv : ∀ z, z⁻¹%C = z⁻¹%L.
 Proof.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 intros.
@@ -1165,7 +1165,7 @@ rewrite <- (rngl_div_add_distr_r Hiv).
 easy.
 Qed.
 
-Theorem rl_modl_squ : ∀ z₁ z₂, (z₁² + z₂²)%L = (rl_modl z₁ z₂)².
+Theorem rl_modl_squ : ∀ z₁ z₂, (z₁² + z₂²)%L = (rl_modl z₁ z₂)²%L.
 Proof.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 intros.
@@ -2321,14 +2321,14 @@ do 2 rewrite (rngl_div_mul_mul_div Hic Hiv).
 do 2 rewrite (rngl_mul_div_assoc Hiv).
 do 2 rewrite (rngl_div_div Hos Hiv _ _ _ H2nz H2nz).
 rewrite fold_rngl_squ.
-rewrite (rl_sqrt_div Hop Hiv Hto _ 2²); cycle 1. {
+rewrite (rl_sqrt_div Hop Hiv Hto _ 2²%L); cycle 1. {
   apply (rngl_mul_nonneg_nonneg Hos Hor).
   apply (c_sub_modulus_re Hop Hiv Hto).
   apply (c_add_modulus_re Hop Hiv Hto).
 } {
   apply (rngl_squ_pos Hos Hto Hio _ H2nz).
 }
-rewrite (rl_sqrt_div Hop Hiv Hto _ 2²); cycle 1. {
+rewrite (rl_sqrt_div Hop Hiv Hto _ 2²%L); cycle 1. {
   apply (rngl_mul_nonneg_nonneg Hos Hor).
   apply (c_add_modulus_re Hop Hiv Hto).
   apply (c_sub_modulus_re Hop Hiv Hto).
@@ -3545,7 +3545,7 @@ apply (rngl_leb_gt Hor) in Hi2z.
 now rewrite Hi2z in Hs.
 Qed.
 
-Theorem c_squ_modulus : ∀ z, ‖ z ‖² = ((Re z)² + (Im z)²)%L.
+Theorem c_squ_modulus : ∀ z, ‖ z ‖²%L = ((Re z)² + (Im z)²)%L.
 Proof.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
 intros.

@@ -1533,7 +1533,7 @@ Theorem rngl_squ_inv' :
   rngl_has_opp_or_psub T = true →
   rngl_has_inv T = true →
   rngl_has_eq_dec_or_order T = true →
-  ∀ a, a ≠ 0%L ∨ (0⁻¹)² = 0⁻¹ → (a⁻¹)² = (a²)⁻¹.
+  ∀ a, a ≠ 0%L ∨ ((0⁻¹)² = 0⁻¹)%L → ((a⁻¹)² = (a²)⁻¹)%L.
 Proof.
 intros Hos Hiv Heo * Hzi.
 destruct (rngl_eqb_dec a 0) as [Haz| Haz]. {
@@ -1551,7 +1551,7 @@ Theorem rngl_squ_div' :
   rngl_has_opp_or_psub T = true →
   rngl_has_inv T = true →
   rngl_has_eq_dec_or_order T = true →
-  ∀ a b, b ≠ 0%L ∨ (0⁻¹)² = 0⁻¹ → (a / b)²%L = (a² / b²)%L.
+  ∀ a b, b ≠ 0%L ∨ ((0⁻¹)² = 0⁻¹)%L → (a / b)²%L = (a² / b²)%L.
 Proof.
 intros Hic Hos Hiv Hed * Hbz.
 progress unfold rngl_div.

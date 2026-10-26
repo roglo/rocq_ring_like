@@ -759,7 +759,7 @@ Qed.
 
 Theorem rngl_squ_signp :
   rngl_has_opp T = true →
-  ∀ a, (rngl_signp a)² = 1%L.
+  ∀ a, (rngl_signp a)²%L = 1%L.
 Proof.
 intros Hop *.
 progress unfold rngl_signp.

@@ -1521,7 +1521,7 @@ Theorem left_or_right_continuous_inv :
   f x₀ ≠ 0%L
   → left_or_right_continuous_at is_left le da rngl_dist f x₀
   → left_or_right_continuous_at is_left le da rngl_dist
-      (λ x, (f x)⁻¹) x₀.
+      (λ x, (f x)⁻¹)%L x₀.
 Proof.
 intros Hic Hiv.
 specialize (rngl_has_opp_has_opp_or_psub Hop) as Hos.
@@ -1623,7 +1623,7 @@ Theorem left_or_right_derivative_inv :
   f x₀ ≠ 0%L
   → left_or_right_continuous_at is_left lt da rngl_dist f x₀
   → left_or_right_derivative_at is_left lt da rngl_dist f x₀ (f' x₀)
-  → left_or_right_derivative_at is_left lt da rngl_dist (λ x : A, (f x)⁻¹)
+  → left_or_right_derivative_at is_left lt da rngl_dist (λ x : A, (f x)⁻¹)%L
       x₀ (- f' x₀ / (f x₀)²)%L.
 Proof.
 intros Hic Hiv.
@@ -1949,7 +1949,7 @@ Theorem derivative_inv_at :
   ∀ da (f : A → T) f' x₀,
   f x₀ ≠ 0%L
   → is_derivative_at lt da rngl_dist f f' x₀
-  → is_derivative_at lt da rngl_dist (λ x : A, (f x)⁻¹)
+  → is_derivative_at lt da rngl_dist (λ x : A, (f x)⁻¹)%L
        (λ x, (- f' x / rngl_squ (f x))%L) x₀.
 Proof.
 intros Hic Hiv.
